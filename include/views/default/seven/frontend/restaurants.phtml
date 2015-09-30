@@ -49,7 +49,8 @@
 							<span ng-if="community_closed" class="small">
 								{{community_closed}}
 							</span>
-							<span ng-if="!community_closed"><b>Wahhhhhh!!!</b><br>No delivery is available</span>
+							<span ng-if="!community_closed && !openSoon"><b>Wahhhhhh!!!</b><br>No delivery is available</span>
+							<span ng-if="!community_closed && openSoon">Delivery available soon!!</span>
 						</span>
 					</div>
 					<div class="bubble-tail-spacer"></div>
@@ -133,7 +134,7 @@
 	</div>
 </div>
 <? if (!$this->export) : ?>
-<div class="content-padding" ng-if="config.suggestions">
+<div class="content-padding" ng-if="config.suggestions && show_suggestions">
 	<div class="suggestion-text"><span class="link" ng-click="suggestion();">Want something else delivered?</span></div>
 </div>
 <? endif ; ?>

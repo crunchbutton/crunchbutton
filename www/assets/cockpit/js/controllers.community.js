@@ -7,6 +7,11 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			templateUrl: 'assets/view/communities.html',
 			reloadOnSearch: false
 		})
+		.when('/communities/notes', {
+			action: 'community',
+			controller: 'CommunitiesNotesCtrl',
+			templateUrl: 'assets/view/communities-notes.html'
+		})
 		.when('/community/edit/:id', {
 			action: 'community',
 			controller: 'CommunityFormCtrl',
@@ -52,7 +57,57 @@ NGApp.controller('CommunitiesCtrl', function ($rootScope, $scope, CommunityServi
 		}
 	});
 
+});
 
+NGApp.controller('CommunitiesNotesCtrl', function ($scope, $rootScope, ViewListService, CommunityService) {
+
+	$rootScope.title = 'Communities Notes';
+
+	$scope.show_more_options = false;
+
+	$scope.openCommunityNoteContainer = function(){
+		$rootScope.$broadcast( 'openCommunityNoteContainer', null );
+	}
+
+	$rootScope.$on( 'communityNoteSaved', function(e, data) {
+		update();
+	});
+
+	$scope.moreOptions = function(){
+
+		$scope.show_more_options = !$scope.show_more_options;
+
+		if( $scope.show_more_options ){
+			if( !$scope.communities ){
+				CommunityService.listSimple( function( json ){
+					$scope.communities = json;
+				} );
+			}
+		}
+
+	}
+
+	angular.extend($scope, ViewListService);
+
+	var update = function() {
+			CommunityService.notes.list( $scope.query, function(d) {
+				$scope.notes = d.results;
+				$scope.complete(d);
+					if( ( $scope.query.community ) && !$scope.show_more_options ){
+						$scope.moreOptions();
+					}
+			});
+		}
+
+	$scope.view({
+		scope: $scope,
+		watch: {
+			search: '',
+			community: '',
+			fullcount: false
+		},
+		update: update
+	});
 });
 
 NGApp.controller('CommunitiesClosedCtrl', function ($scope, CommunityService) {
@@ -266,14 +321,20 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 
 NGApp.controller('CommunityAddNoteCtrl', function ($scope, $routeParams, $rootScope, $filter, CommunityService, DriverService ) {
 
-	$rootScope.$broadcast( 'openCommunityNoteContainer', 'test' );
-
 	$rootScope.$on( 'openCommunityNoteContainer', function(e, data) {
 		$scope.note = {};
 		$scope.note.community = data;
 		App.dialog.show('.community-add-note-dialog-container');
 		$scope.isSavingNote = false;
 		$scope.formAddNoteSubmitted = false;
+
+		if( !$scope.note.community ){
+			if( !$scope.communities ){
+				CommunityService.listSimple( function( json ){
+					$scope.communities = json;
+				} );
+			}
+		}
 	});
 
 	$scope.formAddNoteSave = function(){
@@ -282,6 +343,12 @@ NGApp.controller('CommunityAddNoteCtrl', function ($scope, $routeParams, $rootSc
 			$scope.formAddNoteSubmitted = true;
 			return;
 		}
+
+		if( !$scope.note.community ){
+			App.alert( 'Please select a community!' );
+			return;
+		}
+
 		CommunityService.addNote( $scope.note, function( json ){
 			$scope.isSavingNote = false;
 			if( json.error ){
@@ -357,7 +424,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 
 	$scope.loadNotes = function(){
 		$scope.loadingNotes = true;
-		CommunityService.notes.list( $routeParams.id, function( json ){
+		CommunityService.notes.list( { community: $scope.community.id_community }, function( json ){
 			$scope.notes = json.results;
 			$scope.loadingNotes = false;
 		} );
@@ -492,8 +559,6 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 	$rootScope.$on( 'communityNoteSaved', function(e, data) {
 		$scope.loadNotes();
 	});
-
-
 
 	$rootScope.$on( 'communityOpenClosedSaved', function(e, data) {
 		load();

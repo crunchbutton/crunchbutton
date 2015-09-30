@@ -836,7 +836,15 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$schedule->note = $notes;
 				$schedule->processor = Crunchbutton_Payment::processor();
 				$schedule->id_admin = c::user()->id_admin;
+
+				$range = ( new DateTime( $this->filters[ 'start' ] ) )->format( 'm/d/Y' );
+				$range .= ' => ';
+				$range .= ( new DateTime( $this->filters[ 'end' ] ) )->format( 'm/d/Y' );
+
+				$schedule->range_date = $range;
+
 				$schedule->save();
+
 				$id_payment_schedule = $schedule->id_payment_schedule;
 				// save the orders
 				foreach ( $_restaurant->_payableOrders as $order ) {

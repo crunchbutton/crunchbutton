@@ -1,13 +1,17 @@
-<div class="account-reset-container  zoom-anim-dialog mfp-hide dialog mfp-hide" ng-controller="AccountResetCtrl">
+<div class="account-reset-container zoom-anim-dialog mfp-hide dialog mfp-hide" ng-controller="AccountResetCtrl">
 	<div class="dialog-padding account-modal">
 		<div ng-show="reset.step == 1">
 
-			<div>Enter your password reset code</div>
+			<p>Enter your password reset code:</p>
 
-			<form class="form">	
-				
-				<input type="text" maxlength="250" id="account-reset-code" value="" ng-enter="reset.validateCode()" ng-model="reset.form.code" class="input" placeholder="enter the reset code" tabindex="10" />
-				
+			<div class="divider spacer-one-onehalf"></div>
+
+			<form class="form">
+
+				<div class="support-form-group form-group">
+					<input type="text" maxlength="250" id="account-reset-code" value="" ng-enter="reset.validateCode()" ng-model="reset.form.code" class="form-input form-field"  placeholder="enter the reset code" tabindex="10" />
+				</div>
+
 			</form>
 
 			<div class="dialog-message dialog-message-error" ng-repeat="error in reset.errors">
@@ -17,32 +21,34 @@
 			<div class="divisor"></div>
 
 			<div class="button-pushable">
-				<button class="button account-submit" ng-click="reset.validateCode();">Send</button>
+				<button class="button account-submit lightorange" ng-click="reset.validateCode();">Send</button>
 			</div>
-			
+
 		</div>
 		<div ng-show="reset.step == 2">
 
 			<div ng-show="!reset.success">
 
-				<div>Type your new password</div>
+				<p>Type your new password</p>
 
 				<form class="form">
-					
-					<input type="password" maxlength="250" ng-model="reset.form.password" ng-enter="reset.changePassword()" id="account-reset-password" value="" class="input" placeholder="password" tabindex="10" />
-					
+
+					<div class="support-form-group form-group">
+						<input type="password" maxlength="250" ng-model="reset.form.password" ng-enter="reset.changePassword()" id="account-reset-password" value="" class="form-input form-field" placeholder="password" tabindex="10" />
+					</div>
+
 					<div class="divider"></div>
-					
+
 					<div class="dialog-message dialog-message-error" ng-repeat="error in reset.errors">
 						{{error}}
 					</div>
-				
+
 				</form>
 
 				<div class="divisor"></div>
 
 				<div class="button-pushable">
-					<button class="button account-submit" ng-click="reset.changePassword();">Change</button>
+					<button class="button account-submit lightorange" ng-click="reset.changePassword();">Change</button>
 				</div>
 
 			</div>

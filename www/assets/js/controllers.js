@@ -348,6 +348,8 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		$rootScope.navigation.link('/location', 'instant' );
 	}
 
+	$scope.show_suggestions = false;
+
 	$scope.restaurants = false;
 
 	$scope.loadingRestaurant = false;
@@ -385,7 +387,6 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	$scope.motivationText = motivationText[Math.floor(Math.random() * motivationText.length)];
 
 	var restaurants = RestaurantsService;
-
 	$scope.mealItemClass = App.isAndroid() ? 'meal-food-android' : '';
 
 	var checkOpen = function() {
@@ -394,6 +395,15 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			if ($scope.restaurants[x]._open) {
 				allClosed = false;
 				break;
+			}
+		}
+		if( allClosed ){
+			for (var x in $scope.restaurants) {
+				if( $scope.restaurants[x].next_open_time_message &&
+						$scope.restaurants[x].next_open_time_message.today &&
+						$scope.restaurants[x].next_open_time_message.today == 'Today' ){
+					$scope.openSoon = true;
+				}
 			}
 		}
 		$scope.allClosed = allClosed;
@@ -528,86 +538,99 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 
 	var id_community = null;
 
-	restaurants.list(
-		// Success
-		function(){
+	var loadList = function(){
+			restaurants.list(
+				// Success
+				function(){
 
-			try {
+					try {
 
-				$rootScope.$broadcast( 'updateQuote', RestaurantsService.community.id_community );
+						$rootScope.$broadcast( 'updateQuote', RestaurantsService.community.id_community );
 
-				var slogan = App.slogan.slogan;
-				var tagline = '';
-				if( RestaurantsService.community && RestaurantsService.community.tagline1 ){
-					tagline = RestaurantsService.community.tagline1;
+						var slogan = App.slogan.slogan;
+						var tagline = '';
+						if( RestaurantsService.community && RestaurantsService.community.tagline1 ){
+							tagline = RestaurantsService.community.tagline1;
+						}
+						if( RestaurantsService.community && RestaurantsService.community.tagline2 ){
+							tagline += '<br>' + RestaurantsService.community.tagline2;
+						}
+
+						if( $.trim( tagline ) == '' ){
+							var sloganReplace = ( prep || 'in' ) + ' ' + ( city || 'your area' );
+							sloganReplace = $.trim(sloganReplace);
+							tagline = App.tagline.tagline.replace('%s', sloganReplace);
+						}
+
+					} catch (e) {
+						console.log('Failed to load dynamic text', App.slogan, App.tagline, e);
+						var slogan = '';
+						var tagline = '';
+					}
+
+					document.title = ( city || '' ) + ' Food Delivery | Order Food from ' + (city || 'Local') + ' Restaurants | Crunchbutton';
+
+					$scope.restaurants = restaurants.sort();
+					checkOpen();
+
+					var id_community = null;
+
+					var restaurantsToShow = 0;
+					for ( var x in $scope.restaurants ) {
+						if( $scope.restaurants[ x ]._maximized ){
+							restaurantsToShow++;
+						}
+					}
+
+					var maxShow = App.isMobile() ? App.restaurantsPaging.mobile : App.restaurantsPaging.desktop;
+					$scope.showSmallClosures = App.isMobile() ? true : false;
+
+					if( restaurantsToShow > maxShow ){
+						restaurantsToShow = maxShow;
+					} else if ( restaurantsToShow < maxShow ) {
+						showMoreStage = 2;
+					}
+					$scope.restaurantsToShow = restaurantsToShow;
+					if (!App.isMobile()) {
+						$scope.restaurantsToShow = 100;
+					}
+
+					// Wait one minute until update the status of the restaurants
+					setTimeout( function(){
+						updateStatus();
+					}, 1000 * 60 );
+
+					$scope.slogan = slogan;
+					$scope.tagline = tagline;
+					$scope.image = image;
+
+					if ( $scope.restaurants.length == 4 ) {
+						$('.content').addClass('short-meal-list');
+					} else {
+						$('.content').removeClass('short-meal-list');
+					}
+					$('.content').removeClass('smaller-width');
+
+					listLoaded = true;
+
+					$scope.show_suggestions = true;
+
+				},
+				// Error
+				function(){
+					error();
 				}
-				if( RestaurantsService.community && RestaurantsService.community.tagline2 ){
-					tagline += '<br>' + RestaurantsService.community.tagline2;
-				}
+			);
+		setTimeout(function(){
+			// reload list each 2 hours with updated hours #6843
+			restaurants.forceLoad = true;
+			loadList();
+		}, 60 * 60 * 2 * 1000 );
 
-				if( $.trim( tagline ) == '' ){
-					var sloganReplace = ( prep || 'in' ) + ' ' + ( city || 'your area' );
-					sloganReplace = $.trim(sloganReplace);
-					tagline = App.tagline.tagline.replace('%s', sloganReplace);
-				}
+	}
 
-			} catch (e) {
-				console.log('Failed to load dynamic text', App.slogan, App.tagline, e);
-				var slogan = '';
-				var tagline = '';
-			}
+	loadList();
 
-			document.title = ( city || '' ) + ' Food Delivery | Order Food from ' + (city || 'Local') + ' Restaurants | Crunchbutton';
-
-			$scope.restaurants = restaurants.sort();
-			checkOpen();
-
-			var id_community = null;
-
-			var restaurantsToShow = 0;
-			for ( var x in $scope.restaurants ) {
-				if( $scope.restaurants[ x ]._maximized ){
-					restaurantsToShow++;
-				}
-			}
-
-			var maxShow = App.isMobile() ? App.restaurantsPaging.mobile : App.restaurantsPaging.desktop;
-			$scope.showSmallClosures = App.isMobile() ? true : false;
-
-			if( restaurantsToShow > maxShow ){
-				restaurantsToShow = maxShow;
-			} else if ( restaurantsToShow < maxShow ) {
-				showMoreStage = 2;
-			}
-			$scope.restaurantsToShow = restaurantsToShow;
-			if (!App.isMobile()) {
-				$scope.restaurantsToShow = 100;
-			}
-
-			// Wait one minute until update the status of the restaurants
-			setTimeout( function(){
-				updateStatus();
-			}, 1000 * 60 );
-
-			$scope.slogan = slogan;
-			$scope.tagline = tagline;
-			$scope.image = image;
-
-			if ( $scope.restaurants.length == 4 ) {
-				$('.content').addClass('short-meal-list');
-			} else {
-				$('.content').removeClass('short-meal-list');
-			}
-			$('.content').removeClass('smaller-width');
-
-			listLoaded = true;
-
-		},
-		// Error
-		function(){
-			error();
-		}
-	);
 
 	$scope.suggestion = function(){
 		$rootScope.$broadcast( 'restaurantsSuggestion', RestaurantsService.community.id_community );
@@ -922,6 +945,9 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 	var order = OrderService;
 	order.geomatched = 1;
+
+
+	$scope.show_suggestions = false;
 
 	order.loaded = false;
 	$scope.order = {};
@@ -1245,6 +1271,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 		document.title = $scope.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
 
+		$scope.show_suggestions = true;
 
 		var process = function(){
 
@@ -1632,11 +1659,38 @@ NGApp.controller( 'AccountResetCtrl', function ( $scope, $http, $location, Accou
 	}
 });
 
-NGApp.controller( 'RewardCtrl', function ( $scope, $http, $rootScope, ReferralService ) {
+NGApp.controller( 'RewardCtrl', function ( $scope, $http, $rootScope, ReferralService, AccountService, FacebookService ) {
+
 	$rootScope.$on( 'ReferralInvitedUsers', function(e, data) {
 		$scope.invitedUsers = ReferralService.invitedUsers;
 		App.dialog.show( '.referral-container' );
 	});
+
+	$scope.referral = {}
+
+	if( !AccountService.user.invite_code ){
+		ReferralService.getInviteCode();
+	}
+
+	$scope.$on( 'referralStatusLoaded', function(e, data) {
+		$scope.referral.invites = ReferralService.invites;
+		$scope.referral.limit = ReferralService.limit;
+		$scope.referral.invite_url = ReferralService.invite_url;
+		$scope.referral.value = ReferralService.value;
+		$scope.referral.enabled = ReferralService.enabled;
+		$scope.referral.invite_code = ReferralService.invite_code;
+		$scope.referral.sms = ReferralService.sms();
+		$scope.referral.url = ReferralService.cleaned_url();
+	});
+
+	$scope.referral.facebook = function(){
+		FacebookService.postInvite( $scope.referral.url, $scope.referral.invite_code );
+	}
+
+	$scope.referral.twitter = function(){
+		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.url + '&text=' + App.AB.get('share-twitter-text') + '&hashtags=Crunchbutton' ,'_system');
+	}
+
 	$scope.modal = { close: function(){
 		$.magnificPopup.close();
 	} };
@@ -1825,7 +1879,6 @@ NGApp.controller( 'NoInternetCtrl', function ( $scope ) {
 	$location.path( '/' );
 });
 
-// aqui
 NGApp.controller( 'QuoteCtrl', function ( $scope ) {
 
 	var quotes = { pages: [], communities: { all: [] } };
