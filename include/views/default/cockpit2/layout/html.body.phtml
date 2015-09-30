@@ -93,6 +93,14 @@
 					</table>
 				</a>
 
+				<a href="/invite" ng-click="instant()" class="menu-link" ng-class="{'nav-active': (navigation.page == 'drivers-invite')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-usd"></i></td>
+							<td class="side-menu-label">Earn More Money</a></td>
+						</tr>
+					</table>
+				</a>
 
 				<a href="/campus-manager/orders" ng-click="instant()" class="menu-link" ng-if="account.isCampusManager && menu.toggle=='marketing-rep'" ng-class="{'nav-active': (navigation.page == 'orders')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
@@ -176,8 +184,8 @@
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-usd"></i></td>
 							<td class="side-menu-label">Earn More Money</a></td>
-				</tr>
-				</table>
+						</tr>
+					</table>
 				</a>
 				<a href="/staff/activations" ng-click="instant()" class="menu-link" ng-class="{'nav-active': (navigation.page == 'activations')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
