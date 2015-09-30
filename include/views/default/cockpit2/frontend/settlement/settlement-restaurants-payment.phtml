@@ -152,6 +152,10 @@
 					<td class="td-medium">Amount</td>
 					<td class="td-medium">${{result.amount | formatPrice}}</td>
 				</tr>
+				<tr ng-if="result.range_date">
+					<td><strong>Period</strong></td>
+					<td>{{result.range_date}}</td>
+				</tr>
 				<tr>
 					<td>Payment Notes</td>
 					<td>{{result.note}}</td>

@@ -30,7 +30,7 @@
 			</span>
 
 			<? if (!$this->export) : ?>
-				<div class="suggestion-text" ng-if="config.suggestions">See an issue with our menu? Wanna add something? <span class="link" ng-click="suggestion();">Tell us!</span></div>
+				<div class="suggestion-text" ng-if="config.suggestions && show_suggestions">See an issue with our menu? Wanna add something? <span class="link" ng-click="suggestion();">Tell us!</span></div>
 			<? endif ; ?>
 
 		</div>

@@ -307,6 +307,7 @@ NGApp.factory( 'AccountHelpService', function( $http, $rootScope, AccountService
 		service.errorReset();
 		service.success.visible = false;
 		service.success.facebook.visible = false;
+		service.sendingHelpForm = false;
 	}
 
 	service.sendForm = function(){
@@ -319,6 +320,8 @@ NGApp.factory( 'AccountHelpService', function( $http, $rootScope, AccountService
 
 		var url = App.service + 'user/reset';
 
+		service.sendingHelpForm = true;
+
 		$http( {
 			method: 'POST',
 			url: url,
@@ -329,6 +332,7 @@ NGApp.factory( 'AccountHelpService', function( $http, $rootScope, AccountService
 						if( data.error == 'user is not registered' ){
 							service.errors.push( AccountService.errorsList[ 'not-registered' ] );
 							$rootScope.focus( '.help-email' );
+							service.sendingHelpForm = false;
 						}
 					} else {
 						if( data.success = 'success' ){

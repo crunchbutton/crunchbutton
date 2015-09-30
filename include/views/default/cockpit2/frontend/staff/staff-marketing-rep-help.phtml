@@ -12,7 +12,7 @@
 		<div class="support-box-wrap box-content2">
 			<a name="deliveryBasics"></a>
 			<div class="support-box-wrap-header">
-				<h1>Frequently Asked Question</h1>
+				<h1>Frequently Asked Questions</h1>
 				<div class="divider"></div>
 			</div>
 
@@ -20,92 +20,120 @@
 				<br>
 				<p>
 					<span ng-if="is_campus_manager">
-						<b>
-							How much do I make?
-						</b>
-						<br>
-							You make {{profit_percent}}% of the profits that come in through your community via orders! Note, this is subject to change based on how many community managers are part of the team.
-						<br><br>
+						<?php
+							$faq = [];
+$faq[] = [ 'q' => "What is a community manager?",
+'a' => "A community manager is head of Crunchbutton in any given school or community. They are in charge of all marketing operations at that location?"];
 
+$faq[] = [ 'q' => "What does a week in the life of a Crunchbutton community manager look like?",
+'a' => "Our managers typically spend about 10-15 hours a week working on marketing. These hours are split between a number of responsibilities which include scheduling marketing meetings and events for ;your brand reps, serving as an intermediary between the drivers and Crunchbutton headquarters, weekly calls with your in office marketing director, and running around campus getting students excited about Crunchbutton!"];
 
-						<b>Q: How does payment work?</b>
-						<br>
-							We work on a profit share basis and pay via direct deposit. If you ever have any questions or problems, please reach out to payment@crunchbutton.com
-						<br><br>
+$faq[] = [ 'q' => "What is a brand rep?",
+'a' => "A brand rep is a student that helps you brainstorm and market. They are your NUMBER ONE asset. Every community that we launch at is too large for one person to market alone, so your brand reps help you out."];
 
-						<b>How does Crunchbutton decide which restaurants to offer?</b>
-						<b>Q: How does payment work?</b>
-						<br>
-							Crunchbutton provides delivery from the best fast food and local restaurants near campus, with a fleet of delivery drivers. Check out <a href="http://www.crunchbutton.com">crunchbutton.com</a> to see the list at your school.
-						<br><br>
+$faq[] = [ 'q' => "How much do brand reps make?",
+'a' => "Brand reps are paid per activation. This means that every time a new Crunchbutton user enters that brand rep’s promo code into the notes section, the rep makes $7 and the customer gets $3 off their first order."];
 
-						<b>Is there a minimum dollar amount required to place a Crunchbutton order? </b>
-						<br>
-							Yes, but it varies by school, and is generally at most $5-$10, with a $3 delivery fee.
-						<br><br>
+$faq[] = [ 'q' => "The brand rep position sounds awesome and I have friends who would be super interested, how do I get them involved?",
+'a' => "Your friends can apply to us through this link: <a href='http://bit.ly/brand-rep' target='_system'>bit.ly/brand-rep</a>"];
 
-						<b>How do users know when their order will arrive? </b>
-						<br>
-						Upon ordering, users are given a time estimate, which is usually around 25-45 minutes. Customers are provided the driver’s phone number, which they can call or text if they want a status update. They can also text customer service at (646) 783-1444.
-						<br><br>
+$faq[] = [ 'q' => "How much do I make?",
+'a' => 'You make {{profit_percent}}% of the profits that come in through your community via orders! Note, this is subject to change based on how many community managers are part of the team.'];
+
+$faq[] = [ 'q' => "How does payment work? ",
+'a' => "We work on a profit share basis and pay via direct deposit. In order to get paid, please download the CM independent contractor agreement as well as your payment information on the Documents tab. Then resubmit them in cockpit.la"];
+
+$faq[] = [ 'q' => "My brand reps have promo codes that give customers $3 off their first order, what can I use to get people the same deal?",
+'a' => "Our managers have 6 different promo codes that they can use: grubbz, yummy, crunchy, nomnom, feast, and orange. For all of these make sure you note what marketing you are doing with them and how much you’re doing.<br>
+Ex: Promo code grubbz was used to put up 400 flyers in the freshman dorms."];
+
+$faq[] = [ 'q' => "What kind of marketing has worked will in the past?",
+'a' => "Flyering, tabling, posting on social media, and word of mouth!"];
+
+$faq[] = [ 'q' => "What is the best way to flyer?",
+'a' => "The goal of flyering is for as many people as possible to see the Crunchbutton name. So you should flyer in as many places as possible including lecture halls, library bathroom stalls, dorms and apartment buildings!."];
+
+$faq[] = [ 'q' => "Where do I get flyers?",
+'a' => "Your in office marketing director should keep you well stocked in marketing supplies, but if you ever run out <a href='https://www.dropbox.com/sh/trk2i7wl4234z3j/AADmDMzJC4nKWrDbHOsUX46ya?dl=0' target='_system'>download</a> the follow templates and use them as flyers until you get more."];
+
+$faq[] = [ 'q' => "What social media should I use?",
+'a' => "Anything that you can think of! The most popular posts are typically on Facebook, Twitter, and Yikyak."];
+
+$faq[] = [ 'q' => "What does a good social media post look like?",
+'a' => "A wise Dwight Schrute once said: K.I.S.S. (keep it simple stupid). The best social media posts are short and to the point. However, you should always include three things: our hours of operations, 2 or 3 popular restaurants, and a link to our website <a href='http://www.crunchbutton.com'>crunchbutton.com</a>."];
+
+$faq[] = [ 'q' => "How does word of mouth marketing work?",
+'a' => "The best way to generate buzz about Crunchbutton is through your friends! Use your connections to get into club meetings, fraternity/sorority chapter meetings, and an article about us in the paper. It doesn’t cost anything to reach out to friends and they’re normally always down to help! "];
+
+$faq[] = [ 'q' => "My friends love Crunchbutton, but are disappointed with the restaurant choices, what do I do?",
+'a' => "Easy! Email us at <a href='mailto:marketing@crunchbutton.com'>marketing@crunchbutton.com</a> with the name of the restaurant and we’ll get started on that!"];
+
+$faq[] = [ 'q' => "Is this the only marketing I can do?!",
+'a' => "HECK NO! They sky is the limit! Use your creativity, be zany, be funny, build community."];
+
+$faq[] = [ 'q' => "I think Crunchbutton can be better, how can I pass this message along to you guys?",
+'a' => "We love getting feedback from our managers, if you have any ideas at all send them to us at <a href='mailto:marketing@crunchbutton.com'>marketing@crunchbutton.com</a> and we’ll do everything in our power to implement it!"];
+
+						foreach( $faq as $f ){
+							echo "<b>{$f['q']}</b>";
+							echo "<br>{$f['a']}<br><br>";
+						}
+						 ?>
 
 					</span>
 					<span ng-if="!is_campus_manager">
-						<b>
-							What is an activation?
-						</b>
-						<br>
-							An activation is when a new Crunchbutton user uses your code to make their first order. You are compensated for every activation.
-						<br><br>
-						<b>
-							How much do I make?
-						</b>
-						<br>
-							You make ${{referral_admin_credit}} for every new user that uses your code!
-						<br><br>
-						<b>
-							What does the promo code offer?
-						</b>
-						<br>
-						The code provides new users
-							<span ng-if="referral_customer_credit">${{referral_customer_credit}}</span>
-							<span ng-if="!referral_customer_credit">$3</span> off their first Crunchbutton order!
-						<br><br>
+						<?php
+						$faq = [];
 
-						<b>
-							How does a user input my code to get a discount on their first order?
-						</b>
-						<br>
-						Just enter your individual code in the “Notes” section on the order page.
-						<br><br>
+						$faq[] = [ 'q' => "What is an activation?",
+											 'a' => "An activation is when a new user enters your promo code into the Notes Section of a card order."];
 
-						<b>
-							How often should I be marketing Crunchbutton?
-						</b>
-						<br>
-						Our most successful reps spend 5-10 hours every week, but it’s up to you!
-						<br><br>
+						$faq[] = [ 'q' => "Can I check how many activations I have?",
+											 'a' => "Yep! Just click the tab that says “Your Activations”."];
 
-						<b>
-							How do users know when their order will arrive?
-						</b>
-						<br>
-						Upon ordering, users are given a time estimate, which is usually around 45 minutes. Customers are provided the driver’s phone number, which they can call or text if they want a status update. They can also contact customer service at (646) 783-1444.
-						<br><br>
+						$faq[] = [ 'q' => "How do I get paid?",
+											 'a' => "You need to get fill out the independent contractor form as well as your direct deposit forms. Both can be found under the Documents tab."];
 
-						<b>
-							How does Crunchbutton decide which restaurants to offer?
-						</b>
-						<br>
-							Crunchbutton provides delivery from the best fast food and local restaurants near campus, via our fleet of delivery drivers.  Check out www.crunchbutton.com to see the list at your school.
-						<br><br>
+						$faq[] = [ 'q' => "How much do I make?",
+											 'a' => 'You make ${{referral_admin_credit}} for every new user that uses your code!'];
 
-						<b>
-							 Is there a minimum dollar amount required to place a Crunchbutton order?
-						</b>
-						<br>
-							Yes, but it varies by school, and is generally at most $5-10, with a $3 delivery fee.
-						<br><br>
+						$faq[] = [ 'q' => "How often should I be marketing Crunchbutton?",
+											 'a' => "Our most successful reps spend 5-10 hours every week, but it’s up to you!"];
+
+						$faq[] = [ 'q' => "What does a week in the life of a Crunchbutton brand rep look like?",
+											 'a' => "Our most successful reps spend 5-10 hours every week marketing. They attend weekly marketing meetings/events scheduled by their managers. And they are given tasks by their managers for them to work on throughout the week to help spread the Crunchbutton word."];
+
+						$faq[] = [ 'q' => "What kind of marketing has worked will in the past?",
+											 'a' => "Flyering, tabling, posting on social media, and word of mouth!"];
+
+						$faq[] = [ 'q' => "What is the best way to flyer?",
+											 'a' => "The goal of flyering is for as many people as possible to see the Crunchbutton name. So you should flyer in as many places as possible including lecture halls, library bathroom stalls, dorms and apartment buildings!"];
+
+						$faq[] = [ 'q' => "Where do I get flyers?",
+											 'a' => "Your manager should have some on hand but here are some files that you can <a target='_system' href='https://www.dropbox.com/sh/trk2i7wl4234z3j/AADmDMzJC4nKWrDbHOsUX46ya?dl=0'>download</a> and edit yourself!"];
+
+						$faq[] = [ 'q' => "What social media should I use?",
+											 'a' => "Anything that you can think of! The most popular posts are typically on Facebook, Twitter, and Yikyak."];
+
+						$faq[] = [ 'q' => "What does a good social media post look like?",
+											 'a' => "A wise Dwight Schrute once said: K.I.S.S. (keep it simple stupid). The best social media posts are short and to the point. However, you should always include three things: our hours of operations, 2 or 3 popular restaurants, and a link to our website <a href='http://www.crunchbutton.com'>crunchbutton.com</a>"];
+
+						$faq[] = [ 'q' => "My friends love Crunchbutton, but are disappointed with the restaurant choices, what do I do?",
+											 'a' => "Easy! Email us at <a href='mailto:marketing@crunchbutton.com'>marketing@crunchbutton.com</a> with the name of the restaurant and we’ll get started on that!"];
+
+						$faq[] = [ 'q' => "Is there anything else I can do to help?",
+											 'a' => "We are always looking for more drivers and brand reps so you can always refer more people to us through the following applications:
+																<br>Drivers: <a href='http://bit.ly/apply-to-drive'>bit.ly/apply-to-drive</a>
+																<br>Brand Reps: <a href='http://bit.ly/brand-rep'>bit.ly/brand-rep</a>"];
+
+						$faq[] = [ 'q' => "I’m fired up and I want more!",
+											 'a' => "Awesome, if you ever want to have a quick phone call with one of in office marketing directors, just email us at <a href='mailto:marketing@crunchbutton.com'>marketing@crunchbutton.com</a> and we’ll set up a phone call!"];
+
+						foreach( $faq as $f ){
+							echo "<b>{$f['q']}</b>";
+							echo "<br>{$f['a']}<br><br>";
+						}
+												?>
 					</span>
 
 				</p>

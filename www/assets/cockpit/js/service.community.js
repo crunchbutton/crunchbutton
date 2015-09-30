@@ -30,6 +30,11 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 			method: 'POST',
 			params : { 'action' : 'save-open-close' }
 		},
+		'lastNote' : {
+			url: App.service + 'community/:id_community/:action',
+			method: 'GET',
+			params : { 'action' : 'last-note' }
+		},
 		'addNote' : {
 			url: App.service + 'community/note',
 			method: 'POST'
@@ -53,7 +58,7 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 			}
 		);
 
-	var notes = $resource( App.service + 'community/notes/:permalink', { action: '@action' }, {
+	var notes = $resource( App.service + 'community/notes', { action: '@action' }, {
 				'list' : { 'method': 'GET', params : { 'action' : null } }
 			}
 		);
@@ -67,8 +72,8 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 	}
 
 	service.notes = {
-		list: function( permalink, callback ){
-			notes.list( { permalink: permalink }, function( data ){
+		list: function( params, callback ){
+			notes.list( params, function( data ){
 				callback( data );
 			} );
 		}
@@ -118,6 +123,12 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 
 	service.saveOpenClose = function(params, callback) {
 		community.saveOpenClose(params,  function(data) {
+			callback(data);
+		});
+	}
+
+	service.lastNote = function( id_community, callback) {
+		community.lastNote( {id_community: id_community},  function(data) {
 			callback(data);
 		});
 	}

@@ -86,6 +86,9 @@
 							<span class="tag tag-lightblue" ng-if="payment.check">Check</span>
 							<span ng-if="payment.status != 'done' && payment.log" class="tag tag-lightgrey">{{payment.log}}</span>
 						</div>
+						<div ng-if="payment.range_date" class="listview-smaller">
+							{{payment.range_date}}
+						</div>
 					</td>
 					<td>
 							<span class="tag tag-orange" ng-if="payment.payment_status == 'pending'">Pending</span>

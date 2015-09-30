@@ -55,7 +55,7 @@
 
 				<div class="dialog-message dialog-message-error" ng-repeat="error in account.errors">{{error}}</div>
 
-				<span ng-show="!account.user" class="help cursor" ng-click="changeTab( 'reset' )">Forgot Password</span>
+				<span class="help cursor" ng-click="changeTab( 'reset' )">Forgot Password</span>
 				<div class="divider"></div>
 			</div>
 			<div class="dialog-divider"></div>
@@ -93,8 +93,11 @@
 
 			<div class="dialog-divider" ng-show="!help.success.visible"></div>
 			<div class="dialog-padding dialog-bottom-buttons" ng-show="!help.success.visible">
-				<div class="button-pushable">
+				<div class="button-pushable" ng-show="!help.sendingHelpForm">
 					<button class="button account-submit lightorange" ng-click="help.sendForm()">Reset Password</button>
+				</div>
+				<div class="button-pushable" ng-show="help.sendingHelpForm">
+					<button class="button account-submit lightorange" disabled="disabled"><i class="fa fa-spinner fa-spin"></i> Sending</button>
 				</div>
 			</div>
 		</div>

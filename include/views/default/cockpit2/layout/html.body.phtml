@@ -93,6 +93,14 @@
 					</table>
 				</a>
 
+				<a href="/invite" ng-click="instant()" class="menu-link" ng-class="{'nav-active': (navigation.page == 'drivers-invite')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-usd"></i></td>
+							<td class="side-menu-label">Earn More Money</a></td>
+						</tr>
+					</table>
+				</a>
 
 				<a href="/campus-manager/orders" ng-click="instant()" class="menu-link" ng-if="account.isCampusManager && menu.toggle=='marketing-rep'" ng-class="{'nav-active': (navigation.page == 'orders')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
@@ -113,7 +121,7 @@
 					</table>
 				</a>
 
-        <a href="/drivers/feedback" ng-click="instant()" class="menu-link" ng-class="{'nav-active': (navigation.page == 'drivers-feedback')}">
+        <a href="https://docs.google.com/forms/d/1TsYU7LKyi8AQhM317n1v-SEiP-8OuiQIReV6XZHd-HM/viewform" target="_system" ng-click="instant()" class="menu-link" ng-class="{'nav-active': (navigation.page == 'drivers-feedback')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-quote-left"></i></td>
@@ -176,8 +184,8 @@
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-usd"></i></td>
 							<td class="side-menu-label">Earn More Money</a></td>
-				</tr>
-				</table>
+						</tr>
+					</table>
 				</a>
 				<a href="/staff/activations" ng-click="instant()" class="menu-link" ng-class="{'nav-active': (navigation.page == 'activations')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
@@ -217,7 +225,7 @@
 					</table>
 				</a>
 
-				<a href="/drivers/feedback" ng-click="instant()" class="menu-link" ng-class="{'nav-active': (navigation.page == 'drivers-feedback')}">
+				<a href="https://docs.google.com/forms/d/1TsYU7LKyi8AQhM317n1v-SEiP-8OuiQIReV6XZHd-HM/viewform" target="_system" ng-click="instant()" class="menu-link" ng-class="{'nav-active': (navigation.page == 'drivers-feedback')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-quote-left"></i></td>
@@ -255,7 +263,7 @@
 				</a>
 
 				<span ng-if="account.isDriver && menu.toggle=='driver'" ng-repeat="resource in account.user.side_resource">
-					<a href="{{resource.url}}" ng-click="instant()" target="_blank" class="menu-link">
+					<a href="{{resource.url}}" ng-click="instant()" target="_system" class="menu-link">
 						<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 							<tr>
 								<td class="side-menu-icon"><i class="fa fa-files-o"></i></td>
@@ -404,7 +412,7 @@
 					</table>
 				</a>
 
-        <a href="/drivers/feedback" ng-click="instant()" class="menu-link" ng-class="{'nav-active': (navigation.page == 'drivers-feedback')}">
+        <a href="https://docs.google.com/forms/d/1TsYU7LKyi8AQhM317n1v-SEiP-8OuiQIReV6XZHd-HM/viewform" target="_system" ng-click="instant()" class="menu-link" ng-class="{'nav-active': (navigation.page == 'drivers-feedback')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-quote-left"></i></td>
@@ -602,5 +610,7 @@
 	<div class="credit-dialog zoom-anim-dialog mfp-hide dialog">
 		<ng-include src="'assets/view/credit-dialog.html'"></ng-include>
 	</div>
+
+	<ng-include src="'assets/view/communities-community-add-note-form.html'"></ng-include>
 
 </div>
