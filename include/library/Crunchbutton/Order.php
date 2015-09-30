@@ -982,7 +982,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return Crunchbutton_Order_Action::byOrder( $this->id_order );
 	}
 
-	public function date() {
+	public function date( $reset = false ) {
+		if( $reset ){
+			$this->_date = null;
+		}
 		if (!isset($this->_date)) {
 			$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
 			$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
