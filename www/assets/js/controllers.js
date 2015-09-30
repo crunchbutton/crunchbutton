@@ -530,88 +530,99 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 
 	var id_community = null;
 
-	restaurants.list(
-		// Success
-		function(){
+	var loadList = function(){
+			restaurants.list(
+				// Success
+				function(){
 
-			try {
+					try {
 
-				$rootScope.$broadcast( 'updateQuote', RestaurantsService.community.id_community );
+						$rootScope.$broadcast( 'updateQuote', RestaurantsService.community.id_community );
 
-				var slogan = App.slogan.slogan;
-				var tagline = '';
-				if( RestaurantsService.community && RestaurantsService.community.tagline1 ){
-					tagline = RestaurantsService.community.tagline1;
+						var slogan = App.slogan.slogan;
+						var tagline = '';
+						if( RestaurantsService.community && RestaurantsService.community.tagline1 ){
+							tagline = RestaurantsService.community.tagline1;
+						}
+						if( RestaurantsService.community && RestaurantsService.community.tagline2 ){
+							tagline += '<br>' + RestaurantsService.community.tagline2;
+						}
+
+						if( $.trim( tagline ) == '' ){
+							var sloganReplace = ( prep || 'in' ) + ' ' + ( city || 'your area' );
+							sloganReplace = $.trim(sloganReplace);
+							tagline = App.tagline.tagline.replace('%s', sloganReplace);
+						}
+
+					} catch (e) {
+						console.log('Failed to load dynamic text', App.slogan, App.tagline, e);
+						var slogan = '';
+						var tagline = '';
+					}
+
+					document.title = ( city || '' ) + ' Food Delivery | Order Food from ' + (city || 'Local') + ' Restaurants | Crunchbutton';
+
+					$scope.restaurants = restaurants.sort();
+					checkOpen();
+
+					var id_community = null;
+
+					var restaurantsToShow = 0;
+					for ( var x in $scope.restaurants ) {
+						if( $scope.restaurants[ x ]._maximized ){
+							restaurantsToShow++;
+						}
+					}
+
+					var maxShow = App.isMobile() ? App.restaurantsPaging.mobile : App.restaurantsPaging.desktop;
+					$scope.showSmallClosures = App.isMobile() ? true : false;
+
+					if( restaurantsToShow > maxShow ){
+						restaurantsToShow = maxShow;
+					} else if ( restaurantsToShow < maxShow ) {
+						showMoreStage = 2;
+					}
+					$scope.restaurantsToShow = restaurantsToShow;
+					if (!App.isMobile()) {
+						$scope.restaurantsToShow = 100;
+					}
+
+					// Wait one minute until update the status of the restaurants
+					setTimeout( function(){
+						updateStatus();
+					}, 1000 * 60 );
+
+					$scope.slogan = slogan;
+					$scope.tagline = tagline;
+					$scope.image = image;
+
+					if ( $scope.restaurants.length == 4 ) {
+						$('.content').addClass('short-meal-list');
+					} else {
+						$('.content').removeClass('short-meal-list');
+					}
+					$('.content').removeClass('smaller-width');
+
+					listLoaded = true;
+
+					$scope.show_suggestions = true;
+
+				},
+				// Error
+				function(){
+					error();
 				}
-				if( RestaurantsService.community && RestaurantsService.community.tagline2 ){
-					tagline += '<br>' + RestaurantsService.community.tagline2;
-				}
+			);
+		setTimeout(function(){
+			// reload list each 2 hours with updated hours #6843
+			restaurants.forceLoad = true;
+			loadList();
+		}, 60 * 60 * 2 * 1000 );
 
-				if( $.trim( tagline ) == '' ){
-					var sloganReplace = ( prep || 'in' ) + ' ' + ( city || 'your area' );
-					sloganReplace = $.trim(sloganReplace);
-					tagline = App.tagline.tagline.replace('%s', sloganReplace);
-				}
+	}
 
-			} catch (e) {
-				console.log('Failed to load dynamic text', App.slogan, App.tagline, e);
-				var slogan = '';
-				var tagline = '';
-			}
+	loadList();
 
-			document.title = ( city || '' ) + ' Food Delivery | Order Food from ' + (city || 'Local') + ' Restaurants | Crunchbutton';
-
-			$scope.restaurants = restaurants.sort();
-			checkOpen();
-
-			var id_community = null;
-
-			var restaurantsToShow = 0;
-			for ( var x in $scope.restaurants ) {
-				if( $scope.restaurants[ x ]._maximized ){
-					restaurantsToShow++;
-				}
-			}
-
-			var maxShow = App.isMobile() ? App.restaurantsPaging.mobile : App.restaurantsPaging.desktop;
-			$scope.showSmallClosures = App.isMobile() ? true : false;
-
-			if( restaurantsToShow > maxShow ){
-				restaurantsToShow = maxShow;
-			} else if ( restaurantsToShow < maxShow ) {
-				showMoreStage = 2;
-			}
-			$scope.restaurantsToShow = restaurantsToShow;
-			if (!App.isMobile()) {
-				$scope.restaurantsToShow = 100;
-			}
-
-			// Wait one minute until update the status of the restaurants
-			setTimeout( function(){
-				updateStatus();
-			}, 1000 * 60 );
-
-			$scope.slogan = slogan;
-			$scope.tagline = tagline;
-			$scope.image = image;
-
-			if ( $scope.restaurants.length == 4 ) {
-				$('.content').addClass('short-meal-list');
-			} else {
-				$('.content').removeClass('short-meal-list');
-			}
-			$('.content').removeClass('smaller-width');
-
-			listLoaded = true;
-
-			$scope.show_suggestions = true;
-
-		},
-		// Error
-		function(){
-			error();
-		}
-	);
 
 	$scope.suggestion = function(){
 		$rootScope.$broadcast( 'restaurantsSuggestion', RestaurantsService.community.id_community );
