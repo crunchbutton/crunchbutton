@@ -1220,6 +1220,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(round($tt, 3), 96.638);
     }
 
+
     public function testGetBundleParams1()
     {
 
@@ -1514,6 +1515,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $s->save();
         $sc = $this->driver1->score();
         $s->delete();
+        $this->assertEquals($sc, Cockpit_Admin_Score::DEFAULT_SCORE);
+    }
+
+    public function testAdminDefaultScore2()
+    {
+        $sc = $this->driver1->score();
+        $qString = "SELECT * FROM `admin_score` WHERE id_admin= ? ";
+        $s = Cockpit_Admin_Score::q($qString, [$this->driver1->id_admin]);
+        $s->delete();
+        $this->assertEquals($s->count(), 1);
         $this->assertEquals($sc, Cockpit_Admin_Score::DEFAULT_SCORE);
     }
 
@@ -2001,9 +2012,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsFirstorderSameLocation()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -2015,8 +2026,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
@@ -2357,9 +2368,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationNoWaitA1()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -2371,8 +2382,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -2468,9 +2479,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationLongWaitA1()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -2482,8 +2493,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -2579,9 +2590,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationLongWaitA2()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -2593,8 +2604,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -2690,9 +2701,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationLongWaitA3()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -2704,8 +2715,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -2802,9 +2813,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationLongWaitA4()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -2816,8 +2827,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -2913,9 +2924,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationLongWaitA5()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -2927,8 +2938,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -3025,9 +3036,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationLongWaitA6()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -3039,8 +3050,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -3136,9 +3147,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationLongWaitB1()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -3150,8 +3161,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -3247,9 +3258,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationLongWaitB2()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -3261,8 +3272,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -3358,9 +3369,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationLongWaitB3()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -3372,8 +3383,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -3470,9 +3481,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationLongWaitB4()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -3484,8 +3495,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -3581,9 +3592,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationLongWaitB5()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -3595,8 +3606,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -3693,9 +3704,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationLongWaitB6()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -3707,8 +3718,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -3804,9 +3815,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationLongWaitC1()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -3818,8 +3829,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -3915,9 +3926,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationLongWaitC2()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -3929,8 +3940,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -4026,9 +4037,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationLongWaitC3()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -4040,8 +4051,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -4138,9 +4149,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationLongWaitC4()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -4152,8 +4163,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -4249,9 +4260,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationLongWaitC5()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -4263,8 +4274,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -4361,9 +4372,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationLongWaitC6()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -4375,8 +4386,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -5292,9 +5303,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsThirdOrderSameLocationNoWaitA1a()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -5306,8 +5317,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1a = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -5422,9 +5433,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsThirdOrderSameLocationNoWaitA1b()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -5436,8 +5447,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1a = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -6037,9 +6048,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsFourthOrderSameLocationNoWaitA1a()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -6051,8 +6062,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1a = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -6184,9 +6195,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationNoWaitA2a()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $minutes = 8;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -6204,8 +6215,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -6303,9 +6314,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationNoWaitA2b()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $minutes = 8;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -6323,8 +6334,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -6422,10 +6433,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     //  New customer in a different location, about a mile away from the first customer
     public function testLogisticsSecondOrderSameLocationNoWaitA2c()
     {
-        $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $seconds = 0;
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $minutes = 8;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -6443,8 +6454,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -6651,9 +6662,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsThirdOrderSameLocationNoWaitA2a()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $minutes = 8;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -6671,8 +6682,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1a = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -6786,9 +6797,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationNoWaitA3()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $minutes = 10;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -6805,8 +6816,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -6902,9 +6913,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationNoWaitA4()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $minutes = 12;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -6921,8 +6932,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -7018,9 +7029,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationNoWaitA5()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -7032,8 +7043,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -8545,9 +8556,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationNoWaitB1()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -8559,8 +8570,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -8649,9 +8660,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsSecondOrderSameLocationNoWaitB2()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -8663,8 +8674,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
@@ -10084,8 +10095,6 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'order_ahead_correction_limit2' => $order_ahead_correction_limit2
         ]);
     }
-
-
 
     // Locations are created every second from 0 to $window
     public function createAndSaveAdminLocations($id_admin, $lat, $lon, $dt, $window)
