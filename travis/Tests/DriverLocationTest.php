@@ -407,7 +407,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
         $earlier1hr = clone $now;
         $earlier1hr->modify('- ' . 60 . ' minutes');
 
-        $loc = $this->driver1->locationWithMaxTime($earlier1hr);
+        $loc = $this->driver1->lastLocationWithMinTime($earlier1hr);
         $this->assertNull($loc);
     }
 
@@ -426,7 +426,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
         $driverLat = 34.0302;
         $driverLon = -118.273;
         $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, $driverLat, $driverLon, $earlier120, 10);
-        $loc = $this->driver1->locationWithMaxTime($earlier1hr);
+        $loc = $this->driver1->lastLocationWithMinTime($earlier1hr);
         foreach ($driverLocs1 as $l) {
             $l->delete();
         }
@@ -447,7 +447,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
         $driverLat = 34.0302;
         $driverLon = -118.273;
         $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, $driverLat, $driverLon, $earlier120, 10);
-        $loc = $this->driver1->locationWithMaxTime($now);
+        $loc = $this->driver1->lastLocationWithMinTime($now);
         foreach ($driverLocs1 as $l) {
             $l->delete();
         }
@@ -467,7 +467,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
         $earlier1hr = clone $now;
         $earlier1hr->modify('- ' . 60 . ' minutes');
 
-        $locs = $this->driver1->locationsWithMaxTime($earlier1hr);
+        $locs = $this->driver1->locationsWithMinTime($earlier1hr);
         $this->assertEquals($locs->count(), 0);
     }
 
@@ -487,7 +487,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
         $driverLon = -118.273;
         $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, $driverLat, $driverLon, $earlier120, 10);
 
-        $locs = $this->driver1->locationsWithMaxTime($earlier1hr);
+        $locs = $this->driver1->locationsWithMinTime($earlier1hr);
         foreach ($driverLocs1 as $l) {
             $l->delete();
         }
@@ -516,7 +516,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
         $driverLon = -118.273;
         $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, $driverLat, $driverLon, $earlier120, 10, 0);
 
-        $locs = $this->driver1->locationsWithMaxTime($earlier1hr);
+        $locs = $this->driver1->locationsWithMinTime($earlier1hr);
         foreach ($driverLocs1 as $l) {
             $l->delete();
         }
@@ -543,7 +543,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
         $driverLon = -118.273;
         $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, $driverLat, $driverLon, $earlier120, 10);
 
-        $locs = $this->driver1->locationsWithMaxTime($now);
+        $locs = $this->driver1->locationsWithMinTime($now);
         foreach ($driverLocs1 as $l) {
             $l->delete();
         }
@@ -567,7 +567,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
         $driverLat = 34.0302;
         $driverLon = -118.273;
         $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, $driverLat, $driverLon, $earlier120, 10);
-        $locs = $this->driver1->locationsWithMaxTime($earlier126);
+        $locs = $this->driver1->locationsWithMinTime($earlier126);
         foreach ($driverLocs1 as $l) {
             $l->delete();
         }
@@ -662,7 +662,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
         $lat = 34.023281;
         $lon = -118.2881961;
 
-        $predLat = 34.02979;
+        $predLat = 34.02777;
         $predLon = -118.27;
 
         $lats = [34.0301, 34.0299, 34.0294, 34.0268, 34.0268, 34.0246, 34.0246, 34.0246, 34.0239, 34.0238, 34.0237,
@@ -703,7 +703,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($tz, "America/Los_Angeles");
     }
 
-    // Moving driver - less than 4 points - only take the average
+    // Moving driver - less than 4 points - only take the EW average
     public function testMovingDriverAverage()
     {
         c::db()->query('delete from admin_location where id_admin = ?',
@@ -715,8 +715,8 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
         $lat = 34.023281;
         $lon = -118.2881961;
 
-        $predLat = 34.02905;
-        $predLon = -118.2705;
+        $predLat = 34.02922;
+        $predLon = -118.2704;
 
         $lats = [34.0301, 34.0299, 34.0294, 34.0268];
         $lons = [-118.27, -118.27, -118.27, -118.272];
@@ -740,9 +740,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
 
     }
 
-    // Moving driver - take only 15 points - assume assorted by time descending
-    //  Driver is moving ~ 200 mph, so the regression should limit this
-    public function testSuperFastDriverRegression()
+    public function testSuperFastDriverEW1()
     {
         c::db()->query('delete from admin_location where id_admin = ?',
             [$this->driver1->id_admin]);
@@ -753,8 +751,8 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
         $lat = 34.023281;
         $lon = -118.2881961;
 
-        $predLat = 680.5253;
-        $predLon = -2365.4347;
+        $predLat = 680.5554;
+        $predLon = -2365.4254;
 
         $lats = [680.602, 680.598, 680.588, 680.536, 680.536, 680.492, 680.492, 680.492, 680.478, 680.476, 680.474,
             680.434, 680.434, 680.434, 680.434, 680.434, 680.372, 680.372, 680.338, 680.338, 680.34, 680.34, 680.36];
@@ -782,10 +780,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
 
     }
 
-    // Moving driver - take only 15 points - assume assorted by time descending
-    //  Driver is moving ~ 200 mph, so the regression should limit this
-    //  This tests that the "negative" velocities are also limited
-    public function testSuperFastDriverRegression2()
+    public function testSuperFastDriverEW2()
     {
         c::db()->query('delete from admin_location where id_admin = ?',
             [$this->driver1->id_admin]);
@@ -796,8 +791,8 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
         $lat = 34.023281;
         $lon = -118.2881961;
 
-        $predLat = -680.5253;
-        $predLon = 2365.4347;
+        $predLat = -680.5554;
+        $predLon = 2365.4254;
 
         $lats = [-680.602, -680.598, -680.588, -680.536, -680.536, -680.492, -680.492, -680.492, -680.478, -680.476,
             -680.474, -680.434, -680.434, -680.434, -680.434, -680.434, -680.372, -680.372, -680.338, -680.338, -680.34,

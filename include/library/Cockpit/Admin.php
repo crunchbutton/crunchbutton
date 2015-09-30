@@ -228,21 +228,40 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		return $this->_location;
 	}
 
-	public function locationWithMaxTime($maxDT) {
+	public function lastLocationWithMinTime($minDT) {
 		$location = null;
 		if (!isset($this->_location) && $this->id_admin) {
 			$location = Admin_Location::q('SELECT * FROM admin_location WHERE id_admin=? and date > ? and date is not null and lat is not null and lon is not null ORDER BY date DESC LIMIT 1',
-				[$this->id_admin, $maxDT->format('Y-m-d H:i:s')])->get(0);
+				[$this->id_admin, $minDT->format('Y-m-d H:i:s')])->get(0);
 		}
 		return $location;
 	}
 
-	public function locationsWithMaxTime($maxDT) {
+	public function locationsWithMinTime($minDT) {
 		$locations = null;
 		if (!isset($this->_location) && $this->id_admin) {
 			// TODO: POSTGRES - will need to modify unix_timestamp function to work for postgres.
 			$locations = Admin_Location::q('SELECT *, unix_timestamp(date) as ts FROM admin_location WHERE id_admin=? and date > ? and date is not null and lat is not null and lon is not null group by date ORDER BY date desc',
-				[$this->id_admin, $maxDT->format('Y-m-d H:i:s')]);
+				[$this->id_admin, $minDT->format('Y-m-d H:i:s')]);
+		}
+		return $locations;
+	}
+
+	public function lastLocationWithMinAndMaxTime($minDT, $maxDT) {
+		$location = null;
+		if (!isset($this->_location) && $this->id_admin) {
+			$location = Admin_Location::q('SELECT * FROM admin_location WHERE id_admin=? and date > ? and date <= ? and date is not null and lat is not null and lon is not null ORDER BY date DESC LIMIT 1',
+				[$this->id_admin, $minDT->format('Y-m-d H:i:s'), $maxDT->format('Y-m-d H:i:s')])->get(0);
+		}
+		return $location;
+	}
+
+	public function locationsWithMinAndMaxTime($minDT, $maxDT) {
+		$locations = null;
+		if (!isset($this->_location) && $this->id_admin) {
+			// TODO: POSTGRES - will need to modify unix_timestamp function to work for postgres.
+			$locations = Admin_Location::q('SELECT *, unix_timestamp(date) as ts FROM admin_location WHERE id_admin=? and date > ? and date <= ? and date is not null and lat is not null and lon is not null group by date ORDER BY date desc',
+				[$this->id_admin, $minDT->format('Y-m-d H:i:s'), $maxDT->format('Y-m-d H:i:s')]);
 		}
 		return $locations;
 	}
@@ -470,7 +489,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
         $s = Cockpit_Admin_Score::q($qString, [$this->id_admin,]);
         if (is_null($s) || $s->count()==0){
             $sc = new Cockpit_Admin_Score([
-                'id_community' => $this->id_admin,
+                'id_admin' => $this->id_admin,
                 'score' => Cockpit_Admin_Score::DEFAULT_SCORE
             ]);
             $sc->save();
