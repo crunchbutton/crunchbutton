@@ -44,9 +44,10 @@ class Controller_giftcards extends Crunchbutton_Controller_Account {
 			c::view()->id_order_reference = $id_order_reference;
 			c::view()->id_restaurant = $id_restaurant;
 			c::view()->lastone = Crunchbutton_Promo::lastID();
-			// c::view()->users = Crunchbutton_User::q('SELECT DISTINCT( u.id_user ), u.name, u.phone, u.email FROM `user` u INNER JOIN user_auth ua ON ua.id_user = u.id_user WHERE u.active = true ORDER BY u.name ASC');;
-			c::view()->display('giftcards/new');
 
+			// c::view()->users = Crunchbutton_User::q('SELECT DISTINCT( u.id_user ), u.name, u.phone, u.email FROM `user` u INNER JOIN user_auth ua ON ua.id_user = u.id_user WHERE u.active = true ORDER BY u.name ASC');;
+//			c::view()->display('giftcards/new');
+die('hard');
 		} else if( c::getPagePiece(1) == 'sms' ){
 
 			if (!c::admin()->permission()->check(['global','gift-card-all', 'gift-card-create', 'gift-card-create-all'])) {
