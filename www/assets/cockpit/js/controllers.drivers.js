@@ -103,7 +103,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 		if ($scope.show.all) {
 			return true;
 		} else {
-			if (order.status.status == 'canceled' || !order.status.driver || order.status.driver.id_admin == $scope.account.user.id_admin){
+			if (order.status.status != 'canceled' && ( !order.status.driver || order.status.driver.id_admin == $scope.account.user.id_admin )){
 				return true;
 			}
 		}
