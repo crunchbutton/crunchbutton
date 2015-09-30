@@ -130,6 +130,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 						'fields' => [
 							'restaurant.name' => 'like',
 							'admin.name' => 'like',
+							'community.name' => 'like',
 							'`order`.name' => 'like',
 							'`order`.address' => 'like',
 							'`order`.notes' => 'like',
