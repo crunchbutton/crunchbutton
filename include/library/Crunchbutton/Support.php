@@ -895,7 +895,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			} else if( $out['order'] ){
 				$id_community = $out['order'][ 'id_community' ];
 			} else if( $out[ 'staff' ] ){
-				$id_community = $out['staff'][ 'staff' ];
+				$id_community = $out['staff'][ 'id_community' ];
 			}
 			if( $id_community ){
 				$community = Community::o( $id_community );
