@@ -10,6 +10,22 @@
 	<ng-form name="formAddNote" ng-show="!loading">
 
 		<ul ng-class="{'submitted':formAddNoteSubmitted}" class="box-content2">
+
+			<li class="li-input  divider-line" ng-class="{'error':formAddNote.community.$invalid}" ng-if="communities">
+				<div class="label">Community:</div>
+				<div class="input">
+					<ui-select ng-model="note.community" theme="select2" name="community" required close-on-select="true" style="width: 300px;" title="Select a community">
+						<ui-select-match placeholder="Select a community">{{$select.selected.name}}</ui-select-match>
+						<ui-select-choices repeat="community.id_community as community in communities | propsFilter: {name: $select.search}">
+							{{community.name}}
+						</ui-select-choices>
+					</ui-select>
+				</div>
+				<div class="box-error">
+					<small ng-show="formAddNote.community.$error.required">Required.</small>
+				</div>
+			</li>
+
 			<li class="li-input  divider-line" ng-class="{'error':formAddNote.note.$invalid}">
 				<div class="label">Note:</div>
 				<div class="input">
