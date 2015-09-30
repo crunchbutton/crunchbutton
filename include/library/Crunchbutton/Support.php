@@ -889,6 +889,28 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			}
 		}
 
+		if( $out['restaurant'] || $out['order'] || $out['staff'] ){
+			if( $out['restaurant'] ){
+				$id_community = $out['restaurant'][ 'id_community' ];
+			} else if( $out['order'] ){
+				$id_community = $out['order'][ 'id_community' ];
+			} else if( $out[ 'staff' ] ){
+				$id_community = $out['staff'][ 'staff' ];
+			}
+			if( $id_community ){
+				$community = Community::o( $id_community );
+				if( $community->id_community ){
+					$out[ 'community' ] = [];
+					$out[ 'community' ][ 'id_community' ] = $community->id_community;
+					$out[ 'community' ][ 'name' ] = $community->name;
+					$out[ 'community' ][ 'permalink' ] = $community->permalink;
+					$note = $community->lastNote();
+					if( $note ){
+						$out[ 'community' ][ 'note' ] = $note->exports();
+					}
+				}
+			}
+		}
 
 		$load_messages = true;
 
