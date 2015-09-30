@@ -1651,11 +1651,38 @@ NGApp.controller( 'AccountResetCtrl', function ( $scope, $http, $location, Accou
 	}
 });
 
-NGApp.controller( 'RewardCtrl', function ( $scope, $http, $rootScope, ReferralService ) {
+NGApp.controller( 'RewardCtrl', function ( $scope, $http, $rootScope, ReferralService, AccountService, FacebookService ) {
+
 	$rootScope.$on( 'ReferralInvitedUsers', function(e, data) {
 		$scope.invitedUsers = ReferralService.invitedUsers;
 		App.dialog.show( '.referral-container' );
 	});
+
+	$scope.referral = {}
+
+	if( !AccountService.user.invite_code ){
+		ReferralService.getInviteCode();
+	}
+
+	$scope.$on( 'referralStatusLoaded', function(e, data) {
+		$scope.referral.invites = ReferralService.invites;
+		$scope.referral.limit = ReferralService.limit;
+		$scope.referral.invite_url = ReferralService.invite_url;
+		$scope.referral.value = ReferralService.value;
+		$scope.referral.enabled = ReferralService.enabled;
+		$scope.referral.invite_code = ReferralService.invite_code;
+		$scope.referral.sms = ReferralService.sms();
+		$scope.referral.url = ReferralService.cleaned_url();
+	});
+
+	$scope.referral.facebook = function(){
+		FacebookService.postInvite( $scope.referral.url, $scope.referral.invite_code );
+	}
+
+	$scope.referral.twitter = function(){
+		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.url + '&text=' + App.AB.get('share-twitter-text') + '&hashtags=Crunchbutton' ,'_system');
+	}
+
 	$scope.modal = { close: function(){
 		$.magnificPopup.close();
 	} };
