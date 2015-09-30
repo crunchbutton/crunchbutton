@@ -293,6 +293,36 @@
 			</div>
 		</div>
 
+		<div class="support-box-wrap box-content2" ng-if="ticket.community.id_community" class="support-box-wrap">
+			<div class="support-box-wrap-header">
+				<h1>Community #{{ticket.community.id_community}}</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/community/{{ticket.community.permalink}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+						<a href ng-click="openCommunityNoteContainer()"><button class="button button-small button-empty button-green"><i class="fa fa-file"></i>&nbsp;&nbsp;Add Note</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Name</div>
+						<div class="field-value">{{ticket.community.name}}</div>
+					</div>
+					<div class="field-row" ng-if="ticket.community.note">
+						<div class="field-key">Last note</div>
+						<div class="field-value">
+							<a href="/communities/notes?limit=20&page=1&fullcount=false&search=&community={{ticket.community.id_community}}">
+								{{ticket.community.note.text}}
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<div class="support-box-wrap box-content2" ng-if="ticket.order.driver.id_admin" class="support-box-wrap">
 			<div class="support-box-wrap-header">
 				<h1>Driver #{{ticket.order.driver.id_admin}}</h1>

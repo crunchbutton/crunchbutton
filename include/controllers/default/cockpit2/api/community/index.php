@@ -53,6 +53,14 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 								echo json_encode( $out );exit;
 								break;
 
+							case 'last-note':
+								$note = $community->lastNote();;
+								if( $note ){
+									echo json_encode( $note->exports() );exit;
+								}
+								echo json_encode( [] );exit;
+								break;
+
 							default:
 								echo $community->json();
 								exit();

@@ -71,7 +71,7 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, TicketSe
 
 });
 
-NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routeParams, OrderService, TicketService, TicketViewService, MapService, SocketService) {
+NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routeParams, OrderService, TicketService, TicketViewService, MapService, SocketService, CommunityService) {
 
 	var id_support = $routeParams.id;
 
@@ -90,6 +90,22 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 			}
 		} );
 	}
+
+	$scope.openCommunityNoteContainer = function(){
+		$rootScope.$broadcast( 'openCommunityNoteContainer', $scope.ticket.community.id_community );
+	}
+
+	$rootScope.$on( 'communityNoteSaved', function(e, data) {
+		if( $scope.ticket.community && $scope.ticket.community.id_community ){
+			CommunityService.lastNote( $scope.ticket.community.id_community, function( json ){
+				console.log('$scope.ticket.community',$scope.ticket.community);
+				console.log('json',json);
+				$scope.ticket.community.note = json;
+			} );
+		}
+	});
+
+
 
 	$scope.do_not_pay_restaurant = function(){
 		OrderService.do_not_pay_restaurant( $scope.ticket.order.id_order, function( result ){
