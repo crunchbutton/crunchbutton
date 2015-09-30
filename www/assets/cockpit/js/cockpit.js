@@ -648,7 +648,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	if (App.isPhoneGap) {
 		$('body').addClass('phonegap');
 	}
-	
+
 	$rootScope.instant = function() {
 		$('body').addClass('instant');
 		setTimeout(function(){
@@ -822,11 +822,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 						} else {
 							window.location.href = '/login';
 						}
-
 					}
 				} else {
 					if( $location.url() == '/login') {
-						MainNavigationService.link( '/' );
+						MainNavigationService.link( '/home' );
 					}
 				}
 			} else {
