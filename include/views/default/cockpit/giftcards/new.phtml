@@ -7,7 +7,7 @@
 	$this->title2icon = 'file';
 
 	$hasPermissionToAllRestaurants = true; //c::admin()->permission()->check( [ 'global', 'gift-card-all', 'gift-card-create-all' ] );
-die('hard');
+
 ?>
 <!-- Preview stuff -->
 <link href='http://fonts.googleapis.com/css?family=Atomic+Age' rel='stylesheet' type='text/css'>
@@ -121,9 +121,6 @@ die('hard');
 								$restaurants = Restaurant::q('SELECT * FROM restaurant WHERE giftcard = 1 ORDER BY name');
 								if( $hasPermissionToAllRestaurants ){
 									echo '<option value="*" selected>[ All ]</option>';
-									foreach ( $restaurants as $restaurant ) {
-										?><option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option><?php
-									}
 								} else {
 									foreach ( $restaurants as $restaurant ) {
 										if( c::admin()->permission()->check( [ "gift-card-restaurant-{$restaurant->id_restaurant}", "gift-card-create-restaurant-{$restaurant->id_restaurant}" ] ) ){
@@ -151,9 +148,9 @@ die('hard');
 							<span>
 								<select id="id_restaurant_paid_by" class="chzn-select" name="id_restaurant_paid_by" data-placeholder="Choose a restaurant" style="width:100%;">
 									<option value="" selected></option>
-									<? foreach (Restaurant::q('SELECT * FROM restaurant ORDER BY name') as $restaurant) : ?>
+									<? /*each (Restaurant::q('SELECT * FROM restaurant ORDER BY name') as $restaurant) : ?>
 										<option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option>
-									<? endforeach ; ?>
+									<? endforeach ; */ ?>
 								</select>
 							</span>
 						</li>
