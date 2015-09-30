@@ -2,12 +2,12 @@
 	$this->title = 'Gift cards';
 	$this->titleicon = 'gift';
 	$this->titleLink = '/giftcards';
-	
+
 	$this->title2 = 'Create';
 	$this->title2icon = 'file';
 
-	$hasPermissionToAllRestaurants = c::admin()->permission()->check( [ 'global', 'gift-card-all', 'gift-card-create-all' ] );
-
+	$hasPermissionToAllRestaurants = true; //c::admin()->permission()->check( [ 'global', 'gift-card-all', 'gift-card-create-all' ] );
+die('hard');
 ?>
 <!-- Preview stuff -->
 <link href='http://fonts.googleapis.com/css?family=Atomic+Age' rel='stylesheet' type='text/css'>
@@ -39,12 +39,12 @@
 								</select>
 							</span>
 						</li>
-						
+
 					</ul>
 				</div>
-				
+
 			</div>
-		
+
 		<?php if( $this->user ) { ?>
 		<!--notification box-->
 		<div class="box">
@@ -77,7 +77,7 @@
 						</li>
 					</ul>
 				</div>
-				
+
 			</div>
 			<?php } ?>
 <!--end notification box-->
@@ -87,7 +87,7 @@
 				</div>
 				<div class="box-content ">
 					<ul class="box-list">
-						
+
 						<li>
 							<span>Number of giftcards</span>
 							<span class="pull-right">
@@ -109,7 +109,7 @@
 						<li>
 							<span>Order reference</span>
 							<span class="pull-right">
-								<input type="text" id="id_order_reference" name="id_order_reference" value="<?php echo $this->id_order_reference;?>">		
+								<input type="text" id="id_order_reference" name="id_order_reference" value="<?php echo $this->id_order_reference;?>">
 							</span>
 						</li>
 						<?php } ?>
@@ -117,17 +117,17 @@
 							<label>Restaurant</label>
 							<span>
 								<select id="id_restaurant" multiple class="chzn-select" name="id_restaurant" data-placeholder="Choose a restaurant" style="width:100%;">
-								<?php  
+								<?php
 								$restaurants = Restaurant::q('SELECT * FROM restaurant WHERE giftcard = 1 ORDER BY name');
 								if( $hasPermissionToAllRestaurants ){
 									echo '<option value="*" selected>[ All ]</option>';
 									foreach ( $restaurants as $restaurant ) {
-										?><option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option><?php 
+										?><option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option><?php
 									}
 								} else {
 									foreach ( $restaurants as $restaurant ) {
 										if( c::admin()->permission()->check( [ "gift-card-restaurant-{$restaurant->id_restaurant}", "gift-card-create-restaurant-{$restaurant->id_restaurant}" ] ) ){
-											?><option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option><?php 
+											?><option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option><?php
 										}
 									}
 								}
@@ -145,7 +145,7 @@
 								</select>
 							</span>
 						</li>
-						
+
 						<li id="list_id_restaurant_paid_by" style="display:none;">
 							<label>Restaurant that paid the credit</label>
 							<span>
@@ -207,10 +207,10 @@
 							</span>
 						</li>
 						<li class="input">
-							<button type="submit" class="btn btn-blue admin-giftcard-save"><i class="icon-save"></i> Save </button> 
-							<button type="submit" class="btn btn-green admin-giftcard-print"><i class="icon-print"></i> Save &amp; Print </button> 
-							<button type="submit" class="btn btn-blue admin-giftcard-print-flyer"><i class="icon-picture"></i> Save &amp; Print Flyer </button> 
-							<button type="submit" class="btn btn-red admin-giftcard-print-brown"><i class="icon-picture"></i> Save &amp; Print Brown </button> 
+							<button type="submit" class="btn btn-blue admin-giftcard-save"><i class="icon-save"></i> Save </button>
+							<button type="submit" class="btn btn-green admin-giftcard-print"><i class="icon-print"></i> Save &amp; Print </button>
+							<button type="submit" class="btn btn-blue admin-giftcard-print-flyer"><i class="icon-picture"></i> Save &amp; Print Flyer </button>
+							<button type="submit" class="btn btn-red admin-giftcard-print-brown"><i class="icon-picture"></i> Save &amp; Print Brown </button>
 						</li>
 					</ul>
 				</div>
@@ -275,7 +275,7 @@
 							<span class="chars-alert" style="display:none;">
 								<hr />
 								<div class="note large">
-									<i class="icon-warning-sign"></i> 
+									<i class="icon-warning-sign"></i>
 									Oops! Something wrong! Please review the options!
 								</div>
 							</span>
@@ -305,7 +305,7 @@
 				<div class="giftcard">
 					<div class="giftcard-message"></div>
 					<div class="help">Questions: Call or text us anytime at (646) 783-1444</div>
-					<div class="dollar">$</div><div class="value"><span class="preview-value"></span></div><div class="info">To redeem, go to<span class="url">crunchbutton.com/giftcard/<span class="preview-code"></span></span></div><div class="call">Free Food from 
+					<div class="dollar">$</div><div class="value"><span class="preview-value"></span></div><div class="info">To redeem, go to<span class="url">crunchbutton.com/giftcard/<span class="preview-code"></span></span></div><div class="call">Free Food from
 					<br/>Crunchbutton</div><img src="/assets/images/giftcard/print-default.svg?<?php echo date( 'dHis' ); ?>"/>
 				</div>
 				<br />
@@ -414,21 +414,21 @@ $(function() {
 	$( '#track' ).iButton( { 	labelOn :"<i class='icon-ok'></i>",
 														labelOff :"<i class='icon-remove'></i>",
 														handleWidth :30,
-														change : function( self ){ 
-																				if(self.is( ':checked' )){ 
-																					$( '.track-fields' ).show(); 
-																				} else { 
-																					$( '.track-fields' ).hide(); 
-																				} 
-																			} 
+														change : function( self ){
+																				if(self.is( ':checked' )){
+																					$( '.track-fields' ).show();
+																				} else {
+																					$( '.track-fields' ).hide();
+																				}
+																			}
 												} );
-	
+
 	$( '#use_numbers, #use_letters, #include_gift_card_id' ).iButton( { 	labelOn :"<i class='icon-ok'></i>",
 																								labelOff :"<i class='icon-remove'></i>",
 																								handleWidth :30,
-																								change : function( self ){ 
+																								change : function( self ){
 																														updateUsedChars();
-																												} 
+																												}
 																						} );
 	$( document ).on( 'keyup, change', '#exclude_chars, #length, #total, #prefix', function() {
 		updateUsedChars();
@@ -495,7 +495,7 @@ function sendForm(){
 	var notify_by_sms = ( $( '#notify_by_sms' ).is( ':checked' ) ) ? 1 : 0;
 	var chars_to_use = $.trim( $( '#chars_to_use' ).val() );
 	var length = $.trim( $( '#length' ).val() );
-	
+
 
 	if( value == '' ){
 		alert( 'Please type a value!' );
@@ -531,7 +531,7 @@ function sendForm(){
 		if( notify_phone == '' ){
 			alert( 'Please type the phone number that will receive a sms!' );
 			$( '#notify_phone' ).focus();
-			return;		
+			return;
 		}
 	}
 
@@ -553,7 +553,7 @@ function sendForm(){
 					} else if( App.giftcards.print == 'brown' ){
 						location.href = '/giftcards/print-brown/' + json.success;
 					} else {
-						location.href = '/giftcards/print/' + json.success;	
+						location.href = '/giftcards/print/' + json.success;
 					}
 				} else {
 					location.href = '/giftcards';
