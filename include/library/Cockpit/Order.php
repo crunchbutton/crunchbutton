@@ -76,8 +76,9 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['_tip'] = $this->tip();
 		$out['_tax'] = $this->tax();
 
-		// price without delivery service nor delivery fee
-		$out[ '_final_price' ] = $out[ 'final_price' ] - ( $out[ 'delivery_fee' ] );
+		// price without delivery service nor delivery fee #6838
+		$out[ '_final_price' ] = $out[ 'price' ] + $this->tax();
+		// $out[ '_final_price' ] = $out[ 'final_price' ] - ( $out[ 'delivery_fee' ] );
 		$out[ '_tip_with_cash' ] = ( $order->pay_type == 'card' && $order->tip == 0 );
 
 		$out['summary'] = $this->orderMessage('summary');
