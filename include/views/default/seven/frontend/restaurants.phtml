@@ -49,7 +49,8 @@
 							<span ng-if="community_closed" class="small">
 								{{community_closed}}
 							</span>
-							<span ng-if="!community_closed"><b>Wahhhhhh!!!</b><br>No delivery is available</span>
+							<span ng-if="!community_closed && !openSoon"><b>Wahhhhhh!!!</b><br>No delivery is available</span>
+							<span ng-if="!community_closed && openSoon">Delivery available soon!!</span>
 						</span>
 					</div>
 					<div class="bubble-tail-spacer"></div>

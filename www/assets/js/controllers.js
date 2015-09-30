@@ -387,7 +387,6 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	$scope.motivationText = motivationText[Math.floor(Math.random() * motivationText.length)];
 
 	var restaurants = RestaurantsService;
-
 	$scope.mealItemClass = App.isAndroid() ? 'meal-food-android' : '';
 
 	var checkOpen = function() {
@@ -396,6 +395,15 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			if ($scope.restaurants[x]._open) {
 				allClosed = false;
 				break;
+			}
+		}
+		if( allClosed ){
+			for (var x in $scope.restaurants) {
+				if( $scope.restaurants[x].next_open_time_message &&
+						$scope.restaurants[x].next_open_time_message.today &&
+						$scope.restaurants[x].next_open_time_message.today == 'Today' ){
+					$scope.openSoon = true;
+				}
 			}
 		}
 		$scope.allClosed = allClosed;
@@ -1871,7 +1879,6 @@ NGApp.controller( 'NoInternetCtrl', function ( $scope ) {
 	$location.path( '/' );
 });
 
-// aqui
 NGApp.controller( 'QuoteCtrl', function ( $scope ) {
 
 	var quotes = { pages: [], communities: { all: [] } };
