@@ -6,82 +6,103 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		if (c::getPagePiece(2) && c::getPagePiece(2) != 'support' ) {
 
-			if( c::getPagePiece(2) == 'phones' ){
-				$this->_phones();
-			}
 
-			$staff = Admin::o((int)c::getPagePiece(2));
-
-			if (!$staff->id_admin) {
-				$staff = Admin::login(c::getPagePiece(2), true);
-			}
-
-			if (!$staff->id_admin) {
-				$this->error(404);
-			}
-
-			switch (c::getPagePiece(3)) {
-				case 'locations':
-					$this->_permissionDenied();
-					$this->_locations($staff);
+			switch ( c::getPagePiece(2) ) {
+				case 'phones':
+					$this->_phones();
 					break;
 
-				case 'status':
-					$this->_status($staff);
+				case 'active':
+					$this->_active();
 					break;
 
-				case 'change-status':
-					$this->_change_status($staff);
-					break;
-
-				case 'group':
-					$this->_permissionDenied();
-					$this->_isPost();
-					$this->_group($staff);
-					break;
-
-				case 'text-message-about-schedule':
-					$this->_permissionDenied();
-					$this->_isPost();
-					$this->_textMessageAboutSchedule($staff);
-					break;
-
-				case 'note':
-					$this->_permissionDenied();
-					if( $this->method() == 'post' ){
-						$this->_saveLastNote($staff);
-					} else {
-						$this->_openLastNote($staff);
-					}
-					break;
-
-				case 'community':
-					$this->_permissionDenied();
-					$this->_isPost();
-					$this->_community($staff);
-					break;
-
-				case 'has_pexcard':
-					$this->_permissionDenied();
-					$this->_has_pexcard($staff);
-					break;
-
-				case 'reverify':
-					$this->_permissionDenied();
-					$this->_reverify($staff);
+				case 'notes-list':
+					$this->_listNotes();
 					break;
 
 				case 'support':
 					$this->_listSupport();
 					break;
 
-				case 'chat':
-					$this->_chat($staff);
-					break;
-
 				default:
-					$this->_permissionDenied();
-					$this->_view($staff);
+					$staff = Admin::o((int)c::getPagePiece(2));
+
+					if (!$staff->id_admin) {
+						$staff = Admin::login(c::getPagePiece(2), true);
+					}
+
+					if (!$staff->id_admin) {
+						$this->error(404);
+					}
+
+					switch (c::getPagePiece(3)) {
+						case 'locations':
+							$this->_permissionDenied();
+							$this->_locations($staff);
+							break;
+
+						case 'status':
+							$this->_status($staff);
+							break;
+
+						case 'change-status':
+							$this->_change_status($staff);
+							break;
+
+						case 'group':
+							$this->_permissionDenied();
+							$this->_isPost();
+							$this->_group($staff);
+							break;
+
+						case 'text-message-about-schedule':
+							$this->_permissionDenied();
+							$this->_isPost();
+							$this->_textMessageAboutSchedule($staff);
+							break;
+
+						case 'note':
+							$this->_permissionDenied();
+							if( $this->method() == 'post' ){
+								$this->_saveLastNote($staff);
+							} else {
+								$this->_openLastNote($staff);
+							}
+							break;
+
+						case 'community':
+							$this->_permissionDenied();
+							$this->_isPost();
+							$this->_community($staff);
+							break;
+
+						case 'has_pexcard':
+							$this->_permissionDenied();
+							$this->_has_pexcard($staff);
+							break;
+
+						case 'reverify':
+							$this->_permissionDenied();
+							$this->_reverify($staff);
+							break;
+
+						case 'support':
+							$this->_listSupport();
+							break;
+
+						case 'notes-list':
+							$this->_listNotes();
+							break;
+
+						case 'chat':
+							$this->_chat($staff);
+							break;
+
+						default:
+							$this->_permissionDenied();
+							$this->_view($staff);
+							break;
+					}
 					break;
 			}
 
@@ -113,6 +134,27 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		}
 
 	}
+
+	private function _listNotes(){
+		$out = [];
+		$admins = Admin::q( "SELECT DISTINCT( a.id_admin ), a.name FROM admin a
+													INNER JOIN admin_note an ON an.id_admin = a.id_admin
+													ORDER BY a.name" );
+		foreach( $admins as $admin ){
+			$out[] = [ 'id_admin' => $admin->id_admin, 'name' => $admin->name ];
+		}
+		echo json_encode( $out );exit;
+	}
+
+	private function _active(){
+		$out = [];
+		$admins = Admin::q( "SELECT a.id_admin, a.name FROM admin a
+													WHERE a.active = 1 AND a.name IS NOT NULL AND a.name != ''
+													ORDER BY a.name" );
+		foreach( $admins as $admin ){
+			$out[] = [ 'id_admin' => $admin->id_admin, 'name' => $admin->name ];
+		}
+		echo json_encode( $out );exit;	}
 
 	private function _listSupport(){
 		$out = [];
@@ -284,6 +326,11 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		if( $out[ 'weekly_hours' ] ){
 			$out[ 'weekly_hours' ] = intval( $out[ 'weekly_hours' ] );
+		}
+
+		$note = $staff->lastNote();
+		if( $note ){
+			$out[ 'note' ] = $note->exports();
 		}
 
 		/*

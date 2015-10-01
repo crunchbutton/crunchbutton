@@ -36,12 +36,26 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 			method: 'GET',
 			isArray:true
 		},
+		'notes' : {
+			url: App.service + 'staff/notes',
+			method: 'GET'
+		},
 		'activations' : {
 			url: App.service + 'staff/activations',
 			method: 'GET'
 		},
 		'support_list' : {
 			url: App.service + 'staff/support',
+			method: 'GET',
+			isArray: true
+		},
+		'notes_list' : {
+			url: App.service + 'staff/notes-list',
+			method: 'GET',
+			isArray: true
+		},
+		'active' : {
+			url: App.service + 'staff/active',
 			method: 'GET',
 			isArray: true
 		},
@@ -81,8 +95,21 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 		}
 	});
 
+
+	service.active = function(callback) {
+		staff.active( {}, function( data ){
+			callback( data );
+		} );
+	}
+
 	service.support_list = function(callback) {
 		staff.support_list( {}, function( data ){
+			callback( data );
+		} );
+	}
+
+	service.notes_list = function(callback) {
+		staff.notes_list( {}, function( data ){
 			callback( data );
 		} );
 	}
@@ -101,6 +128,12 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 
 	service.phones = function( callback ){
 		staff.phones( {}, function( data ){
+			callback( data );
+		} );
+	}
+
+	service.notes = function( params, callback ){
+		staff.notes( params, function( data ){
 			callback( data );
 		} );
 	}

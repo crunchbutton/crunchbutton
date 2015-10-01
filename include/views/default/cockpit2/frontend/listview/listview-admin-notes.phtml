@@ -1,0 +1,19 @@
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th>Name</th>
+			<th>Note</th>
+			<th>Added By</th>
+			<th>Date</th>
+		</tr>
+		<tr ng-repeat="note in notes">
+			<td nowrap="nowrap">
+				<a href="/staff/{{note.admin.login}}/">{{note.admin.name}}</a>
+			</td>
+			<td><span class="listview-smaller">{{note.text}}</span></td>
+			<td nowrap="nowrap">
+				{{note.added_by}}</td>
+			<td nowrap="nowrap">{{note.date}}</td>
+		</tr>
+	</table>
+</div>
