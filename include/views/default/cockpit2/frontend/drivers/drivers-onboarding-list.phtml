@@ -166,26 +166,3 @@
 	<div class="divider"></div>
 
 </div>
-<div class="admin-note-container zoom-anim-dialog mfp-hide dialog">
-
-	<h2 class="title left"><span>{{note.driver}}</span></h2>
-
-	<div class="divider"></div>
-
-	<form name="formNote" novalidate>
-		<ul ng-class="{'submitted':formNoteSubmitted}" class="ul-inputs">
-			<li class="li-input" ng-class="{'error':formNote.driverNote.$invalid}">
-				<div class="label">Note:</div>
-				<div class="input">
-					<textarea name="driverNote" required ng-model="note.text"></textarea>
-				</div>
-				<div class="box-error">
-					<small ng-show="formNote.driverNote.$error.required">Required.</small>
-				</div>
-			</li>
-			<li class="li-input" ng-show="!isSavingNote">
-				<button class="button save" ng-click="save_note();">Save</button>
-			</li>
-		</ul>
-	</form>
-</div>

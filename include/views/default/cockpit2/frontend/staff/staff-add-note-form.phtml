@@ -1,0 +1,47 @@
+<div class="admin-note-container zoom-anim-dialog mfp-hide dialog" ng-controller="StaffAddNoteCtrl">
+	<h1 class="title"><span>Admin Note</span></h1>
+
+	<div class="divider"></div>
+
+	<span ng-if="loading"><br></span>
+
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<ng-form name="formStaffAddNote" ng-show="!loading" novalidate>
+
+		<ul ng-class="{'submitted':formStaffAddNoteSubmitted}" class="box-content2">
+
+			<li class="li-input  divider-line" ng-class="{'error':formStaffAddNote.admin.$invalid}" ng-if="staff">
+				<div class="label">Admin:</div>
+				<div class="input">
+					<ui-select ng-model="note.id_admin" theme="select2" name="admin" required close-on-select="true" style="width: 300px;" title="Select an admin">
+						<ui-select-match placeholder="Select a admin">{{$select.selected.name}}</ui-select-match>
+						<ui-select-choices repeat="admin.id_admin as admin in staff | propsFilter: {name: $select.search}">
+							{{admin.name}}
+						</ui-select-choices>
+					</ui-select>
+				</div>
+				<div class="box-error">
+					<small ng-show="formStaffAddNote.admin.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input  divider-line" ng-class="{'error':formStaffAddNote.note.$invalid}">
+				<div class="label">Note:</div>
+				<div class="input">
+					<textarea name="note" ng-model="note.text" required></textarea>
+				</div>
+				<div class="box-error">
+					<small ng-show="formStaffAddNote.note.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-show="!isSavingNote">
+				<button class="button button-empty button-border button-green button-full" ng-click="formStaffAddNoteSave();"><span class="fa fa-save"></span>&nbsp;&nbsp;Save</button>
+			</li>
+			<li class="li-input" ng-show="isSavingNote">
+				<i class="fa fa-circle-o-notch fa-spin"></i>
+			</li>
+		</ul>
+	</ng-form>
+</div>

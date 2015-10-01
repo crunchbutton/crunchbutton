@@ -329,6 +329,7 @@
 				<div class="support-box-header-actions-wrap">
 					<div class="support-box-header-actions">
 						<a href="/staff/{{ticket.order.driver.id_admin}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+						<a href ng-click="openAdminNoteContainer(ticket.order.driver.id_admin)"><button class="button button-small button-empty button-green"><i class="fa fa-file"></i>&nbsp;&nbsp;Add Note</button></a>
 					</div>
 				</div>
 				<div class="divider"></div>
@@ -363,6 +364,14 @@
 						<div class="field-key">Distance</div>
 						<div class="field-value">
 							{{eta.distance | formatPrice}} miles
+						</div>
+					</div>
+					<div class="field-row" ng-if="ticket.driver.note">
+						<div class="field-key">Last note</div>
+						<div class="field-value">
+							<a href="/staff/notes?limit=20&page=1&fullcount=false&search=&admin={{ticket.driver.login}}">
+								{{ticket.driver.note.text}}
+							</a>
 						</div>
 					</div>
 

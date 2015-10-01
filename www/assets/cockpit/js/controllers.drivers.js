@@ -589,7 +589,7 @@ NGApp.controller( 'DriversOnboardingDocsCtrl', function ( $scope, $timeout, Driv
 
 } );
 
-NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location, StaffService, ViewListService, CommunityService) {
+NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location, $rootScope, StaffService, ViewListService, CommunityService) {
 
 	angular.extend( $scope, ViewListService );
 
@@ -659,37 +659,16 @@ NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location,
 	}
 
 	$scope.last_note = function( id_admin ){
-
-		$scope.note = {};
-		$scope.formNoteSubmitted = false;
-		$scope.isSavingNote = false;
-		App.dialog.show( '.admin-note-container' );
-		StaffService.note( id_admin, function( json ){
-			if( json.id_admin ){
-				$scope.note = json;
-			} else {
-				App.alert( 'Error loading note' , 'error' );
-			}
-		} );
+		$rootScope.$broadcast( 'openStaffNoteContainer', id_admin );
 	}
 
-	$scope.save_note = function( id_admin, text ){
-		if( $scope.formNote.$invalid ){
-			$scope.formNoteSubmitted = true;
-			$scope.isSavingNote = false;
-			return;
+	$rootScope.$on( 'staffNoteSaved', function(e, data) {
+		for( x in $scope.drivers ){
+			if( $scope.drivers[x].id_admin == data.id_admin ){
+				$scope.drivers[x].note = data;
+			}
 		}
-		StaffService.save_note( $scope.note, function( json ){
-			if( json.error ){
-				App.alert( 'Error saving: ' + json.error , 'error' );
-			} else {
-				load();
-				App.dialog.close();
-			}
-			$scope.formNoteSubmitted = false;
-			$scope.isSavingNote = false;
-		} );
-	}
+	});
 
 });
 

@@ -755,3 +755,51 @@ NGApp.controller('StaffPayInfoCtrl', function( $scope, $filter, StaffPayInfoServ
 
 
 });
+
+NGApp.controller('StaffAddNoteCtrl', function ($scope, $routeParams, $rootScope, StaffService ) {
+
+	$rootScope.$on( 'openStaffNoteContainer', function(e, data) {
+		$scope.note = {};
+		$scope.note.id_admin = data;
+		App.dialog.show('.admin-note-container');
+		$scope.isSavingNote = false;
+		$scope.formStaffAddNoteSubmitted = false;
+
+		if( !$scope.note.id_admin ){
+			if( !$scope.staff ){
+				StaffService.listSimple( function( json ){
+					$scope.staff = json;
+				} );
+			}
+		} else {
+			StaffService.note( $scope.note.id_admin, function( json ){
+				$scope.note.text = json.text;
+			} );
+		}
+	});
+
+	$scope.formStaffAddNoteSave = function(){
+
+		if( $scope.formStaffAddNote.$invalid ){
+			$scope.formStaffAddNoteSubmitted = true;
+			return;
+		}
+
+		if( !$scope.note.id_admin ){
+			App.alert( 'Please select an admin!' );
+			return;
+		}
+
+		StaffService.save_note( $scope.note, function( json ){
+			$scope.isSavingNote = false;
+			if( json.error ){
+				App.alert( 'Error saving: ' + json.error );
+			} else {
+				$rootScope.closePopup();
+				$rootScope.$broadcast( 'staffNoteSaved', json );
+			}
+			$scope.formStaffAddNoteSubmitted = false;
+		} );
+	}
+
+} );

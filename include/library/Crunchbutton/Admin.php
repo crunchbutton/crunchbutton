@@ -1045,6 +1045,10 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $this->id_admin, $week, $year );
 	}
 
+	public function lastNote(){
+		return $this->note();
+	}
+
 	public function note(){
 		return Crunchbutton_Admin_Note::lastNoteByAdmin( $this->id_admin )->get( 0 );
 	}

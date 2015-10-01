@@ -105,8 +105,6 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		}
 	});
 
-
-
 	$scope.do_not_pay_restaurant = function(){
 		OrderService.do_not_pay_restaurant( $scope.ticket.order.id_order, function( result ){
 			if( result.success ){
@@ -215,6 +213,14 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		$scope.map = map;
 		MapService.style(map);
 		draw();
+	});
+
+	$scope.openAdminNoteContainer = function( id_admin ){
+		$rootScope.$broadcast( 'openStaffNoteContainer', id_admin );
+	}
+
+	$rootScope.$on( 'staffNoteSaved', function(e, data) {
+		$scope.ticket.driver.note = data;
 	});
 
 	update();
