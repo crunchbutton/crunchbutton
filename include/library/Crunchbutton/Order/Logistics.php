@@ -515,9 +515,12 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     $driver_geo = $communityCenter; // Default for the initial setup
 //                    var_dump($driver_geo);
 
-//                    $driver_score = $driver->score();
-                    //  TODO: Adjust mph to adjust for distances not being quite straight line.
-                    $driver_mph = $cs_mph;
+                    $driver_score = $driver->score();
+                    if ($driver_score > 0) {
+                        $driver_mph = $cs_mph * $driver_score;
+                    } else{
+                        $driver_mph = $cs_mph;
+                    }
                     $driver->__mph = $driver_mph;
                     $dlist = new Crunchbutton_Order_Logistics_DestinationList($distanceType);
                     $dlist->driverMph = $driver_mph;
