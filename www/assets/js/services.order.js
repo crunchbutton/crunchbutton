@@ -42,9 +42,6 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	service.toogleDelivery = function (type) {
 		if (type != service.form.delivery_type) {
 			service.form.delivery_type = type;
-			if( service.form.delivery_type == 'takeout' ){
-				service.form.tip = 0;
-			}
 			service.updateTotal();
 		}
 	}
@@ -1039,10 +1036,6 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		tips.push({
 			value: 'autotip',
 			label: service._autotipText()
-		});
-		tips.push({
-			value: 0,
-			label: 'Tip with cash'
 		});
 
 		var subtotal = service.totalbreakdown().subtotal;
