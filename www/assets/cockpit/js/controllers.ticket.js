@@ -215,7 +215,7 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		draw();
 	});
 
-	$scope.openAdminNoteContainer = function( id_admin ){
+	$scope.openStaffNoteContainer = function( id_admin ){
 		$rootScope.$broadcast( 'openStaffNoteContainer', id_admin );
 	}
 

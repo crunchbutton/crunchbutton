@@ -11,6 +11,12 @@
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
 				<h1>Info</h1>
+
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href ng-click="openStaffNoteContainer(staff.id_admin)"><button class="button button-small button-empty button-green"><i class="fa fa-file"></i>&nbsp;&nbsp;Add Note</button></a>
+					</div>
+				</div>
 				<div class="divider"></div>
 			</div>
 
@@ -35,6 +41,14 @@
 					<div class="field-row">
 						<div class="field-key">Timezone</div>
 						<div class="field-value">{{staff.timezone}}</div>
+					</div>
+					<div class="field-row" ng-if="staff.note.text">
+						<div class="field-key">Last Note</div>
+						<div class="field-value">
+							<a href="/staff/notes?limit=20&page=1&fullcount=false&search=&admin={{staff.id_admin}}">
+								{{staff.note.text}}
+							</a>
+						</div>
 					</div>
 					<div class="field-row">
 						<div class="field-key">Active</div>

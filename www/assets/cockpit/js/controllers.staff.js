@@ -6,6 +6,11 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			templateUrl: 'assets/view/staff.html',
 			reloadOnSearch: false
 		})
+		.when('/staff/notes', {
+			action: 'staff',
+			controller: 'StaffNotesCtrl',
+			templateUrl: 'assets/view/staff-notes.html'
+		})
 		.when('/staff/activations', {
 			action: 'activations',
 			controller: 'StaffActivationsCtrl',
@@ -96,6 +101,14 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 
 	$rootScope.$on( 'AssignmentgFinished', function(e, data) {
 		load();
+	});
+
+	$scope.openStaffNoteContainer = function( id_admin ){
+		$rootScope.$broadcast( 'openStaffNoteContainer', id_admin );
+	}
+
+	$rootScope.$on( 'staffNoteSaved', function(e, data) {
+		$scope.staff.note = data;
 	});
 
 	$scope.change_status = function(){
@@ -767,14 +780,14 @@ NGApp.controller('StaffAddNoteCtrl', function ($scope, $routeParams, $rootScope,
 
 		if( !$scope.note.id_admin ){
 			if( !$scope.staff ){
-				StaffService.listSimple( function( json ){
+				StaffService.active( function( json ){
 					$scope.staff = json;
 				} );
 			}
 		} else {
-			StaffService.note( $scope.note.id_admin, function( json ){
-				$scope.note.text = json.text;
-			} );
+			// StaffService.note( $scope.note.id_admin, function( json ){
+			// $scope.note.text = json.text;
+			// } );
 		}
 	});
 
@@ -803,3 +816,54 @@ NGApp.controller('StaffAddNoteCtrl', function ($scope, $routeParams, $rootScope,
 	}
 
 } );
+
+
+NGApp.controller('StaffNotesCtrl', function ($scope, $rootScope, ViewListService, StaffService) {
+
+	$rootScope.title = 'Staff Notes';
+
+	$scope.show_more_options = false;
+
+	$scope.openStaffNoteContainer = function(){
+		$rootScope.$broadcast( 'openStaffNoteContainer', null );
+	}
+
+	$rootScope.$on( 'staffNoteSaved', function(e, data) {
+		update();
+	});
+
+	$scope.moreOptions = function(){
+
+		$scope.show_more_options = !$scope.show_more_options;
+
+		if( $scope.show_more_options ){
+			if( !$scope.staff ){
+				StaffService.notes_list( function( json ){
+					$scope.staff = json;
+				} );
+			}
+		}
+	}
+
+	angular.extend($scope, ViewListService);
+
+	var update = function() {
+			StaffService.notes( $scope.query, function(d) {
+				$scope.notes = d.results;
+				$scope.complete(d);
+					if( ( $scope.query.admin ) && !$scope.show_more_options ){
+						$scope.moreOptions();
+					}
+			});
+		}
+
+	$scope.view({
+		scope: $scope,
+		watch: {
+			search: '',
+			admin: '',
+			fullcount: false
+		},
+		update: update
+	});
+});
