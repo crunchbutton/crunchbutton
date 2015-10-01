@@ -875,6 +875,15 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			}
 		}
 
+		if( $out['driver'] ){
+			$out['driver'] = $out['driver']->get( 0 );
+			$note = $this->order()->driver()->lastNote();
+			if( $note ){
+				$note = $note->get( 0 );
+				$out['driver'][ 'note' ] = $note->exports();
+			}
+		}
+
 		if( $admin->id_admin ){
 			$out[ 'staff' ] = $admin->exports(  [ 'last-checkins' => true ]  );
 			$out[ 'staff' ][ 'is_driver' ] = $admin->isDriver();
@@ -882,10 +891,13 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			$out[ 'staff' ][ 'is_campus_manager' ] = $admin->isCampusManager();
 			$out[ 'staff' ][ 'is_support' ] = $admin->isSupport();
 			$out[ 'staff' ][ 'is_working' ] = $admin->isWorking();
-
 			// Check if the driver is delivering any order
 			if( $admin->isDriver() ){
 				$out[ 'staff' ][ 'delivering' ] = $admin->publicExports();
+			}
+			$note = $admin->lastNote();
+			if( $note ){
+				$out[ 'staff' ][ 'note' ] = $note->exports();
 			}
 		}
 
