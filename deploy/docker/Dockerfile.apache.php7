@@ -15,8 +15,8 @@ RUN apt-get update && apt-get install -y \
 ADD conf/apache2.docker.conf /etc/apache2/sites-enabled/000-default.conf
 
 
-RUN mkdir /var/www/logs
-RUN chmod -R 0777 /var/www/cache
+RUN mkdir ./logs
+RUN chmod -R 0777 ./cache
 
 ADD ./ /var/www/
 #RUN ln -s /opt/www /var/www/app
