@@ -68,6 +68,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 
 							case 'delivery-accept':
 								$res['status'] = $order->setStatus(Crunchbutton_Order_Action::DELIVERY_ACCEPTED, true);
+								Crunchbutton_Admin_Shift_Assign::autoCheckingWhenDriverIsDoingOrders();
 								break;
 
 							case 'delivery-reject':

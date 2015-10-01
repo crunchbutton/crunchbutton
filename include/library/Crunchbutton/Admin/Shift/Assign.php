@@ -25,6 +25,18 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 		return intval( $this->confirmed ) > 0;
 	}
 
+	// If an unchecked in driver is doing orders, they should automatically be checked in #6841
+	public static function autoCheckingWhenDriverIsDoingOrders(){
+		$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( c::user()->id_admin, null, null, false );
+		if( $shift->id_admin_shift_assign && !$shift->confirmed ){
+			$assignment = self::o( $shift->id_admin_shift_assign );
+			Crunchbutton_Admin_Shift_Assign_Confirmation::confirm( $assignment, true );
+			$message = 'Automatically checkin for shift ' . $shift->fullDate() . ' when driver accpeted an order.';
+			$admin = Admin::o( c::user()->id_admin );
+			$admin->addNote( $message );
+		}
+	}
+
 	public function isFirstWeek( $id_admin, $date ){
 		$query = '
 			SELECT

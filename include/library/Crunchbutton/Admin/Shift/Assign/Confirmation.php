@@ -49,8 +49,6 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 		return false;
 	}
 
-
-
 	public function confirmShiftBySMS( $id_admin_shift_assign ){
 		$assignment = Crunchbutton_Admin_Shift_Assign::o( $id_admin_shift_assign );
 		if( $assignment->id_admin_shift_assign ){
