@@ -876,6 +876,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				// Close the community
 				$this->is_auto_closed = 1;
 				$this->driver_restaurant_name = $message;
+				// remove notes from #6788
 				$this->close_all_restaurants_note = '';
 				$this->close_3rd_party_delivery_restaurants_note = '';
 				$this->save();
