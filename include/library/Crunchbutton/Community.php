@@ -894,7 +894,14 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				$this->close_3rd_party_delivery_restaurants_note = '';
 				$this->save();
 
-				$ticket = 'The community ' . $this->name . ' was auto closed due to it has no drivers.' . "\n";
+				$ticket = '';
+
+				if( $hasDriverThatDidntCheckin ){
+					$ticket .= 'The community ' . $this->name . ' was auto closed due to it has no checked in drivers.' . "\n";
+				} else {
+					$ticket .= 'The community ' . $this->name . ' was auto closed due to it has no drivers.' . "\n";
+				}
+
 				$ticket .= 'The community message was set to: "' . $message . '"' . "\n";
 
 				if( $this->driver_checkin ){
