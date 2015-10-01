@@ -841,6 +841,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$close3rdParyDeliveryRestaurants = ( $has3rdPartyDeliveryRestaurantsOpen && !$hasDriverWorking );
 
 			if( $close3rdParyDeliveryRestaurants ){
+
 				$admin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
 				$id_admin = $admin->id_admin;
 
@@ -868,6 +869,18 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					$message .= '!';
 				} else {
 					$message = 'Temporarily Unavailable!';
+				}
+
+				$hasDriverThatDidntCheckin = false;
+				$drivers = $this->getDriversOfCommunity();
+				$hasDriverWorking = false;
+				foreach( $drivers as $driver ){
+					if( $driver->isWorking( $dt, $this->id_community, false ) ){
+						$hasDriverThatDidntCheckin = true;
+					}
+				}
+				if( $hasDriverThatDidntCheckin ){
+					$message = 'Back Soon!';
 				}
 
 				echo $message;
