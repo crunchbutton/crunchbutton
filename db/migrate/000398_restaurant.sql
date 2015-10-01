@@ -1,0 +1,1 @@
+ALTER TABLE `restaurant` ADD `service_time` INT NOT NULL DEFAULT  '999';

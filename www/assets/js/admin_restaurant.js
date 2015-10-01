@@ -1384,6 +1384,7 @@ var DOM_MAP = {
 				'input#restaurant-message' : ['message'],
 				'input#restaurant-phone' : ['phone'],
 				'input#restaurant-order_ahead_time' : ['order_ahead_time'],
+				'input#restaurant-service_time' : ['service_time'],
 				'input#restaurant-email' : ['email'],
 				'textarea#restaurant-address' : ['address'],
 				'textarea#restaurant-notes' : ['notes'],
