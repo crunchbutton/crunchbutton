@@ -845,32 +845,6 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				$admin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
 				$id_admin = $admin->id_admin;
 
-				$nextShift = Crunchbutton_Community_Shift::nextAssignedShiftByCommunity( $this->id_community );
-
-				if( $nextShift->id_community ){
-
-					$date_start = $nextShift->dateStart( $this->timezone );
-					$date_end = $nextShift->dateEnd( $this->timezone );
-
-					$message = 'Next open ';
-					$message .= $date_start->format( 'g' );
-					if( $date_start->format( 'i' ) != '00' ){
-						$message .= ':' . $date_start->format( 'i' );
-					}
-					$message .= $date_start->format( 'A' );
-					$message .= '-';
-					$message .= $date_end->format( 'g' );
-					if( $date_end->format( 'i' ) != '00' ){
-						$message .= ':' . $date_end->format( 'i' );
-					}
-					$message .= $date_end->format( 'A' );
-					$message .= ' ';
-					$message .= $date_start->format( 'D' );
-					$message .= '!';
-				} else {
-					$message = 'Temporarily Unavailable!';
-				}
-
 				$hasDriverThatDidntCheckin = false;
 				$drivers = $this->getDriversOfCommunity();
 				$hasDriverWorking = false;
@@ -881,6 +855,32 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				}
 				if( $hasDriverThatDidntCheckin ){
 					$message = 'Back Soon!';
+				} else {
+					$nextShift = Crunchbutton_Community_Shift::nextAssignedShiftByCommunity( $this->id_community );
+
+					if( $nextShift->id_community ){
+
+						$date_start = $nextShift->dateStart( $this->timezone );
+						$date_end = $nextShift->dateEnd( $this->timezone );
+
+						$message = 'Next open ';
+						$message .= $date_start->format( 'g' );
+						if( $date_start->format( 'i' ) != '00' ){
+							$message .= ':' . $date_start->format( 'i' );
+						}
+						$message .= $date_start->format( 'A' );
+						$message .= '-';
+						$message .= $date_end->format( 'g' );
+						if( $date_end->format( 'i' ) != '00' ){
+							$message .= ':' . $date_end->format( 'i' );
+						}
+						$message .= $date_end->format( 'A' );
+						$message .= ' ';
+						$message .= $date_start->format( 'D' );
+						$message .= '!';
+					} else {
+						$message = 'Temporarily Unavailable!';
+					}
 				}
 
 				echo $message;
