@@ -76,7 +76,9 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	var id_support = $routeParams.id;
 
 	$scope.refund = function(){
-		OrderService.askRefund( $scope.ticket.order.id_order, function(){
+		OrderService.askRefund( $scope.ticket.order.id_order, $scope.ticket.order.delivery_service, function(){
+			$rootScope.closePopup();
+			setTimeout( function(){ App.alert( 'Order refunded' ); }, 300 );
 			update();
 		} );
 	}
@@ -115,8 +117,8 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		} );
 	}
 
-	$scope.do_not_reimburse_driver = function(){
-		OrderService.do_not_reimburse_driver( $scope.ticket.order.id_order, function( result ){
+	$scope.do_not_pay_driver = function(){
+		OrderService.do_not_pay_driver( $scope.ticket.order.id_order, function( result ){
 			if( result.success ){
 				$scope.flash.setMessage( 'Saved!' );
 			} else {
