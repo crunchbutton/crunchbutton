@@ -357,7 +357,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	$scope.entered = PositionsService.pos().entered() || ( AccountService.user && AccountService.user.address );
 
 	var showMoreStage = 1; // stage 1: show top 6 maximized, stage 2: show all maximized, stage 3: show all - #2456
-
+console.log('showMoreStage',showMoreStage);
 	$scope.showMoreRestaurants = function() {
 		showMoreStage++;
 		if( showMoreStage == 2 ){
@@ -574,6 +574,8 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 					checkOpen();
 
 					var id_community = null;
+/*
+					// testing: customer apps: show all restaurants by default #6850
 
 					var restaurantsToShow = 0;
 					for ( var x in $scope.restaurants ) {
@@ -594,6 +596,8 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 					if (!App.isMobile()) {
 						$scope.restaurantsToShow = 100;
 					}
+*/
+					$scope.restaurantsToShow = $scope.restaurants.length;
 
 					// Wait one minute until update the status of the restaurants
 					setTimeout( function(){
