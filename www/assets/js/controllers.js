@@ -357,7 +357,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	$scope.entered = PositionsService.pos().entered() || ( AccountService.user && AccountService.user.address );
 
 	var showMoreStage = 1; // stage 1: show top 6 maximized, stage 2: show all maximized, stage 3: show all - #2456
-console.log('showMoreStage',showMoreStage);
+
 	$scope.showMoreRestaurants = function() {
 		showMoreStage++;
 		if( showMoreStage == 2 ){
@@ -1080,7 +1080,8 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		return order.cardInfoChanged();
 	}
 	$scope.order.toogleDelivery = function( type ){
-		return order.toogleDelivery( type );
+		order.toogleDelivery( type );
+		$scope.order._tips = order._tips();
 	}
 	$scope.order.tooglePayment = function( type ){
 		return order.tooglePayment( type );
