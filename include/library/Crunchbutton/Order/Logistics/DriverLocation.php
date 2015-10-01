@@ -4,9 +4,10 @@ class Crunchbutton_Order_Logistics_DriverLocation {
     const DEFAULT_TIME = 1200; // 20 minutes * 60 seconds
     const DEFAULT_HALF_TIME = 600; // 10 minutes * 60 seconds
     const DEFAULT_FACTOR = 0.9; // If food hasn't been delivered in 20 minutes, assume driver is 90% of way to destination.
-    const MAX_DRIVER_NO_LOC = 3600; // seconds = 60 minutes * 60 seconds
+    const MAX_DRIVER_NO_LOC = 300; // seconds = 5 minutes * 60 seconds
     const MAX_DRIVER_VELOCITY = 0.000312928; // deg / sec, using 100 km /deg, and 70 mph = 0.0312928 km/s
     const DRIVER_LOCATION_TIME_WINDOW = 300; // 5 min * 60 seconds
+    const EW_HALF_LIFE = 60;  // seconds
 
     const RESTAURANT_LOC = 1;
     const CUSTOMER_LOC = 2;
@@ -165,8 +166,10 @@ class Crunchbutton_Order_Logistics_DriverLocation {
         for ($i=0; $i<$n; $i++) {
             // subtract off $newTime
             $time = $locs->get($i)->ts - $newTime;
+//            $time2 = $locs->get($i)->date;
             $lat = $locs->get($i)->lat;
             $lon = $locs->get($i)->lon;
+//            print "$time, $time2, $lat, $lon\n";
             $timeSum += $time;
             $latSum += $lat;
             $lonSum +=$lon;
@@ -224,6 +227,7 @@ class Crunchbutton_Order_Logistics_DriverLocation {
             $lonSum = 0; // Y
 
             for ($i = 0; $i < $n; $i++) {
+                $time2 = $locs->get($i)->date;
                 $lat = $locs->get($i)->lat;
                 $lon = $locs->get($i)->lon;
                 $latSum += $lat;
@@ -236,6 +240,39 @@ class Crunchbutton_Order_Logistics_DriverLocation {
             return null;
         }
     }
+
+    public function ewAvgLatLon($locs, $n){
+
+        $maxTime = null;
+        if ($n > 0) {
+            $latSum = 0; // X
+            $lonSum = 0; // Y
+            $weightSum = 0;
+            for ($i = 0; $i < $n; $i++) {
+                if (is_null($maxTime)) {
+                    $maxTime = $locs->get($i)->ts;
+                }
+                $time = $locs->get($i)->ts - $maxTime;
+                $time2 = $locs->get($i)->date;
+                $lat = $locs->get($i)->lat;
+                $lon = $locs->get($i)->lon;
+                $weight = exp(1.0 * $time / self::EW_HALF_LIFE);
+                $latSum += ($lat * $weight);
+                $lonSum += ($lon * $weight);
+                $weightSum += $weight;
+            }
+            if ($weightSum > 0) {
+                $latMean = $latSum / $weightSum;
+                $lonMean = $lonSum / $weightSum;
+                return new Crunchbutton_Order_Location($latMean, $lonMean);
+            } else{
+                return null;
+            }
+        } else{
+            return null;
+        }
+    }
+
 
     public function determineDriverGeo($driver, $serverDT) {
         // Action based algo automatically calculates the location as orders are added,
@@ -251,27 +288,32 @@ class Crunchbutton_Order_Logistics_DriverLocation {
     }
 
 
-    public function calcDriverGeoFromLocations($driver, $serverDT)
+    public function calcDriverGeoFromLocations($driver, $serverDT, $useMax=false)
     {
 
         $result = null;
         $windowDT = clone $serverDT;
         $windowDT->modify('- ' . self::MAX_DRIVER_NO_LOC . ' seconds');
-        $location = $driver->locationWithMaxTime($windowDT);
+        if ($useMax) {
+            $location = $driver->lastLocationWithMinAndMaxTime($windowDT, $serverDT);
+        } else {
+            $location = $driver->lastLocationWithMinTime($windowDT);
+        }
         if (!is_null($location)){
             $driverWindowDT = new DateTime($location->date, new DateTimeZone(c::config()->timezone));
             $driverWindowDT->modify('- ' . self::DRIVER_LOCATION_TIME_WINDOW . ' seconds');
-            $locations = $driver->locationsWithMaxTime($driverWindowDT);
-            $numLocations = $locations->count();
-            if ($numLocations >= 5){
-                if ($numLocations > 15) {
-                    $numLocations = 15;
-                }
-                $result = $this->fitLatLon($locations, $numLocations, $serverDT->getTimestamp());
+            if ($useMax) {
+                $locations = $driver->locationsWithMinAndMaxTime($driverWindowDT, $serverDT);
             } else{
-                $result = $this->avgLatLon($locations, $numLocations);
+                $locations = $driver->locationsWithMinTime($driverWindowDT);
             }
-
+            $numLocations = $locations->count();
+            if ($numLocations >= 3){
+                if ($numLocations > 10) {
+                    $numLocations = 10;
+                }
+                $result = $this->ewAvgLatLon($locations, $numLocations, $serverDT->getTimestamp());
+            }
         }
         return $result;
 
