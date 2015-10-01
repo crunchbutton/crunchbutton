@@ -1326,10 +1326,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$schedule->log = 'Check address is incomplete. ';
 						$error = true;
 					}
-					if( !$contact_name ){
-						$schedule->log .= 'Contact name is missing.';
-						$error = true;
-					}
+					// if( !$contact_name ){
+						// $schedule->log .= 'Contact name is missing.';
+						// $error = true;
+					// }
 
 					if( $error ){
 						$message = 'Restaurant Payment error! Restaurant: ' . $schedule->restaurant()->name;
