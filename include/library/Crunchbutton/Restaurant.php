@@ -1156,7 +1156,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		// front end restaurant's page
 		if( $this->restaurant_page ){
-			$_ignore = [ 'notes_todo', 'notes_owner', 'confirmation', 'zip', 'customer_receipt', 'email', 'notes', 'balanced_id', 'balanced_bank', 'weight_adj', 'message', 'waive_fee_first_month', 'pay_promotions', 'pay_apology_credits', 'check_address', 'contact_name', 'summary_fax', 'summary_email', 'summary_frequency', 'legal_name_payment', 'tax_id', 'promotion_maximum', 'summary_method', 'max_apology_credit', 'order_notifications_sent', 'confirmation_type', 'notes_to_driver', 'order_ahead_time', 'notifications', 'notes_owner', 'notes', 'email' ];
+			$_ignore = [ 'notes_todo', 'notes_owner', 'confirmation', 'zip', 'customer_receipt', 'email', 'notes', 'balanced_id', 'balanced_bank', 'weight_adj', 'message', 'waive_fee_first_month', 'pay_promotions', 'pay_apology_credits', 'check_address', 'contact_name', 'summary_fax', 'summary_email', 'summary_frequency', 'legal_name_payment', 'tax_id', 'promotion_maximum', 'summary_method', 'max_apology_credit', 'order_notifications_sent', 'confirmation_type', 'notes_to_driver', 'order_ahead_time', 'service_time', 'notifications', 'notes_owner', 'notes', 'email' ];
 			foreach ( $_ignore as $property ) {
 				$ignore[ $property ] = true;
 			}
