@@ -2,8 +2,10 @@
 
 class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
 	public function init() {
-		$admin = Admin::o( 518 );
-		$pexcard = $admin->pexcard();
-		$pexcard->removeFundsShiftFinished( 59569 );
+		echo '1';
+		Crunchbutton_Community_Shift::warningDriversBeforeTheirShift();
+		echo '2';
+		Crunchbutton_Admin_Shift_Assign_Confirmation::warningDriversBeforeTheirShift();
+		echo '3';
 	}
 }
