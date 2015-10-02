@@ -75,7 +75,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 				}
 			}
 			return false;
-			
+
 		} elseif ($status['fields'] || $force || $status['due_by']) {
 			$saving = 0;
 
@@ -148,7 +148,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 					$stripeAccount->legal_entity->personal_id_number = $ssn;
 					$saving+=2;
 				}
-				
+
 			}
 
 			if ($saving) {
