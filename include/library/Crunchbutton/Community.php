@@ -10,6 +10,11 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	const TITLE_CLOSE_3RD_PARY_RESTAURANTS = 'Close 3rd Party Delivery Restaurants';
 	const TITLE_CLOSE_AUTO_CLOSED = 'Auto Closed';
 
+	const DRIVER_OPEN_COMMUNITY_ERROR_COMMUNITY = 1;
+	const DRIVER_OPEN_COMMUNITY_ERROR_SHIFT_HOURS = 2;
+	const DRIVER_OPEN_COMMUNITY_ERROR_CREATING_SHIFT = 3;
+	const DRIVER_OPEN_COMMUNITY_ERROR_ASSIGNING_SHIFT = 4;
+
 	public static function all($force = null) {
 		$ip = preg_replace('/[^0-9\.]+/','',c::getIp());
 		$force = preg_replace('/[^a-z\-]+/','',$force);
@@ -106,7 +111,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					and restaurant.active=true
 				ORDER by
 					restaurant_community.sort,
-					restaurant.delivery DESC
+					restaurant.delivery DESC, restaurant.name ASC
 			',[$this->id_community]);
 /*
 			$this->_restaurants->sort([
@@ -1160,10 +1165,11 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		}
 		return false;
 	}
-const DRIVER_OPEN_COMMUNITY_ERROR_COMMUNITY = 1;
-const DRIVER_OPEN_COMMUNITY_ERROR_SHIFT_HOURS = 2;
-const DRIVER_OPEN_COMMUNITY_ERROR_CREATING_SHIFT = 3;
-const DRIVER_OPEN_COMMUNITY_ERROR_ASSIGNING_SHIFT = 4;
+
+	public function isOpen(){
+		return ( !$this->allThirdPartyDeliveryRestaurantsClosed() && !$this->allRestaurantsClosed() && !$this->is_auto_closed );
+	}
+
 	public function openCommunityByDriver( $id_driver, $shiftEnd ){
 		// check if the driver belongs to the community
 		$driver = Admin::o( $id_driver );
