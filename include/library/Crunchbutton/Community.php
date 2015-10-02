@@ -1193,7 +1193,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$newShift->date_end = $end;
 			$newShift->active = 1;
 			$newShift->date = date('Y-m-d H:i:s');;
-			$newShift->id_admin = $driver->id_admin;
+			$newShift->id_driver = $driver->id_admin;
 			if( $newShift->date_start && $newShift->date_end ){
 				$newShift->save();
 				$newShift = Crunchbutton_Community_Shift::o( $newShift->id_community_shift );
