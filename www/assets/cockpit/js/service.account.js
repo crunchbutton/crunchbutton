@@ -21,7 +21,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 		restaurants: [],
 		init: false
 	};
-	
+
 	service.permcheck = function(perms) {
 		if (typeof perms != 'object') {
 			perms = [perms];

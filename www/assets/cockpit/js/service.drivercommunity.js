@@ -1,0 +1,24 @@
+NGApp.factory( 'DriverCommunityService', function( $resource, $routeParams ) {
+
+	var service = {};
+
+	var drivers = $resource( App.service + 'driver/community/:action/', { action: '@action' }, {
+				'status' : { 'method': 'GET', params : { 'action' : 'status' } },
+				'open' : { 'method': 'POST', params : { 'action' : 'open' } }
+			}
+		);
+
+	service.status = function( callback ){
+		drivers.status( function( data ){
+			callback( data );
+		} );
+	}
+
+	service.open = function( params, callback ){
+		drivers.open( params, function( data ){
+			callback( data );
+		} );
+	}
+
+	return service;
+} );

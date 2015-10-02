@@ -1,0 +1,95 @@
+
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="title box-title"><i class="fa fa-slideshare"></i><span>Community</span></h1>
+
+	<div class="bar-loader bar-loader-search bar-loader-boxes-top" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<div class="support-boxes" ng-show="!loading">
+
+		<div class="support-box-wrap box-content2">
+
+			<div class="support-box-wrap-header">
+				<h1>{{community.name}}</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Status</div>
+						<div class="field-value">
+							<span class="tag tag-red" ng-if="!community.is_open">Closed</span>
+							<span class="tag tag-green" ng-if="community.is_open">Open</span>
+						</div>
+					</div>
+					<div class="field-row" ng-if="community.restaurants.length">
+						<div class="field-key">Restaurants</div>
+						<div class="field-value">
+							<strong>{{community.restaurants.length}}</strong>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		</div>
+
+		<div class="support-box-wrap box-content2" ng-show="community.could_be_opened">
+
+			<form name="form" novalidate>
+				<div class="support-box-wrap-header">
+					<h1>Open Community</h1>
+					<div class="divider"></div>
+				</div>
+
+				<div class="no-box-content-color">
+
+					<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+						<li class="li-input" ng-class="{'error':form.hour.$invalid}">
+							<div class="label">How long do you want to work until?</div>
+							<div class="input">
+								<input type="time" required min="{{community.now}}" name="hour" ng-model="community.hour">
+							</div>
+							<div class="box-error">
+								<small ng-show="form.hour.$error.required">Required.</small>
+								<small ng-show="form.hour.$error.min">It should be after {{community.now_formated}}.</small>
+							</div>
+						</li>
+						<li class="li-input" ng-show="!isSaving">
+							<button class="button save" ng-click="open();">Open</button>
+						</li>
+						<li class="li-input" ng-show="isSaving">
+							<i class="fa fa-circle-o-notch fa-spin"></i>
+						</li>
+					</ul>
+
+				</div>
+			</form>
+		</div>
+
+	<div class="divider"></div>
+
+	<div class="box-content2 box-content-table" ng-if="!loading && community.restaurants.length">
+		<table class="tb-zebra">
+			<tr>
+				<th>Restaurant</th>
+				<th>Hours</th>
+				<th>Status</th>
+			</tr>
+			<tr ng-repeat="restaurant in community.restaurants">
+				<td>{{restaurant.name}}</td>
+				<td>{{restaurant.closed_message}}</td>
+				<td>
+					<span class="tag tag-red" ng-if="!restaurant.is_open">Closed</span>
+					<span class="tag tag-green" ng-if="restaurant.is_open">Open</span>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+</div>
+

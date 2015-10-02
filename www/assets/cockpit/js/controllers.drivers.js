@@ -8,12 +8,60 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		})
 }]);
 
+NGApp.config(['$routeProvider', function($routeProvider) {
+	$routeProvider
+		.when('/drivers/community', {
+			action: 'drivers-community',
+			controller: 'DriversCommunityCtrl',
+			templateUrl: 'assets/view/drivers-community.html'
+
+		})
+}]);
+
 NGApp.controller( 'CommunityResourcesDriverCtrl', function ($rootScope, $scope, ResourceService ) {
 	ResourceService.driver(function(data) {
 		$scope.communities = data;
-		console.log('$scope.communities',$scope.communities);
 	});
 } );
+
+NGApp.controller( 'DriversCommunityCtrl', function ($scope, $filter, DriverCommunityService ) {
+
+	$scope.loading = true;
+	$scope.show_form = false;
+
+	var load = function(){
+		DriverCommunityService.status( function( json ){
+			$scope.community = json;
+			$scope.loading = false;
+		} );
+	}
+
+	$scope.open = function(){
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			return;
+		}
+
+		var hour = $filter('date')( $scope.community.hour, 'H:mm' );
+
+		$scope.isSaving = true;
+
+		DriverCommunityService.open( { hour: hour }, function( json ){
+			if ( json.error ) {
+				App.alert( 'Error, the community is not open!' );
+			} else {
+				App.alert( 'The community is open!' );
+				$scope.community = json;
+			}
+			$scope.isSaving = false;
+		} );
+	}
+
+	load();
+
+} );
+
+
 
 NGApp.controller('DriversDashboardCtrl', function ( $scope, MainNavigationService, DriverOrdersService ) {
 
