@@ -1,0 +1,1 @@
+ALTER TABLE `community` ADD COLUMN `drivers_can_open` tinyint(1) unsigned NOT NULL DEFAULT 0;

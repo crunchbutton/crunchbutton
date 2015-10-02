@@ -884,6 +884,13 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return $ex;
 	}
 
+	public function community(){
+		if( !$this->_community ){
+			$this->_community = $this->communityDriverDelivery();
+		}
+		return $this->_community;
+	}
+
 	// #5480
 	public function showCreditCardTips(){
 		$paymentType = $this->paymentType();
@@ -1190,6 +1197,16 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		}
 		return false;
 	}
+
+  public function communityDriverCanOpen(){
+  	if( $this->isDriver() ){
+  		$community = $this->community();
+  		if( $community->id_community && $community->isElegibleToBeOpened() ){
+  			return $community;
+  		}
+  	}
+  	return false;
+  }
 
 	public function __construct($id = null) {
 		parent::__construct();

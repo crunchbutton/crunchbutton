@@ -62,6 +62,13 @@
 						</div>
 					</li>
 
+					<li class="li-input" ng-class="{'error':form.communityCanBeOpenedByDrivers.$invalid}">
+						<div class="label">Community can be opened by drivers:</div>
+						<div class="input">
+							<select name="communityCanBeOpenedByDrivers" required ng-model="community.drivers_can_open" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
+
 
 
 					<li class="li-input" ng-class="{'error':form.communityAutoClose.$invalid}">

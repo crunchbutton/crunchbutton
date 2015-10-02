@@ -1152,6 +1152,88 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return $note;
 	}
 
+	public function isElegibleToBeOpened(){
+		if( $this->id_community && $this->drivers_can_open ){
+			if( $this->allThirdPartyDeliveryRestaurantsClosed() || $this->allRestaurantsClosed() || $this->is_auto_closed ){
+				return true;
+			}
+		}
+		return false;
+	}
+const DRIVER_OPEN_COMMUNITY_ERROR_COMMUNITY = 1;
+const DRIVER_OPEN_COMMUNITY_ERROR_SHIFT_HOURS = 2;
+const DRIVER_OPEN_COMMUNITY_ERROR_CREATING_SHIFT = 3;
+const DRIVER_OPEN_COMMUNITY_ERROR_ASSIGNING_SHIFT = 4;
+	public function openCommunityByDriver( $id_driver, $shiftEnd ){
+		// check if the driver belongs to the community
+		$driver = Admin::o( $id_driver );
+		if( $driver->community()->id_community == $this->id_community ){
+
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$now->setTimezone( new DateTimeZone( $this->timezone ) );
+
+			$end = str_replace( ':', '', $shiftEnd );
+
+			if( $now->format( 'Hi' ) > $end ){
+				return self::DRIVER_OPEN_COMMUNITY_ERROR_SHIFT_HOURS;
+			}
+
+			$start = $now->format( 'Y-m-d H:i' );
+			$end = $now->format( 'Y-m-d ' ) . $shiftEnd;
+
+			$newShift = new Crunchbutton_Community_Shift();
+			$newShift->id_community = $this->id_community;
+			$newShift->date_start = $start;
+			$newShift->date_end = $end;
+			$newShift->active = 1;
+			$newShift->date = date('Y-m-d H:i:s');;
+			$newShift->id_admin = $driver->id_admin;
+			if( $newShift->date_start && $newShift->date_end ){
+				$newShift->save();
+				$newShift = Crunchbutton_Community_Shift::o( $newShift->id_community_shift );
+			}
+
+			if( $newShift->id_community_shift ){
+				$assignment = new Crunchbutton_Admin_Shift_Assign();
+				$assignment->id_admin = $driver->id_admin;
+				$assignment->id_community_shift = $newShift->id_community_shift;
+				$assignment->confirmed = true;
+				$assignment->date = date('Y-m-d H:i:s');
+				$assignment->save();
+
+				if( $assignment->id_admin_shift_assign ){
+
+					$message = 'The community ' . $this->name . ' was ';
+					$status = [];
+					if( $this->is_auto_closed ){
+						$this->is_auto_closed = false;
+						$status[] = 'auto-closed ';
+					}
+
+					if( $this->close_3rd_party_delivery_restaurants ){
+						$this->close_3rd_party_delivery_restaurants = false;
+						$status[] = '3rd party delivere restaurants closed ';
+					}
+					if( $this->close_all_restaurants ){
+						$this->close_all_restaurants = false;
+						$status[] = 'all restaurants closed ';
+					}
+					$this->save();
+					$message .= join( ',', $status );
+					$message .= 'but it was reopened by ' . $driver->name;
+					$message .= ' during the period ' . $newShift->startEndToString();
+					Crunchbutton_Support::createNewWarning( [ 'staff' => true, 'phone' => $driver->phone, 'bubble' => true, 'body' => $message ] );
+					return true;
+				} else {
+					return self::DRIVER_OPEN_COMMUNITY_ERROR_ASSIGNING_SHIFT;
+				}
+			} else {
+				return self::DRIVER_OPEN_COMMUNITY_ERROR_CREATING_SHIFT;
+			}
+		}
+		return self::DRIVER_OPEN_COMMUNITY_ERROR_COMMUNITY;
+	}
+
 	// Smart population of "our most popular locations" on UI2 #6056
 	public static function smartSortPopulation(){
 		$query = Crunchbutton_Custom_Query::mostPopularLocationQuery();
