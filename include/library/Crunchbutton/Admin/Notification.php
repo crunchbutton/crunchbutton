@@ -244,12 +244,13 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
                             'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid]);
 						echo $message . "\n";
 
-						if ($attempts > 3) {
+						if ($attempts > 2) {
 							$message = '#' . $order->id_order . ' CS was already texted about it - attempts ' . $attempts;
 							Log::debug(['order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver']);
 							echo $message . "\n";
 							continue;
-						} else if ($attempts == 3) {
+						} else if ($attempts == 2) {
+							// aqui
 							// More info: https://github.com/crunchbutton/crunchbutton/issues/2352#issuecomment-34780213
 							$this->alertDispatch($order);
 							Crunchbutton_Admin_Notification_Log::register($order->id_order, ' Notification::resendNotification');
@@ -505,6 +506,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 					}
 
 					break;
+				/*
 				case 2:
 					$phoneNumber = $admin->getPhoneNumber();
 					if( $phoneNumber ){
@@ -522,6 +524,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 						);
 					}
 					break;
+					*/
 			}
 		}
 
@@ -821,7 +824,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 					default:
 					case 'sms':
 						$first_name = Crunchbutton_Message_Sms::greeting($this->admin()->firstName());
-						$message = $first_name . 'Remember: ACCEPT this order https://cockpit.la/' . $order->id_order . '. Next reminder is a phone call in 3 minutes. Then we\'ll reach out manually, which is not optimal ;)';
+						$message = $first_name . 'Remember: plz ACCEPT this order https://cockpit.la/' . $order->id_order . '. Otherwise our customers won\'t know what\'s up and we might have to shut down the community!';
 						break;
 					case 'push':
 						$message = 'Please ACCEPT order #'.$order->id.' from '.$order->user()->name.' to '.$order->restaurant()->name.'.';
