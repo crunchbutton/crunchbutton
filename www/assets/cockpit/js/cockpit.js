@@ -853,7 +853,6 @@ App.alert = function(txt, title, useNativeAlert, fn) {
 };
 
 
-
 App.confirm = function(txt, title, success, fail, buttons, force) {
 	if ( force || ( App.useNativeConfirm && App.isPhoneGap && parent.window.navigator && parent.window.navigator.notification ) ) {
 		setTimeout(function() {

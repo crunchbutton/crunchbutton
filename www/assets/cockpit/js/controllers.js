@@ -256,6 +256,51 @@ NGApp.controller( 'NotificationConfirmCtrl', function ($scope, $rootScope ) {
 	});
 });
 
+NGApp.controller( 'NotificationNewOrderCtrl', function ($scope, $rootScope, $route, MainNavigationService, DriverOrdersService ) {
+
+	$rootScope.$on('notificationNewOrder', function(e, message, link) {
+
+		$(':focus').blur();
+
+		$scope.accept = function(){
+			var id_order = link.replace( '/drivers/order/', '' );
+			DriverOrdersService.accept( id_order,
+				function( json ){
+					if( json.status ) {
+						$rootScope.$broadcast('updateHeartbeat')
+						$route.reload();
+					} else {
+						$scope.unBusy();
+						var name = json[ 'delivery-status' ].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
+						App.alert( 'Oops!\n It seems this order was already accepted ' + name + '!'  );
+						$rootScope.$broadcast('updateHeartbeat')
+					}
+					$rootScope.closePopup();
+				}
+			);
+		};
+
+		$scope.view = function(){
+			MainNavigationService.link(link);
+			$rootScope.closePopup();
+		};
+
+		$scope.close = function(){
+			$rootScope.closePopup();
+		};
+
+		if ($scope.$$phase) {
+			$scope.message = message;
+			App.dialog.show('.notification-new-order-container');
+		} else {
+			$rootScope.$apply(function(scope) {
+				scope.message = message;
+				App.dialog.show('.notification-new-order-container');
+			});
+		}
+	});
+});
+
 NGApp.controller( 'CallText', function ($scope, $rootScope) {
 
 	$rootScope.$on('callText', function(e, num) {

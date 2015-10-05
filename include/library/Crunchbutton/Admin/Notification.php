@@ -751,7 +751,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	}
 
 	public function sendPushIos($order, $message) {
-
 		$r = Crunchbutton_Message_Push_Ios::send([
 			'to' => $this->value,
 			'message' => $message,
