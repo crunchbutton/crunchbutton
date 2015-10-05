@@ -1173,7 +1173,16 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	public function openCommunityByDriver( $id_driver, $shiftEnd ){
 		// check if the driver belongs to the community
 		$driver = Admin::o( $id_driver );
-		if( $driver->community()->id_community == $this->id_community ){
+
+		$communities = $driver->driverCommunities();
+		$open = false;
+		foreach( $communities as $community ){
+			if( $community->id_community == $this->id_community ){
+				$open = true;
+			}
+		}
+
+		if( $open ){
 
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 			$now->setTimezone( new DateTimeZone( $this->timezone ) );

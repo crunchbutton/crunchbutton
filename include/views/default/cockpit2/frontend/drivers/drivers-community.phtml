@@ -7,7 +7,29 @@
 
 	<div class="bar-loader bar-loader-search bar-loader-boxes-top" ng-class="{'bar-loader-loading': loading}"></div>
 
-	<div class="support-boxes" ng-show="!loading">
+	<div class="support-boxes" ng-show="!loading && communities.length > 1">
+
+		<div class="support-box-wrap box-content2">
+
+			<div class="support-box-wrap-header">
+				<h1>Communities</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Community</div>
+						<div class="field-value">
+							<select ng-model="id_community" ng-options="community.id_community as community.name_status for community in communities"></select>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="support-boxes" ng-show="community">
 
 		<div class="support-box-wrap box-content2">
 
@@ -21,11 +43,11 @@
 					<div class="field-row">
 						<div class="field-key">Status</div>
 						<div class="field-value">
-							<span class="tag tag-red" ng-if="!community.is_open">Closed</span>
-							<span class="tag tag-green" ng-if="community.is_open">Open</span>
+							<span class="tag tag-red" ng-show="!community.is_open">Closed</span>
+							<span class="tag tag-green" ng-show="community.is_open">Open</span>
 						</div>
 					</div>
-					<div class="field-row" ng-if="community.restaurants.length">
+					<div class="field-row" ng-show="community.restaurants.length">
 						<div class="field-key">Restaurants</div>
 						<div class="field-value">
 							<strong>{{community.restaurants.length}}</strong>
@@ -35,41 +57,41 @@
 			</div>
 		</div>
 
-		</div>
+	</div>
 
-		<div class="support-box-wrap box-content2" ng-show="community.could_be_opened">
+	<div class="support-box-wrap box-content2" ng-show="community.could_be_opened">
 
-			<form name="form" novalidate>
-				<div class="support-box-wrap-header">
-					<h1>Open Community</h1>
-					<div class="divider"></div>
-				</div>
+		<form name="form" novalidate>
+			<div class="support-box-wrap-header">
+				<h1>Open Community</h1>
+				<div class="divider"></div>
+			</div>
 
-				<div class="no-box-content-color">
+			<div class="no-box-content-color">
 
-					<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
-						<li class="li-input" ng-class="{'error':form.hour.$invalid}">
-							<div class="label">How long do you want to work until?</div>
-							<div class="input">
-								<input type="time" required min="{{community.now}}" name="hour" ng-model="community.hour">
-							</div>
-							<div class="box-error">
-								<small ng-show="form.hour.$error.required">Required.</small>
-								<small ng-show="form.hour.$error.min">It should be after {{community.now_formated}}.</small>
-							</div>
-						</li>
-						<li class="li-input" ng-show="!isSaving">
-							<button class="button save" ng-click="open();">Open</button>
-						</li>
-						<li class="li-input" ng-show="isSaving">
-							<i class="fa fa-circle-o-notch fa-spin"></i>
-						</li>
-					</ul>
+					<li class="li-input" ng-class="{'error':form.hour.$invalid}">
+						<div class="label">When do you want to drive until?</div>
+						<div class="input">
+							<input type="time" required min="{{community.now}}" name="hour" ng-model="community.hour">
+						</div>
+						<div class="box-error">
+							<small ng-show="form.hour.$error.required">Required.</small>
+							<small ng-show="form.hour.$error.min">It should be after {{community.now_formated}}.</small>
+						</div>
+					</li>
+					<li class="li-input" ng-show="!isSaving">
+						<button class="button save" ng-click="open();">Open</button>
+					</li>
+					<li class="li-input" ng-show="isSaving">
+						<i class="fa fa-circle-o-notch fa-spin"></i>
+					</li>
+				</ul>
 
-				</div>
-			</form>
-		</div>
+			</div>
+		</form>
+	</div>
 
 	<div class="divider"></div>
 
@@ -82,7 +104,9 @@
 			</tr>
 			<tr ng-repeat="restaurant in community.restaurants">
 				<td>{{restaurant.name}}</td>
-				<td>{{restaurant.closed_message}}</td>
+				<td>
+					<span ng-bind-html="restaurant.closed_message"></span>
+				</td>
 				<td>
 					<span class="tag tag-red" ng-if="!restaurant.is_open">Closed</span>
 					<span class="tag tag-green" ng-if="restaurant.is_open">Open</span>

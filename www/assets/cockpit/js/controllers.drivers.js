@@ -29,12 +29,32 @@ NGApp.controller( 'DriversCommunityCtrl', function ($scope, $filter, DriverCommu
 	$scope.loading = true;
 	$scope.show_form = false;
 
+	$scope.id_community = null;
+
 	var load = function(){
+		$scope.communities = null;
 		DriverCommunityService.status( function( json ){
-			$scope.community = json;
+			$scope.communities = json;
 			$scope.loading = false;
+			if( !$scope.id_community ){
+				$scope.id_community = $scope.communities[ 0 ].id_community;
+			}
 		} );
 	}
+
+	var community = function( id_community ){
+		for( x in $scope.communities ){
+			if( $scope.communities[ x ].id_community == id_community ){
+				$scope.community = $scope.communities[ x ];
+			}
+		}
+	}
+
+	$scope.$watch( 'id_community', function( newValue, oldValue, scope ) {
+		if( newValue ){
+			community( newValue );
+		}
+	});
 
 	$scope.open = function(){
 		if( $scope.form.$invalid ){
@@ -45,14 +65,13 @@ NGApp.controller( 'DriversCommunityCtrl', function ($scope, $filter, DriverCommu
 		var hour = $filter('date')( $scope.community.hour, 'H:mm' );
 
 		$scope.isSaving = true;
-
-		DriverCommunityService.open( { hour: hour }, function( json ){
+		DriverCommunityService.open( { id_community: $scope.id_community, hour: hour }, function( json ){
 			if ( json.error ) {
 				App.alert( 'Error, the community is not open!' );
 			} else {
 				App.alert( 'The community is open!' );
-				$scope.community = json;
 			}
+			load();
 			$scope.isSaving = false;
 		} );
 	}
