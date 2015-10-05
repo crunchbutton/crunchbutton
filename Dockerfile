@@ -3,6 +3,8 @@ FROM php:7.0-fpm
 ENV DOCKER=1
 ENV DEBUG=1
 
+EXPOSE 80
+
 RUN apt-get update && apt-get install -y \
         libmcrypt-dev \
         php-pear \
