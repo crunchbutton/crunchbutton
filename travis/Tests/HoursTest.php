@@ -4,6 +4,7 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 
 	// because settlement filters stuff with 'test' on its name
 	const NAME = 'HOURS Travis';
+	const SHIFTS_CREATED = 2;
 
 	public static function setUpBeforeClass() {
 
@@ -13,6 +14,40 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 		$r1->save();
 		$r2 = new Restaurant([ 'name' => $name . ' Delivery Service', 'formal_relationship' => false, 'active' => true, 'delivery' => true, 'credit' => 1, 'delivery_fee' => '1.5', 'confirmation' => 0, 'community' => 'test', 'timezone' => 'America/Los_Angeles', 'open_for_business' => true, 'delivery_service' => false ] );
 		$r2->save();
+
+		// community
+		$c1 = new Community(['name' => $name, 'active' => 1, 'timezone' => 'America/New_York', 'driver-group' => 'drivers-testlogistics', 'range' => 2, 'private' => 1, 'loc_lat' => 34.023281, 'loc_lon' => -118.2881961, 'delivery_logistics' => null ]);
+		$c1->save();
+
+
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$today = strtolower( $now->format( 'D' ) );
+		$now->modify( '- 1 hour' );
+		$date_start = $now->format( 'Y-m-d H:i' );
+		$now->modify( '+30 minutes' );
+		$date_end = $now->format( 'Y-m-d H:i' );
+		$cs1 = new Community_Shift([ 'id_community' => $c1->id_community, 'date_start' => $date_start, 'date_end' => $date_end, 'active' => 1 ]);
+		$cs1->save();
+
+		$now->modify( '+ 1 hour' );
+		$date_start = $now->format( 'Y-m-d H:i' );
+		$now->modify( '+30 minutes' );
+		$date_end = $now->format( 'Y-m-d H:i' );
+		$cs2 = new Community_Shift([ 'id_community' => $c1->id_community, 'date_start' => $date_start, 'date_end' => $date_end, 'active' => 1 ]);
+		$cs2->save();
+
+		// driver
+		$d = new Admin( [ 'name' => $name, 'login' => null, 'active' => 1 ] );
+		$d->save();
+
+	}
+
+	public function shifts(){
+		if( !$this->_shifts ){
+			$name = self::NAME;
+			$this->_shifts = Community_Shift::q( 'SELECT * FROM community_shift INNER JOIN community ON community.id_community = community_shift.id_community WHERE community.name = ?', [ $name ] );
+		}
+		return $this->_shifts;
 	}
 
 	public function deliveryServiceRestaurant(){
@@ -31,10 +66,41 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 		return $this->_thirdParyDeliveryRestaurant;
 	}
 
+	public function driver(){
+		if( !$this->_driver ){
+			$name = self::NAME;
+			$this->_driver = Admin::q( 'SELECT * FROM admin WHERE name = ? ORDER BY id_admin DESC LIMIT 1', [$name])->get( 0 );
+		}
+		return $this->_driver;
+	}
+
+	public function community(){
+		if( !$this->_community ){
+			$name = self::NAME;
+			$this->_community = Community::q( 'SELECT * FROM community WHERE name = ? ORDER BY id_community DESC LIMIT 1', [$name])->get( 0 );
+		}
+		return $this->_community;
+	}
+
 	public static function tearDownAfterClass() {
+
 		$name = self::NAME;
-		Restaurant::q( 'SELECT * FROM restaurant WHERE name = ?', [$name.' 3rd Party Delivery'] )->delete();
-		Restaurant::q( 'SELECT * FROM restaurant WHERE name = ?', [$name.' Delivery Service'] )->delete();
+
+		// delete shift assignment
+		c::db()->query( 'DELETE admin_shift_assign.* FROM admin_shift_assign INNER JOIN community_shift ON community_shift.id_community_shift = admin_shift_assign.id_community_shift INNER JOIN community ON community.id_community = community_shift.id_community WHERE community.name = ?', [ $name ] );
+
+		// delete shift
+		c::db()->query( 'DELETE community_shift.* FROM community_shift INNER JOIN community ON community.id_community = community_shift.id_community WHERE community.name = ?', [ $name ] );
+
+		// delete driver
+		c::db()->query( 'DELETE FROM admin WHERE admin.name = ?', [ $name ] );
+
+		// delete restaurants
+		c::db()->query( 'DELETE FROM restaurant WHERE restaurant.name = ?', [$name.' 3rd Party Delivery'] );
+		c::db()->query( 'DELETE FROM restaurant WHERE restaurant.name = ?', [$name.' Delivery Service'] );
+
+		// delete community
+		c::db()->query( 'DELETE FROM community WHERE community.name = ?', [$name] );
 	}
 
 	public function setUp() {
@@ -47,12 +113,13 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testRestaurantIsOpenBasic() {
+
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$today = strtolower( $now->format( 'D' ) );
-		$now->modify( '+ 1 hour' );
-		$close = $now->format( 'H:i' );
-		$now->modify( '- 2 hour' );
+		$now->modify( '- 1 hour' );
 		$open = $now->format( 'H:i' );
+		$now->modify( '+ 2 hour' );
+		$close = $now->format( 'H:i' );
 
 		$this->assertEquals( $this->deliveryServiceRestaurant()->open(), false );
 
@@ -62,6 +129,7 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 			'time_open' => $open,
 			'time_close' => $close
 		]);
+
 		$hour->save();
 		$this->assertEquals( $this->deliveryServiceRestaurant()->open(), true );
 
@@ -75,4 +143,28 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 		$hour->save();
 		$this->assertEquals( $this->thirdParyDeliveryRestaurant()->open(), true );
 	}
+
+	public function testShiftCreating(){
+		$shifts = $this->shifts();
+		$this->assertEquals( $shifts->count(), self::SHIFTS_CREATED );
+	}
+
+	public function testShiftAssignment(){
+
+		$shift_assigned = 0;
+		$driver = $this->driver();
+
+		foreach( $this->shifts() as $shift ){
+			$assignment = new Crunchbutton_Admin_Shift_Assign();
+			$assignment->id_admin = $this->driver()->id_admin;
+			$assignment->id_community_shift = $shift->id_community_shift;
+			$assignment->date = date('Y-m-d H:i:s');
+			$assignment->save();
+			$shift_assigned++;
+			$this->assertEquals( is_numeric( $assignment->id_admin_shift_assign ), true );
+		}
+		$this->assertEquals( $shift_assigned, self::SHIFTS_CREATED  );
+
+	}
+
 }
