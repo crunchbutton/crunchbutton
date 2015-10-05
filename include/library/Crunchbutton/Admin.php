@@ -891,6 +891,20 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return $this->_community;
 	}
 
+	public function driverCommunities(){
+		$communities = [];
+		$groups = $this->groups();
+		foreach ( $groups as $group ) {
+			if( $group->id_community && $group->type == Crunchbutton_Group::TYPE_DRIVER ){
+				$community = $group->community();
+				if( $community->id_community != Crunchbutton_Community::CUSTOMER_SERVICE_ID_COMMUNITY ){
+					$communities[] = $community;
+				}
+			}
+		}
+		return $communities;
+	}
+
 	// #5480
 	public function showCreditCardTips(){
 		$paymentType = $this->paymentType();
