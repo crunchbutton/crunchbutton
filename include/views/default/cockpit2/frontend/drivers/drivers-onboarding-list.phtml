@@ -52,7 +52,6 @@
 		<table class="tb-zebra">
 			<tr>
 				<th>Name</th>
-				<th>Community</th>
 				<th>Schedule</th>
 				<th>Note</th>
 				<th nowrap="nowrap" class="tb-center">
@@ -95,11 +94,11 @@
 							<span class="tag tag-grey" ng-if="!driver.payment_type">Payment Type Missing</span>
 
 					</div>
-				</td>
-				<td>
-					<span class="staff-community-repeat" ng-repeat="community in driver.communities">
-						{{community}}
-					</span>
+					<div>
+						<span class="listview-smaller" ng-repeat="community in driver.communities">
+							{{community}}
+						</span>
+					</div>
 				</td>
 				<td nowrap="nowrap">
 					<span class="tag tag-green" ng-if="driver.shift_status.completed == 1">Complete</span>
