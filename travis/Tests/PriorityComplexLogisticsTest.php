@@ -570,8 +570,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
         $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
 
-        $olp1 = $this->defaultOLP($this->restaurant1, $start, $end, 5, $dow);
-        $olp2 = $this->defaultOLP($this->restaurant1, $end, $end2, 10, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant1, $start, $end, 7, 6, 5, $dow);
+        $olp2 = $this->defaultOLP($this->restaurant1, $end, $end2, 10, 10, 10, $dow);
         $olp1->save();
         $olp2->save();
         $newTZ = $this->restaurant1->community()->timezone;
@@ -579,7 +579,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $parking = $this->restaurant1->parking($useDT->format('H:i:s'), $dow);
         $olp1->delete();
         $olp2->delete();
-        $this->assertEquals($parking->parking_duration, 5);
+        $this->assertEquals($parking->parking_duration0, 7);
+        $this->assertEquals($parking->parking_duration1, 6);
+        $this->assertEquals($parking->parking_duration2, 5);
     }
 
     public function testOLPTZConversionNewYork()
@@ -594,8 +596,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
         $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
 
-        $olp1 = $this->defaultOLP($this->restaurant5, $start, $end, 15, $dow);
-        $olp2 = $this->defaultOLP($this->restaurant5, $end, $end2, 20, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant5, $start, $end, 15, 15, 15, $dow);
+        $olp2 = $this->defaultOLP($this->restaurant5, $end, $end2, 22, 21, 20, $dow);
         $olp1->save();
         $olp2->save();
         $newTZ = $this->restaurant5->community()->timezone;
@@ -605,7 +607,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 //        print $useDT->format('H:i:s')."\n";
         $olp1->delete();
         $olp2->delete();
-        $this->assertEquals($parking->parking_duration, 20);
+        $this->assertEquals($parking->parking_duration0, 22);
+        $this->assertEquals($parking->parking_duration1, 21);
+        $this->assertEquals($parking->parking_duration2, 20);
     }
 
     public function testOLSTZConversionLosAngeles()
@@ -619,8 +623,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
         $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
 
-        $ols1 = $this->defaultOLS($this->restaurant1, $start, $end, 5, $dow);
-        $ols2 = $this->defaultOLS($this->restaurant1, $end, $end2, 10, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant1, $start, $end, 7, 6, 5, $dow);
+        $ols2 = $this->defaultOLS($this->restaurant1, $end, $end2, 10, 10, 10, $dow);
         $ols1->save();
         $ols2->save();
         $newTZ = $this->restaurant1->community()->timezone;
@@ -628,7 +632,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $service = $this->restaurant1->service($useDT->format('H:i:s'), $dow);
         $ols1->delete();
         $ols2->delete();
-        $this->assertEquals($service->service_duration, 5);
+        $this->assertEquals($service->service_duration0, 7);
+        $this->assertEquals($service->service_duration1, 6);
+        $this->assertEquals($service->service_duration2, 5);
     }
 
     public function testOLSTZConversionNewYork()
@@ -643,8 +649,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $end = date("H:i:s", strtotime('2015-01-01 06:00:00'));
         $end2 = date("H:i:s", strtotime('2015-01-01 12:00:00'));
 
-        $ols1 = $this->defaultOLS($this->restaurant5, $start, $end, 15, $dow);
-        $ols2 = $this->defaultOLS($this->restaurant5, $end, $end2, 20, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant5, $start, $end, 15, 15, 15, $dow);
+        $ols2 = $this->defaultOLS($this->restaurant5, $end, $end2, 22, 21, 20, $dow);
         $ols1->save();
         $ols2->save();
         $newTZ = $this->restaurant5->community()->timezone;
@@ -654,7 +660,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 //        print $useDT->format('H:i:s')."\n";
         $ols1->delete();
         $ols2->delete();
-        $this->assertEquals($service->service_duration, 20);
+        $this->assertEquals($service->service_duration0, 22);
+        $this->assertEquals($service->service_duration1, 21);
+        $this->assertEquals($service->service_duration2, 20);
     }
 
 
@@ -1501,11 +1509,15 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testAdminScore()
     {
         $useScore = 2.0;
-        $s = $this->defaultScore($this->driver1, $useScore);
+        $useExperience = 3;
+        $s = $this->defaultScore($this->driver1, $useScore, $useExperience);
         $s->save();
-        $sc = $this->driver1->score();
+        $score = $this->driver1->score();
+        $sc = $score->score;
+        $experience = $score->experience;
         $s->delete();
         $this->assertEquals($sc, $useScore);
+        $this->assertEquals($experience, $useExperience);
     }
 
     public function testAdminDefaultScore()
@@ -1513,19 +1525,25 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $useScore = 55.0;
         $s = $this->defaultScore($this->driver2, $useScore);
         $s->save();
-        $sc = $this->driver1->score();
+        $score = $this->driver1->score();
+        $sc = $score->score;
+        $experience = $score->experience;
         $s->delete();
         $this->assertEquals($sc, Cockpit_Admin_Score::DEFAULT_SCORE);
+        $this->assertEquals($experience, Cockpit_Admin_Score::DEFAULT_EXPERIENCE);
     }
 
     public function testAdminDefaultScore2()
     {
-        $sc = $this->driver1->score();
+        $score = $this->driver1->score();
         $qString = "SELECT * FROM `admin_score` WHERE id_admin= ? ";
         $s = Cockpit_Admin_Score::q($qString, [$this->driver1->id_admin]);
         $s->delete();
         $this->assertEquals($s->count(), 1);
+        $sc = $score->score;
+        $experience = $score->experience;
         $this->assertEquals($sc, Cockpit_Admin_Score::DEFAULT_SCORE);
+        $this->assertEquals($experience, Cockpit_Admin_Score::DEFAULT_EXPERIENCE);
     }
 
     public function testRestaurantClusterExist()
@@ -1856,10 +1874,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
@@ -1952,10 +1970,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
@@ -2009,7 +2027,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
     // Two drivers - no orders - same location
     //  First order comes in - both get priority
-    public function testLogisticsFirstorderSameLocation()
+    public function testLogisticsFirstorderSameLocation1()
     {
         $seconds = 50;
         $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -2037,10 +2055,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
@@ -2090,15 +2108,14 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($olr2->count(), 3);
     }
 
-    // Two drivers - no orders - different locations, but still close
-    //  First order comes in - first driver gets high priority because wait time < service + parking + travel time
-    //   for the other driver.  About 6 minutes travel time + 5 min service + 5 min parking > 15 min
-    public function testLogisticsFirstorderDifferentLocationWithLongWait1()
+    // Two drivers - no orders - same location
+    //  First order comes in - driver 2 has a higher score and gets priority
+    public function testLogisticsFirstorderSameLocationDifferentScore1()
     {
         $seconds = 50;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-        $now->modify('- ' . $seconds . ' seconds');
-        $useDate1 = $now->format('Y-m-d H:i:s');
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
 
         $seconds = 120;
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -2110,8 +2127,13 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->driver3->active = false;
         $this->driver3->save();
 
-        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
-        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.018, -118.281, $now, 10);
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
+
+        $score1 = $this->defaultScore($this->driver1, 1, 1);
+        $score2 = $this->defaultScore($this->driver2, 1.2, 1);
+        $score1->save();
+        $score2->save();
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
@@ -2121,10 +2143,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
@@ -2161,6 +2183,505 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olot1->delete();
         $olcs1->delete();
         $olc->delete();
+        $score1->delete();
+        $score2->delete();
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
+        }
+        $this->assertEquals($ops->count(), 2);
+        foreach ($ops as $op) {
+            if ($op->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            } else {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($olr1->count(), 3);
+        $this->assertEquals($olr2->count(), 3);
+    }
+
+
+    // Two drivers - no orders - same location
+    //  First order comes in - driver 2 has a higher experience and gets priority
+    public function testLogisticsFirstorderSameLocationDifferentExp1()
+    {
+        $seconds = 50;
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+        $dow = $now->format('w');
+
+        // Only want 2 drivers for now
+        $this->driver3->active = false;
+        $this->driver3->save();
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
+
+        $score1 = $this->defaultScore($this->driver1, 1, 1);
+        $score2 = $this->defaultScore($this->driver2, 1, 2);
+        $score1->save();
+        $score2->save();
+
+        // Chipotle
+        $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
+        $o1->lat = 34.0284;
+        $o1->lon = -118.287;
+        $o1->save();
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 7, 6, 5, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 6, 6, 6, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o1);
+        $ol->process();
+
+        $ops = Crunchbutton_Order_Priority::q('select * from order_priority where id_order = ?', [$o1->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver2->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+
+        $this->driver3->active = true;
+        $this->driver3->save();
+        $o1->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $olc->delete();
+        $score1->delete();
+        $score2->delete();
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
+        }
+        $this->assertEquals($ops->count(), 2);
+        foreach ($ops as $op) {
+            if ($op->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            } else {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($olr1->count(), 3);
+        $this->assertEquals($olr2->count(), 3);
+    }
+
+    // Two drivers - no orders - same location
+    //  First order comes in - driver 2 has a higher experience and gets priority
+    public function testLogisticsFirstorderSameLocationDifferentExp2()
+    {
+        $seconds = 50;
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+        $dow = $now->format('w');
+
+        // Only want 2 drivers for now
+        $this->driver3->active = false;
+        $this->driver3->save();
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
+
+        $score1 = $this->defaultScore($this->driver1, 1, 1);
+        $score2 = $this->defaultScore($this->driver2, 1, 2);
+        $score1->save();
+        $score2->save();
+
+        // Chipotle
+        $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
+        $o1->lat = 34.0284;
+        $o1->lon = -118.287;
+        $o1->save();
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 6, 6, 6, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 7, 6, 5, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o1);
+        $ol->process();
+
+        $ops = Crunchbutton_Order_Priority::q('select * from order_priority where id_order = ?', [$o1->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver2->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+
+        $this->driver3->active = true;
+        $this->driver3->save();
+        $o1->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $olc->delete();
+        $score1->delete();
+        $score2->delete();
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
+        }
+        $this->assertEquals($ops->count(), 2);
+        foreach ($ops as $op) {
+            if ($op->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            } else {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($olr1->count(), 3);
+        $this->assertEquals($olr2->count(), 3);
+    }
+
+    // Two drivers - no orders - same location
+    //  First order comes in - driver 2 has a higher experience and gets priority
+    public function testLogisticsFirstorderSameLocationDifferentExp3()
+    {
+        $seconds = 50;
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+        $dow = $now->format('w');
+
+        // Only want 2 drivers for now
+        $this->driver3->active = false;
+        $this->driver3->save();
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
+
+        $score1 = $this->defaultScore($this->driver1, 1, 0);
+        $score2 = $this->defaultScore($this->driver2, 1, 2);
+        $score1->save();
+        $score2->save();
+
+        // Chipotle
+        $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
+        $o1->lat = 34.0284;
+        $o1->lon = -118.287;
+        $o1->save();
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 6, 6, 6, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 7, 6, 5, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o1);
+        $ol->process();
+
+        $ops = Crunchbutton_Order_Priority::q('select * from order_priority where id_order = ?', [$o1->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver2->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+
+        $this->driver3->active = true;
+        $this->driver3->save();
+        $o1->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $olc->delete();
+        $score1->delete();
+        $score2->delete();
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
+        }
+        $this->assertEquals($ops->count(), 2);
+        foreach ($ops as $op) {
+            if ($op->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            } else {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($olr1->count(), 3);
+        $this->assertEquals($olr2->count(), 3);
+    }
+
+
+    // Two drivers - no orders - same location
+    //  First order comes in - driver 2 has a higher experience and gets priority
+    public function testLogisticsFirstorderSameLocationDifferentExp4()
+    {
+        $seconds = 50;
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+        $dow = $now->format('w');
+
+        // Only want 2 drivers for now
+        $this->driver3->active = false;
+        $this->driver3->save();
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
+
+        $score1 = $this->defaultScore($this->driver1, 1, 0);
+        $score2 = $this->defaultScore($this->driver2, 1, 1);
+        $score1->save();
+        $score2->save();
+
+        // Chipotle
+        $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
+        $o1->lat = 34.0284;
+        $o1->lon = -118.287;
+        $o1->save();
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 6, 6, 6, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 7, 6, 5, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o1);
+        $ol->process();
+
+        $ops = Crunchbutton_Order_Priority::q('select * from order_priority where id_order = ?', [$o1->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver2->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+
+        $this->driver3->active = true;
+        $this->driver3->save();
+        $o1->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $olc->delete();
+        $score1->delete();
+        $score2->delete();
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
+        }
+        $this->assertEquals($ops->count(), 2);
+        foreach ($ops as $op) {
+            if ($op->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            } else {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($olr1->count(), 3);
+        $this->assertEquals($olr2->count(), 3);
+    }
+
+    // Two drivers - no orders - different locations, but still close
+    //  First order comes in - first driver gets high priority because wait time < service + parking + travel time
+    //   for the other driver.  About 6 minutes travel time + 5 min service + 5 min parking > 15 min
+    public function testLogisticsFirstorderDifferentLocationWithLongWait1()
+    {
+        $seconds = 50;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+        $dow = $now->format('w');
+
+        // Only want 2 drivers for now
+        $this->driver3->active = false;
+        $this->driver3->save();
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.018, -118.281, $now, 10);
+        $score1 = $this->defaultScore($this->driver1, 1, 1);
+        $score2 = $this->defaultScore($this->driver2, 1, 1);
+        $score1->save();
+        $score2->save();
+
+        // Chipotle
+        $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
+        $o1->lat = 34.0284;
+        $o1->lon = -118.287;
+        $o1->save();
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o1);
+        $ol->process();
+
+        $ops = Crunchbutton_Order_Priority::q('select * from order_priority where id_order = ?', [$o1->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver2->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+
+        $this->driver3->active = true;
+        $this->driver3->save();
+        $o1->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $olc->delete();
+        $score1->delete();
+        $score2->delete();
         foreach ($ol->drivers() as $driver) {
             if ($driver->id_admin == $this->driver2->id_admin) {
                 $this->assertEquals($driver->__seconds, 0);
@@ -2185,8 +2706,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
 
     // Two drivers - no orders - different locations, but still close
-    //  First order comes in - both driver gets high priority because wait time > service + parking + travel time
-    //   for the other driver
+    //  First order comes in - both drivers gets high priority because wait time > service + parking + travel time
     public function testLogisticsFirstorderDifferentLocationWithLongWait2()
     {
         $seconds = 50;
@@ -2206,6 +2726,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
         $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.018, -118.281, $now, 10);
+        $score1 = $this->defaultScore($this->driver1, 1, 1);
+        $score2 = $this->defaultScore($this->driver2, 1, 1);
+        $score1->save();
+        $score2->save();
 
         // Chipotle
         $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
@@ -2215,10 +2739,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 20, 1, $dow);
@@ -2255,6 +2779,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olot1->delete();
         $olcs1->delete();
         $olc->delete();
+        $score1->delete();
+        $score2->delete();
         foreach ($ol->drivers() as $driver) {
             $this->assertEquals($driver->__seconds, 0);
             $this->assertEquals($driver->__priority, true);
@@ -2267,6 +2793,289 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
     }
+
+
+    // Two drivers - no orders - different locations, but still close
+    //  First order comes in - driver2 gets high priority because of a higher score
+    public function testLogisticsFirstorderDifferentLocationWithLongWaitDifferentScore1()
+    {
+        $seconds = 50;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+        $dow = $now->format('w');
+
+        // Only want 2 drivers for now
+        $this->driver3->active = false;
+        $this->driver3->save();
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.018, -118.281, $now, 10);
+        $score1 = $this->defaultScore($this->driver1, 1, 1);
+        $score2 = $this->defaultScore($this->driver2, 1.2, 1);
+        $score1->save();
+        $score2->save();
+
+        // Chipotle
+        $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
+        $o1->lat = 34.0284;
+        $o1->lon = -118.287;
+        $o1->save();
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 20, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o1);
+        $ol->process();
+
+        $ops = Crunchbutton_Order_Priority::q('SELECT * FROM order_priority WHERE id_order = ?', [$o1->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver2->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+
+        $this->driver3->active = true;
+        $this->driver3->save();
+        $o1->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $olc->delete();
+        $score1->delete();
+        $score2->delete();
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
+        }
+        $this->assertEquals($ops->count(), 2);
+
+        foreach ($ops as $op) {
+            if ($op->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            } else {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($olr1->count(), 3);
+        $this->assertEquals($olr2->count(), 3);
+    }
+
+
+    // Two drivers - no orders - different locations, but still close
+    //  First order comes in - both drivers gets high priority because wait time > service + parking + travel time
+    //  This holds even when one driver has a faster parking time
+    public function testLogisticsFirstorderDifferentLocationWithLongWaitDifferentExp1()
+    {
+        $seconds = 50;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+        $dow = $now->format('w');
+
+        // Only want 2 drivers for now
+        $this->driver3->active = false;
+        $this->driver3->save();
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.018, -118.281, $now, 10);
+        $score1 = $this->defaultScore($this->driver1, 1, 1);
+        $score2 = $this->defaultScore($this->driver2, 1, 2);
+        $score1->save();
+        $score2->save();
+
+        // Chipotle
+        $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
+        $o1->lat = 34.0284;
+        $o1->lon = -118.287;
+        $o1->save();
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 6, 5, 4, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 20, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o1);
+        $ol->process();
+
+        $ops = Crunchbutton_Order_Priority::q('SELECT * FROM order_priority WHERE id_order = ?', [$o1->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver2->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+
+        $this->driver3->active = true;
+        $this->driver3->save();
+        $o1->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $olc->delete();
+        $score1->delete();
+        $score2->delete();
+        foreach ($ol->drivers() as $driver) {
+            $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, true);
+        }
+        $this->assertEquals($ops->count(), 2);
+        foreach ($ops as $op) {
+            $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 2);
+        $this->assertEquals($olr1->count(), 3);
+        $this->assertEquals($olr2->count(), 3);
+    }
+
+
+    // Two drivers - no orders - different locations, but still close
+    //  First order comes in - both drivers gets high priority because wait time > service + parking + travel time
+    //  This holds even when one driver has a faster service time
+    public function testLogisticsFirstorderDifferentLocationWithLongWaitDifferentExp2()
+    {
+        $seconds = 50;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+        $dow = $now->format('w');
+
+        // Only want 2 drivers for now
+        $this->driver3->active = false;
+        $this->driver3->save();
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.018, -118.281, $now, 10);
+        $score1 = $this->defaultScore($this->driver1, 1, 1);
+        $score2 = $this->defaultScore($this->driver2, 1, 2);
+        $score1->save();
+        $score2->save();
+
+        // Chipotle
+        $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
+        $o1->lat = 34.0284;
+        $o1->lon = -118.287;
+        $o1->save();
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 6, 5, 4, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 20, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o1);
+        $ol->process();
+
+        $ops = Crunchbutton_Order_Priority::q('SELECT * FROM order_priority WHERE id_order = ?', [$o1->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o1->id_order, $this->driver2->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+
+        $this->driver3->active = true;
+        $this->driver3->save();
+        $o1->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $olc->delete();
+        $score1->delete();
+        $score2->delete();
+        foreach ($ol->drivers() as $driver) {
+            $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, true);
+        }
+        $this->assertEquals($ops->count(), 2);
+        foreach ($ops as $op) {
+            $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 2);
+        $this->assertEquals($olr1->count(), 3);
+        $this->assertEquals($olr2->count(), 3);
+    }
+
 
     // Two drivers - no orders - different locations, but still close
     //  First order comes in - driver 2 should get priority because of no waiting time.
@@ -2298,10 +3107,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -2365,7 +3174,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     // Two drivers - driver 1 has accepted order from Chipotle (with no waiting time).
     //  Both drivers are at the same location
     //  New Chipotle order comes in - driver 1 should get priority due to bundling.
-    public function testLogisticsSecondOrderSameLocationNoWaitA1()
+    public function testLogisticsSecondOrderSameLocationNoWaitA1a()
     {
         $seconds = 50;
         $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -2399,10 +3208,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -2476,6 +3285,119 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     // Two drivers - driver 1 has accepted order from Chipotle (with no waiting time).
     //  Both drivers are at the same location
     //  New Chipotle order comes in - driver 1 should get priority due to bundling.
+    public function testLogisticsSecondOrderSameLocationNoWaitA1b()
+    {
+        $seconds = 50;
+        $now1 = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now1->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now1->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+        $dow = $now->format('w');
+
+        // Only want 2 drivers for now
+        $this->driver3->active = false;
+        $this->driver3->save();
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $now1, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $now1, 10);
+
+        // Chipotle
+        $o1 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate2, $this->community);
+        $o1->lat = 34.0284;
+        $o1->lon = -118.287;
+        $o1->save();
+
+        // Chipotle
+        $o2 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $useDate1, $this->community);
+        $o2->lat = 34.0284;
+        $o2->lon = -118.287;
+        $o2->save();
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate2,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o2);
+        $ol->process();
+
+        $ops = Crunchbutton_Order_Priority::q('select * from order_priority where id_order = ?', [$o2->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver2->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+
+        $this->driver3->active = true;
+        $this->driver3->save();
+        $o1->delete();
+        $o2->delete();
+        $oa1->delete();
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $olc->delete();
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
+        }
+        $this->assertEquals($ops->count(), 2);
+
+        foreach ($ops as $op) {
+            if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            } else {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
+            }
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($olr1->count(), 5);
+        $this->assertEquals($olr2->count(), 3);
+    }
+
+
+
+    // Two drivers - driver 1 has accepted order from Chipotle (with no waiting time).
+    //  Both drivers are at the same location
+    //  New Chipotle order comes in - driver 1 should get priority due to bundling.
     public function testLogisticsSecondOrderSameLocationLongWaitA1()
     {
         $seconds = 50;
@@ -2510,10 +3432,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 30, 1, $dow);
@@ -2621,10 +3543,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 40, 1, $dow);
@@ -2732,10 +3654,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -2844,10 +3766,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 10, 1, $dow);
@@ -2955,10 +3877,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
@@ -3067,10 +3989,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 20, 1, $dow);
@@ -3178,10 +4100,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 30, 1, $dow);
@@ -3289,10 +4211,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 40, 1, $dow);
@@ -3400,10 +4322,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -3512,10 +4434,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 10, 1, $dow);
@@ -3623,10 +4545,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
@@ -3735,10 +4657,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 20, 1, $dow);
@@ -3846,10 +4768,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 30, 1, $dow);
@@ -3957,10 +4879,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 40, 1, $dow);
@@ -4068,10 +4990,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -4180,10 +5102,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 10, 1, $dow);
@@ -4291,10 +5213,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
@@ -4403,10 +5325,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 20, 1, $dow);
@@ -4511,10 +5433,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -4613,10 +5535,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -4716,10 +5638,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 30, 1, $dow);
@@ -4818,10 +5740,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 40, 1, $dow);
@@ -4920,10 +5842,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -5023,10 +5945,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 10, 1, $dow);
@@ -5125,10 +6047,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 15, 1, $dow);
@@ -5228,10 +6150,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 20, 1, $dow);
@@ -5340,10 +6262,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -5470,10 +6392,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -5596,10 +6518,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -5717,10 +6639,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -5839,10 +6761,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 10, 1, $dow);
@@ -5961,10 +6883,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 10, 1, $dow);
@@ -6091,10 +7013,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -6232,10 +7154,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -6353,10 +7275,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -6471,10 +7393,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -6587,10 +7509,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -6704,10 +7626,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -6833,10 +7755,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -6949,10 +7871,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -7060,10 +7982,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -7193,10 +8115,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -7332,10 +8254,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -7471,10 +8393,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -7609,10 +8531,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -7747,10 +8669,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -7886,10 +8808,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -8024,10 +8946,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -8036,10 +8958,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
         $olcs1->save();
 
-        $olp2 = $this->defaultOLP($this->restaurant4, $start, $end, 5, $dow);
+        $olp2 = $this->defaultOLP($this->restaurant4, $start, $end, 5, 5, 5, $dow);
         $olp2->save();
 
-        $ols2 = $this->defaultOLS($this->restaurant4, $start, $end, 5, $dow);
+        $ols2 = $this->defaultOLS($this->restaurant4, $start, $end, 5, 5, 5, $dow);
         $ols2->save();
 
         $olot2 = $this->defaultOLOT($this->restaurant4, $start, $end, 0, 1, $dow);
@@ -8180,10 +9102,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -8192,10 +9114,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
         $olcs1->save();
 
-        $olp2 = $this->defaultOLP($this->restaurant4, $start, $end, 5, $dow);
+        $olp2 = $this->defaultOLP($this->restaurant4, $start, $end, 5, 5, 5, $dow);
         $olp2->save();
 
-        $ols2 = $this->defaultOLS($this->restaurant4, $start, $end, 5, $dow);
+        $ols2 = $this->defaultOLS($this->restaurant4, $start, $end, 5, 5, 5, $dow);
         $ols2->save();
 
         $olot2 = $this->defaultOLOT($this->restaurant4, $start, $end, 0, 1, $dow);
@@ -8320,10 +9242,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -8332,10 +9254,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
         $olcs1->save();
 
-        $olp2 = $this->defaultOLP($this->restaurant4, $start, $end, 5, $dow);
+        $olp2 = $this->defaultOLP($this->restaurant4, $start, $end, 5, 5, 5, $dow);
         $olp2->save();
 
-        $ols2 = $this->defaultOLS($this->restaurant4, $start, $end, 5, $dow);
+        $ols2 = $this->defaultOLS($this->restaurant4, $start, $end, 5, 5, 5, $dow);
         $ols2->save();
 
         $olot2 = $this->defaultOLOT($this->restaurant4, $start, $end, 0, 1, $dow);
@@ -8454,10 +9376,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -8466,10 +9388,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
         $olcs1->save();
 
-        $olp2 = $this->defaultOLP($this->restaurant4, $start, $end, 5, $dow);
+        $olp2 = $this->defaultOLP($this->restaurant4, $start, $end, 5, 5, 5, $dow);
         $olp2->save();
 
-        $ols2 = $this->defaultOLS($this->restaurant4, $start, $end, 5, $dow);
+        $ols2 = $this->defaultOLS($this->restaurant4, $start, $end, 5, 5, 5, $dow);
         $ols2->save();
 
         $olot2 = $this->defaultOLOT($this->restaurant4, $start, $end, 0, 1, $dow);
@@ -8589,10 +9511,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -8693,10 +9615,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -8822,10 +9744,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -8959,10 +9881,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -8971,10 +9893,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
         $olcs1->save();
 
-        $olp2 = $this->defaultOLP($this->restaurant4, $start, $end, 5, $dow);
+        $olp2 = $this->defaultOLP($this->restaurant4, $start, $end, 5, 5, 5, $dow);
         $olp2->save();
 
-        $ols2 = $this->defaultOLS($this->restaurant4, $start, $end, 5, $dow);
+        $ols2 = $this->defaultOLS($this->restaurant4, $start, $end, 5, 5, 5, $dow);
         $ols2->save();
 
         $olot2 = $this->defaultOLOT($this->restaurant4, $start, $end, 0, 1, $dow);
@@ -9108,10 +10030,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -9120,10 +10042,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
         $olcs1->save();
 
-        $olp2 = $this->defaultOLP($this->restaurant4, $start, $end, 5, $dow);
+        $olp2 = $this->defaultOLP($this->restaurant4, $start, $end, 5, 5, 5, $dow);
         $olp2->save();
 
-        $ols2 = $this->defaultOLS($this->restaurant4, $start, $end, 5, $dow);
+        $ols2 = $this->defaultOLS($this->restaurant4, $start, $end, 5, 5, 5, $dow);
         $ols2->save();
 
         $olot2 = $this->defaultOLOT($this->restaurant4, $start, $end, 0, 1, $dow);
@@ -9256,10 +10178,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -9376,10 +10298,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -9501,10 +10423,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -9606,10 +10528,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -9731,10 +10653,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
         $end = '24:00:00';
-        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, $dow);
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $olp1->save();
 
-        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, $dow);
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
         $ols1->save();
 
         $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
@@ -9932,25 +10854,29 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     }
 
 
-    public function defaultOLP($restaurant, $start, $end, $duration = 5, $dow = 0)
+    public function defaultOLP($restaurant, $start, $end, $duration0 = 5, $duration1 = 5, $duration2 = 5, $dow = 0)
     {
         return new Crunchbutton_Order_Logistics_Parking([
             'id_restaurant' => $restaurant->id_restaurant,
             'time_start_community' => $start,
             'time_end_community' => $end,
             'day_of_week' => $dow,
-            'parking_duration' => $duration
+            'parking_duration0' => $duration0,
+            'parking_duration1' => $duration1,
+            'parking_duration2' => $duration2,
         ]);
     }
 
-    public function defaultOLS($restaurant, $start, $end, $duration = 5, $dow = 0)
+    public function defaultOLS($restaurant, $start, $end, $duration0 = 5, $duration1 = 5, $duration2 = 5, $dow = 0)
     {
         return new Crunchbutton_Order_Logistics_Service([
             'id_restaurant' => $restaurant->id_restaurant,
             'time_start_community' => $start,
             'time_end_community' => $end,
             'day_of_week' => $dow,
-            'service_duration' => $duration
+            'service_duration0' => $duration0,
+            'service_duration1' => $duration1,
+            'service_duration2' => $duration2
         ]);
     }
 
@@ -9988,11 +10914,15 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         ]);
     }
 
-    public function defaultScore($admin, $score = Cockpit_Admin_Score::DEFAULT_SCORE)
+    public function defaultScore($admin, $score = Cockpit_Admin_Score::DEFAULT_SCORE, $experience = Cockpit_Admin_Score::DEFAULT_EXPERIENCE)
     {
+        $qString = "SELECT * FROM `admin_score` WHERE id_admin= ? ";
+        $s = Cockpit_Admin_Score::q($qString, [$admin->id_admin]);
+        $s->delete();
         return new Cockpit_Admin_Score([
             'id_admin' => $admin->id_admin,
-            'score' => $score
+            'score' => $score,
+            'experience' => $experience
         ]);
     }
 
