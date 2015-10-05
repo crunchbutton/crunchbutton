@@ -3,28 +3,29 @@ FROM php:7.0-fpm
 ENV DOCKER=1
 ENV DEBUG=1
 
-EXPOSE 80
-
 RUN apt-get update && apt-get install -y \
         libmcrypt-dev \
         php-pear \
         curl \
         git \
-		nginx \
+		apache2
     && docker-php-ext-install iconv mcrypt \
 	&& docker-php-ext-install pdo pdo_mysql
 
 
-ADD conf/nginx.docker.conf /etc/nginx/sites-available/default
+ADD conf/apache2.docker.fpm.conf /etc/apache2/sites-enabled/000-default.conf
 RUN echo "cgi.fix_pathinfo = 0;" >> /usr/local/etc/php/conf.d/fix_pathinfo.ini
-#RUN echo "listen = /var/run/php5-fpm.sock" >> /usr/local/etc/php-fpm.conf
-RUN echo " \n\
-listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.conf
-#RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+RUN echo "listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.conf
+
 
 ADD ./ /var/www/app
-#RUN chown -R www-data:www-data /var/www/app
-#RUN chmod -R 0777 /var/www/app
+RUN mkdir /var/www/app/logs
+RUN chmod -R 0777 /var/www/app/cache
+
 #RUN ln -s /opt/www /var/www/app
 
-CMD nginx && php-fpm
+
+RUN a2enmod rewrite
+RUN a2enmod headers
+
+CMD apache2 && php-fpm

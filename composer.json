@@ -1,6 +1,5 @@
 {
 	"require": {
-		"php": "~7.0@beta",
 		"ext-mbstring": "*"
 	},
 	"require-dev": {
