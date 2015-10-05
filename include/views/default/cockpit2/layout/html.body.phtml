@@ -573,6 +573,22 @@
 		<div class="divider"></div>
 	</div>
 
+	<!-- Notification new order -->
+	<div class="notification-new-order-container zoom-anim-dialog mfp-hide dialog" ng-controller="NotificationNewOrderCtrl">
+		<h1>New Order</h1>
+		<p ng-bind-html-unsafe="message" class="small-message"></p>
+		<div>
+			<button ng-click="accept()" class="button green">Accept</button>
+		</div>
+		<br>
+		<div class="double-cols">
+			<button ng-click="view()" class="button lightorange">View</button>
+			<button ng-click="close()" class="button light-gray">Close</button>
+			<br>
+		</div>
+		<div class="divider"></div>
+	</div>
+
 
 	<!-- SMS vs Phone -->
 	<div class="notification-call-text-container zoom-anim-dialog mfp-hide dialog" ng-controller="CallText">

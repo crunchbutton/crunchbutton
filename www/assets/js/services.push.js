@@ -31,16 +31,15 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 	};
 
 	service.register = function(complete) {
-		
+
 		if (!complete) {
 			complete = function(){};
 		}
-		
+
 		service.plugin = window.parent.PushNotification.init({'android': {'senderID': '1029345412368'}, 'ios': {}, 'windows': {} } );
 		console.debug('register push');
 
 		service.plugin.on('registration', function(data) {
-			console.debug('resgistration callback', data);
 			saveToken(data, complete);
 		});
 
@@ -56,9 +55,9 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 
 
 	service.receive = function(msg) {
-		
+
 		console.debug(msg);
-		
+
 		var gotoLink = function() {
 			$rootScope.$safeApply(function() {
 				switch (msg.additionalData.linkTarget) {
@@ -70,16 +69,16 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 						break;
 					default:
 						MainNavigationService.link(msg.additionalData.link);
-						break;		
+						break;
 				}
 			});
 		};
-		
+
 		// if the user clicked on the notification
 		if (msg.additionalData && msg.additionalData.link && !msg.additionalData.foreground) {
 			gotoLink();
 		}
-		
+
 		// if we are in the foreground and we are forcing showing in foreground
 		if (msg.additionalData && msg.additionalData.foreground && msg.additionalData.showInForeground) {
 			var fn = null;
