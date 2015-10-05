@@ -537,7 +537,7 @@
 			</div>
 
 			<div class="snap-content-inner bg" ng-scroll-position>
-				<div class="content" ng-scroll-spy>
+				<div class="content" ng-class="{'support-side-open': supportToggled }" ng-scroll-spy>
 					<div ng-view id="ng-view" class="view-animate"><?=$this->content?></div>
 				</div>
 

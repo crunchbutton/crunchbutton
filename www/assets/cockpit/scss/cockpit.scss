@@ -2494,6 +2494,47 @@ b, strong{ font-weight: bold; }
 	box-sizing: border-box;
 }
 
+@media(min-width:600px) and (max-width: 850px){
+	.field-container .field-row{
+		display:block !important;
+	}
+	.field-container .field-row .field-key{
+		font-size:.9em;
+		display: block;
+		font-weight: bold;
+	}
+	.field-container .field-row .field-value{
+		display: block;
+		text-align: left !important;
+	}
+
+	.quadruple-cols .button .label{
+		display:none;
+	}
+}
+@media(min-width:850px) and (max-width: 1300px){
+
+	.support-side-open .content-padding .support-boxes .field-container .field-row{
+		display:block !important;
+	}
+	.support-side-open .content-padding .support-boxes .field-container .field-row .field-key{
+		font-size:.9em;
+		display: block;
+		font-weight: bold;
+	}
+	.support-side-open .content-padding .support-boxes .field-container .field-row .field-value{
+		display: block;
+		text-align: left !important;
+	}
+
+	.support-side-open .content-padding .support-boxes .quadruple-cols .button .label{
+		display:none;
+	}
+}
+
+
+
+
 @media(max-width:699px) {
 	.support-box-wrap {
 		width: 100%;
@@ -3732,13 +3773,13 @@ input[type="checkbox"].switch + div:before {
 		visibility: none;
 	}
 
-	
+
 	.view-animate.ng-enter {
-		
+
 		-webkit-transform: translate3d(100%, 0, 0);
 	}
 	.view-animate.ng-leave {
-		
+
 	}
 	.view-animate.ng-enter.ng-enter-active {
 		-webkit-transform: translate3d(0, 0, 0);
@@ -3746,7 +3787,7 @@ input[type="checkbox"].switch + div:before {
 	.view-animate.ng-leave.ng-leave-active {
 		-webkit-transform: translate3d(-100%, 0, 0);
 	}
-	
+
 	body.back .view-animate.ng-enter {
 		-webkit-transform: translate3d(-100%, 0, 0);
 	}
