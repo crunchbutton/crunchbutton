@@ -484,20 +484,21 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		return $out;
 	}
 
-    public function score() {
-        $qString = "SELECT * FROM `admin_score` WHERE id_admin= ? ";
-        $s = Cockpit_Admin_Score::q($qString, [$this->id_admin,]);
-        if (is_null($s) || $s->count()==0){
-            $sc = new Cockpit_Admin_Score([
-                'id_admin' => $this->id_admin,
-                'score' => Cockpit_Admin_Score::DEFAULT_SCORE
-            ]);
-            $sc->save();
-            return $sc->score;
-        } else{
-            return $s->get(0)->score;
-        }
-    }
+	public function score() {
+		$qString = "SELECT * FROM `admin_score` WHERE id_admin= ? ";
+		$s = Cockpit_Admin_Score::q($qString, [$this->id_admin,]);
+		if (is_null($s) || $s->count()==0){
+			$sc = new Cockpit_Admin_Score([
+				'id_admin' => $this->id_admin,
+				'score' => Cockpit_Admin_Score::DEFAULT_SCORE,
+				'experience' => Cockpit_Admin_Score::DEFAULT_EXPERIENCE
+			]);
+			$sc->save();
+			return $sc;
+		} else{
+			return $s->get(0);
+		}
+	}
 
 	public function __construct($id = null) {
 		$this->_changeSetName = 'Cockpit_Admin';
