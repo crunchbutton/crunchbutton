@@ -127,9 +127,7 @@
 							Receipt
 						</div>
 						<div class="field-value">
-							<label class="switch-wrap">
-								<a href="/vieworder/{{order.uuid}}/customer" target="_blank">Customer Receipt</a>
-							</label>
+							<a href="/vieworder/{{order.uuid}}/customer" target="_blank">Customer Receipt</a>
 						</div>
 					</div>
 
@@ -139,11 +137,13 @@
 
 				<br><br>
 				<div class="quadruple-cols">
-					<button class="button button-empty button-border button-orange" ng-if="order.user.id_user" ng-class="{'button-disabled': isRefunding || order.refunded}" ng-click="refund()"><i class="fa fa-heart"></i>&nbsp;&nbsp;Refund</button>
-					<button ng-click="resend_notification_drivers();" class="button button-empty button-border button-green" ng-class="{'button-disabled': isDriverNotifying || !order.delivery_service || (order.delivery_service && ( order.status.status == 'pickedup' || order.status.status == 'accepted' || order.status.status == 'delivered' || order.status.status == 'transfered' ))}"><i class="fa fa-car"></i>&nbsp;&nbsp;Notify</button>
-					<button ng-click="resend_notification();" class="button button-empty button-border button-blue" ng-class="{'button-disabled': isRestaurantNotifying || order.confirmed || (order.restaurant.delivery_service && !order.restaurant.formal_relationship && !order.restaurantorder_notifications_sent)}"><i class="fa fa-coffee"></i>&nbsp;&nbsp;Notify</button>
-					<button ng-click="creditDialog( order.id_user );" class="button button-empty button-border button-orange"><i class="fa fa-gift"></i>&nbsp;&nbsp;Gift Card</button>
+					<button class="button button-empty button-border button-orange" ng-if="order.user.id_user" ng-class="{'button-disabled': isRefunding || order.refunded}" ng-click="refund()"><i class="fa fa-heart"></i><span class="label">&nbsp;&nbsp;Refund</span>
+					</button>
+					<button ng-click="resend_notification_drivers();" class="button button-empty button-border button-green" ng-class="{'button-disabled': isDriverNotifying || !order.delivery_service || (order.delivery_service && ( order.status.status == 'pickedup' || order.status.status == 'accepted' || order.status.status == 'delivered' || order.status.status == 'transfered' ))}"><i class="fa fa-car"></i><span class="label">&nbsp;&nbsp;Notify</span></button>
+					<button ng-click="resend_notification();" class="button button-empty button-border button-blue" ng-class="{'button-disabled': isRestaurantNotifying || order.confirmed || (order.restaurant.delivery_service && !order.restaurant.formal_relationship && !order.restaurantorder_notifications_sent)}"><i class="fa fa-coffee"></i><span class="label">&nbsp;&nbsp;Notify</span></button>
+					<button ng-click="creditDialog( order.id_user );" class="button button-empty button-border button-orange"><i class="fa fa-gift"></i><span class="label">&nbsp;Gift Card</span></button>
 				</div>
+				<div class="divider"></div>
 			</div>
 		</div>
 
@@ -170,7 +170,7 @@
 				</div>
 				<div class="divider"></div>
 			</div>
-
+			<div class="divider"></div>
 			<div class="no-box-content-color" ng-if="order.actions.length">
 				<table align="right" class="basic-table detail">
 					<tr>
@@ -208,6 +208,7 @@
 					<tr><td>	</td></tr>
 				</table>
 			</div>
+			<div class="divider"></div>
 		</div>
 
 		<? /* contents */ ?>
@@ -261,6 +262,7 @@
 
 
 			</div>
+			<div class="divider"></div>
 		</div>
 
 		<? /* customer */ ?>
