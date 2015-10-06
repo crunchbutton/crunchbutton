@@ -184,7 +184,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 
 	$scope.update = function() {
 		console.debug('Updating drivers orders...');
-		$scope.unBusy();
+
 		DriverOrdersService.list(function(data) {
 			$scope.driverorders = data;
 			for (var x in $scope.driverorders) {
@@ -192,6 +192,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 					$scope.driverorders[x].addressFirstLine = $scope.driverorders[x].address.split(',').shift();
 				}
 			}
+			setTimeout( function(){ $scope.unBusy(); }, 500 );
 			$scope.ready = true;
 		});
 	};
