@@ -6,17 +6,17 @@
 
 			<div class="dialog-padding account-modal">
 
-				<p>What restaurants should we add?</p>
+				<p class="suggestion-header">What restaurants should we add?</p>
 
 				<div class="support-form-group form-group">
-					<textarea ng-focus="softKeyboardModal($event)" ng-model="suggestion.add_more_content" class="form-input form-field"></textarea>
+					<textarea ng-autosize ng-focus="softKeyboardModal($event)" ng-model="suggestion.add_more_content" class="form-input form-field"></textarea>
 				</div>
-
 			</div>
+			<div class="dialog-divider"></div>
 
 			<div class="dialog-padding dialog-bottom-buttons">
 				<div class="button-pushable">
-					<button class="button green" ng-click="send_form();">Add more restaurants!</button>
+					<button class="button green" ng-click="send_form();">Please add!</button>
 				</div>
 			</div>
 
@@ -25,7 +25,7 @@
 		<div ng-if="tab == 'thank-you'">
 
 			<div class="dialog-padding">
-				<p><strong>Thank you!</strong></p>
+				<p class="suggestion-thanks">Thank you!</p>
 				<div class="location-gorillia animated-resize shake"></div>
 				<button class="button green" ng-click="close()">Get me out of here</button>
 			</div>
