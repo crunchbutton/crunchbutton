@@ -4055,6 +4055,13 @@ font-familt: "Museo Slab";
 	.button-refer {
 		width: 48%;
 	}
+	.refer-multiply {
+		text-align: center;
+		font-size: 1.4em;
+		font-weight: bold;
+		display: block;
+		margin-bottom :.6em;
+	}
 
 	.user-account-credit .delivery-free, .account-your-orders, .order-buttons .delivery-free {
 		font-size: 2em;
@@ -4522,13 +4529,13 @@ textarea {
 	100%{}
 }
 .suggestion-text {
-	font-weight: bold;
-	font-size: 1em;
 	margin-bottom: .5em;
 	margin-top: 1em;
-	float: left;
 }
-	.suggestion-text .link{
-		text-decoration:underline;
-		cursor:pointer;
-	}
+.suggestion-thanks {
+	text-align: center;
+}
+ .suggestion-header {
+	 margin-top: 0;
+	 margin-bottom: .5em;
+ }
