@@ -95,19 +95,26 @@
 					</div>
 					<div class="hide-mobile">
 						<p>
-							Want more points? Share on Facebook or Twitter for double points<span ng-if="referral.invite_url && referral.enabled">, and earn free delivery for any friends you refer</span>.
+							Want more points? Share on Facebook or Twitter and earn extra points<span ng-if="referral.invite_url && referral.enabled">, plus earn free delivery for any friends you refer</span>.
 							<br><br>
 						</p>
 
 						<div class="col-box">
+							
+							<div class="button-refer">
+								<span class="refer-multiply">Double Points</span>
+								<button class="button facebook" ng-click="referral.facebook('order');" ng-if="account.user.has_auth && !order.reward.shared.facebook">
+									<i class="fa fa-facebook-square"></i> <span>Share</span>
+								</button>
+							</div>
 
-							<button class="button facebook button-refer" ng-click="referral.facebook('order');" ng-if="account.user.has_auth && !order.reward.shared.facebook">
-								<i class="fa fa-facebook-square"></i> <span>Share</span>
-							</button>
+							<div class="button-refer">
+								<span class="refer-multiply">Tripple Points</span>
+								<button class="button twitter" ng-click="referral.twitter('order')" ng-if="account.user.has_auth && !order.reward.shared.twitter">
+									<i class="fa fa-twitter-square"></i> <span>Tweet</span>
+								</button>
+							</div>
 
-							<button class="button twitter button-refer" ng-click="referral.twitter('order')" ng-if="account.user.has_auth && !order.reward.shared.twitter">
-								<i class="fa fa-twitter-square"></i> <span>Tweet</span>
-							</button>
 						</div>
 
 						<div ng-if="order.reward.shared.facebook">
