@@ -93,23 +93,36 @@
 							<span ng-if="account.user.points.away_free_delivery > 0"> You are <strong>{{account.user.points.away_free_delivery}}</strong> points away from a free delivery.</span>
 						</p>
 					</div>
-					<div class="hide-mobile">
+					<div class="hide-desktop"><br></div>
+					<div>
 						<p>
 							Want more points? Share on Facebook or Twitter and earn extra points<span ng-if="referral.invite_url && referral.enabled">, plus earn free delivery for any friends you refer</span>.
 							<br><br>
 						</p>
+						
+
+						<div class="hide-desktop button-refer">
+
+							<a href="{{referral.sms}}">
+								<button class="button lightorange">
+									<i class="fa fa-comment"></i>&nbsp;&nbsp;&nbsp;<span>Invite Friends</span>
+								</button>
+							</a>
+						</div>
 
 						<div class="col-box">
 							
 							<div class="button-refer">
-								<span class="refer-multiply">Double Points</span>
+								<span class="refer-multiply hide-mobile">Double Points</span>
+								<span class="refer-multiply-small hide-desktop">Double your points by sharing on Facebook</span>
 								<button class="button facebook" ng-click="referral.facebook('order');" ng-if="account.user.has_auth && !order.reward.shared.facebook">
 									<i class="fa fa-facebook-square"></i> <span>Share</span>
 								</button>
 							</div>
 
 							<div class="button-refer">
-								<span class="refer-multiply">Tripple Points</span>
+								<span class="refer-multiply hide-mobile">Triple Points</span>
+								<span class="refer-multiply-small hide-desktop">Triple them by sharing on Twitter</span>
 								<button class="button twitter" ng-click="referral.twitter('order')" ng-if="account.user.has_auth && !order.reward.shared.twitter">
 									<i class="fa fa-twitter-square"></i> <span>Tweet</span>
 								</button>
@@ -129,15 +142,6 @@
 					</div>
 
 
-					<div class="hide-desktop">
-						<p class="order-earn-mobile">Earn a free delivery for every friend you recruit!</p>
-						<br>
-						<a href="{{referral.sms}}">
-							<button class="button lightorange">
-								<i class="fa fa-comment"></i>&nbsp;&nbsp;&nbsp;<span>Invite Friends</span>
-							</button>
-						</a>
-					</div>
 
 				</div>
 			</div>
