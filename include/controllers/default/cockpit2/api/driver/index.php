@@ -12,6 +12,16 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 			$this->_requested();
 		}
 
+		if( c::getPagePiece(2) == 'all' ){
+			$out = [];
+			$drivers = Admin::drivers();
+			foreach( $drivers as $driver ){
+				$out[] = [ 'id_admin' => intval( $driver->id_admin ), 'name' => $driver->name ];
+			}
+			echo json_encode( $out );
+			exit();
+		}
+
 		if (preg_replace('/[^a-z0-9]/i','',c::getPagePiece(2)) == c::getPagePiece(2) && c::getPagePiece(2) && c::admin()->permission()->check( ['global','drivers-assign', 'drivers-all'] )) {
 			$driver = Admin::o((int)c::getPagePiece(2) );
 			if (!$driver->id_admin) {

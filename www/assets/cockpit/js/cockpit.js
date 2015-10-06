@@ -1296,6 +1296,8 @@ NGApp.filter('propsFilter', function() {
 });
 
 
+var loadImage = new Image()
+loadImage.src = '/assets/images/ajax_loader_orange_512.gif';
 
 if (parent.window.getAppVersion) {
 	parent.window.getAppVersion(function(v) {

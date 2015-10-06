@@ -211,6 +211,12 @@
 		<div class="support-box-wrap box-content2" ng-if="ticket.staff.delivering" class="support-box-wrap">
 			<div class="support-box-wrap-header">
 				<h1>Delivering</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/orders?limit=20&page=1&fullcount=false&search=&restaurant=&community=&driver={{ticket.staff.id_admin}}&date=&view=list&datestart=&dateend=&user=&phone="><button class="button button-small button-empty button-green"><i class="fa fa-car"></i>&nbsp;&nbsp;All Orders Delivered by This Driver</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
 				<div class="divider"></div>
 			</div>
 

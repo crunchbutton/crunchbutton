@@ -20,6 +20,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		$search = $this->request()['search'] ? $this->request()['search'] : '';
 		$page = $this->request()['page'] ? $this->request()['page'] : 1;
 		$user = $this->request()['user'] ? $this->request()['user'] : null;
+		$driver = $this->request()['driver'] ? $this->request()['driver'] : null;
 		$phone = $this->request()['phone'] ? $this->request()['phone'] : null;
 		$datestart = $this->request()['datestart'] ? $this->request()['datestart'] : null;
 		$dateend = $this->request()['dateend'] ? $this->request()['dateend'] : null;
@@ -55,6 +56,17 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			LEFT JOIN admin ON admin.id_admin=order_action.id_admin
 			LEFT JOIN phone ON phone.id_phone=`order`.id_phone
 
+		';
+
+		if( $driver ){
+			$q .= '
+				INNER JOIN order_action oa ON oa.id_order = `order`.id_order AND oa.type = ? AND oa.id_admin = ?
+			';
+			$keys[] = Crunchbutton_Order_Action::DELIVERY_ACCEPTED;
+			$keys[] = $driver;
+		}
+
+		$q .= '
 			WHERE `order`.id_restaurant IS NOT NULL
 		';
 
