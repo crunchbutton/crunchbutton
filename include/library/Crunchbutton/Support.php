@@ -900,6 +900,15 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			}
 		}
 
+		$communities = $admin->communitiesHeDeliveriesFor();
+		if( $communities ){
+			$out[ 'staff' ][ 'communities' ] = [];
+			foreach( $communities as $community ){
+				$out[ 'staff' ][ 'communities' ][] = $community->name;
+			}
+		}
+
+
 		if( $out['restaurant'] || $out['order'] || $out['staff'] ){
 			if( $out['restaurant'] ){
 				$id_community = $out['restaurant'][ 'id_community' ];
