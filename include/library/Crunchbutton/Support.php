@@ -908,7 +908,6 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			}
 		}
 
-
 		if( $out['restaurant'] || $out['order'] || $out['staff'] ){
 			if( $out['restaurant'] ){
 				$id_community = $out['restaurant'][ 'id_community' ];
