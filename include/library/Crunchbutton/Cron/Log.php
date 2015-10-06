@@ -162,7 +162,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 	}
 
 	public function warning( $params ){
-		$email = new Crunchbutton_Email( [ 	'to' => 'daniel@_DOMAIN_,_USERNAME_',
+		$email = new Crunchbutton_Email( [ 	'to' => 'dev@_DOMAIN_,_USERNAME_',
 																				'from' => 'support@_DOMAIN_',
 																				'subject' => 'Cron Job Error',
 																				'messageHtml' => $params[ 'body' ],
