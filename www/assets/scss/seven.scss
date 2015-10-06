@@ -4055,13 +4055,7 @@ font-familt: "Museo Slab";
 	.button-refer {
 		width: 48%;
 	}
-	.refer-multiply {
-		text-align: center;
-		font-size: 1.4em;
-		font-weight: bold;
-		display: block;
-		margin-bottom :.6em;
-	}
+
 
 	.user-account-credit .delivery-free, .account-your-orders, .order-buttons .delivery-free {
 		font-size: 2em;
@@ -4181,6 +4175,25 @@ font-familt: "Museo Slab";
 	.order-map-wrap {
 		float: right;
 		width: 40%;
+	}
+}
+
+	.refer-multiply {
+		text-align: center;
+		font-size: 1.4em;
+		font-weight: bold;
+		display: block;
+		margin-bottom :.6em;
+	}
+.refer-multiply-small {
+	font-size: 1.2em;
+	display: block;
+	margin-bottom :.6em;
+	font-weight: 600;
+}
+@media screen and (max-width: 1024px) {
+	.button-refer {
+		margin-bottom: 1em;
 	}
 }
 @media screen and (max-width: 1024px) {
