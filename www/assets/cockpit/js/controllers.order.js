@@ -26,7 +26,7 @@ NGApp.controller('OrdersCampusManagerCtrl', function($scope, $controller) {
 	$scope.showSearchByPlaces = false;
 });
 
-NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewListService, SocketService, MapService, TicketService, RestaurantService, CommunityService) {
+NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewListService, SocketService, MapService, TicketService, RestaurantService, CommunityService, DriverService) {
 
 	$scope.regularList = true;
 	$scope.showSearchByPlaces = true;
@@ -88,6 +88,7 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 			search: '',
 			restaurant: '',
 			community: '',
+			driver: '',
 			date: '',
 			view: 'list',
 			datestart: '',
@@ -102,6 +103,9 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 				$scope.complete(d);
 				draw();
 			});
+			if( ( $scope.query.community || $scope.query.restaurant || $scope.query.driver ) && !$scope.show_more_options ){
+				$scope.moreOptions();
+			}
 		}
 	});
 
@@ -113,7 +117,6 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 		OrderService.exports( params, function(){
 		} );
 	}
-
 
 	$scope.moreOptions = function(){
 		$scope.show_more_options = !$scope.show_more_options;
@@ -130,6 +133,12 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 			if( !$scope.communities ){
 				CommunityService.listSimple( function( json ){
 					$scope.communities = json;
+				} );
+			}
+
+			if( !$scope.drivers ){
+				DriverService.listSimple( function( json ){
+					$scope.drivers = json;
 				} );
 			}
 		}
