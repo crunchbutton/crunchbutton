@@ -148,7 +148,6 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 		DriverOrdersService.get( function( json ){
 			service.order = json;
 			service.ready = true;
-			$rootScope.unBusy();
 			var totalTake = 0;
 			totalTake = (1 * json._tip) + (1 * json.delivery_fee);
 			$rootScope.driverTake = { total: totalTake };
@@ -156,6 +155,7 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 			if( callback ){
 				callback();
 			}
+			$rootScope.unBusy();
 		});
 	}
 
