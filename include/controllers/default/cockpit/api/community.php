@@ -25,12 +25,22 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 					case 'dont-warn-till':
 						$this->dontWarnTill();
 						break;
+					case 'position':
+						$this->position();
+						break;
 				}
 
 			break;
 			default:
 				echo json_encode( [ 'error' => 'invalid object' ] );
 			break;
+		}
+	}
+
+	public function position(){
+		$community = Community::o( c::getPagePiece( 3 ) );
+		if( $community->id_community ){
+			echo json_encode( [ 'lat' => $community->loc_lat, 'lon' => $community->loc_lon ] );exit;
 		}
 	}
 
