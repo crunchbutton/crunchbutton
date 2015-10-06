@@ -47,7 +47,7 @@
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton</db>
-			<host>45.56.89.9</host>
+			<host>96.126.99.119</host>
 			<prefix></prefix>
 			<encrypted>true</encrypted>
 		</crondb>
@@ -73,10 +73,6 @@
 			<host>localhost</host>
 			<prefix></prefix>
 		</travis>
-		<travispostgres>
-			<dsn>pgsql:host=localhost;dbname=crunchbutton_travis;user=postgres</dsn>
-			<type>PostgreSQL</type>
-		</travispostgres>
 	</db>
 	<defaults>
 		<page>home</page>
