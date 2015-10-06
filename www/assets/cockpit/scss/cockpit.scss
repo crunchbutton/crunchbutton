@@ -4366,3 +4366,40 @@ h1.title.box-title {
 .text-success{ color:#3c763d; }
 .text-info{ color:#23c6c8; }
 .text-danger{ color:#de5750; font-weight: bold; }
+
+
+
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px)  {
+
+	/* Force table to not be like tables anymore */
+	table.tb-zebra, table.tb-zebra thead, table.tb-zebra tbody, table.tb-zebra th, table.tb-zebra td, table.tb-zebra tr {
+		display: block;
+	}
+
+	/* Hide table headers (but not display: none;, for accessibility) */
+	table.tb-zebra tr th{
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+
+	table.tb-zebra td {
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee;
+		position: relative;
+		padding-left: 50%;
+	}
+
+	table.tb-zebra td:before {
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%;
+		padding-right: 10px;
+		white-space: nowrap;
+	}
+
+}
