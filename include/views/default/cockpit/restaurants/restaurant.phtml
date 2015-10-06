@@ -236,7 +236,12 @@
 								Longitude (automagically calculated) <input id="restaurant-lng" type="input">
 							</div>
 
+							<div class="admin-item-col-med">
+								How far from community (miles)<input id="restaurant-community-distance" type="input">
+							</div>
+
 							<div class="admin-item-col-large">
+								<br>
 								<div class="admin-map" id="restaurant-map">
 								</div>
 							</div>
@@ -1386,7 +1391,67 @@ $( document ).ready( function(){
 		isDeliveryServiceChecked();
 	} );
 
+	$( '#restaurant-id-community' ).change( function(){
+		var value = $(this).val();
+		getCommunityPosition( value );
+	} );
+
 } );
+
+var community_pos = {};
+
+function getCommunityPosition(){
+	var id_community = $( '#restaurant-id-community' ).val();
+	if( id_community ){
+		var url = '/api/community/position/' + id_community;
+		$.ajax( { url: url }).done( function( json ) { community_pos = json; calcCommunityDistance(); });
+	}
+}
+
+function calcCommunityDistance(){
+
+	if( community_pos.lat && community_pos.lon ){
+		var restauran_lat = $( '#restaurant-lat' ).val();
+		var restauran_lon = $( '#restaurant-lng' ).val();
+		if( restauran_lat && restauran_lon ){
+
+			var toRad = function( number ){
+				return number * Math.PI / 180;
+			}
+
+			var km2Miles = function (km) {
+				return km * 0.621371;
+			}
+
+			var calc = function() {
+				try {
+					var R = 6371; // Radius of the earth in km
+					var dLat = toRad( restauran_lon - restauran_lat );
+					var dLon = toRad( community_pos.lon - community_pos.lat );
+					var a = Math.sin( dLat / 2 ) * Math.sin( dLat / 2 ) +
+						Math.cos( toRad( restauran_lat ) ) * Math.cos( toRad( restauran_lon) ) * Math.sin( dLon / 2 ) * Math.sin( dLon / 2 );
+					var c = 2 * Math.atan2( Math.sqrt( a ), Math.sqrt( 1 - a ) );
+					var d = R * c;
+					return km2Miles( d ).toFixed(2);
+				} catch (e) {
+					console.log( 'distance::error', e );
+				}
+			}
+
+			var distance = calc();
+			console.log('distance',distance);
+			if( distance ){
+				$( '#restaurant-community-distance' ).val( distance );
+			} else {
+				$( '#restaurant-community-distance' ).val( '' );
+			}
+
+		}
+	} else {
+		getCommunityPosition();
+	}
+}
+
 
 function isDeliveryServiceChecked(){
 	return;

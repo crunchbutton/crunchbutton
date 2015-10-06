@@ -1191,6 +1191,7 @@ var ADMIN = {
 				$('#restaurant-address').val(data[0].formatted_address);
 				$('#restaurant-lat').val(data[0].geometry.location.lat());
 				$('#restaurant-lng').val(data[0].geometry.location.lng());
+				calcCommunityDistance();
 				map = new google.maps.Map(
 						$('#restaurant-map')[0],
 						{
@@ -1231,6 +1232,12 @@ var ADMIN = {
 					$( '#save-button' ).html( 'Save' );
 					ADMIN.isRestaurantLoaded = true;
 					ADMIN.restaurant_update_closed_open();
+
+
+					setTimeout( function(){
+						getCommunityPosition()
+					}, 1000 );
+
 				});
 	},
 	restaurant_update_closed_open : function(){
