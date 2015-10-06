@@ -317,7 +317,12 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		$payment_type = $staff->payment_type();
 		$out[ 'payment_type' ] = $payment_type->payment_type;
-		$out[ 'hour_rate' ] = intval( $payment_type->hour_rate );
+		if( $out[ 'payment_type' ] == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ||
+		 		$out[ 'payment_type' ] == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS_WITHOUT_TIPS ||
+		 		$out[ 'payment_type' ] == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_MAKING_WHOLE ){
+			$out[ 'hour_rate' ] = intval( $payment_type->hour_rate );
+		}
+
 		$out['stripe_id'] = $payment_type->stripe_id;
 
 		if( $staff->driver_info()->pexcard_date ){
