@@ -43,7 +43,7 @@ class Cockpit_Driver_Notify extends Cana_Table {
 
 			case Cockpit_Driver_Notify::TYPE_ACCESS_INFO:
 				$message_type = Cockpit_Driver_Notify::TYPE_ACCESS_INFO;
-				$message = "Welcome " . $first_name . "! \nYour username is {$username}.";
+				$message = "Welcome " . $first_name . "\nYour username is {$username}.";
 				$message .= "\n" . "Your password is {$additional}.";
 				$message .= "\n" . "Url http://cockpit.la/";
 				// $message .= "\n" . "Make sure to enable push and location services.";
