@@ -517,7 +517,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return [ 'community' => $total, 'all' => $all, 'percent' => $percent ];
 	}
 
-	public function closedSince(){
+	public function closedSince( $sortDate = false ){
 		$force_closed_times = Crunchbutton_Community_Changeset::q('
 			SELECT ccs.*, cc.field FROM community_change cc
 			INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = ?
@@ -530,6 +530,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			foreach( $force_closed_times as $force_close ){
 				$output = [];
 				$closed_at = $force_close->date();
+				if( $sortDate ){
+					$output[ 'sort_date' ] = $closed_at->format( 'YmdHis' );
+				}
 				$output[ 'closed_at' ] = $closed_at->format( 'M jS Y g:i:s A T' );
 				$closed_by = $force_close->admin()->name;
 				if( !$closed_by ){
@@ -559,6 +562,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				$closed_at = new DateTime( $this->close_all_restaurants_date, new DateTimeZone( c::config()->timezone ) );
 				$output[ 'type' ] = 'Close All Restaurants';
 				$output[ 'closed_at' ] = $closed_at->format( 'M jS Y g:i:s A T' );
+				if( $sortDate ){
+					$output[ 'sort_date' ] = $closed_at->format( 'YmdHis' );
+				}
 				$output[ 'closed_by' ] = Admin::o( $this->close_all_restaurants_id_admin )->name;
 				$output[ 'note' ] = $this->close_all_restaurants_note;
 				$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
@@ -571,6 +577,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				if( $this->close_3rd_party_delivery_restaurants_date ){
 					$closed_at = new DateTime( $this->close_3rd_party_delivery_restaurants_date, new DateTimeZone( c::config()->timezone ) );
 					$output[ 'closed_at' ] = $closed_at->format( 'M jS Y g:i:s A T' );
+					if( $sortDate ){
+						$output[ 'sort_date' ] = $closed_at->format( 'YmdHis' );
+					}
 					$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 					$interval = $now->diff( $closed_at );
 					$output[ 'how_long' ] = Crunchbutton_Util::format_interval( $interval );
