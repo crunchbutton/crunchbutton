@@ -70,12 +70,16 @@
 					</li>
 
 
-
 					<li class="li-input" ng-class="{'error':form.communityAutoClose.$invalid}">
 						<div class="label">Enable Auto Close:</div>
 						<div class="input">
 							<select name="communityAutoClose" required ng-model="community.auto_close" ng-options="opt.value as opt.label for opt in yesNo" ></select>
 						</div>
+					</li>
+
+					<li class="li-input" ng-show="community.auto_close">
+						<div class="label">Customize Auto-Closed message:</div>
+						<div class="input"><input type="text" name="communityAutoClosePredefinedMessage" ng-model="community.auto_close_predefined_message"  placeholder="Customize Auto-Closed message" maxlength="200" ></div>
 					</li>
 
 					<li class="li-input" ng-class="{'error':form.communityImage.$invalid}">

@@ -1,0 +1,1 @@
+ALTER TABLE `community` ADD COLUMN `auto_close_predefined_message` varchar(250) DEFAULT NULL;
