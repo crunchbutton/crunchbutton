@@ -158,7 +158,7 @@
 
 					<li class="li-input" ng-class="{'error':formBasic.summaryEmail.$invalid}">
 						<div class="label">Summary Email:</div>
-						<div class="input"><input type="text" ng-required="restaurant.payment_type.summary_method == 'email'" name="summaryEmail" maxlength="250" ng-model="restaurant.payment_type.summary_email"></div>
+						<div class="input"><input type="email" ng-required="restaurant.payment_type.summary_method == 'email'" name="summaryEmail" maxlength="250" ng-model="restaurant.payment_type.summary_email"></div>
 						<div class="box-error">
 							<small ng-show="formBasic.summaryEmail.$error.required">Required.</small>
 						</div>
