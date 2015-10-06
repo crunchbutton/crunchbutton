@@ -898,13 +898,12 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			if( $note ){
 				$out[ 'staff' ][ 'note' ] = $note->exports();
 			}
-		}
-
-		$communities = $admin->communitiesHeDeliveriesFor();
-		if( $communities ){
-			$out[ 'staff' ][ 'communities' ] = [];
-			foreach( $communities as $community ){
-				$out[ 'staff' ][ 'communities' ][] = $community->name;
+			$communities = $admin->communitiesHeDeliveriesFor();
+			if( $communities ){
+				$out[ 'staff' ][ 'communities' ] = [];
+				foreach( $communities as $community ){
+					$out[ 'staff' ][ 'communities' ][] = $community->name;
+				}
 			}
 		}
 
