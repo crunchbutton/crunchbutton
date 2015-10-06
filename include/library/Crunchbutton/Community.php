@@ -867,7 +867,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 						$hasDriverThatDidntCheckin = true;
 					}
 				}
-				if( $hasDriverThatDidntCheckin ){
+
+				if( $this->auto_close_predefined_message ){
+					$message = $this->auto_close_predefined_message;
+				} else if( $hasDriverThatDidntCheckin ){
 					$message = 'Back Soon!';
 				} else {
 					$nextShift = Crunchbutton_Community_Shift::nextAssignedShiftByCommunity( $this->id_community );
