@@ -5,67 +5,65 @@
 	<h1 class="title"><i class="fa fa-bar-chart"></i>Metrics<div class="title-loader" ng-if="loading"></h1>
 
 	<div class="support-box-wrap box-content2">
-		<form>
-			<div class="support-box-wrap-header">
-				<h1>Settings</h1>
-				<div class="divider"></div>
-			</div>
 
-			<div class="no-box-content-color">
-				<ul class="ul-inputs">
-					<li class="li-input">
-						<div class="label">Start:</div>
-						<div class="input"><input type="date" name="staffName" ng-model="settings.start" ></div>
-					</li>
-					<li class="li-input">
-						<div class="label">End:</div>
-						<div class="input"><input type="date" name="staffName" ng-model="settings.end" ></div>
-					</li>
-					<!-- settings.communities::{{settings.communities}} -->
+		<div class="support-box-wrap-header">
+			<h1>Settings</h1>
+			<div class="divider"></div>
+		</div>
 
-					<li class="li-input" ng-if="communities.length">
+		<div class="no-box-content-color">
+			<ul class="ul-inputs">
+				<li class="li-input">
+					<div class="label">Start:</div>
+					<div class="input"><input type="date" name="staffName" ng-model="settings.start" ></div>
+				</li>
+				<li class="li-input">
+					<div class="label">End:</div>
+					<div class="input"><input type="date" name="staffName" ng-model="settings.end" ></div>
+				</li>
+				<!-- settings.communities::{{settings.communities}} -->
 
-						<div class="label">Communities:</div>
-						<div class="input">
-							<button ng-click="selectNoneCommunity();" class="button button-small button-empty button-border button-orange"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp;Select None</button>
-							<button ng-click="selectAllCommunities();" class="button button-small button-empty button-border button-green"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Select All</button>
-							<br/>
-							<br/>
-						</div>
+				<li class="li-input" ng-if="communities.length">
 
-						<div class="input">
+					<div class="label">Communities:</div>
+					<div class="input">
+						<button ng-click="selectNoneCommunity();" class="button button-small button-empty button-border button-orange"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp;Select None</button>
+						<button ng-click="selectAllCommunities();" class="button button-small button-empty button-border button-green"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Select All</button>
+						<br/>
+						<br/>
+					</div>
+
+					<div class="input">
 
 
-							<ui-select on-select="communityChanged($item, $model)" onkeypress="return false;"  multiple ng-model="settings.communities" theme="select2" close-on-select="true" title="Select a community">
-								<ui-select-match placeholder="Select a community...">{{$item.name}}</ui-select-match>
-								<ui-select-choices repeat="community in communities | propsFilter: {name: $select.search}">
-									{{community.name}}
-								</ui-select-choices>
-							</ui-select>
+						<ui-select on-select="communityChanged($item, $model)" multiple ng-model="settings.communities" theme="select2" close-on-select="true" title="Select a community">
+							<ui-select-match placeholder="Select a community...">{{$item.name}}</ui-select-match>
+							<ui-select-choices repeat="community in communities | propsFilter: {name: $select.search}">
+								{{community.name}}
+							</ui-select-choices>
+						</ui-select>
 
-						</div>
-					</li>
-					<li class="li-input">
-						<div class="label">Period:</div>
-						<div class="input"><select ng-options='period.symbol as period.description for period in availablePeriods' ng-model='settings.period' ng-change='refreshData("period change")'></select></div>
-					</li>
-					<li>
-						<label class="switch-wrap">
-							<input type="checkbox" ng-model='settings.combineCharts' ng-change='calculateCombinedData()' class="switch"/><div></div>
-						</label>
-						<div class="label">Combine Charts</div>
-					</li>
-					<li class="li-input" ng-if="settings.communities.length">
-						<br><br>
-						<div class="input">
-							<button name='refresh' ng-click='refreshData("user requested refresh")' class="button button-small button-empty button-border button-green"><i class="fa fa-refresh"></i>&nbsp;&nbsp;Refresh</button>
-							<button name='addChart' ng-click="addChart();" class="button button-small button-empty button-border button-blue"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Chart</button>
-						</div>
-					</li>
-				</ul>
-			</div>
-
-		</form>
+					</div>
+				</li>
+				<li class="li-input">
+					<div class="label">Period:</div>
+					<div class="input"><select ng-options='period.symbol as period.description for period in availablePeriods' ng-model='settings.period' ng-change='refreshData("period change")'></select></div>
+				</li>
+				<li>
+					<label class="switch-wrap">
+						<input type="checkbox" ng-model='settings.combineCharts' ng-change='calculateCombinedData()' class="switch"/><div></div>
+					</label>
+					<div class="label">Combine Charts</div>
+				</li>
+				<li class="li-input" ng-if="settings.communities.length">
+					<br><br>
+					<div class="input">
+						<button name='refresh' ng-click='refreshData("user requested refresh")' class="button button-small button-empty button-border button-green"><i class="fa fa-refresh"></i>&nbsp;&nbsp;Refresh</button>
+						<button name='addChart' ng-click="addChart();" class="button button-small button-empty button-border button-blue"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Chart</button>
+					</div>
+				</li>
+			</ul>
+		</div>
 	</div>
 
 	<div class="support-boxes" ng-if="settings.communities.length">
