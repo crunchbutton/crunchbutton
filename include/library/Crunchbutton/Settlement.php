@@ -1881,6 +1881,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$mail = ( $env == 'live' ? $summary[ 'summary_email' ] : Crunchbutton_Settlement::TEST_SUMMARY_EMAIL );
 		$fax = ( $env == 'live' ? $summary[ 'summary_fax' ] : Crunchbutton_Settlement::TEST_SUMMARY_FAX );
 
+		$summary[ 'summary_email' ] = ( $env == 'live' ? $summary[ 'summary_email' ] : Crunchbutton_Settlement::TEST_SUMMARY_EMAIL );
+
 		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
 
 		$error = false;
