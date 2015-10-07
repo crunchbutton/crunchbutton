@@ -54,7 +54,7 @@
 					</li>
 
 					<li class="li-input  divider-line" ng-show="community.close_3rd_party_delivery_restaurants" ng-class="{'error':formOpenClose.communityClose3rdPartyRestaurantsNote.$invalid}">
-						<div class="label">Close 3rd Party Delivery Restaurants Note (follow this same format. e.g. - "Launching Mon 2/2 6PM-12AM"):</div>
+						<div class="label">Close 3rd Party Delivery Restaurants Note on Driver Restaurant Title (follow this same format. e.g. - "Launching Mon 2/2 6PM-12AM"):</div>
 						<div class="input"><input type="text" name="communityClose3rdPartyRestaurantsNote" ng-model="community.close_3rd_party_delivery_restaurants_note" ng-required="community.close_3rd_party_delivery_restaurants"></div>
 						<div class="box-error">
 							<small ng-show="formOpenClose.communityClose3rdPartyRestaurantsNote.$error.required">Required.</small>
@@ -65,12 +65,15 @@
 						<label class="switch-wrap">
 							<input type="checkbox" class="switch" ng-model="community.dont_warn_till_enabled"/><div></div>
 						</label>
-						<div class="label">If it is closed and it has drivers doesn't warn CS till (PST):</div>
+						<div class="label">If community is closed but has drivers, remind CS to reopen it at this time (pacific):</div>
 					</li>
 
 					<li class="li-input  divider-line" ng-class="{'error': formOpenClose.dontWarnTill.$invalid}" ng-if="community.dont_warn_till_enabled">
 						<div class="input">
 							<input type="datetime-local" ng-disabled="!community.dont_warn_till_enabled" ng-required="community.dont_warn_till_enabled" name="dontWarnTill" ng-model="community.dont_warn_till" placeholder="">
+						</div>
+						<div class="note">
+							Reminder: give yourself extra time to get the community reopened by the time you promise customers
 						</div>
 					</li>
 
@@ -106,10 +109,10 @@
 						</div>
 					</li>
 
-					<li class="li-input" ng-show="!isSavingAlias">
-						<button class="button button-empty button-border button-green button-full" ng-click="formOpenCloseSave();"><span class="fa fa-save"></span>&nbsp;&nbsp;Save</button>
+					<li class="li-input" ng-show="!isSavingOpenClose">
+						<button class="button button-empty button-border button-green button-full" ng-click="formOpenCloseSave();"><span class="fa fa-save"></span>&nbsp;&nbsp;Save and Double Check It Looks OK</button>
 					</li>
-					<li class="li-input" ng-show="isSavingAlias">
+					<li class="li-input" ng-show="isSavingOpenClose">
 						<i class="fa fa-circle-o-notch fa-spin"></i>
 					</li>
 				</ul>

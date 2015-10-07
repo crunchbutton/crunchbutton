@@ -305,13 +305,15 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 		if( $scope.community.dont_warn_till_enabled && $scope.community.dont_warn_till ){
 			$scope.community.dont_warn_till_fmt = $filter( 'date' )( $scope.community.dont_warn_till, 'yyyy-MM-dd HH:mm:ss' )
 		}
+		$scope.isSavingOpenClose = true;
 		CommunityService.saveOpenClose( $scope.community, function( json ){
-			$scope.isSaving = false;
+			$scope.isSavingOpenClose = false;
 			if( json.error ){
 				App.alert( 'Error saving: ' + json.error );
 			} else {
 				$rootScope.closePopup();
 				$rootScope.$broadcast( 'communityOpenClosedSaved', json );
+				window.open( 'https://crunchbutton.com/' + $scope.community.permalink );
 			}
 		} );
 	}
