@@ -659,7 +659,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function removeGroups(){
-		Cana::db()->query('DELETE FROM `admin_group` WHERE id_admin = ?' , [$this->id_admin]);
+		Crunchbutton_Admin_Group::q( 'SELECT * FROM `admin_group` WHERE id_admin = ?', [$this->id_admin] )->delete();
 	}
 
 	public function removeGroup( $id_group ){
