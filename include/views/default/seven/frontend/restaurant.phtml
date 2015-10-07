@@ -29,11 +29,9 @@
 				<ng-include  src="'assets/view/restaurant-mobile.html'"></ng-include>
 			</span>
 
-			<? if (!$this->export) : ?>
-				<div class="content-padding hide-mobile" ng-if="config.suggestions && show_suggestions">
-					<p>See an issue with our menu? Wanna add something? <a href class="suggestion-text" ng-click="suggestion();"> Tell us!</a></p>
-				</div>
-			<? endif ; ?>
+			<div class="content-padding hide-mobile" ng-if="config.suggestions && show_suggestions">
+				<p>See an issue with our menu? Wanna add something? <a href class="suggestion-text" ng-click="suggestion();"> Tell us!</a></p>
+			</div>
 
 		</div>
 
