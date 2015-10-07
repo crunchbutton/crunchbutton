@@ -72,7 +72,7 @@
 				<div class="toggle-wrapper clearfix">
 					<button ng-click="order.tooglePayment( 'card' )" ng-if="(restaurant.credit == '1')" ng-class="{'toggle-active': order.form.pay_type=='card' }" class="payment-form-toggle">card</button>
 					<button ng-click="order.tooglePayment( 'cash' )" ng-if="(restaurant.cash == '1')"  ng-class="{'toggle-active': order.form.pay_type=='cash' }" class="payment-form-toggle">cash</button>
-					<button ng-click="order.tooglePayment( 'applepay' )" ng-if="(restaurant.credit == '1') && applePay"  ng-class="{'toggle-active': order.form.pay_type=='applepay' }" class="payment-form-toggle"><i class="fa fa-apple"></i> pay</button>
+					<button ng-click="order.tooglePayment( 'applepay' )" ng-if="(restaurant.credit == '1') && applePay"  ng-class="{'toggle-active': order.form.pay_type=='applepay' }" class="payment-form-toggle">apple pay</button>
 				</div>
 
 				<div class="divider spacer-two-two"></div>
