@@ -67,26 +67,25 @@
 						<span ng-if="!result.summary_sent_date"><i>Summary not sent</i></span>
 					</td>
 				</tr>
-				<!--
-				<tr ng-if="result.payment_date && payment">
+
+				<tr ng-if="result.payment_date">
 					<td>
 						<span class="no-underline link orange" ng-click="view_summary()"><i class="fa fa-eye"></i> View Summary</span>
 					</td>
 					<td></td>
 				</tr>
-				<tr ng-if="result.payment_date && payment">
+				<tr ng-if="result.payment_date">
 					<td>
 						<span class="no-underline link orange" ng-click="send_summary()"><i class="fa fa-send"></i> Send Summary</span>
 					</td>
 					<td></td>
 				</tr>
-				<tr ng-if="result.payment_date && payment">
+				<tr ng-if="result.payment_date">
 					<td>
 						<span class="no-underline link orange" ng-click="download_summary()"><i class="fa fa-download"></i> Download Summary</span>
 					</td>
 					<td></td>
 				</tr>
-				-->
 				<tr class="transparent"><td></td><td></td></tr>
 				<tr ng-if="result.balanced_id">
 					<td>Balanced Reference</td>

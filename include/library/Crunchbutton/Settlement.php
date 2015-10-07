@@ -1870,7 +1870,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 
  	public function sendRestaurantPaymentNotification( $id_payment ){
 		$summary = $this->restaurantSummaryByIdPayment( $id_payment );
-
 		if( !$summary ){
 			return false;
 		}
