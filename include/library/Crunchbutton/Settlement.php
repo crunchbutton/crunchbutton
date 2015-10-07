@@ -1975,7 +1975,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 		if( !$summary ){
 			return false;
 		}
-
 		$this->log( 'sendDriverPaymentNotification', $summary );
 
 		$env = c::getEnv();
