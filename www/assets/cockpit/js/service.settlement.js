@@ -25,7 +25,7 @@ NGApp.factory( 'SettlementService', function(ResourceFactory, $resource, $http, 
 		'list' : { 'method': 'GET', params : { action: 'list' } },
 	}	);
 
-	settlement.restaurants = $resource( App.service + 'settlement/restaurants/:action/:id_payment_schedule/:page/', { action: '@action', id_payment_schedule: '@id_payment_schedule' }, {
+	settlement.restaurants = $resource( App.service + 'settlement/restaurants/:action/:id_payment_schedule/:id_payment/:page/', { action: '@action', id_payment_schedule: '@id_payment_schedule', id_payment: '@id_payment' }, {
 		'range' : { 'method': 'GET', params : { action: 'range' } },
 		'begin' : { 'method': 'POST', params : { action: 'begin' } },
 		'restaurant' : { 'method': 'POST', params : { action: 'restaurant' } },
@@ -112,8 +112,8 @@ NGApp.factory( 'SettlementService', function(ResourceFactory, $resource, $http, 
 		} );
 	}
 
-	service.restaurants.send_summary = function( callback ){
-		settlement.restaurants.send_summary( { 'id_payment_schedule' : $routeParams.id  }, function( json ){
+	service.restaurants.send_summary = function( id_payment_schedule, callback ){
+		settlement.restaurants.send_summary( { 'id_payment_schedule' : id_payment_schedule  }, function( json ){
 			callback( json );
 		} );
 	}

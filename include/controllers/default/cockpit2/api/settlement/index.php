@@ -18,6 +18,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 							case 'range':
 								$this->_range();
 								break;
+							case 'view-summary':
+								$this->_restaurantViewSummary();
+								break;
 							case 'download-summary':
 								$this->_restaurantDownloadSummary();
 								break;
@@ -512,6 +515,10 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$settlement = new Crunchbutton_Settlement;
 		$summary = $settlement->restaurantSummaryByIdPayment( $id_payment );
 		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
+		header( 'Content-Type: text/html' );
+		header( 'Expires: 0' );
+		header( 'Cache-Control: must-revalidate' );
+		header( 'Pragma: public' );
 		echo $mail->message();
 	}
 
