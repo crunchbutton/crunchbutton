@@ -109,25 +109,20 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 		loadData()
 	}
 
+	$rootScope.$on( 'triggerViewTicket', function(e, ticket) {
+		if( ticket.pexcard != $scope.ticket.pexcard ){
+			$scope.ticket.pexcard = ticket.pexcard;
+		}
+	} );
+
 	$rootScope.$on( 'triggerTicketInfoUpdated', function(e, data) {
 
 		$rootScope.$safeApply( function(){
-			console.log('$scope.ticket',$scope.ticket);
-			console.log('data',data);
 			if( !$scope.ticket || $scope.ticket.id_support != data.id_support ){
 				$scope.ticket = data;
 			} else {
 				if( !angular.equals( $scope.ticket.messages, data.messages ) ){
-					// if( data.messages.length > 0 ){
-						$scope.ticket.messages = data.messages;
-					// }
-					// if( !$scope.ticket.messages || ( $scope.ticket.messages && $scope.ticket.messages.length < data.messages.length ) ){
-
-					// }
-
-					console.log('!=!=!=!=!=');
-				} else {
-					console.log('=====');
+					$scope.ticket.messages = data.messages;
 				}
 
 				if( $scope.ticket.total != data.total ){
@@ -136,7 +131,6 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 						$scope.ticket.loaded = data.loaded;
 						$scope.ticket.page = data.page;
 						$scope.ticket.total = data.total;
-						console.log('update everything else');
 					 }, 300 );
 				}
 			}
