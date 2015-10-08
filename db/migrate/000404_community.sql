@@ -1,1 +1,1 @@
-ALTER TABLE `community` ADD COLUMN `automatic_driver_restaurant_name` tinyint(1) unsigned NOT NULL DEFAULT 1;
+ALTER TABLE `community` ADD COLUMN `automatic_driver_restaurant_name` tinyint(1) unsigned NOT NULL DEFAULT 0;
