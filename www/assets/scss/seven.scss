@@ -2326,8 +2326,8 @@ select.form-input {
 .hot-dog-relax {
 	background: url(../images/micro/hot-dog-relax.svg) no-repeat;
 	background-position: top center;
-	width: 17em;
-	height: 10.4em;
+	width: 26em;
+	height: 16em;
 	background-size: 100%;
 	float: right;
 	margin-top: 8em;
@@ -4066,7 +4066,9 @@ font-familt: "Museo Slab";
 		display: inline-block;
 	}
 	.delivery-free{
-		font-size:2.5em !important;
+		font-size:2.8em !important;
+		display:block !important;
+		text-align: center !important;
 	}
 	.col-box {
 		@include flex(row, row wrap, space-between);
@@ -4189,9 +4191,11 @@ font-familt: "Museo Slab";
 		line-height:1.2em;
 		display: block;
 		margin-bottom :.6em;
+		font-weight: bold;
 	}
 .refer-multiply-small {
 	font-size: 1.2em;
+	font-weight:normal !important;
 	display: block;
 	margin-bottom :.6em;
 	font-weight: 600;
