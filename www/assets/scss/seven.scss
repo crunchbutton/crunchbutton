@@ -4006,7 +4006,11 @@ font-familt: "Museo Slab";
 		font-size: 1.4em;
 	}
 	.order-tagline p {
-		line-height: 1.8em;
+		line-height: 1.2em;
+	}
+	.order-wait{
+		margin-top:1.4em;
+		line-height: 1.4em;
 	}
 }
 
@@ -4021,7 +4025,7 @@ font-familt: "Museo Slab";
 	}
 	.order-tagline {
 		font-weight: 100;
-		font-size: 2em;
+		font-size: 1.6em;
 		margin-bottom: 1.4em;
 	}
 	.order-tagline b {
@@ -4059,9 +4063,11 @@ font-familt: "Museo Slab";
 
 	.user-account-credit .delivery-free, .account-your-orders, .order-buttons .delivery-free {
 		font-size: 2em;
-
 		margin-bottom: 1.1em;
 		display: inline-block;
+	}
+	.delivery-free{
+		font-size:2.5em !important;
 	}
 	.col-box {
 		@include flex(row, row wrap, space-between);
@@ -4181,7 +4187,7 @@ font-familt: "Museo Slab";
 	.refer-multiply {
 		text-align: center;
 		font-size: 1.4em;
-		font-weight: bold;
+		line-height:1.2em;
 		display: block;
 		margin-bottom :.6em;
 	}
