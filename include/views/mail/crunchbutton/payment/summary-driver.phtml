@@ -164,9 +164,6 @@
 				<?php } ?>
 				<td style="width:155px;" class="topitem">Delivery Fee Already Collected in Cash</td>
 				<td style="width:155px;" class="topitem">Markup Already Collected in Cash</td>
-				<?php if( !$summary[ 'customer_fee_collected' ] ) { ?>
-					<td style="width:155px;" class="topitem">Customer Fee Already Collected In Cash</td>
-				<?php } ?>
 				<?php if( !$summary[ 'driver_payment_hours' ] ) { ?>
 					<td style="width:155px;" class="topitem">Money Made</td>
 				<?php } ?>
@@ -200,9 +197,6 @@
 				<?php } ?>
 				<td class="fooditem">$<?php echo number_format( $order[ 'delivery_fee_collected' ], 2 ); ?></td>
 				<td class="fooditem">$<?php echo number_format( $order[ 'markup' ], 2 ); ?></td>
-				<?php if( !$summary[ 'customer_fee_collected' ] ) { ?>
-					<td class="fooditem">$<?php echo number_format( $order[ 'customer_fee_collected' ], 2 ); ?></td>
-				<?php } ?>
 				<?php if( !$summary[ 'driver_payment_hours' ] ) { ?>
 					<td class="fooditem">$<?php echo number_format( $order[ 'total_payment' ], 2 ); ?></td>
 				<?php } ?>
@@ -243,6 +237,12 @@
 				<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Crunchbutton’s Markup Already Collected In Cash</td>
 				<td>$<?php echo number_format( $summary[ 'calcs' ][ 'markup' ], 2 ); ?></td>
 			</tr>
+				<?php if( $summary[ 'calcs' ][ 'customer_fee_collected' ] ) { ?>
+					<tr class="class">
+						<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Customer Fee Collected in Cash</td>
+						<td>$<?php echo number_format( $summary[ 'calcs' ][ 'customer_fee_collected' ], 2 ); ?></td>
+					</tr>
+				<?php } ?>
 		<?php if( floatval( $summary[ 'invites_amount' ] ) > 0 ) { ?>
 		<tr class="class">
 			<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Total New Invited Users</td>
