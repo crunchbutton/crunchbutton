@@ -852,7 +852,7 @@ App.track = function() {
 
 
 	if (typeof( ga ) == 'function') {
-		ga('send', 'event', 'app', arguments[0], arguments[1]);
+		ga('send', 'event', 'app', arguments[0], JSON.stringify(arguments[1]));
 	}
 };
 
