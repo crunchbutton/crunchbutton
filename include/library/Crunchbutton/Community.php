@@ -698,6 +698,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function shutDownCommunities( $dt = null ){
+		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE automatic_driver_restaurant_name = 1' );
+		foreach( $communities as $community ){
+			$community->changeDriverRestaurantName();
+		}
 		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE auto_close = 1' );
 		foreach( $communities as $community ){
 			$community->shutDownCommunity( $dt );
@@ -822,6 +826,47 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 	public function isAutoClosed(){
 		return $this->is_auto_closed ? true : false;
+	}
+
+	// See #6908
+	public function changeDriverRestaurantName(){
+
+		if( !$this->automatic_driver_restaurant_name ){ return; }
+
+		if( !$this->id_community ||
+				$this->allThirdPartyDeliveryRestaurantsClosed() ||
+				$this->isAutoClosed() ||
+				$this->allRestaurantsClosed() ){
+			return;
+		}
+
+		if( $this->activeDrivers( $dt ) > 0 ){
+			$shift = Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
+			$shift = $shift->get( 0 );
+		} else {
+			$shift = Crunchbutton_Community_Shift::nextAssignedShiftByCommunity( $this->id_community );
+		}
+		if( $shift->id_community ){
+			$date_start = $shift->dateStart( $this->timezone );
+			$date_end = $shift->dateEnd( $this->timezone );
+
+			$message = 'open ';
+			$message .= $date_start->format( 'g' );
+			if( $date_start->format( 'i' ) != '00' ){
+				$message .= ':' . $date_start->format( 'i' );
+			}
+			$message .= $date_start->format( 'A' );
+			$message .= '-';
+			$message .= $date_end->format( 'g' );
+			if( $date_end->format( 'i' ) != '00' ){
+				$message .= ':' . $date_end->format( 'i' );
+			}
+			$message .= $date_end->format( 'A D' );
+			$this->driver_restaurant_name = strtolower( $message );
+			echo $this->driver_restaurant_name;
+			echo "\n";
+			$this->save();
+		}
 	}
 
 	public function shutDownCommunity( $dt = null ){
@@ -952,7 +997,6 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function saveClosedMessage(){
-
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->modify( '- 1 day' );
 		$from = $now->format( 'Y-m-d' ) . ' 00:00:00';
