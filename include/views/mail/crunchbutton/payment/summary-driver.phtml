@@ -164,6 +164,9 @@
 				<?php } ?>
 				<td style="width:155px;" class="topitem">Delivery Fee Already Collected in Cash</td>
 				<td style="width:155px;" class="topitem">Markup Already Collected in Cash</td>
+				<?php if( !$summary[ 'customer_fee_collected' ] ) { ?>
+					<td style="width:155px;" class="topitem">Customer Fee Already Collected In Cash</td>
+				<?php } ?>
 				<?php if( !$summary[ 'driver_payment_hours' ] ) { ?>
 					<td style="width:155px;" class="topitem">Money Made</td>
 				<?php } ?>
@@ -197,6 +200,9 @@
 				<?php } ?>
 				<td class="fooditem">$<?php echo number_format( $order[ 'delivery_fee_collected' ], 2 ); ?></td>
 				<td class="fooditem">$<?php echo number_format( $order[ 'markup' ], 2 ); ?></td>
+				<?php if( !$summary[ 'customer_fee_collected' ] ) { ?>
+					<td class="fooditem">$<?php echo number_format( $order[ 'customer_fee_collected' ], 2 ); ?></td>
+				<?php } ?>
 				<?php if( !$summary[ 'driver_payment_hours' ] ) { ?>
 					<td class="fooditem">$<?php echo number_format( $order[ 'total_payment' ], 2 ); ?></td>
 				<?php } ?>

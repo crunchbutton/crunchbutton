@@ -100,6 +100,10 @@
 						<td>Crunchbutton’s Markup Already Collected In Cash</td>
 						<td>${{result.calcs.markup | formatPrice}}</td>
 					</tr>
+					<tr ng-if="result.calcs.customer_fee_collected < 0 && pay_type_payment" positive-or-negative-color="{{result.calcs.customer_fee_collected}}">
+						<td>Customer Fee Already Collected In Cash</td>
+						<td>${{result.calcs.customer_fee_collected | formatPrice}}</td>
+					</tr>
 
 
 					<tr ng-if="result.adjustment && result._total_reimburse_ && pay_type_reimbursement" positive-or-negative-color="{{result._total_reimburse_}}">
