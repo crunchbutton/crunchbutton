@@ -147,11 +147,10 @@
 					<div>
 					</div>
 						<a ng-if="config.menu_item_1_label && config.menu_item_1_url" href="{{config.menu_item_1_url}}"><u>{{config.menu_item_1_label}}</u></a>
-						<a href="/">Home</a>
+						<a href="/work">Work with Us</a>
 						<a href="/help">Help</a>
 						<a href="/orders" ng-if="account.user.id_user">Account</a>
 						<a ng-click="navigation.signin()" ng-if="!account.user.id_user">Log In</a>
-						<a ng-click="signout.signout()" ng-if="account.user.id_user">Log Out</a>
 						<a ng-toggle="menudropdown" ng-show="debug()"><i class="fa fa-bug"></i></a>
 					</div>
 
