@@ -155,7 +155,7 @@
 					<td>$ {{result.calcs.markup | formatPrice}}</td>
 				</tr>
 				<tr ng-if="result.calcs.delivery_fee_collected && pay_type_payment" positive-or-negative-color="{{result.calcs.delivery_fee_collected}}">
-					<td>Delivery Fee Collected In Cash by Hourly Drivers</td>
+					<td>Delivery Fee Collected In Cash</td>
 					<td>$ {{result.calcs.delivery_fee_collected | formatPrice}}</td>
 				</tr>
 				<tr ng-if="result.calcs.customer_fee_collected && pay_type_payment" positive-or-negative-color="{{result.calcs.customer_fee_collected}}">
