@@ -8,25 +8,26 @@
 </div>
 
 <div ng-if="order.id">
-	
-		
+
+
 	<div class="hide-mobile">
 		<div class="content-padding">
 			<div class="order-tagline"><p>
-				<b>Your order
-				<span ng-show="(order.delivery_type == 'delivery')">&nbsp;is on its way&nbsp;</span>
-				<span ng-hide="(order.delivery_type == 'delivery')">&nbsp;has been placed&nbsp;</span>
-				</b>and has been saved for easy 1 click reordering
+				<b>Crunched!</b> Your order is placed and has been saved for easy 1 click reordering
 			</p></div>
+			<div>
+				Please wait as we connect your order with an available driver, and their contact information will be texted to you shortly!
+				<br><br>
+			</div>
 		</div>
-	
+
 		<div class="divider dots"></div>
 		<div class="spacer-two-two"></div>
 	</div>
 
 	<div class="col-box content-padding-desktop">
 
-		
+
 		<div class="two-col content-padding-mobile noselect" ng-if="confirm">
 			<div class="order-bubble-wrap">
 				<div class="bubble-tail bubble-tail-green bubble-animated">
@@ -39,7 +40,7 @@
 						<span ng-switch-when="6">suggestions, or even complaints!</span>
 						<span ng-switch-when="7">The customer is always right!</span>
 						<span class="single-line" ng-switch-when="8"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
-						<span ng-switch-default class="single-line"><b>Sit back &amp Relax!</b></span>
+						<span ng-switch-default class="single-line"><b>Sit back &amp relax!</b></span>
 					</div>
 					<div class="bubble-tail-spacer"></div>
 				</div>
@@ -50,11 +51,12 @@
 
 		<div class="content-padding-mobile hide-desktop">
 			<div class="order-tagline"><p>
-				<b>Your order
-				<span ng-show="(order.delivery_type == 'delivery')">&nbsp;is on its way&nbsp;</span>
-				<span ng-hide="(order.delivery_type == 'delivery')">&nbsp;has been placed&nbsp;</span>
-				</b><br>and has been saved for easy 1 click reordering
+				<b>Crunched!</b> Your order is placed and has been saved for easy 1 click reordering
 			</p></div>
+			<div class="order-wait">
+				Please wait as we connect your order with an available driver, and their contact information will be texted to you shortly!
+				<br><br>
+			</div>
 		</div>
 
 		<div class="divider dots spacer-one-one"></div>
@@ -90,16 +92,13 @@
 					<div ng-if="!account.user.points.free_delivery_message">
 						<p class="delivery-free">
 							You just earned <strong>{{order.reward.points}}</strong> points!
-							<span ng-if="account.user.points.away_free_delivery > 0"> You are <strong>{{account.user.points.away_free_delivery}}</strong> points away from a free delivery.</span>
+							<span ng-if="!account.user.points.free_delivery_message">
+								<strong> {{account.user.points.free_delivery}}</strong> points gets you a free delivery.
+							</span>
 						</p>
 					</div>
 					<div class="hide-desktop"><br></div>
 					<div>
-						<p>
-							Want more points? Share on Facebook or Twitter and earn extra points<span ng-if="referral.invite_url && referral.enabled">, plus earn free delivery for any friends you refer</span>.
-							<br><br>
-						</p>
-						
 
 						<div class="hide-desktop button-refer">
 
@@ -111,9 +110,9 @@
 						</div>
 
 						<div class="col-box">
-							
+
 							<div class="button-refer">
-								<span class="refer-multiply hide-mobile">Double your points</span>
+								<span class="refer-multiply hide-mobile">Double your points by sharing on Facebook</span>
 								<span class="refer-multiply-small hide-desktop">Double your points by sharing on Facebook</span>
 								<button class="button facebook" ng-click="referral.facebook('order');" ng-if="account.user.has_auth && !order.reward.shared.facebook">
 									<i class="fa fa-facebook-square"></i> <span>Share</span>
@@ -121,7 +120,7 @@
 							</div>
 
 							<div class="button-refer">
-								<span class="refer-multiply hide-mobile">Triple your points</span>
+								<span class="refer-multiply hide-mobile">Triple them by sharing on Twitter.</span>
 								<span class="refer-multiply-small hide-desktop">Triple them by sharing on Twitter</span>
 								<button class="button twitter" ng-click="referral.twitter('order')" ng-if="account.user.has_auth && !order.reward.shared.twitter">
 									<i class="fa fa-twitter-square"></i> <span>Tweet</span>
@@ -138,6 +137,11 @@
 							Thanks for sharing on Twitter.
 						</div>
 						<div class="divider"></div>
+						<br><br>
+						<p>
+							Earn a FREE DELIVERY for every new customer you refer with your link!
+							<br><br>
+						</p>
 
 					</div>
 
@@ -161,7 +165,7 @@
 			</p>
 		</div>
 
-		
+
 
 
 	</div>
