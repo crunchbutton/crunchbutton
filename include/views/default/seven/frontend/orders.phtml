@@ -48,6 +48,8 @@
 						<p>Invite URL: <span class="referal-text-spacer"></span><input class="referal-text-box" type="text" ng-simulate-read-only="{{referral.cleaned_url()}}" value="http://{{referral.cleaned_url()}}"></p>
 					</div>
 
+
+
 				</div>
 
 				<div class="hide-mobile">
@@ -70,6 +72,7 @@
 				<br>
 				<p>Invite URL: <span class="referal-text-spacer"></span><input class="referal-text-box" type="text" ng-simulate-read-only="{{referral.cleaned_url()}}" value="http://{{referral.cleaned_url()}}"></p>
 			</div>
+
 		</div>
 	</div>
 
@@ -120,4 +123,5 @@
 			</li>
 		</ul>
 	</div>
+	<button class="button lightorange button-logout" ng-click="signout()" ng-if="account.user.id_user">Log Out</button>
 </div>
