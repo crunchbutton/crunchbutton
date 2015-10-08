@@ -188,6 +188,7 @@ NGApp.controller('SideSupportCtrl', function($scope, $rootScope, TicketViewServi
 NGApp.controller('SideSupportPexCardCtrl', function( $scope, StaffPayInfoService, PexCardService ) {
 
 	$scope.add_funds = function(){
+
 		if( $scope.ticket && $scope.ticket.pexcard && $scope.ticket.pexcard.id_pexcard ){
 			if( $scope.form.$invalid ){
 				App.alert( 'Please fill in all required fields' );
@@ -215,11 +216,12 @@ NGApp.controller('SideSupportPexCardCtrl', function( $scope, StaffPayInfoService
 	}
 
 	$scope.current_balanced = function(){
-		if( $scope.ticket && $scope.ticket.pexcard && $scope.ticket.pexcard.card_serial ){
+
+		if( $scope.ticket && $scope.ticket.pexcard && $scope.ticket.pexcard.id_pexcard ){
 
 			$scope.isLoadingBalance = true;
 
-			PexCardService.pex_id( $scope.ticket.pexcard.card_serial,
+			PexCardService.id_pexcard( $scope.ticket.pexcard.id_pexcard,
 				function( json ){
 					$scope.isLoadingBalance = false;
 					if( json.id ){
