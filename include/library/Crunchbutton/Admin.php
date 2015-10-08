@@ -897,6 +897,18 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return $this->_community;
 	}
 
+	public function hasCommunityToOpen(){
+  	if( $this->isDriver() ){
+  		$communities = $this->driverCommunities();
+  		foreach( $communities as $community ){
+  			if( $community->drivers_can_open ){
+  				return true;
+  			}
+  		}
+  	}
+  	return false;
+	}
+
 	public function driverCommunities(){
 		$communities = [];
 		$groups = $this->groups();
@@ -1217,16 +1229,6 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		}
 		return false;
 	}
-
-  public function communityDriverCanOpen(){
-  	if( $this->isDriver() ){
-  		$community = $this->community();
-  		if( $community->id_community && $community->isElegibleToBeOpened() ){
-  			return $community;
-  		}
-  	}
-  	return false;
-  }
 
 	public function __construct($id = null) {
 		parent::__construct();
