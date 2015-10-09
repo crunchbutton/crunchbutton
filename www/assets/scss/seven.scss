@@ -4581,3 +4581,14 @@ textarea {
 	 margin-top: 0;
 	 margin-bottom: .5em;
  }
+
+ .box-error{
+ 	display:none;
+ }
+ .form-submitted .box-error{
+ 	color: #ef8b70;
+ 	display:block;
+ }
+ .form-group .note{
+ 	font-size: .9em;
+ }
