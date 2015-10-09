@@ -3524,6 +3524,9 @@ input[type="checkbox"].switch + div:before {
 .switch-wrap {
 	float: right;
 }
+.switch-wrap-left{
+	float: left;
+}
 
 .tb-info {
 	display: table;

@@ -852,6 +852,11 @@ App.alert = function(txt, title, useNativeAlert, fn) {
 	});
 };
 
+App.agreementBox = function(txt, title, success, fail) {
+	setTimeout(function() {
+		App.rootScope.$broadcast('agreementBox', title || '', txt, success, fail);
+	} );
+};
 
 App.confirm = function(txt, title, success, fail, buttons, force) {
 	if ( force || ( App.useNativeConfirm && App.isPhoneGap && parent.window.navigator && parent.window.navigator.notification ) ) {

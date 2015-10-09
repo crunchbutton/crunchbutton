@@ -475,7 +475,6 @@ NGApp.controller('RestaurantCtrl', function ($scope, $routeParams, MapService, R
 	});
 });
 
-
 NGApp.controller('RestaurantOrderPlacementDashboard', function ( $scope, RestaurantOrderPlacementService, $routeParams ) {
 
 	// Load restaurants that are allowed to place orders
