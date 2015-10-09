@@ -1057,6 +1057,9 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			]);
 			$n->save();
 		}
+
+		Cockpit_Driver_Log::enabledPush();
+
 	}
 
 	public function shiftsCurrentAssigned(){

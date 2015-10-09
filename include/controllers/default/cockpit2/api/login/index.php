@@ -1,9 +1,13 @@
 <?php
 
 class Controller_api_login extends Crunchbutton_Controller_Rest {
+
 	public function init() {
 		$user = c::auth()->doAuthByLocalUser(['email' => $this->request()['username'], 'password' => $this->request()['password']]);
 		if ($user) {
+			if( $this->request()[ 'native' ] ){
+				Cockpit_Driver_Log::nativeAppLogin();
+			}
 			$this->export();
 		} else {
 			echo json_encode(['error' => 'invalid login']);
