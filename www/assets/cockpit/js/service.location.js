@@ -96,7 +96,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 	}
 
 	service.locationPermitted = function(){
-		// locationService.requested( { 'permitted': true }, function(){} );
+		locationService.requested( { 'permitted': true }, function(){} );
 	}
 
 	service.locationDenied = function(){

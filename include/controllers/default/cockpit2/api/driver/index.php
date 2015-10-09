@@ -169,6 +169,11 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 				'date' => date('Y-m-d H:i:s'),
 				'status' => $status
 			]))->save();
+
+			if( $status == Cockpit_Admin_Location_Requested::STATUS_PERMITTED ){
+				Cockpit_Driver_Log::enabledLocation();
+			}
+
 		}
 		echo json_encode( ['success' => true] );
 		exit;
