@@ -103,10 +103,12 @@
 				</div>
 				<div class="divider"></div>
 				<br><br>
-				<p>
-					Earn a FREE DELIVERY for every new customer you refer with your link!
-					<br><br>
-				</p>
+				<div class="content-padding">
+					<p class="center-text">
+						Earn a FREE DELIVERY for every new customer you refer with your link!
+						<br><br>
+					</p>
+				</div>
 
 			</div>
 
@@ -145,12 +147,9 @@
 		</div>
 
 		<div class="content-padding">
-			<p>
-
-				For order details, receipt, and to track your order, <a ng-click="receipt()">view</a> & <a href="<?=$this->export ? '{{server}}' : ''?>printorder/{{ order.uuid }}" target="_system">print</a> order receipt.
+			<p class="center-text">
+				For more info about your order, view <a ng-click="receipt()">Order Details</a>.
 			</p>
-
-
 		</div>
 
 
