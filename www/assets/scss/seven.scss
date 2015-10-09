@@ -2326,8 +2326,8 @@ select.form-input {
 .hot-dog-relax {
 	background: url(../images/micro/hot-dog-relax.svg) no-repeat;
 	background-position: top center;
-	width: 26em;
-	height: 16em;
+	width: 36em;
+	height: 26em;
 	background-size: 100%;
 	float: right;
 	margin-top: 8em;
@@ -2348,7 +2348,8 @@ select.form-input {
 }
 .order-bubble-wrap {
 	width: 30em;
-	margin: 0 auto;
+	margin-left: auto !important;
+	margin-right: auto !important;
 	margin-top: -1.8em;
 }
 
@@ -4012,6 +4013,10 @@ font-familt: "Museo Slab";
 		margin-top:1.4em;
 		line-height: 1.4em;
 	}
+	.hot-dog-relax{
+		width:26em;
+		height:18em;
+	}
 }
 
 @media screen and (min-width: 1025px) {
@@ -4058,6 +4063,11 @@ font-familt: "Museo Slab";
 	}
 	.button-refer {
 		width: 48%;
+	}
+
+	.button-refer-big {
+		width: 100%;
+		margin-top: 2em;
 	}
 
 	.user-account-credit .delivery-free, .account-your-orders, .order-buttons .delivery-free {
@@ -4203,6 +4213,9 @@ font-familt: "Museo Slab";
 @media screen and (max-width: 1024px) {
 	.button-refer {
 		margin-bottom: 1em;
+	}
+	.button-refer-big {
+		margin-top: 1.5em !important;
 	}
 }
 @media screen and (max-width: 1024px) {

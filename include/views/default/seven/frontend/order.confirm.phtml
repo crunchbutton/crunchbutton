@@ -65,10 +65,9 @@
 			</div>
 			<div class="content-padding-mobile" ng-show="account.user.has_auth">
 
-				<div class="col-box">
+				<!-- <div class="col-box"> -->
 
-					<div class="hide-desktop button-refer">
-
+					<div class="hide-desktop button-refer-big">
 						<a href="{{referral.sms}}">
 							<button class="button lightorange">
 								<i class="fa fa-comment"></i>&nbsp;&nbsp;&nbsp;<span>Invite Friends</span>
@@ -76,7 +75,7 @@
 						</a>
 					</div>
 
-					<div class="button-refer">
+					<div class="button-refer-big">
 						<span class="refer-multiply hide-mobile">Double your points by sharing on Facebook</span>
 						<span class="refer-multiply-small hide-desktop">Double your points by sharing on Facebook</span>
 
@@ -85,7 +84,7 @@
 						</button>
 					</div>
 
-					<div class="button-refer">
+					<div class="button-refer-big">
 						<span class="refer-multiply hide-mobile">Triple them by sharing on Twitter.</span>
 						<span class="refer-multiply-small hide-desktop">Triple them by sharing on Twitter</span>
 						<button class="button twitter" ng-click="referral.twitter('order')" ng-if="account.user.has_auth && !order.reward.shared.twitter">
@@ -93,7 +92,7 @@
 						</button>
 					</div>
 
-				</div>
+				<!-- </div> -->
 
 				<div ng-if="order.reward.shared.facebook">
 					Thanks for sharing on Facebook.
@@ -116,8 +115,8 @@
 		<div class="divider dots"></div>
 		<div class="spacer-two-two"></div>
 
-		<div class="content-padding-desktop col-box">
-			<div class="two-col content-padding-mobile">
+		<div class="content-padding-desktop">
+			<div class="content-padding-mobile">
 
 				<div class="order-bubble-wrap">
 					<div class="bubble-tail bubble-tail-green bubble-animated">
