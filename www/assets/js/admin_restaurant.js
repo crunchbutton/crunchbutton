@@ -1446,10 +1446,12 @@ var DOM_MAP = {
 				},
 				'#restaurant-image' : {
 					apply : function(restaurant, element) {
+
 						$(element).find('a').attr(
 								'href',
-								'/restaurants/' + restaurant.id_restaurant + '/image');
-						$(element).find('img').attr('src', restaurant.img);
+								'https://cockpit.la/restaurant/' + restaurant.permalink );
+						var src = 'https://s3.amazonaws.com/crunchbutton-image-restaurant/' + restaurant.permalink + '-200x200.jpg';
+						$(element).find('img').attr('src', src );
 					},
 					flush : function(restaurant, element) { },
 				},

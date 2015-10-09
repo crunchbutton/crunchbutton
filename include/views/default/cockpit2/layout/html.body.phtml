@@ -560,8 +560,7 @@
 		<button ng-click="complete()" class="button green">OK</button>
 	</div>
 
-
-	<!-- Notification -->
+	<!-- Confirmation Box -->
 	<div class="notification-confirm-container zoom-anim-dialog mfp-hide dialog" ng-controller="NotificationConfirmCtrl">
 		<h1 ng-bind="alertTitle" ng-show="alertTitle"></h1>
 		<p ng-bind-html-unsafe="message" class="small-message"></p>
@@ -569,6 +568,28 @@
 			<button ng-click="complete()" class="button green">{{buttonOk}}</button>
 			<button ng-click="cancel()" class="button orange">{{buttonCancel}}</button>
 			<br>
+		</div>
+		<div class="divider"></div>
+	</div>
+
+	<div class="agreement-container zoom-anim-dialog mfp-hide dialog" ng-controller="AgreementBoxCtrl">
+		<h1 ng-bind="confirmationTitle" ng-show="confirmationTitle"></h1>
+		<p ng-bind-html-unsafe="message" class="small-message"></p>
+		<div class="no-box-content-color">
+			<ul class="ul-inputs">
+				<li class="li-input divider-line">
+					<label class="switch-wrap">
+						<input type="checkbox" class="switch" ng-model="agree"/><div></div>
+					</label>
+					<div class="label">I agree!</div>
+				</li>
+				<li class="li-input" ng-show="agree">
+					<button ng-show="agree" ng-click="complete()" class="button green">Ok</button>
+				</li>
+				<li class="li-input" ng-show="!agree">
+					<a href="#" ng-click="cancel()">Cancel</a>
+				</li>
+			</ul>
 		</div>
 		<div class="divider"></div>
 	</div>
