@@ -811,6 +811,12 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 		}
 	};
 
+	$scope.city = function( city ){
+		$scope.focus( '.location-address' );
+		$scope.location.form.address = city;
+		$scope.letsEat();
+	}
+
 	// lets eat button
 	$scope.letsEat = function() {
 
