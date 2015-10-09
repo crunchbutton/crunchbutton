@@ -62,7 +62,7 @@ class Crunchbutton_Referral extends Cana_Table{
 			return true;
 		}
 		$admin = Crunchbutton_Admin::byInviteCode( $code );
-		if( $admin->id_user ){
+		if( $admin->id_admin ){
 			return true;
 		}
 		return false;

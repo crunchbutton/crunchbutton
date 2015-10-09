@@ -291,15 +291,20 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'WorkCtrl',
 			templateUrl: 'assets/view/work.html'
 		})
-        .when('/drivers/apply', {
+		.when('/drivers/apply', {
 			action: 'apply',
 			controller: 'ApplyCtrl',
 			templateUrl: 'assets/view/drivers.apply.html'
 		})
-        .when('/reps/apply', {
+ 		.when('/reps/apply', {
 			action: 'reps-apply',
-			controller: 'repsApplyCtrl',
+			controller: 'RepsApplyCtrl',
 			templateUrl: 'assets/view/reps.apply.html'
+		})
+		.when('/reps/apply/:id', {
+			action: 'reps-apply',
+			controller: 'RepsApplyShareCtrl',
+			templateUrl: 'assets/view/reps.apply.share.html'
 		})
 		.when('/thankyou', {
 			action: 'thankyou',

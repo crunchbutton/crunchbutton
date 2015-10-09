@@ -96,67 +96,86 @@ NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) 
     };
 });
 
-NGApp.controller('repsApplyCtrl', function ($scope, $http, ApplyService, $location) {
+NGApp.controller('RepsApplyShareCtrl', function ($scope, $location, $routeParams, ApplyService ) {
 
-	var array_without_test = [];
-	for (var iiii in App.communities){
-
-		if (((App.communities[iiii]).name.indexOf('no drivers')>-1) || ((App.communities[iiii]).name.indexOf('test')>-1)
-		|| ((App.communities[iiii]).name.indexOf('Marina')>-1) || ((App.communities[iiii]).name.indexOf('burrito')>-1)
-		|| ((App.communities[iiii]).name.indexOf('duplication')>-1)){
-			//do nothing
-		}
-		else{
-			//only add communities without "test" and without "no drivers"
-			array_without_test.push(App.communities[iiii]);
-		}
-
+	var login = $routeParams.id;
+	if( !login ){
+		$location.path( '/reps/apply/' );
 	}
-	$scope.communities = array_without_test;
-	$scope.apply = {};
-	$scope.errors = {};
-	$scope.post = function(){
-		$scope.errors = {};
-		if (!$scope.apply.firstName) {
-			$scope.errors.firstName = true;
-		}
-		if (!$scope.apply.lastName) {
-			$scope.errors.lastName = true;
-		}
-		if (!$scope.apply.email) {
-			$scope.errors.email = true;
-		}
-		if (!$scope.apply.university) {
-			$scope.errors.university = true;
-		}
-		if ($scope.apply.university == 'Other') {
-			if (!$scope.apply.otherUniversity){
-				$scope.errors.otherUniversity = true;
-			}
-		}
-		if (!$scope.apply.number) {
-			$scope.errors.number = true;
-		}
-		if (!$scope.apply.applicant) {
-			$scope.errors.applicant = true;
-		}
-		if (!$scope.apply.source) {
-			$scope.errors.source = true;
-		}
-		if ($scope.apply.source == 'other') {
-			if (!$scope.apply.otherSource){
-				$scope.errors.otherSource = true;
-			}
-		}
-		if (jQuery.isEmptyObject($scope.errors)) {
-			ApplyService.post($scope.apply, function(data){
-				$location.path( '/thankyou' );
-				console.log(data);
-			})
+
+	ApplyService.code( login, function( json ){
+		if( json.error ){
+			$location.path( '/reps/apply/' );
 		} else {
-			App.alert('Please fill out all of the fields.');
+			$scope.code = json.code;
+			$scope.loaded = true;
 		}
+	} );
+
+	$scope.facebook = function(){
+		var text = 'I love @crunchbutton delivery :) use my code ' + $scope.code + ' in the Notes section for $3 off!';
+		var link = 'https://crunchbutton.com/invite/' + $scope.code;
+		App.share({
+			url: link,
+			name: 'Crunchbutton',
+			caption: ' ',
+			description: text
+		});
+	}
+
+	$scope.twitter = function(){
+		var link = 'https://crunchbutton.com/invite/' + $scope.code;
+		var text = 'I love @crunchbutton delivery :) use my code ' + $scope.code + ' in the Notes section for $3 off!';
+		window.open('https://twitter.com/intent/tweet?url=' + link + '&text=' + text + '&hashtags=Crunchbutton' ,'_system');
+	}
+
+});
+
+NGApp.controller('RepsApplyCtrl', function ($scope, $location, ApplyService) {
+
+	$scope.communities = [];
+
+	ApplyService.communities( function( data ){
+		$scope.communities = data;
+	} );
+
+	$scope.step = 1;
+
+	$scope.apply = {};
+	$scope.saveBasicInfo = function(){
+
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			return;
+		}
+
+		$scope.isSaving = true;
+		$scope.apply.step = 1;
+		ApplyService.save_rep( $scope.apply, function( json ){
+			if( json.error ){
+				App.alert( json.error );
+			} else {
+				$scope.step = 2;
+				$scope.rep = json.success;
+			}
+			$scope.isSaving = false;
+		});
 	};
+
+	$scope.saveAddress = function(){
+		$scope.isSaving = true;
+		$scope.rep.step = 2;
+		ApplyService.save_rep( $scope.rep, function( json ){
+			if( json.error ){
+				App.alert( json.error );
+			} else {
+				$scope.step = 2;
+				$location.path( '/reps/apply/' + json.success.login );
+			}
+			$scope.isSaving = false;
+		});
+	};
+
 });
 
 
