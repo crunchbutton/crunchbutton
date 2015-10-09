@@ -437,7 +437,7 @@ NGApp.directive( 'restaurantImageUpload', function ($rootScope, FileUploader) {
 					scope.uploader.uploadAll();
 				},
 				function(){
-					scope.uploader.cancelAll();
+					scope.uploader.clearQueue();
 				} );
 			}
 
