@@ -31,7 +31,7 @@ table {
 	border-spacing: 0;
 }
 
-a {
+.fake-link, a {
 	color: $link;
 	text-decoration: underline;
 	cursor: pointer;
