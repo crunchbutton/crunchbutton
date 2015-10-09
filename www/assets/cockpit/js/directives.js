@@ -426,21 +426,23 @@ NGApp.directive( 'restaurantImageUpload', function ($rootScope, FileUploader) {
 
 			scope.uploader = new FileUploader({
 				url: '/api/restaurant/' + id_restaurant + '/image',
-				autoUpload: true
+				autoUpload: false
 			});
 
-			scope.uploader.onBeforeUploadItem = function() {
-
+			scope.uploader.onAfterAddingFile = function(){
 				App.agreementBox(
-					'I am certain that we have the rights to this image and it is not violating any copyright. There is no packaging or restaurant branding in the image. We either took this picture ourselves or are 100% certain we have the rights to it.',
-					'Agreement',
-					function(){
-						l.start();
-					},
-					function(){
-						scope.uploader.cancelAll();
-						// scope.uploader.destroy();
-					} );
+				'I am certain that we have the rights to this image and it is not violating any copyright. There is no packaging or restaurant branding in the image. We either took this picture ourselves or are 100% certain we have the rights to it.',
+				'Agreement',
+				function(){
+					scope.uploader.uploadAll();
+				},
+				function(){
+					scope.uploader.cancelAll();
+				} );
+			}
+
+			scope.uploader.onBeforeUploadItem = function() {
+				l.start();
 			};
 
 			scope.uploader.onSuccessItem = function(fileItem, response, status, headers) {
