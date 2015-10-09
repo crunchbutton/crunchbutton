@@ -65,6 +65,7 @@ class Controller_api_apply_rep extends Crunchbutton_Controller_Rest {
 					$error[] = 'Please enter a valid email!';
 					echo json_encode( [ 'error' => join( $error, "<br>" ) ] );exit;
 				}
+				$rep->changeOptions( [ 'id_admin' => 'id_admin'] );
 				$rep->email = $email;
 				$rep->save();
 			}
@@ -130,7 +131,7 @@ class Controller_api_apply_rep extends Crunchbutton_Controller_Rest {
 			echo json_encode( [ 'error' => join( $error, "<br>" ) ] );exit;
 		} else {
 			// start saving
-			$rep = new Cockpit_Admin();
+			$rep = new Admin();
 			$rep->active = 1;
 			$rep->name = $name;
 			$rep->phone = $phone;
@@ -138,10 +139,12 @@ class Controller_api_apply_rep extends Crunchbutton_Controller_Rest {
 			$rep->testphone = $phone;
 			$rep->invite_code = $code;
 			$rep->referral_admin_credit = 7;
-			$rep->referral_customer_credit = 7;
+			$rep->referral_customer_credit = 3;
 			$rep->save();
 
-			$rep = Cockpit_Admin::o( $rep->id_admin );
+			$rep = Admin::o( $rep->id_admin );
+
+			$rep->changeOptions( [ 'id_admin' => 'id_admin'] );
 
 			// create an username
 			$rep->login = $rep->createLogin();
@@ -150,7 +153,6 @@ class Controller_api_apply_rep extends Crunchbutton_Controller_Rest {
 			// pass
 			$random_pass = Crunchbutton_Util::randomPass();
 			$rep->pass = $rep->makePass( $random_pass );
-
 			$rep->save();
 
 			if( $community ){
@@ -170,13 +172,11 @@ class Controller_api_apply_rep extends Crunchbutton_Controller_Rest {
 
 			$out = [ 'username' => $rep->login, 'id' => $rep->id, 'token' => User_Auth::passwordEncrypt( $rep->login ) ];
 
-			Cockpit_Driver_Notify::send( $driver->id_admin, Cockpit_Driver_Notify::TYPE_WELCOME );
-
 			$message = "Welcome {$rep->firstName()}\nYour username is {$rep->login}.";
 			$message .= "\nYour password is {$random_pass}.";
 			$message .= "\n" . "Url http://cockpit.la/";
 
-			Crunchbutton_Message_Sms::send([ 'to' => $rep->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_REP_SETUP ]);
+			// Crunchbutton_Message_Sms::send([ 'to' => $rep->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_REP_SETUP ]);
 
 			echo json_encode( [ 'success' => $out ] );exit;
 		}
