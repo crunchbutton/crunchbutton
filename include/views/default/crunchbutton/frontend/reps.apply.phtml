@@ -1,103 +1,106 @@
 <div class="top-pad"></div>
-<div class="content-padding drivers-apply">
-	<div class="apply-item-title text-your-order" name="userForm">
-		Brand Representative Application
+
+<div class="content-padding drivers-apply" ng-show="step == 1">
+	<div class="apply-item-title text-your-order">
+		Become a Brand Representative
 	</div>
 	<p>
 		<br>
-		We'll get back to you to schedule a quick phone call once we receive your application.<br>
-		All fields are required.
+		Get paid $7 per new referral! Start marketing and earning cash today, by creating an account below.
 		<br><br>
 	</p>
-	<!--form goes here-->
-	<form>
+
+	<form name="form" ng-class="{'form-submitted':submitted}" novalidate>
 
 		<div class="form-group">
-			<h4><span class="form-required">*</span> First Name:</h4>
-
-			<div class="textbox">
-				<div ng-if="errors.firstName">Please enter your first name:</div>
-				<input type="text" ng-model="apply.firstName" name="firstName" class="form-control form-control-large">
+			<h4><span class="form-required">*</span> Full Name:</h4>
+			<div class="textbox" ng-class="{'form-error':form.fullName.$invalid}">
+				<div class="box-error">
+					<small ng-show="form.fullName.$error.required">Required.</small>
+					<small ng-show="form.fullName.$error.maxlength">Full Name cannot be longer than 40 characters.</small>
+					<small ng-show="form.fullName.$error.minlength">Full Name is required to be at least 5 characters.</small>
+				</div>
+				<input type="text" ng-model="apply.fullName" ng-maxlength="40" ng-minlength="5" required  name="fullName" class="form-control form-control-large">
 			</div>
 		</div>
 
 		<div class="form-group">
-			<h4><span class="form-required">*</span> Last Name:</h4>
-
-			<div class="textbox">
-				<div ng-if="errors.lastName">Please enter your last name:</div>
-				<input type="text" ng-model="apply.lastName" name="lastName" class="form-control form-control-large" >
+			<h4><span class="form-required">*</span> Phone Number:</h4>
+			<div class="textbox" ng-class="{'form-error':form.phone.$invalid}">
+				<div class="box-error">
+					<small ng-show="form.phone.$error.required">Required.</small>
+				</div>
+				<input type="text" ng-model="apply.phone" required  name="phone" class="form-control form-control-large">
 			</div>
 		</div>
 
 		<div class="form-group">
-			<h4><span class="form-required">*</span> Email:</h4>
-
-			<div class="textbox">
-				<div ng-if="errors.email">Please enter your email:</div>
-				<input type="text" class="form-control form-control-large" ng-model="apply.email" name="email" >
+			<h4><span class="form-required">*</span> Create Your Own Crunchbutton Referral Code:</h4>
+			<div class="textbox" ng-class="{'form-error':form.code.$invalid}">
+				<div class="box-error">
+					<small ng-show="form.code.$error.required">Required.</small>
+					<small ng-show="form.code.$error.maxlength">Code cannot be longer than 40 characters.</small>
+					<small ng-show="form.code.$error.minlength">Codes must be at least 5 characters.</small>
+				</div>
+				<input type="text" ng-model="apply.code" ng-maxlength="40" ng-maxlength="5" required  name="code" class="form-control form-control-large">
+				<div class="note">You'll use this in marketing.</div>
 			</div>
 		</div>
 
 		<div class="form-group">
-			<h4><span class="form-required">*</span> What school are you near?</h4>
-
-			<div class="textbox">
-				<div ng-if="errors.university || errors.otherUniversity">Please enter your nearest school:</div>
-				<select class="form-control form-control-large form-control form-control-select" ng-model="apply.university" name="university" >
-					<option></option>
-					<option ng-repeat="community in communities | orderBy: 'name'" value="{{community.name}}">{{community.name}}</option>
-					<option ng-model="apply.university" value="Other">Other</option>
-					<input ng-click="apply.source='otherU'" ng-if="apply.university=='Other'" class="form-control form-control-small" type="text" ng-model="apply.otherUniversity" name="otherUniversity">
-
-				</select>
+			<h4><span class="form-required">*</span> School:</h4>
+			<div class="textbox" ng-class="{'form-error':form.community.$invalid}">
+				<div class="box-error">
+					<small ng-show="form.community.$error.required">Required.</small>
+				</div>
+				<select name="community" class="form-control form-control-large form-control form-control-select" required ng-model="apply.community" ng-options="community.id as community.name for community in communities" ></select>
 			</div>
 		</div>
 
-		<div class="form-group">
-			<h4><span class="form-required">*</span> Cell Phone Number:</h4>
-
-			<div class="textbox">
-				<div ng-if="errors.number">Please enter your number:</div>
-				<input type="tel" class="form-control form-control-large" ng-model="apply.number" name="number" >
-			</div>
-		</div>
-
-		<div class="form-group"></div>
-
-
-		<div class="form-group">
-			<h4><span class="form-required">*</span> Applicant Type:</h4>
-			<p>
-				<i>Select student if you're a student at the college we're operating at</i>
-			</p>
-
-			<div class="textbox">
-				<div ng-if="errors.applicant">Please choose student or non-student:</div>
-				<br>
-				<input type="radio" ng-model="apply.applicant" name="applicant" value="student" id="apply-applicant-student"><label for="apply-applicant-student">Student</label><br>
-				<input type="radio" ng-model="apply.applicant" name="applicant" value="non-student" id="apply-applicant-non-student"><label for="apply-applicant-non-student">Non-Student</label><br><br><br>
-			</div>
-		</div>
-
-		<div class="form-group">
-			<h4><span class="form-required">*</span> How did you find out about us?</h4>
-
-			<div class="textbox">
-				<div ng-if="errors.source">Please enter how you found out about us:</div>
-				<input type="radio" ng-model="apply.source" name="source" value="craigslist" id="apply-source-craigslist"><label for="apply-source-craigslist">Craigslist</label><br>
-				<input type="radio" ng-model="apply.source" name="source" value="school-job-list" id="apply-source-school"><label for="apply-source-school">School Job Board</label><br>
-				<input type="radio" ng-model="apply.source" name="source" value="friend" id="apply-source-friend"><label for="apply-source-friend">Through a Friend</label><br>
-				<input type="radio" ng-model="apply.source" name="source" value="campus-marketing" id="apply-source-marketing"><label for="apply-source-marketing">Marketing on Campus</label><br>
-				<input type="radio" ng-model="apply.source" name="source" value="cb-website" id="apply-source-website"><label for="apply-source-website">Via Crunchbutton Website</label><br>
-				<input type="radio" ng-model="apply.source" name="source" value="other" id="apply-source-other"><label for="apply-source-other">Other:</label>
-				<div ng-if="errors.otherSource">Please specify how you found out about us:</div>
-				<input ng-click="apply.source='other'" class="form-control form-control-small" type="text" ng-model="apply.otherSource" name="otherSource">
-			</div>
-		</div>
-
-
-		<button class="button lightorange button-bottom " ng-click="post()">Submit</button>
+		<button class="button lightorange button-bottom" ng-show="!isSaving" ng-click="saveBasicInfo()">Next Page</button>
+		<div ng-show="isSaving"><i class="fa fa-spinner fa-spin"></i> Saving</div>
 
 	</form>
+
+</div>
+
+<div class="content-padding drivers-apply" ng-show="step == 2">
+	<div class="apply-item-title text-your-order">
+		Congratulations!
+	</div>
+	<p>
+		<br>
+		Congratulations, we’ve created your account! Your username is <strong>{{rep.username}}</strong>. We’ve texted you login instructions to log into your account so you can get paid. A member of our team may reach out to you, if you’re interested in getting involved in group marketing on campus.
+		<br><br>
+	</p>
+
+	<p>
+		<br>
+		Fill out your mailing address & email address below so we can send you marketing materials & marketing tips (optional, but strongly encouraged).
+		<br><br>
+	</p>
+
+	<form name="formInfo" novalidate>
+
+		<div class="form-group">
+			<h4>Address:</h4>
+			<div class="textbox">
+				<textarea ng-model="rep.address" name="address" class="form-control form-control-large"></textarea>
+			</div>
+		</div>
+
+		<div class="divider"></div>
+
+		<div class="form-group">
+			<h4>Email Address:</h4>
+			<div class="textbox">
+				<input type="text" ng-model="rep.email" name="email" class="form-control form-control-large">
+			</div>
+		</div>
+
+		<button class="button lightorange button-bottom" ng-show="!isSaving" ng-click="saveAddress()">Next Page</button>
+		<div ng-show="isSaving"><i class="fa fa-spinner fa-spin"></i> Saving</div>
+
+	</form>
+
 </div>

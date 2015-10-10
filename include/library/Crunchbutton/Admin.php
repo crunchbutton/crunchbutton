@@ -659,7 +659,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function removeGroups(){
-		Cana::db()->query('DELETE FROM `admin_group` WHERE id_admin = ?' , [$this->id_admin]);
+		Crunchbutton_Admin_Group::q( 'SELECT * FROM `admin_group` WHERE id_admin = ?', [$this->id_admin] )->delete();
 	}
 
 	public function removeGroup( $id_group ){
@@ -897,6 +897,18 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return $this->_community;
 	}
 
+	public function hasCommunityToOpen(){
+  	if( $this->isDriver() ){
+  		$communities = $this->driverCommunities();
+  		foreach( $communities as $community ){
+  			if( $community->drivers_can_open ){
+  				return true;
+  			}
+  		}
+  	}
+  	return false;
+	}
+
 	public function driverCommunities(){
 		$communities = [];
 		$groups = $this->groups();
@@ -1045,6 +1057,9 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			]);
 			$n->save();
 		}
+
+		Cockpit_Driver_Log::enabledPush();
+
 	}
 
 	public function shiftsCurrentAssigned(){
@@ -1217,16 +1232,6 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		}
 		return false;
 	}
-
-  public function communityDriverCanOpen(){
-  	if( $this->isDriver() ){
-  		$community = $this->community();
-  		if( $community->id_community && $community->isElegibleToBeOpened() ){
-  			return $community;
-  		}
-  	}
-  	return false;
-  }
 
 	public function __construct($id = null) {
 		parent::__construct();

@@ -18,6 +18,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 							case 'range':
 								$this->_range();
 								break;
+							case 'view-summary':
+								$this->_restaurantViewSummary();
+								break;
 							case 'download-summary':
 								$this->_restaurantDownloadSummary();
 								break;
@@ -33,6 +36,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 								break;
 							case 'view-summary':
 								$this->_driverViewSummary();
+								break;
+							case 'download-summary':
+								$this->_driverDownloadSummary();
 								break;
 							default:
 								$this->_error();
@@ -509,6 +515,10 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$settlement = new Crunchbutton_Settlement;
 		$summary = $settlement->restaurantSummaryByIdPayment( $id_payment );
 		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
+		header( 'Content-Type: text/html' );
+		header( 'Expires: 0' );
+		header( 'Cache-Control: must-revalidate' );
+		header( 'Pragma: public' );
 		echo $mail->message();
 	}
 
@@ -945,6 +955,22 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		}
 	}
 
+	public function _driverDownloadSummary(){
+		$id_payment =  c::getPagePiece( 4 );
+		$settlement = new Crunchbutton_Settlement;
+		$summary = $settlement->driverSummary( $id_payment );
+		$filename = $summary[ 'driver' ] . ' - Payment ' . $id_payment . '.html';
+		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
+		$summary = $mail->message();
+		header( 'Content-Description: File Transfer' );
+		header( 'Content-Type: application/octet-stream' );
+		header( 'Content-Disposition: attachment; filename=' . $filename );
+		header( 'Expires: 0' );
+		header( 'Cache-Control: must-revalidate' );
+		header( 'Pragma: public' );
+		header( 'Content-Length: ' . mb_strlen( $summary, '8bit' ) );
+		echo $summary;
+	}
 
 	public function _driverViewSummary(){
 		$id_payment =  c::getPagePiece( 4 );

@@ -298,6 +298,10 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				$params[] = $id_community;
 			}
 
+			if( $checkIfTheyCheckedIn ){
+				$query .= ' AND asa.confirmed = 1 ';
+			}
+
 	 		$shift = Crunchbutton_Community_Shift::q($query, $params);
 	 		if ($shift->id_admin_shift_assign) {
 	 			if( $checkIfTheyCheckedIn ){

@@ -31,7 +31,7 @@ table {
 	border-spacing: 0;
 }
 
-a {
+.fake-link, a {
 	color: $link;
 	text-decoration: underline;
 	cursor: pointer;
@@ -2329,8 +2329,8 @@ select.form-input {
 .hot-dog-relax {
 	background: url(../images/micro/hot-dog-relax.svg) no-repeat;
 	background-position: top center;
-	width: 17em;
-	height: 10.4em;
+	width: 36em;
+	height: 26em;
 	background-size: 100%;
 	float: right;
 	margin-top: 8em;
@@ -2351,7 +2351,8 @@ select.form-input {
 }
 .order-bubble-wrap {
 	width: 30em;
-	margin: 0 auto;
+	margin-left: auto !important;
+	margin-right: auto !important;
 	margin-top: -1.8em;
 }
 
@@ -2966,7 +2967,7 @@ sup {
 }
 
 .center-text {
-	text-align: center;
+	text-align: center !important;
 }
 
 .alternate-link {
@@ -4009,7 +4010,15 @@ font-familt: "Museo Slab";
 		font-size: 1.4em;
 	}
 	.order-tagline p {
-		line-height: 1.8em;
+		line-height: 1.2em;
+	}
+	.order-wait{
+		margin-top:1.4em;
+		line-height: 1.4em;
+	}
+	.hot-dog-relax{
+		width:26em;
+		height:18em;
 	}
 }
 
@@ -4024,7 +4033,7 @@ font-familt: "Museo Slab";
 	}
 	.order-tagline {
 		font-weight: 100;
-		font-size: 2em;
+		font-size: 1.6em;
 		margin-bottom: 1.4em;
 	}
 	.order-tagline b {
@@ -4059,12 +4068,20 @@ font-familt: "Museo Slab";
 		width: 48%;
 	}
 
+	.button-refer-big {
+		width: 100%;
+		margin-top: 2em;
+	}
 
 	.user-account-credit .delivery-free, .account-your-orders, .order-buttons .delivery-free {
 		font-size: 2em;
-
 		margin-bottom: 1.1em;
 		display: inline-block;
+	}
+	.delivery-free{
+		font-size:2.8em !important;
+		display:block !important;
+		text-align: center !important;
 	}
 	.col-box {
 		@include flex(row, row wrap, space-between);
@@ -4184,12 +4201,14 @@ font-familt: "Museo Slab";
 	.refer-multiply {
 		text-align: center;
 		font-size: 1.4em;
-		font-weight: bold;
+		line-height:1.2em;
 		display: block;
 		margin-bottom :.6em;
+		font-weight: bold;
 	}
 .refer-multiply-small {
 	font-size: 1.2em;
+	font-weight:normal !important;
 	display: block;
 	margin-bottom :.6em;
 	font-weight: 600;
@@ -4197,6 +4216,9 @@ font-familt: "Museo Slab";
 @media screen and (max-width: 1024px) {
 	.button-refer {
 		margin-bottom: 1em;
+	}
+	.button-refer-big {
+		margin-top: 1.5em !important;
 	}
 }
 @media screen and (max-width: 1024px) {
@@ -4370,6 +4392,12 @@ textarea {
 		margin-top: .3em;
 	}
 }
+
+.button-logout{
+	width:50%;
+	margin-top:3em;
+}
+
 @media screen and (min-width: 1025px) {
 	/*
 	.button.green.button-empty {
@@ -4555,4 +4583,15 @@ textarea {
  .suggestion-header {
 	 margin-top: 0;
 	 margin-bottom: .5em;
+ }
+
+ .box-error{
+ 	display:none;
+ }
+ .form-submitted .box-error{
+ 	color: #ef8b70;
+ 	display:block;
+ }
+ .form-group .note{
+ 	font-size: .9em;
  }

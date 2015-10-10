@@ -10,6 +10,10 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 				$this->_pex_id();
 				break;
 
+			case 'id-pexcard':
+				$this->_id_pexcard();
+				break;
+
 			case 'driver-search':
 				$this->_driver_search();
 				break;
@@ -254,6 +258,59 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 		echo json_encode( [ 'success' => $admin_pexcard->id_admin_pexcard ] );
 	}
 
+	private function _id_pexcard(){
+
+		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud' ] ) ){
+			$this->_error();
+		}
+
+		$id_pexcard = $this->request()[ 'id' ];
+
+		if( $id_pexcard ){
+			$card = Cockpit_Admin_Pexcard::getByPexCardId( $id_pexcard );
+			$this->_funds( $card );
+		}
+		$this->_error( 'Card Not Found' );
+		$this->_funds( $card );
+	}
+
+	private function _funds( $card ){
+		if( $card ){
+			$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $card->id_pexcard );
+			$card = Crunchbutton_Pexcard_Card::details( $card->id_pexcard );
+			$card = $card->body;
+			if( $admin_pexcard->id_admin ){
+				$card->id_admin = intval( $admin_pexcard->id_admin );
+				$card->admin_name = $admin_pexcard->admin()->name;
+				$card->admin_login = $admin_pexcard->admin()->login;
+			}
+			echo json_encode( $card );exit;
+		} else {
+			$cards = Crunchbutton_Pexcard_Card::card_list();
+			if( $cards == Crunchbutton_Pexcard_Card::LIMTS_EXCEEDED ){
+				$error = Crunchbutton_Pexcard_Card::LIMTS_EXCEEDED . '! Please try again later.';
+				$this->_error( $error );
+			}
+			if( is_array( $cards->body ) ){
+				foreach( $cards->body as $card ){
+					if( $card->lastName == $crunchbutton_id ){
+						$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $card->id );
+						$card = Crunchbutton_Pexcard_Card::details( $card->id );
+						$card = $card->body;
+						if( $admin_pexcard->id_admin ){
+							$card->id_admin = intval( $admin_pexcard->id_admin );
+							$card->admin_name = $admin_pexcard->admin()->name;
+							$card->admin_login = $admin_pexcard->admin()->login;
+						}
+						echo json_encode( $card );exit;
+					}
+				}
+			} else {
+				$this->_error( 'Oops, something is wrong!' );
+			}
+		}
+	}
+
 	private function _pex_id(){
 
 		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud' ] ) ){
@@ -264,40 +321,7 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 
 		if( $crunchbutton_id ){
 			$card = Cockpit_Admin_Pexcard::getByCardSerial( $crunchbutton_id );
-			if( $card ){
-				$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $card->id_pexcard );
-				$card = Crunchbutton_Pexcard_Card::details( $card->id_pexcard );
-				$card = $card->body;
-				if( $admin_pexcard->id_admin ){
-					$card->id_admin = intval( $admin_pexcard->id_admin );
-					$card->admin_name = $admin_pexcard->admin()->name;
-					$card->admin_login = $admin_pexcard->admin()->login;
-				}
-				echo json_encode( $card );exit;
-			} else {
-				$cards = Crunchbutton_Pexcard_Card::card_list();
-				if( $cards == Crunchbutton_Pexcard_Card::LIMTS_EXCEEDED ){
-					$error = Crunchbutton_Pexcard_Card::LIMTS_EXCEEDED . '! Please try again later.';
-					$this->_error( $error );
-				}
-				if( is_array( $cards->body ) ){
-					foreach( $cards->body as $card ){
-						if( $card->lastName == $crunchbutton_id ){
-							$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $card->id );
-							$card = Crunchbutton_Pexcard_Card::details( $card->id );
-							$card = $card->body;
-							if( $admin_pexcard->id_admin ){
-								$card->id_admin = intval( $admin_pexcard->id_admin );
-								$card->admin_name = $admin_pexcard->admin()->name;
-								$card->admin_login = $admin_pexcard->admin()->login;
-							}
-							echo json_encode( $card );exit;
-						}
-					}
-				} else {
-					$this->_error( 'Oops, something is wrong!' );
-				}
-			}
+			$this->_funds( $card );
 		}
 		$this->_error( 'Card Not Found' );
 	}

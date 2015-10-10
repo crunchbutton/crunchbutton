@@ -34,13 +34,15 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 
 		if( $type == 'all' ){
 			$q .= '
-					sm.id_support_message=(
+					( sm.id_support_message=(
 						SELECT MAX(support_message.id_support_message) a
 						FROM support_message
 						WHERE
 							support_message.id_support=s.id_support
 							AND ( support_message.from=\'client\' OR support_message.from=\'system\' )
 					)
+-- or sm.id_support_message IS NOT NULL
+)
 					and smr.id_support_message=(
 						SELECT MAX(support_message.id_support_message) a
 						FROM support_message
@@ -72,7 +74,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			$q .= ' AND s.phone=?';
 			$keys['phone'] = $phone;
 		}
-// Sarah Donnelly
+
 		if ($search) {
 			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),

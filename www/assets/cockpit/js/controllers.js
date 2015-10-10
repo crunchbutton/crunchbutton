@@ -200,6 +200,46 @@ NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
 	});
 });
 
+NGApp.controller( 'AgreementBoxCtrl', function ($scope, $rootScope ) {
+	$rootScope.$on('agreementBox', function(e, title, message, success, fail ) {
+
+		$scope.agree = false;
+
+		$(':focus').blur();
+
+		var complete = function() {
+			$rootScope.closePopup();
+			if (typeof success === 'function') {
+				success();
+			}
+		};
+
+		var cancel = function() {
+			$rootScope.closePopup();
+			if (typeof fail === 'function') {
+				fail();
+			}
+		};
+
+		if ($scope.$$phase) {
+			$scope.confirmationTitle = title;
+			$scope.message = message;
+			$scope.complete = complete;
+			$scope.cancel = cancel;
+			App.dialog.show('.agreement-container');
+
+		} else {
+			$rootScope.$apply(function(scope) {
+				scope.confirmationTitle = title;
+				scope.message = message;
+				scope.complete = complete;
+				scope.cancel = cancel;
+				App.dialog.show('.agreement-container');
+			});
+		}
+	});
+});
+
 NGApp.controller( 'NotificationConfirmCtrl', function ($scope, $rootScope ) {
 	$rootScope.$on('notificationConfirm', function(e, title, message, success, fail, buttons) {
 

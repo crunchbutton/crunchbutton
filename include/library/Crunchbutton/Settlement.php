@@ -1639,7 +1639,16 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 				$first_name = Crunchbutton_Message_Sms::greeting( $driver->firstName() );
 
-				$message = $first_name . 'Hey your payment from Crunchbutton.com failed. Make sure you entered your payment info right at http://cockpit.la/drivers/docs/payment. Just email us back at payment@_DOMAIN_ if you have questions!';
+				$link = '';
+				if( $driver->isDriver() ){
+					$link = 'http://cockpit.la/drivers/docs/payment';
+				}
+				if( $driver->isMarketingRep() || $driver->isCampusManager() ){
+					$link = 'http://cockpit.la/staff/marketing-rep/docs/payment';
+				}
+
+				$message = $first_name . 'Hey your payment from Crunchbutton.com failed. Make sure you entered your payment info right at ' . $link . '. Just email us back at payment@_DOMAIN_ if you have questions!';
+
 				if( $driver->phone ){
 					Crunchbutton_Message_Sms::send( [ 'from' => 'driver', 'to' => $driver->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_SETTLEMENT_FAIL ] );
 					// Crunchbutton_Support::createNewWarning( [ 'phone' => $driver->phone, 'body' => $message ] );
@@ -1870,7 +1879,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 
  	public function sendRestaurantPaymentNotification( $id_payment ){
 		$summary = $this->restaurantSummaryByIdPayment( $id_payment );
-
 		if( !$summary ){
 			return false;
 		}
@@ -1881,6 +1889,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		$mail = ( $env == 'live' ? $summary[ 'summary_email' ] : Crunchbutton_Settlement::TEST_SUMMARY_EMAIL );
 		$fax = ( $env == 'live' ? $summary[ 'summary_fax' ] : Crunchbutton_Settlement::TEST_SUMMARY_FAX );
+
+		$summary[ 'summary_email' ] = ( $env == 'live' ? $summary[ 'summary_email' ] : Crunchbutton_Settlement::TEST_SUMMARY_EMAIL );
 
 		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
 
@@ -1975,7 +1985,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 		if( !$summary ){
 			return false;
 		}
-
 		$this->log( 'sendDriverPaymentNotification', $summary );
 
 		$env = c::getEnv();

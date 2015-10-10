@@ -11,8 +11,7 @@
 
 	<h2 class="title">#{{result.id_driver}} - {{result.driver}}</h2>
 	<span ng-click="payment_info( result.id_driver );" class="orange link">Edit payment info</span> |
-	<a href="/drivers/payment/{{result.id_payment_schedule}}">Driver's Summary</a> |
-	<a target="_blank" href="/api/settlement/drivers/view-summary/{{result.id_payment_schedule}}">Driver's Email Summary</a>
+	<a href="/drivers/payment/{{result.id_payment_schedule}}">Driver's Summary</a>
 
 	<br/><br/>
 
@@ -74,10 +73,25 @@
 						<span ng-if="!result.summary_sent_date"><i>Summary not sent</i></span>
 					</td>
 				</tr>
-				<tr ng-if="result.payment_date && payment">
-					<td><span class="link orange" ng-click="view_summary()">View Summary</span></td>
-					<td><span class="link orange" ng-click="send_summary()">Send Summary</span></td>
+				<tr ng-if="result.payment_date">
+					<td>
+						<span class="no-underline link orange" ng-click="view_summary()"><i class="fa fa-eye"></i> View Summary</span>
+					</td>
+					<td></td>
 				</tr>
+				<tr ng-if="result.payment_date">
+					<td>
+						<span class="no-underline link orange" ng-click="send_summary()"><i class="fa fa-send"></i> Send Summary</span>
+					</td>
+					<td></td>
+				</tr>
+				<tr ng-if="result.payment_date">
+					<td>
+						<span class="no-underline link orange" ng-click="download_summary()"><i class="fa fa-download"></i> Download Summary</span>
+					</td>
+					<td></td>
+				</tr>
+
 				<tr class="transparent"><td></td><td></td></tr>
 				<tr ng-if="result.balanced_id">
 					<td>Balanced</td>
@@ -141,7 +155,7 @@
 					<td>$ {{result.calcs.markup | formatPrice}}</td>
 				</tr>
 				<tr ng-if="result.calcs.delivery_fee_collected && pay_type_payment" positive-or-negative-color="{{result.calcs.delivery_fee_collected}}">
-					<td>Delivery Fee Collected In Cash by Hourly Drivers</td>
+					<td>Delivery Fee Collected In Cash</td>
 					<td>$ {{result.calcs.delivery_fee_collected | formatPrice}}</td>
 				</tr>
 				<tr ng-if="result.calcs.customer_fee_collected && pay_type_payment" positive-or-negative-color="{{result.calcs.customer_fee_collected}}">

@@ -70,6 +70,10 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 					for( $i = 0; $i < count( $config['restaurants'] ); $i++ ){
 						if( $config['restaurants'][ $i ][ 'id_restaurant' ] == $driverRestaurant->id_restaurant ){
 							$config['restaurants'][ $i ][ 'driver_restaurant' ] = true;
+
+							if( $community->automatic_driver_restaurant_name && $community->driver_restaurant_name ){
+								$config['restaurants'][ $i ][ 'name' ] = $community->driver_restaurant_name;
+							}
 						} else {
 							$config['restaurants'][ $i ][ 'driver_restaurant' ] = false;
 						}
