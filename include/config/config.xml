@@ -59,6 +59,14 @@
 			<prefix></prefix>
 			<encrypted>true</encrypted>
 		</beta>
+		<ui1archive>
+			<user>***REMOVED***</user>
+			<pass>***REMOVED***</pass>
+			<db>crunchbutton_ui1_archive</db>
+			<host>96.126.99.119</host>
+			<prefix></prefix>
+			<encrypted>true</encrypted>
+		</ui1archive>
 		<local>
 			<user>root</user>
 			<pass>root</pass>

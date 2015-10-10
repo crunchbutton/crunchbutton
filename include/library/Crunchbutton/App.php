@@ -75,6 +75,9 @@ class Crunchbutton_App extends Cana_App {
 		} elseif (preg_match('/_DOMAIN_$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'fail';
 		// anything prefixed with beta or dev
+		} elseif (preg_match('/ui1\./',$_SERVER['SERVER_NAME'])) {
+			$db = 'ui1archive';
+		// anything prefixed with beta or dev
 		} elseif (preg_match('/(crunchr.co$)|(^beta.|dev.|cockpitbeta.)/',$_SERVER['SERVER_NAME'])) {
 			$db = 'beta';
 		// anything else (should be nothing)
