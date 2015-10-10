@@ -140,7 +140,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 					c::view()->layout('layout/ajax');
 					c::view()->display('restaurants/hour_override');
 					break;
-				
+
 
 				case 's3':
 					if (!c::admin()->permission()->check(['global'])) {
@@ -149,7 +149,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 					$r = $restaurant->updateImage();
 					var_dump($r);
 					break;
-				
+
 				case 's3all':
 					if (!c::admin()->permission()->check(['global'])) {
 						exit;
@@ -167,9 +167,11 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 						//}
 					}
 					break;
-				
+
 
 				case 'image':
+					header( 'Location: https://cockpit.la/restaurant/' . $restaurant->permalink );
+					exit;
 					// @permission
 					if (!c::admin()->permission()->check(['global','restaurants-all', 'restaurants-crud', 'restaurant-'.$restaurant->id_restaurant.'-all', 'restaurant-'.$restaurant->id_restaurant.'-edit','restaurant-'.$restaurant->id_restaurant.'-image'])) {
 						return;

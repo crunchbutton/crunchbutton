@@ -8,7 +8,10 @@ class Cockpit_Driver_Log extends Cana_Table {
 	const ACTION_NOTIFIED_SETUP = 'notified-setup'; // notification sent
 	const ACTION_DOCUMENT_SENT = 'document-sent'; // document sent
 	const ACTION_ACCOUNT_SETUP = 'account-setup'; // login created
-	
+	const ACTION_NATIVE_APP_LOGIN = 'native-app-login';
+	const ACTION_ENABLED_PUSH = 'enabled-push';
+	const ACTION_ENABLED_LOCATION = 'enabled-location';
+
 	public function nextAction( $id_admin ){
 		$log = Cockpit_Driver_Log::lastAction( $id_admin );
 		if( $log ){
@@ -34,7 +37,7 @@ class Cockpit_Driver_Log extends Cana_Table {
 		if( count( $actions ) > 0 ){
 			return $actions[ 0 ];
 		}
-		return null;	
+		return null;
 	}
 
 	public function __construct($id = null) {
@@ -52,7 +55,7 @@ class Cockpit_Driver_Log extends Cana_Table {
 			foreach( $_logs as $log ){
 				$logs[] = $log->exports();
 			}
-		} 
+		}
 		return $logs;
 	}
 
@@ -65,8 +68,8 @@ class Cockpit_Driver_Log extends Cana_Table {
 			foreach( $_logs as $log ){
 				$logs[] = $log->exports();
 			}
-			
-		} 
+
+		}
 		return $logs;
 	}
 
@@ -91,6 +94,30 @@ class Cockpit_Driver_Log extends Cana_Table {
 				return 'setup finished';
 				break;
 		}
+	}
+
+	public static function nativeAppLogin(){
+		$log = new Cockpit_Driver_Log;
+		$log->id_admin = c::user()->id_admin;
+		$log->action = self::ACTION_NATIVE_APP_LOGIN;
+		$log->datetime = date( 'Y-m-d H:i:s' );
+		$log->save();
+	}
+
+	public static function enabledLocation(){
+		$log = new Cockpit_Driver_Log;
+		$log->id_admin = c::user()->id_admin;
+		$log->action = self::ACTION_ENABLED_LOCATION;
+		$log->datetime = date( 'Y-m-d H:i:s' );
+		$log->save();
+	}
+
+	public static function enabledPush(){
+		$log = new Cockpit_Driver_Log;
+		$log->id_admin = c::user()->id_admin;
+		$log->action = self::ACTION_ENABLED_PUSH;
+		$log->datetime = date( 'Y-m-d H:i:s' );
+		$log->save();
 	}
 
 	public function date(){

@@ -496,6 +496,26 @@ NGApp.controller( 'SettlementRestaurantsScheduledViewCtrl', function ( $scope, $
 		$scope.navigation.link( '/settlement/restaurants/payment/' + id_payment );
 	}
 
+	$scope.view_summary = function(){
+		$scope.navigation.link( '/settlement/restaurants/summary/' + $scope.result.id_payment );
+	}
+
+	$scope.download_summary = function(){
+		SettlementService.restaurants.download_summary( $scope.result.id_payment );
+	}
+
+	$scope.send_summary = function(){
+		$scope.makeBusy();
+		SettlementService.restaurants.send_summary( $scope.result.id_payment, function( json ){
+			if( json.success ){
+				load();
+			} else {
+				$scope.unBusy();
+				App.alert( 'Oops, something bad happened!' );
+			}
+		} )
+	}
+
 	load();
 
 });
@@ -514,13 +534,6 @@ NGApp.controller( 'SettlementRestaurantsPaymentCtrl', function ( $scope, $routeP
 		} );
 	}
 
-	$scope.view_summary = function(){
-		$scope.navigation.link( '/settlement/restaurants/summary/' + $routeParams.id );
-	}
-
-	$scope.download_summary = function(){
-		SettlementService.restaurants.download_summary( $routeParams.id );
-	}
 
 	$scope.payment_status = function(){
 		if( $scope.result.id_payment ){
@@ -536,9 +549,17 @@ NGApp.controller( 'SettlementRestaurantsPaymentCtrl', function ( $scope, $routeP
 		}
 	}
 
+	$scope.view_summary = function(){
+		$scope.navigation.link( '/settlement/restaurants/summary/' + $scope.result.id_payment );
+	}
+
+	$scope.download_summary = function(){
+		SettlementService.restaurants.download_summary( $scope.result.id_payment );
+	}
+
 	$scope.send_summary = function(){
 		$scope.makeBusy();
-		SettlementService.restaurants.send_summary( function( json ){
+		SettlementService.restaurants.send_summary( $scope.result.id_payment, function( json ){
 			if( json.success ){
 				load();
 			} else {
@@ -890,6 +911,26 @@ NGApp.controller( 'SettlementDriversScheduledViewCtrl', function ( $scope, $rout
 		} );
 	}
 
+	$scope.view_summary = function(){
+		$scope.navigation.link( '/settlement/drivers/summary/' + $routeParams.id );
+	}
+
+	$scope.download_summary = function(){
+		SettlementService.drivers.download_summary( $routeParams.id );
+	}
+
+	$scope.send_summary = function(){
+		$scope.makeBusy();
+		SettlementService.drivers.send_summary( $scope.result.id_payment, function( json ){
+			if( json.success ){
+				load();
+			} else {
+				$scope.unBusy();
+				App.alert( 'Oops, something bad happened!' );
+			}
+		} )
+	}
+
 	$scope.$on( 'do_payment', function(e, data) {
 		$scope.do_payment();
 	});
@@ -1102,12 +1143,16 @@ NGApp.controller( 'SettlementDriversPaymentCtrl', function ( $scope, $routeParam
 	}
 
 	$scope.view_summary = function(){
-		$scope.navigation.link( '/settlement/drivers/summary/' + $routeParams.id );
+		$scope.navigation.link( '/settlement/drivers/summary/' + $scope.result.id_payment_schedule );
+	}
+
+	$scope.download_summary = function(){
+		SettlementService.drivers.download_summary( $scope.result.id_payment_schedule );
 	}
 
 	$scope.send_summary = function(){
 		$scope.makeBusy();
-		SettlementService.drivers.send_summary( function( json ){
+		SettlementService.drivers.send_summary( $scope.result.id_payment, function( json ){
 			if( json.success ){
 				load();
 			} else {

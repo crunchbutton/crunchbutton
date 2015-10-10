@@ -426,8 +426,20 @@ NGApp.directive( 'restaurantImageUpload', function ($rootScope, FileUploader) {
 
 			scope.uploader = new FileUploader({
 				url: '/api/restaurant/' + id_restaurant + '/image',
-				autoUpload: true
+				autoUpload: false
 			});
+
+			scope.uploader.onAfterAddingFile = function(){
+				App.agreementBox(
+				'I am certain that we have the rights to this image and it is not violating any copyright. There is no packaging or restaurant branding in the image. We either took this picture ourselves or are 100% certain we have the rights to it.',
+				'Agreement',
+				function(){
+					scope.uploader.uploadAll();
+				},
+				function(){
+					scope.uploader.clearQueue();
+				} );
+			}
 
 			scope.uploader.onBeforeUploadItem = function() {
 				l.start();
@@ -436,7 +448,14 @@ NGApp.directive( 'restaurantImageUpload', function ($rootScope, FileUploader) {
 			scope.uploader.onSuccessItem = function(fileItem, response, status, headers) {
 				//scope.uploader.clearQueue();
 				l.stop();
-				$('#restaurant-image-thumb').get(0).src = $('#restaurant-image-thumb').get(0).src + '?' + new Date();
+				if( $('#restaurant-image-thumb').get(0).src ){
+					App.alert( 'Image uploaded!' );
+					var img = new Image;
+					img.src = $('#restaurant-image-thumb').get(0).src + '?' + new Date();
+					$('#restaurant-image-thumb').get(0).src = img.src;
+				} else {
+					location.reload();
+				}
 			};
 
 			scope.uploader.onErrorItem = function (fileItem, response, status, headers) {

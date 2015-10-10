@@ -9,6 +9,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 	const REASON_SUPPORT_SUGGESTION = 'support suggestion';
 	const REASON_PASSWORD_RESET = 'password reset';
 	const REASON_DRIVER_SETUP = 'driver setup notify';
+	const REASON_REP_SETUP = 'rep setup notify';
 	const REASON_DRIVER_ORDER_CANCELED = 'driver order canceled';
 	const REASON_DRIVER_ORDER = 'driver new order';
 	const REASON_DRIVER_NOTIFIES_CUSTOMER = 'driver notifies customer';
