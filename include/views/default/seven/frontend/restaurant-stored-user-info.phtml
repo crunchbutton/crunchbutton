@@ -15,7 +15,7 @@
 		</div>
 		<div class="divider"></div>
 		<div class="order-icon">
-			<i class="fa fa-birthday-cake payment-form-icon form-icon form-field" ng-if="order.form.pay_type=='card' && order.total() <= credit.number"></i>
+			<i class="fa fa-birthday-cake gift-card-balance payment-form-icon form-icon form-field" ng-if="order.form.pay_type=='card' && order.total() <= credit.number"></i>
 			<i class="fa fa-credit-card payment-form-icon form-icon form-field" ng-if="order.form.pay_type=='card' && order.total() > credit.number"></i>
 			<i class="fa fa-money payment-form-icon form-icon form-field" ng-if="order.form.pay_type=='cash'"></i>
 		</div>
