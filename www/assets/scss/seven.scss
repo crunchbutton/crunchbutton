@@ -81,6 +81,9 @@ html {
 	*:not(input):not(textarea) {
 		@include noselect();
 	}
+	.suggestion-footer {
+		text-align: center;
+	}
 }
 
 .noselect {
