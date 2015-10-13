@@ -1,0 +1,1 @@
+ALTER TABLE `payment_schedule_order` ADD COLUMN `amount_per_order` float DEFAULT NULL;

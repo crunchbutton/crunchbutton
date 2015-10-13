@@ -160,7 +160,7 @@
 					</td>
 				<?php } ?>
 				<?php if( $summary[ 'show_delivery_fees' ] ) { ?>
-					<td style="width:155px;" class="topitem">Delivery Fee</td>
+					<td style="width:155px;" class="topitem">Per-order<br>Fee</td>
 				<?php } ?>
 				<td style="width:155px;" class="topitem">Delivery Fee Already Collected in Cash</td>
 				<td style="width:155px;" class="topitem">Markup Already Collected in Cash</td>
@@ -193,7 +193,7 @@
 				<?php } ?>
 
 				<?php if( $summary[ 'show_delivery_fees' ] ) { ?>
-					<td class="fooditem">$<?php echo number_format( $order[ 'delivery_fee' ], 2 ); ?></td>
+					<td class="fooditem">$<?php echo number_format( $order[ 'amount_per_order' ], 2 ); ?></td>
 				<?php } ?>
 				<td class="fooditem">$<?php echo number_format( $order[ 'delivery_fee_collected' ], 2 ); ?></td>
 				<td class="fooditem">$<?php echo number_format( $order[ 'markup' ], 2 ); ?></td>
