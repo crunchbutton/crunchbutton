@@ -333,6 +333,12 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return false;
 	}
 
+	public function amountPerOrder( $id_community = null ){
+		$paymentType = $this->paymentType();
+		return $paymentType->amountPerOrder( $id_community );
+
+	}
+
 	public function isDriver() {
 		if (!isset($this->_isDriver)) {
 			$query = '

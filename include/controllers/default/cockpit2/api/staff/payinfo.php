@@ -110,6 +110,7 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 		if ( c::admin()->permission()->check( ['global', 'permission-all', 'permission-users'] ) ){
 			$payment_type->hour_rate = floatval( $this->request()[ 'hour_rate' ] );
 			$payment_type->payment_method = $this->request()[ 'payment_method' ];
+			$payment_type->amount_per_order = $this->request()[ 'amount_per_order' ];
 			if( $this->request()[ 'payment_type' ] ){
 				$payment_type->payment_type = $this->request()[ 'payment_type' ];
 			} else {
@@ -160,6 +161,7 @@ class Controller_api_staff_payinfo extends Crunchbutton_Controller_RestAccount {
 			$out[ 'name' ] = $admin->name;
 			$out[ 'login' ] = $admin->login;
 			$out[ 'dob' ] = $admin->dob;
+			$out[ 'amount_per_order' ] = floatval( $payment_type->amount_per_order );
 			$out[ 'hour_rate' ] = floatval( $payment_type->hour_rate );
 			$out[ 'social_security_number' ] = $admin->ssn_mask();
 			$cards = Cockpit_Admin_Pexcard::getByAdmin( $admin->id_admin )->get( 0 );

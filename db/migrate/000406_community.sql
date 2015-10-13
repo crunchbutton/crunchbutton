@@ -1,0 +1,1 @@
+ALTER TABLE `community` ADD COLUMN `amount_per_order` float DEFAULT NULL;

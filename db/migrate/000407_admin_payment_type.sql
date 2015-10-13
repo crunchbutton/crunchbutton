@@ -1,0 +1,1 @@
+ALTER TABLE `admin_payment_type` ADD COLUMN `amount_per_order` float DEFAULT NULL;

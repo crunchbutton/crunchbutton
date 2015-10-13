@@ -323,6 +323,13 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			$out[ 'hour_rate' ] = intval( $payment_type->hour_rate );
 		}
 
+		if( $out[ 'payment_type' ] == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS ||
+		 		$out[ 'payment_type' ] == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_MAKING_WHOLE ){
+			$out[ 'amount_per_order' ] = $payment_type->amountPerOrder();
+		}
+
+
+
 		$out['stripe_id'] = $payment_type->stripe_id;
 
 		if( $staff->driver_info()->pexcard_date ){
@@ -675,6 +682,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				$sentAllDocs = true;
 
 				$payment_type = $admin->payment_type();
+
 				// driver stuff
 				$staff[ 'send_text_about_schedule' ] = ( $s->send_text_about_schedule ? true : false );
 				// $staff[ 'orders_per_hour' ] = $admin->ordersPerHour();
@@ -686,6 +694,8 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				$staff[ 'shift_status' ] = $shift_status->exports();
 				$assigned_shifts = $admin->shiftsCurrentAssigned();
 				$staff[ 'total_shifts' ] = $assigned_shifts->count();
+
+				$staff[ 'amount_per_order' ] = $payment_type->amountPerOrder();
 
 				foreach( $docs as $doc ){
 
