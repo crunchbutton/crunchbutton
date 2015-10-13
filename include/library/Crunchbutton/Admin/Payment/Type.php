@@ -167,6 +167,27 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 		Log::debug( [ 'request' => $request, 'type' => 'claim-account' ] );
 	}
 
+	public function amountPerOrder( $id_community = null ){
+		if( $this->payment_type == self::PAYMENT_TYPE_ORDERS || $this->payment_type == self::PAYMENT_TYPE_MAKING_WHOLE ){
+			if( $this->amount_per_order ){
+				return floatval( $this->amount_per_order );
+			} else {
+				if( $id_community ){
+					$community = Community::o( $id_community );
+					if( $community->amount_per_order ){
+						return floatval( $community->amount_per_order );
+					}
+				} else {
+					$community = $this->admin()->communityDriverDelivery();
+					if( $community->amount_per_order ){
+						return floatval( $community->amount_per_order );
+					}
+				}
+			}
+		}
+		return null;
+	}
+
 	public function stripeVerify(){
 		$this->admin()->autoStripeVerify( false );
 	}

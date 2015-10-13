@@ -167,6 +167,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 
 		$out[ 'driver_group' ] = $this->driver_group()->name;
+		$out[ 'amount_per_order' ] = floatval( $this->amount_per_order );
 
 		foreach ($this->restaurants() as $restaurant) {
 			$out['_restaurants'][$restaurant->id_restaurant.' '] = $restaurant->exports(['categories' => true, 'eta' => true]);

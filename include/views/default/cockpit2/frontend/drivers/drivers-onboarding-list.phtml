@@ -78,7 +78,10 @@
 							<span class="tag tag-yellow" ng-if="driver.vehicle == 'skateboard'">Skateboard</span>
 							<span class="tag tag-grey" ng-if="!driver.vehicle">None</span>
 
-							<span class="tag tag-blue" ng-if="driver.payment_type == 'orders'">Commission</span>
+							<span class="tag tag-blue" ng-if="driver.payment_type == 'orders'">
+								Commission
+								<span ng-if="driver.amount_per_order">${{driver.amount_per_order | formatPrice}}/order</span>
+							</span>
 							<span class="tag tag-purple" ng-if="driver.payment_type == 'hours'">
 								Hourly with tips
 								<span ng-if="driver.hour_rate">${{driver.hour_rate | formatPrice}}</span>
@@ -89,7 +92,9 @@
 							</span>
 							<span class="tag tag-yellow" ng-if="driver.payment_type == 'making_whole'">
 								Making whole
-								<span ng-if="driver.hour_rate">${{driver.hour_rate | formatPrice}}</span>
+								<span ng-if="driver.hour_rate">${{driver.hour_rate | formatPrice}} / hour</span>
+								<span ng-if="driver.hour_rate && driver.amount_per_order"> | </span>
+								<span ng-if="driver.amount_per_order">${{driver.amount_per_order | formatPrice}}/order</span>
 							</span>
 							<span class="tag tag-grey" ng-if="!driver.payment_type">Payment Type Missing</span>
 

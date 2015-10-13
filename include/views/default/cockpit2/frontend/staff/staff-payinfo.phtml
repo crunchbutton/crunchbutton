@@ -63,6 +63,12 @@
 							</div>
 						</li>
 
+						<li class="li-input" ng-show="payInfo.payment_type == 'orders' || payInfo.payment_type == 'making_whole'">
+							<div class="label">Amount per order:</div>
+							<div class="input"><input type="number" ignore-mouse-wheel step="0.01" name="amountPerOrder" ng-model="payInfo.amount_per_order" placeholder="Amount per order"></div>
+							<div class="notes">Left blank for Community default amount</div>
+						</li>
+
 						<li class="li-input" ng-class="{'error':form.payInfoHourRate.$invalid}" ng-show="payInfo.payment_type=='hours' || payInfo.payment_type=='hours_without_tips' || payInfo.payment_type=='making_whole'">
 							<div class="label">Hour Rate</div>
 							<div class="input">

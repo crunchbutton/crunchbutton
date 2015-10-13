@@ -264,6 +264,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						$community->range = $this->request()[ 'range' ];
 						$community->timezone = $this->request()[ 'timezone' ];
 						$community->id_driver_restaurant = $this->request()[ 'id_driver_restaurant' ];
+						$community->amount_per_order = $this->request()[ 'amount_per_order' ];
 
 						$community->save();
 

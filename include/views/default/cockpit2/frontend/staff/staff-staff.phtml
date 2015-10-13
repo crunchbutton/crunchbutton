@@ -302,7 +302,15 @@
 					<div class="field-row" ng-if="staff.hour_rate">
 						<div class="field-key">Hour rate</div>
 						<div class="field-value">
-							{{staff.hour_rate}}
+							${{staff.hour_rate | formatPrice}}
+						</div>
+					</div>
+
+					<div class="field-row" ng-if="staff.payment_type == 'orders' || staff.payment_type == 'making_whole'">
+						<div class="field-key">Amount per order</div>
+						<div class="field-value">
+							<span ng-if="staff.amount_per_order">${{staff.amount_per_order | formatPrice}}</span>
+							<span ng-if="!staff.amount_per_order">Delivery Fee</span>
 						</div>
 					</div>
 
