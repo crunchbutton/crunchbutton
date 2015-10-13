@@ -4081,7 +4081,6 @@ font-familt: "Museo Slab";
 	.delivery-free{
 		font-size:2.8em !important;
 		display:block !important;
-		text-align: center !important;
 	}
 	.col-box {
 		@include flex(row, row wrap, space-between);
@@ -4211,7 +4210,8 @@ font-familt: "Museo Slab";
 	font-weight:normal !important;
 	display: block;
 	margin-bottom :.6em;
-	font-weight: 600;
+	font-weight: bold !important;
+	text-align: center;
 }
 @media screen and (max-width: 1024px) {
 	.button-refer {
@@ -4232,6 +4232,9 @@ font-familt: "Museo Slab";
 		width: 20em;
 		height: 16em;
 	}
+}
+.delivery-free{
+	text-align: center !important;
 }
 
 .page-help .col-box .two-col {
