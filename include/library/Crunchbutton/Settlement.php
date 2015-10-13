@@ -291,6 +291,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 				$order[ 'pay_info' ] = [];
 				$order[ 'pay_info' ][ 'pay_by_order' ] = ( $pay[ $driver ][ 'pay_type' ][ 'payment_type' ] != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ? 1 : 0 );
+				$order[ 'pay_info' ][ 'amount_per_order' ] = $order[ 'amount_per_order' ];
 				$order[ 'pay_info' ][ 'hourly' ] = ( $pay[ $driver ][ 'pay_type' ][ 'payment_type' ] == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ? 1 : 0 );
 				$order[ 'pay_info' ][ 'cash' ] = $order[ 'cash' ];
 				$order[ 'pay_info' ][ 'subtotal' ] = $this->orderSubtotalDriveryPay( $order );
@@ -350,6 +351,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ $driver ][ 'tip' ] += $order[ 'pay_info' ][ 'tip' ];
 				$pay[ $driver ][ 'customer_fee' ] += $order[ 'pay_info' ][ 'customer_fee' ];
 				$pay[ $driver ][ 'markup' ] += $order[ 'pay_info' ][ 'markup' ];
+				$pay[ $driver ][ 'amount_per_order' ] += $order[ 'pay_info' ][ 'amount_per_order' ];
 				$pay[ $driver ][ 'delivery_fee_collected' ] += $order[ 'pay_info' ][ 'delivery_fee_collected' ];
 				$pay[ $driver ][ 'customer_fee_collected' ] += $order[ 'pay_info' ][ 'customer_fee_collected' ];
 				$pay[ $driver ][ 'credit_charge' ] += $order[ 'pay_info' ][ 'credit_charge' ];
@@ -485,15 +487,15 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		// #5325
 		if( $force ){
-			$delivery_fee = $pay[ 'delivery_fee' ];
+			$amount_per_order = $pay[ 'amount_per_order' ];
 			$pay_by_order = 1;
 		} else {
-			$delivery_fee = $pay[ 'delivery_fee' ];
+			$amount_per_order = $pay[ 'amount_per_order' ];
 		}
 
 		$total_due = 	( ( ( $pay[ 'subtotal' ] +
 										$pay[ 'tax' ] +
-										$delivery_fee +
+										$amount_per_order +
 										$pay[ 'credit_charge' ] +
 										$pay[ 'restaurant_fee' ] +
 										$pay[ 'gift_card' ] -
@@ -512,7 +514,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 	public function orderCalculateTotalDue( $pay ){
 		$total_due = 	$pay[ 'card_subtotal' ] +
 									$pay[ 'tax' ] +
-									$pay[ 'delivery_fee' ] +
+									$pay[ 'amount_per_order' ] +
 									$pay[ 'tip' ] +
 									$pay[ 'customer_fee' ] +
 									$pay[ 'markup' ] +
@@ -718,7 +720,15 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$payment_type = $payment_type->payment_type;
 		$values[ 'pay_type_hour' ] = ( $payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ) ? 1 : 0;
 		$values[ 'pay_type_order' ] = ( $payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS ) ? 1 : 0;
-		$values[ 'id_order' ] = $order->id_order; // driver
+
+		$amount_per_order = $admin->payment_type()->amountPerOrder( $order->id_community );
+		if( $amount_per_order ){
+			$values[ 'amount_per_order' ] = $amount_per_order;
+		} else {
+			$values[ 'amount_per_order' ] = $order->delivery_fee;
+		}
+
+		$values[ 'id_order' ] = $order->id_order;
 
 		$values[ 'gift_card_total' ] = $order->chargedByCredit();
 		$values[ 'gift_card_paid_by_crunchbutton' ] = Crunchbutton_Credit::creditByOrderPaidBy( $order->id_order, Crunchbutton_Credit::PAID_BY_CRUNCHBUTTON );
@@ -769,6 +779,13 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'driver_paid' ] = Cockpit_Payment_Schedule_Order::checkOrderWasPaidDriver( $order->id_order );
 		if( !$values[ 'driver_paid' ] ){
 			$values[ 'driver_paid' ] = Crunchbutton_Order_Transaction::checkOrderWasPaidDriver( $order->id_order );
+		}
+		// get the amount paid
+		if( $values[ 'driver_paid' ] ){
+			$amount_per_order = Cockpit_Payment_Schedule_Order::getAmountPaidByOrder( $order->id_order );
+			if( $amount_per_order ){
+				$values[ 'amount_per_order' ] = $amount_per_order;
+			}
 		}
 
 		// Assumes the order was already paid
@@ -1021,13 +1038,16 @@ class Crunchbutton_Settlement extends Cana_Model {
 				foreach ( $_driver[ 'orders' ] as $order ) {
 					if( $type == Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT ){
 						$order_amount = $order[ 'pay_info' ][ 'total_reimburse' ];
+						$amount_per_order = null;
 					} else {
 						$order_amount = $order[ 'pay_info' ][ 'total_payment' ];
+						$amount_per_order = $order[ 'pay_info' ][ 'amount_per_order' ];
 					}
 					$schedule_order = new Cockpit_Payment_Schedule_Order;
 					$schedule_order->id_payment_schedule = $id_payment_schedule;
 					$schedule_order->id_order = $order[ 'id_order' ];
 					$schedule_order->amount = $order_amount;
+					$schedule_order->amount_per_order = $amount_per_order;
 					$schedule_order->save();
 				}
 			}
@@ -1782,6 +1802,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$summary[ 'orders' ][ 'included' ][] = [ 	'id_order' => $variables[ 'id_order' ],
 																										'name' => $variables[ 'name' ],
 																										'total' => $variables[ 'final_price_plus_delivery_markup' ],
+																										'amount_per_order' => $variables[ 'amount_per_order' ],
 																										'date' => $variables[ 'short_date' ],
 																										'tip' => $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'tip' ],
 																										'restaurant' => $variables[ 'restaurant' ],
@@ -1834,6 +1855,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 															'total_received_cash' => floatval( $summary[ '_total_received_cash_' ] ),
 															'tax' => floatval( $calcs[ $index ][ 'tax' ] ),
 															'delivery_fee' => floatval( $calcs[ $index ][ 'delivery_fee' ] ),
+															'amount_per_order' => floatval( $calcs[ $index ][ 'amount_per_order' ] ),
 															'delivery_fee_collected' => floatval( $calcs[ $index ][ 'delivery_fee_collected' ] ),
 															'customer_fee_collected' => floatval( $calcs[ $index ][ 'customer_fee_collected' ] ),
 															'tip' => floatval( $calcs[ $index ][ 'tip' ] ),

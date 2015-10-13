@@ -612,7 +612,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 		echo json_encode( $out );exit;
-
 	}
 
 	private function _driverBegin(){
@@ -656,6 +655,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 					$_order[ 'customer_fee_collected' ] = $order[ 'pay_info' ][ 'customer_fee_collected' ] ;
 					$_order[ 'standard_reimburse' ] = $order[ 'pay_info' ][ 'standard_reimburse' ] ;
 					$_order[ 'markup' ] = $order[ 'pay_info' ][ 'markup' ] ;
+					$_order[ 'amount_per_order' ] = $order[ 'pay_info' ][ 'amount_per_order' ] ;
 					$_order[ 'delivery_fee' ] = $order[ 'pay_info' ][ 'delivery_fee' ] ;
 					$_order[ 'delivery_fee_collected' ] = $order[ 'pay_info' ][ 'delivery_fee_collected' ] ;
 					$_order[ 'total_reimburse' ] = $order[ 'pay_info' ][ 'total_reimburse' ] ;
@@ -695,7 +695,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 				$driver[ 'pay_type' ] = [ 'payment_type' => '-' ];
 			}
 
-			$out[ 'drivers' ][] = $driver;
+			if( !$id_driver || ( $id_driver && $id_driver == $driver[ 'id_admin' ] ) ){
+				$out[ 'drivers' ][] = $driver;
+			}
 
 		}
 		echo json_encode( $out );
@@ -975,6 +977,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 	public function _driverViewSummary(){
 		$id_payment =  c::getPagePiece( 4 );
 		$settlement = new Crunchbutton_Settlement;
+		$summary = $settlement->driverSummary( $id_payment );
 		$summary = $settlement->driverSummary( $id_payment );
 		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
 		header( 'Content-Type: text/html' );

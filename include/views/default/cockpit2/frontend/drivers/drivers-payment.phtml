@@ -85,9 +85,14 @@
 					</tr>
 
 					<tr ng-if="!result.hourly && result.calcs.delivery_fee && pay_type_payment && result.show_delivery_fees" positive-or-negative-color="{{result.calcs.delivery_fee}}">
+						<td>Per-order Fee</td>
+						<td>${{result.calcs.amount_per_order | formatPrice}}</td>
+					</tr>
+					<!--
+					<tr ng-if="!result.hourly && result.calcs.delivery_fee && pay_type_payment && result.show_delivery_fees" positive-or-negative-color="{{result.calcs.delivery_fee}}">
 						<td>Delivery Fee</td>
 						<td>${{result.calcs.delivery_fee | formatPrice}}</td>
-					</tr>
+					</tr>!-->
 					<tr ng-if="result.calcs.tip && pay_type_payment && result.show_credit_card_tips" positive-or-negative-color="{{result.calcs.tip}}">
 						<td>Tip</td>
 						<td>${{result.calcs.tip | formatPrice}}</td>
@@ -250,7 +255,8 @@
 						<span ng-if="pay_type_payment && result.show_credit_card_tips">Tip</span>
 					</td>
 					<td>
-						<span ng-if="pay_type_payment && !result.hourly && result.show_delivery_fees">Delivery Fee</span>
+						<span ng-if="pay_type_payment && !result.hourly && result.show_delivery_fees">Per-order Fee</span>
+						<!-- <span ng-if="pay_type_payment && !result.hourly && result.show_delivery_fees">Delivery Fee</span> -->
 					</td>
 					<td>Delivery Fee Already Collected in Cash</td>
 					<td>Markup Already Collected in Cash</td>
@@ -270,7 +276,10 @@
 					<td>{{order.restaurant}}</td>
 					<td>{{order.date}}</td>
 					<td><span ng-if="pay_type_payment && result.show_credit_card_tips">${{order.tip | formatPrice}}</span></td>
-					<td><span ng-if="pay_type_payment && !result.hourly && result.show_delivery_fees">${{order.delivery_fee | formatPrice}}</span></td>
+					<td>
+						<!-- <span ng-if="pay_type_payment && !result.hourly && result.show_delivery_fees">${{order.delivery_fee | formatPrice}}</span> -->
+						<span ng-if="pay_type_payment && !result.hourly && result.show_delivery_fees">${{order.amount_per_order | formatPrice}}</span>
+					</td>
 					<td>${{order.delivery_fee_collected | formatPrice}}</td>
 					<td>
 						<span ng-if="order.markup < 0">${{order.markup | formatPrice}}</span>

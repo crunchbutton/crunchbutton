@@ -291,11 +291,12 @@
 		<table class="tb-grid tb-zebra">
 			<thead ng-if="result.orders.included.length > 0 || result.orders.not_included.length > 0">
 				<tr>
-					<td colspan="11" class="title">Orders</td>
+					<td colspan="12" class="title">Orders</td>
 				</tr>
 			</thead>
 			<thead ng-if="!result.orders">
 				<tr>
+					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -318,6 +319,9 @@
 					<td>Type</td>
 					<td>
 						<span ng-if="pay_type_payment">Tip</span>
+					</td>
+					<td>
+						<span ng-if="pay_type_payment">Per-order<br>Fee</span>
 					</td>
 					<td>
 						<span ng-if="pay_type_payment">Delivery Fee</span>
@@ -343,6 +347,7 @@
 					<td>{{order.date}}</td>
 					<td>{{order.pay_type}}</td>
 					<td><span ng-if="pay_type_payment">$ {{order.tip | formatPrice}}</span></td>
+					<td><span ng-if="pay_type_payment">$ {{order.amount_per_order | formatPrice}}</span></td>
 					<td><span ng-if="pay_type_payment">$ {{order.delivery_fee | formatPrice}}</span></td>
 					<td><span ng-if="pay_type_payment">$ {{order.markup | formatPrice}}</span></td>
 					<td><span ng-if="pay_type_payment">$ {{order.delivery_fee_collected | formatPrice}}</span></td>

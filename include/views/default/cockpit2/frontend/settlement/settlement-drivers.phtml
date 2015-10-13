@@ -488,10 +488,11 @@
 									<td>Name</td>
 									<td>Type</td>
 									<td>Tip</td>
-									<td>Delivery Fee</td>
-									<td>Delivery Collected</td>
-									<td>Customer Fee</td>
-									<td>Customer Fee Collected</td>
+									<td>Per-order<br>Fee</td>
+									<td>Delivery<br>Fee</td>
+									<td>Delivery<br>Collected</td>
+									<td>Customer<br>Fee</td>
+									<td>Customer<br>Fee Collected</td>
 									<td>Markup</td>
 									<td>Reimburse</td>
 									<td>Payment</td>
@@ -510,6 +511,7 @@
 									<td ng-class="{ 'excluded': !order.included }">{{order.name}}</td>
 									<td ng-class="{ 'excluded': !order.included }">{{order.pay_type}}</td>
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.tip | formatPrice}}</td>
+									<td ng-class="{ 'excluded': !order.included }">$ {{order.amount_per_order | formatPrice}}</td>
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.delivery_fee | formatPrice}}</td>
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.delivery_fee_collected | formatPrice}}</td>
 									<td ng-class="{ 'excluded': !order.included }">$ {{order.customer_fee | formatPrice}}</td>
