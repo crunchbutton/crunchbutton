@@ -847,6 +847,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		} else {
 			$shift = Crunchbutton_Community_Shift::nextAssignedShiftByCommunity( $this->id_community );
 		}
+
 		if( $shift->id_community ){
 			$date_start = $shift->dateStart( $this->timezone );
 			$date_end = $shift->dateEnd( $this->timezone );
@@ -862,7 +863,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			if( $date_end->format( 'i' ) != '00' ){
 				$message .= ':' . $date_end->format( 'i' );
 			}
-			$message .= $date_end->format( 'A D' );
+			$message .= $date_start->format( 'A D' );
 			$this->driver_restaurant_name = strtolower( $message );
 			echo $this->driver_restaurant_name;
 			echo "\n";
