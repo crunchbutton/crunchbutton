@@ -251,11 +251,13 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 				$docs = Cockpit_Driver_Document::marketing_rep();
 				foreach( $docs as $doc ){
 
-					if( $admin && !$admin->isMarketingRep() && $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_BRAND_REP ){
+					if( $admin && $admin->isCampusManager() && $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_BRAND_REP ){
 						continue;
 					}
 
-					if( $admin && !$admin->isCampusManager() && $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_COMMUNITY_MANAGER ){
+					if( $admin && !$admin->isCampusManager() &&
+						( $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_COMMUNITY_MANAGER ||
+						$doc->id_driver_document == Cockpit_Driver_Document::ID_COMMUNITY_MANAGER_W9 ) ){
 						continue;
 					}
 
