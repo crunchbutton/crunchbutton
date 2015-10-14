@@ -218,14 +218,14 @@ class _Community_Metric_Container {
 			SELECT
 				id_community,
 				DATE_FORMAT(`order`.date, "' . $periodFormat . '") date_group,
-				ROUND(SUM(final_price), 2) final_price
+				ROUND(SUM(final_price_plus_delivery_markup), 2) final_price_plus_delivery_markup
 			FROM `order`
 			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
 				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
 				AND ' . self::_buildOrderFilter('`order`') . '
 			GROUP BY id_community, date_group
 			';
-		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'final_price');
+		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'final_price_plus_delivery_markup');
 	}
 
 	/**
@@ -521,7 +521,7 @@ class _Community_Metric_Container {
 	public static function _getNumberColumn($colType, $tableName) {
 		switch($colType) {
 		case 'gross-revenue':
-			return 'ROUND(SUM(' . $tableName . '.final_price), 2)';
+			return 'ROUND(SUM(' . $tableName . '.final_price_plus_delivery_markup), 2)';
 			break;
 		case 'delivery-fee':
 			return 'ROUND(SUM(' . $tableName . '.delivery_fee), 2)';
