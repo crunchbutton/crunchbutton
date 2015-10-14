@@ -16,6 +16,10 @@ class Crunchbutton_Cron_Job_DriverFixNotify extends Crunchbutton_Cron_Log {
 
 
 		foreach ($orders as $order) {
+			if( $order->wasAcceptedByRep() || $order->wasCanceled() ) {
+				continue;
+			}
+
 			$message = "It seems drivers haven't receive notifications for the order #{$order->id_order}. Please re-send it!";
 
 			$ticket = Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order,
