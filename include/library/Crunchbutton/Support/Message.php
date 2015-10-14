@@ -135,8 +135,11 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		unset( $out[ 'type' ] );
 		unset( $out[ 'visibility' ] );
 		unset( $out[ 'phone' ] );
+		unset( $out[ 'media' ] );
+		unset( $out[ 'id' ] );
+		unset( $out[ 'id_phone' ] );
 		$out['date'] = $this->date()->format( 'M jS Y g:i:s A T' );
-		$out['hour'] = $this->date()->format( 'H:i' );
+		$out['hour'] = $this->date()->format( 'D m/d @ g:i A' );
 		$out['name'] = $this->admin()->firstName();
 		return $out;
 	}
