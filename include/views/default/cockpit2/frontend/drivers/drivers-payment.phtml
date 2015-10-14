@@ -85,7 +85,7 @@
 					</tr>
 
 					<tr ng-if="!result.hourly && result.calcs.delivery_fee && pay_type_payment && result.show_delivery_fees" positive-or-negative-color="{{result.calcs.delivery_fee}}">
-						<td>Per-order Fee</td>
+						<td>Delivery Commission</td>
 						<td>${{result.calcs.amount_per_order | formatPrice}}</td>
 					</tr>
 					<!--
@@ -255,7 +255,7 @@
 						<span ng-if="pay_type_payment && result.show_credit_card_tips">Tip</span>
 					</td>
 					<td>
-						<span ng-if="pay_type_payment && !result.hourly && result.show_delivery_fees">Per-order Fee</span>
+						<span ng-if="pay_type_payment && !result.hourly && result.show_delivery_fees">Delivery Commission</span>
 						<!-- <span ng-if="pay_type_payment && !result.hourly && result.show_delivery_fees">Delivery Fee</span> -->
 					</td>
 					<td>Delivery Fee Already Collected in Cash</td>
