@@ -148,6 +148,11 @@ class Crunchbutton_Reward extends Cana_Table{
 		return $this->parseConfigValue( $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_VALUE ], '+', 0 );
 	}
 
+	public function pointsToGetDeliveryFree(){
+		$settings = $this->loadSettings();
+		return $this->parseConfigValue( $settings[ Crunchbutton_Reward::CONFIG_KEY_MAX_CAP_POINTS ], '+', 0 );
+	}
+
 	//
 	public function getReferNewUser(){
 		$settings = $this->loadSettings();

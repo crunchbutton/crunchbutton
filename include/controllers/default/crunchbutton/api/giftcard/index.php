@@ -398,6 +398,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 					$words = $this->request()['words'];
 					$phone = $this->request()['phone'];
 					$id_restaurant = $this->request()['id_restaurant'];
+
 					$words = preg_replace( "/(\r\n|\r|\n)+/", ' ', $words);
 					$words = explode( ' ', $words );
 
@@ -436,9 +437,22 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 		$isInvite = $valid;
 
 		if( $reward->checkIfItIsEligibleForFirstTimeOrder( $phone ) && $valid ){
-			$value = $reward->getReferredDiscountAmount();
-			if( $value ){
-				return ( [ 'success' => [ 'value' => $value, 'giftcard' => $code, 'message' =>  'Congrats, your delivery fee is on us! (for first time users only)' ] ] );
+
+			// check if there are points to add
+			$add_points = $reward->getRefered();
+			$delivery_free_points = $reward->pointsToGetDeliveryFree();
+
+			if( $add_points == $delivery_free_points ){
+				// we will show the same amount of the delivery fee #6966
+				$restaurant = Restaurant::o( $id_restaurant );
+				if( $restaurant->id_restaurant && $restaurant->delivery_fee ){
+					return ( [ 'success' => [ 'value' => floatval( $restaurant->delivery_fee ), 'giftcard' => $code, 'message' =>  'Congrats, your delivery fee is on us! (for first time users only)' ] ] );
+				}
+			} else {
+				$value = $reward->getReferredDiscountAmount();
+				if( $value ){
+					return ( [ 'success' => [ 'value' => floatval( $value ), 'giftcard' => $code, 'message' =>  'Congrats, your delivery fee is on us! (for first time users only)' ] ] );
+				}
 			}
 		}
 
