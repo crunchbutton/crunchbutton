@@ -336,7 +336,8 @@ class Crunchbutton_Reward extends Cana_Table{
 		if( !$this->_config ){
 			$configs = Crunchbutton_Config::q( "SELECT * FROM config WHERE `key` LIKE 'reward_points%'" );
 			foreach ( $configs as $config ) {
-				$this->_config[ $config->key ] = $config->value;
+				$value = $config->value ? $config->value : 0;
+				$this->_config[ $config->key ] = $value;
 			}
 		}
 		return $this->_config;
