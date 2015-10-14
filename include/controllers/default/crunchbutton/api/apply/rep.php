@@ -139,7 +139,7 @@ class Controller_api_apply_rep extends Crunchbutton_Controller_Rest {
 			$rep->testphone = $phone;
 			$rep->invite_code = $code;
 			$rep->referral_admin_credit = 7;
-			$rep->referral_customer_credit = 3;
+			$rep->referral_customer_credit = 0;
 			$rep->save();
 
 			$rep = Admin::o( $rep->id_admin );
