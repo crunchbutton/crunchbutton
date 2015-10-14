@@ -1,14 +1,14 @@
-<?php 
+<?php
 class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
-	
+
 	public $unit = 'US$';
 	public $description = 'US$';
-	
-	public $groups = array( 
+
+	public $groups = array(
 												'group-revenue' => array(
 														'title' => 'Gross Revenue',
 														'tags' => array( 'investors' ),
-														'charts' => array(  
+														'charts' => array(
 																'gross-revenue-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'byDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byDayByCommunity' ) ) ),
 																'gross-revenue-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'byWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byWeekByCommunity' ) ) ),
 																'gross-revenue-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'byMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byMonthByCommunity' ) ) ),
@@ -17,7 +17,7 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 												'group-revenue-by-community' => array(
 														'title' => 'Gross Revenue',
 														'tags' => array( 'reps' ),
-														'charts' => array(  
+														'charts' => array(
 																'gross-revenue-per-day-by-community' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column-community', 'method' => 'byDayByCommunity' ),
 																'gross-revenue-per-week-by-community' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-community', 'method' => 'byWeekByCommunity' ),
 																'gross-revenue-per-month-by-community' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-community', 'method' => 'byMonthByCommunity' ),
@@ -26,7 +26,7 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 												'group-revenue-by-restaurant' => array(
 														'title' => 'Gross Revenue',
 														'tags' => array( 'reps' ),
-														'charts' => array(  
+														'charts' => array(
 																'gross-revenue-per-day-by-restaurant' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column-restaurant', 'method' => 'byDayByRestaurant' ),
 																'gross-revenue-per-week-by-restaurant' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-restaurant', 'method' => 'byWeekByRestaurant' ),
 																'gross-revenue-per-month-by-restaurant' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-restaurant', 'method' => 'byMonthByRestaurant' ),
@@ -41,9 +41,9 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 	public function byDay( $render = false ){
 
 		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m-%d') AS Day,
-											CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total'
+											CAST(SUM(final_price_plus_delivery_markup) AS DECIMAL(14, 2)) AS 'Total'
 							FROM `order` o
-							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 							WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
 								{$this->queryExcludeUsers}
@@ -62,11 +62,11 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 		$restaurant = ( $_REQUEST[ 'restaurant' ] ) ? $_REQUEST[ 'restaurant' ] : false;
 
 		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m-%d') AS Day,
-											CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
+											CAST(SUM(final_price_plus_delivery_markup) AS DECIMAL(14, 2)) AS 'Total',
 											r.name AS `Group`
 							FROM `order` o
 						LEFT JOIN user u ON u.id_user = o.id_user
-						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 						WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
 							AND r.id_restaurant = '{$restaurant}'
 							{$this->queryExcludeUsers}
@@ -75,11 +75,11 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 						ORDER BY DATE_FORMAT( o.date ,'%Y-%m-%d') DESC";
 
 		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
-		
+
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
 		}
-		return $parsedData;	
+		return $parsedData;
 	}
 
 	public function byDayByCommunity( $render = false ){
@@ -88,11 +88,11 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 
 		if( $community ){
 			$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m-%d') AS Day,
-												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
+												CAST(SUM(final_price_plus_delivery_markup) AS DECIMAL(14, 2)) AS 'Total',
 												c.name AS `Group`
 								FROM `order` o
 							LEFT JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 							INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
@@ -105,11 +105,11 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 			$parsedData = $this->parseDataDaysSimple( $query, $this->description );
 		} else {
 			$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m-%d') AS Day,
-												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
+												CAST(SUM(final_price_plus_delivery_markup) AS DECIMAL(14, 2)) AS 'Total',
 												c.name  AS `Group`
 								FROM `order` o
 							LEFT JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 							INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
@@ -124,15 +124,15 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
 		}
-		return $parsedData;	
+		return $parsedData;
 	}
 
 	public function byMonth( $render = false ){
 
 		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
-											CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total'
+											CAST(SUM(final_price_plus_delivery_markup) AS DECIMAL(14, 2)) AS 'Total'
 							FROM `order` o
-							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 							WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
 								{$this->queryExcludeUsers}
@@ -151,11 +151,11 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 		$restaurant = ( $_REQUEST[ 'restaurant' ] ) ? $_REQUEST[ 'restaurant' ] : false;
 
 		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
-											CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
+											CAST(SUM(final_price_plus_delivery_markup) AS DECIMAL(14, 2)) AS 'Total',
 											r.name AS `Group`
 							FROM `order` o
 						LEFT JOIN user u ON u.id_user = o.id_user
-						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 						WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
 							AND r.id_restaurant = '{$restaurant}'
 							{$this->queryExcludeUsers}
@@ -168,7 +168,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
 		}
-		return $parsedData;	
+		return $parsedData;
 	}
 
 	public function byMonthByCommunity( $render = false ){
@@ -177,11 +177,11 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 
 		if( $community ){
 			$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
-												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
+												CAST(SUM(final_price_plus_delivery_markup) AS DECIMAL(14, 2)) AS 'Total',
 												c.name AS `Group`
 								FROM `order` o
 							LEFT JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 							INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
@@ -194,11 +194,11 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 			$parsedData = $this->parseDataMonthSimple( $query, $this->description );
 		} else {
 			$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
-												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
+												CAST(SUM(final_price_plus_delivery_markup) AS DECIMAL(14, 2)) AS 'Total',
 												c.name AS `Group`
 								FROM `order` o
 								 INNER JOIN `user` u ON u.id_user = o.id_user
-								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
@@ -213,19 +213,19 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
 		}
-		return $parsedData;	
+		return $parsedData;
 	}
 
 	public function byWeekByRestaurant( $render = false ){
 
 		$restaurant = ( $_REQUEST[ 'restaurant' ] ) ? $_REQUEST[ 'restaurant' ] : false;
-		
+
 		$query = "SELECT YEARWEEK(date) AS `Week`,
-											CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
+											CAST(SUM(final_price_plus_delivery_markup) AS DECIMAL(14, 2)) AS 'Total',
 											r.name AS `Group`
 							FROM `order` o
 						LEFT JOIN user u ON u.id_user = o.id_user
-						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 						WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
 							AND r.id_restaurant = '{$restaurant}'
 							{$this->queryExcludeUsers}
@@ -238,7 +238,7 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
-		return $parsedData;	
+		return $parsedData;
 	}
 
 	public function byWeekByCommunity( $render = false ){
@@ -247,11 +247,11 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 
 		if( $community ){
 			$query = "SELECT YEARWEEK(date) AS `Week`,
-												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
+												CAST(SUM(final_price_plus_delivery_markup) AS DECIMAL(14, 2)) AS 'Total',
 												c.name AS `Group`
 								FROM `order` o
 							LEFT JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 							INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
@@ -264,11 +264,11 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 			$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		} else {
 			$query = "SELECT YEARWEEK(date) AS `Week`,
-												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
+												CAST(SUM(final_price_plus_delivery_markup) AS DECIMAL(14, 2)) AS 'Total',
 												c.name AS `Group`
 								FROM `order` o
 								LEFT JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
 								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
@@ -282,16 +282,16 @@ LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCo
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
-		return $parsedData;	
+		return $parsedData;
 	}
 
 	public function byWeek( $render = false ){
 		$query = "SELECT YEARWEEK(date) AS `Week`,
-											CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total'
+											CAST(SUM(final_price_plus_delivery_markup) AS DECIMAL(14, 2)) AS 'Total'
 							FROM `order` o
-							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant
 LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
-							WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
+							WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
 								{$this->queryExcludeUsers}
 							GROUP BY YEARWEEK(date)
 							ORDER BY YEARWEEK(date) DESC";
