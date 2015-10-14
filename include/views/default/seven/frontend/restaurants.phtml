@@ -108,10 +108,14 @@
 
 							<div ng-switch on="restaurant._tag">
 								<div class="meal-item-tag meal-item-tag-closed" ng-switch-when="closed">Available {{restaurant._opensIn_formatted}}</div>
+
+
 								<div class="meal-item-tag meal-item-tag-closed" ng-switch-when="force_close">
-								<span ng-if="restaurant.closed_message && !restaurant._opensIn_formatted">{{restaurant.closed_message}}</span>
-								<span ng-if="restaurant._opensIn_formatted">Available {{restaurant._opensIn_formatted}}</span>
-								<span ng-if="!restaurant._opensIn_formatted && !restaurant.closed_message">Temporarily unavailable {{restaurant._closedDueTo}}</span></div>
+									<span ng-if="restaurant.open_for_business && restaurant.closed_message && !restaurant._opensIn_formatted">{{restaurant.closed_message}}</span>
+									<span ng-if="restaurant.open_for_business && restaurant._opensIn_formatted">Available {{restaurant._opensIn_formatted}}</span>
+									<span ng-if="!restaurant.open_for_business || ( !restaurant._opensIn_formatted && !restaurant.closed_message )">Temporarily unavailable {{restaurant._closedDueTo}}</span>
+								</div>
+
 								<div class="meal-item-tag" ng-switch-when="takeout">Take out only</div>
 								<div class="meal-item-tag" ng-switch-when="next_open">{{restaurant.next_open_time_message.message}}</div>
 								<div class="meal-item-tag" ng-switch-when="closing">Hurry, closes in {{restaurant._closesIn}} min!</div>
