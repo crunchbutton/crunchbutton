@@ -2699,6 +2699,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public static function totalOrdersByPhone( $phone ){
 		$phone = Phone::clean( $phone );
+		// referral phone test
+		if( $phone == '_PHONE_' ){
+			return 0;
+		}
 		$query = 'SELECT COUNT(*) AS total FROM `order` INNER JOIN phone using(id_phone) WHERE phone.phone = ?';
 		$row = Cana::db()->get( $query, [$phone])->get(0);
 		if( intval( $row->total ) ){
