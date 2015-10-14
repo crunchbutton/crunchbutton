@@ -453,7 +453,7 @@ NGApp.controller( 'StaffMarketingFormCtrl', function ( $scope, $routeParams, $fi
 
 			CustomerRewardService.reward.config.load( function( d ){
 				$scope.staff = { 	referral_admin_credit: d[ CustomerRewardService.constants.key_admin_refer_user_amt ],
-													referral_customer_credit: d[ CustomerRewardService.constants.key_customer_get_referred_amt ] };
+													referral_customer_credit: 3 };
 			} );
 		}
 
