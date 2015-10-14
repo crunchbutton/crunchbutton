@@ -349,23 +349,33 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				$words = array_unique( $words );
 				foreach( $words as $word ){
 					$giftCardAdded = false;
-					Log::debug([ 'totalOrdersByPhone' => $totalOrdersByPhone ]);
 					// At first check if it is an user's invite code - rewards: two way gift cards #2561
 					$reward = new Crunchbutton_Reward;
+					$add_points = $reward->getRefered();
+					$delivery_free_points = $reward->pointsToGetDeliveryFree();
 					$inviter = $reward->validateInviteCode( $word );
-					Log::debug([ 'inviter' => $inviter ]);
 					if( $totalOrdersByPhone <= 1 && $inviter ){
 						// get the value of the discount
 						if( $inviter[ 'id_admin' ] ){
-							$value = $reward->getReferredDiscountAmount();
-							$admin_credit = $reward->adminRefersNewUserCreditAmount();
-							$this->giftCardInviter = [ 'id_user' => $inviter[ 'id_user' ], 'id_admin' => $inviter[ 'id_admin' ], 'value' => $value, 'word' => $word, 'admin_credit' => $admin_credit ];
-							if( $value ){
-								$this->giftcardValue = $value;
-								break;
+
+							if( $add_points == $delivery_free_points ){
+								$value = $this->restaurant()->delivery_fee;
+								$admin_credit = $reward->adminRefersNewUserCreditAmount();
+								$this->giftCardInviter = [ 'id_user' => $inviter[ 'id_user' ], 'id_admin' => $inviter[ 'id_admin' ], 'value' => $value, 'word' => $word, 'admin_credit' => $admin_credit ];
+								if( $value ){
+									$this->giftcardValue = $value;
+									break;
+								}
+							} else {
+								$value = $reward->getReferredDiscountAmount();
+								$admin_credit = $reward->adminRefersNewUserCreditAmount();
+								$this->giftCardInviter = [ 'id_user' => $inviter[ 'id_user' ], 'id_admin' => $inviter[ 'id_admin' ], 'value' => $value, 'word' => $word, 'admin_credit' => $admin_credit ];
+								if( $value ){
+									$this->giftcardValue = $value;
+									break;
+								}
 							}
 						} elseif( $inviter[ 'id_user' ] ){
-
 							$referral = new Crunchbutton_Referral();
 							$referral->id_admin_inviter = null;
 							$referral->id_user_inviter = $inviter[ 'id_user'];
@@ -377,27 +387,41 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 							$referral->save();
 
 							$settings = $reward->loadSettings();
+							// if the amount of points is the same points that gives the customer a delivery free
+							// it just add credit to customer
+							if( $add_points == $delivery_free_points ){
+							$credits_amount = $this->restaurant()->delivery_fee;
+								if( $credits_amount ){
+									$reward->saveRewardAsCredit( [ 	'id_user' => $this->id_user,
+																									'value' => $credits_amount,
+																									'id_order' => null,
+																									'credit_type' => Crunchbutton_Credit::CREDIT_TYPE_CASH,
+																									'id_referral' => $referral->id_referral,
+																									'note' => 'Cash Invited by: ' . $inviter[ 'id_user'] . ' code: ' . $word,
+																								] );
+								}
+							} else {
+								$credits_amount = $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT ];
+								if( $credits_amount ){
+									$reward->saveRewardAsCredit( [ 	'id_user' => $this->id_user,
+																									'value' => $credits_amount,
+																									'id_order' => null,
+																									'credit_type' => Crunchbutton_Credit::CREDIT_TYPE_CASH,
+																									'id_referral' => $referral->id_referral,
+																									'note' => 'Cash Invited by: ' . $inviter[ 'id_user'] . ' code: ' . $word,
+																								] );
+								}
 
-							$credits_amount = $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_DISCOUNT_AMOUNT ];
-							if( $credits_amount ){
-								$reward->saveRewardAsCredit( [ 	'id_user' => $this->id_user,
-																								'value' => $credits_amount,
-																								'id_order' => null,
-																								'credit_type' => Crunchbutton_Credit::CREDIT_TYPE_CASH,
-																								'id_referral' => $referral->id_referral,
-																								'note' => 'Cash Invited by: ' . $inviter[ 'id_user'] . ' code: ' . $word,
-																							] );
-							}
-
-							$credits_amount = $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_VALUE ];
-							if( $credits_amount ){
-								$reward->saveRewardAsCredit( [ 	'id_user' => $this->id_user,
-																								'value' => $credits_amount,
-																								'id_order' => null,
-																								'credit_type' => Crunchbutton_Credit::CREDIT_TYPE_POINT,
-																								'id_referral' => $referral->id_referral,
-																								'note' => 'Points Invited by: ' . $inviter[ 'id_user'] . ' code: ' . $word,
-																							] );
+								$credits_amount = $settings[ Crunchbutton_Reward::CONFIG_KEY_GET_REFERRED_VALUE ];
+								if( $credits_amount ){
+									$reward->saveRewardAsCredit( [ 	'id_user' => $this->id_user,
+																									'value' => $credits_amount,
+																									'id_order' => null,
+																									'credit_type' => Crunchbutton_Credit::CREDIT_TYPE_POINT,
+																									'id_referral' => $referral->id_referral,
+																									'note' => 'Points Invited by: ' . $inviter[ 'id_user'] . ' code: ' . $word,
+																								] );
+								}
 							}
 
 
