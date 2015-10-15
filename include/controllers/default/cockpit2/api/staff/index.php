@@ -480,6 +480,14 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			$keys[] = Crunchbutton_Group::CAMPUS_MANAGER_GROUP;
 		}
 
+		if( $working != 'all' ){
+			$q .= '
+							INNER JOIN admin_shift_assign asa ON asa.id_admin = admin.id_admin
+							INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift AND DATE( cs.date_start ) = DATE( NOW() )
+					';
+		}
+
+
 		$q .='
 			WHERE 1=1
 		';
