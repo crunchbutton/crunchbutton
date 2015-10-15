@@ -446,16 +446,18 @@ NGApp.directive( 'restaurantImageUpload', function ($rootScope, FileUploader) {
 			};
 
 			scope.uploader.onSuccessItem = function(fileItem, response, status, headers) {
-				//scope.uploader.clearQueue();
+				var hasImage = ( $('#restaurant-image-thumb').attr('hasImage') == 'true' );
 				l.stop();
-				if( $('#restaurant-image-thumb').get(0).src ){
+				if( hasImage ){
 					App.alert( 'Image uploaded!' );
 					var img = new Image;
 					img.src = $('#restaurant-image-thumb').get(0).src + '?' + new Date();
 					$('#restaurant-image-thumb').get(0).src = img.src;
 				} else {
-					location.reload();
+					window.location.reload();
 				}
+
+
 			};
 
 			scope.uploader.onErrorItem = function (fileItem, response, status, headers) {
