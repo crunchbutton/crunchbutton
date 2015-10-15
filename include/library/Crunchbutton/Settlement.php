@@ -418,7 +418,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				if( $pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_MAKING_WHOLE ){
 					$pay[ $id_driver ][ 'total_payment_by_order' ] = $pay[ $id_driver ][ 'total_payment' ];
 					$pay[ $id_driver ][ 'total_payment_by_hour' ] = max( $payment_by_shift, 0 );
-					$pay[ $id_driver ][ 'total_payment' ] = $pay[ $id_driver ][ 'total_payment_by_order' ] + $pay[ $id_driver ][ 'total_payment_by_hour' ];
+					$pay[ $id_driver ][ 'total_payment' ] = max( $pay[ $id_driver ][ 'total_payment_by_order' ], $pay[ $id_driver ][ 'total_payment_by_hour' ] );
 				} else {
 					$pay[ $id_driver ][ 'total_payment' ] = ( $payment_by_shift + $tip );
 				}

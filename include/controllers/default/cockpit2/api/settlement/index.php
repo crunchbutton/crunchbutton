@@ -749,8 +749,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 		$_id_drivers = explode( ',', $this->request()['id_drivers'] );
 
-		$id_drivers = [];
-
 		foreach ( $_id_drivers as $key => $val ) {
 			$id_driver = floatval( trim( $val ) );
 			$notes = $this->request()[ 'notes_' . $id_driver ];
