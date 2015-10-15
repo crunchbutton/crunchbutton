@@ -103,6 +103,10 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ? AND `from` = ? ORDER BY date DESC, id_support_message DESC LIMIT 1 ' , [$this->id_support, Crunchbutton_Support_Message::TYPE_FROM_REP]);
 	}
 
+	public function lastNonSystemMessage(){
+		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ? AND `from` != ? ORDER BY date DESC, id_support_message DESC LIMIT 1 ' , [$this->id_support, Crunchbutton_Support_Message::TYPE_FROM_SYSTEM] );
+	}
+
 	public function lastValidOpenMessage(){
 		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ? AND ( ( `from` = ? ) OR `from` = ? AND type = ? AND visibility = ? )  ORDER BY date DESC, id_support_message DESC LIMIT 1 ' , [$this->id_support, Crunchbutton_Support_Message::TYPE_FROM_CLIENT, Crunchbutton_Support_Message::TYPE_FROM_SYSTEM, Crunchbutton_Support_Message::TYPE_NOTE, Crunchbutton_Support_Message::TYPE_VISIBILITY_INTERNAL] );
 	}
@@ -110,6 +114,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 	public function lastCustomerMessage(){
 		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ? AND `from` = ? ORDER BY date DESC, id_support_message DESC LIMIT 1 '  , [$this->id_support, Crunchbutton_Support_Message::TYPE_FROM_CLIENT]);
 	}
+
 
 	public function addCustomerNameByPhone( $phone, $name ){
 		if( trim( $name ) != '' ){
