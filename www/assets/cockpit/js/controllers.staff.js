@@ -263,12 +263,10 @@ NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService, C
 	});
 
 	var _staffType = function(){
-		console.log('_staffType',_staffType);
 		var staffType = [];
 		staffType.push( { 'value': 'all', 'label': 'All' } );
 		staffType.push( { 'value': 'driver', 'label': 'Drivers' } );
 		staffType.push( { 'value': 'marketing-rep', 'label': 'Brand Representative' } );
-		console.log('$scope.community',$scope.community);
 		if( !$scope.query.community ){
 			staffType.push( { 'value': 'community-manager', 'label': 'Community Manager' } );
 		} else {
