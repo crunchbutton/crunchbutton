@@ -18,7 +18,7 @@
 
 				<a href="{{restaurant.images.original}}" target="_blank">
 					<div class="customer-image-crop customer-image-crop-large customer-image-updater restaurant-image-updater">
-						<img ng-if="restaurant.image" class="customer-image-large" src="{{restaurant.images.thumb}}" id="restaurant-image-thumb"></img>
+						<img ng-if="restaurant.image" class="customer-image-large" hasImage="{{ restaurant.images.thumb != '' }}" src="{{restaurant.images.thumb}}" id="restaurant-image-thumb"></img>
 						<div ng-if="!restaurant.image" class="customer-image-large restaurant-image-null"></div>
 					</div>
 				</a>
