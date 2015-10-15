@@ -164,7 +164,7 @@
 				<?php } ?>
 				<td style="width:155px;" class="topitem">Delivery Fee Already Collected in Cash</td>
 				<td style="width:155px;" class="topitem">Markup Already Collected in Cash</td>
-				<?php if( !$summary[ 'driver_payment_hours' ] ) { ?>
+				<?php if( ( !$summary[ 'driver_payment_hours' ] || $summary[ 'driver_payment_type' ] == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_MAKING_WHOLE ) ) { ?>
 					<td style="width:155px;" class="topitem">Money Made</td>
 				<?php } ?>
 			<?php } ?>
@@ -197,7 +197,7 @@
 				<?php } ?>
 				<td class="fooditem">$<?php echo number_format( $order[ 'delivery_fee_collected' ], 2 ); ?></td>
 				<td class="fooditem">$<?php echo number_format( $order[ 'markup' ], 2 ); ?></td>
-				<?php if( !$summary[ 'driver_payment_hours' ] ) { ?>
+				<?php if( ( !$summary[ 'driver_payment_hours' ] || $summary[ 'driver_payment_type' ] == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_MAKING_WHOLE ) ) { ?>
 					<td class="fooditem">$<?php echo number_format( $order[ 'total_payment' ], 2 ); ?></td>
 				<?php } ?>
 
@@ -217,9 +217,9 @@
 				<td>$<?php echo number_format( $summary[ 'shifts_hours_amount' ], 2 ); ?></td>
 			</tr>
 		<?php } ?>
-		<?php if( !$summary[ 'driver_payment_hours' ] && $summary[ 'show_delivery_fees' ] ) { ?>
+		<?php if( ( !$summary[ 'driver_payment_hours' ] || $summary[ 'driver_payment_type' ] == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_MAKING_WHOLE ) && $summary[ 'show_delivery_fees' ] ) { ?>
 			<tr class="class">
-				<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Total Delivery Fee</td>
+				<td colspan="<?php echo $coslpan; ?>" style="text-align:right">Total Delivery Commission</td>
 				<td>$<?php echo number_format( $summary[ 'calcs' ][ 'delivery_fee' ], 2 ); ?></td>
 			</tr>
 		<?php } ?>
