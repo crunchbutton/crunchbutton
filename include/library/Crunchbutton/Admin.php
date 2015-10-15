@@ -865,9 +865,8 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		if( $paymentType->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ||
 		 		$paymentType->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS_WITHOUT_TIPS ||
 		 		$paymentType->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_MAKING_WHOLE ){
-			$ex[ 'hour_rate' ] = intval( $payment_type->hour_rate );
+			$ex[ 'hour_rate' ] = intval( $paymentType->hour_rate );
 		}
-
 
 		$cfg = $this->config();
 		$ex['prefs'] = [];

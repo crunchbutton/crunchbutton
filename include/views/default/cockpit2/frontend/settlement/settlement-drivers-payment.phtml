@@ -134,11 +134,11 @@
 					<td>Period</td>
 					<td>{{result.range_date}}</td>
 				</tr>
-				<tr ng-if="!result.hourly && result.calcs.tax && pay_type_payment" positive-or-negative-color="{{result.calcs.tax}}">
+				<tr ng-if="( !result.hourly || result.driver_payment_type == 'making_whole' ) && result.calcs.tax && pay_type_payment" positive-or-negative-color="{{result.calcs.tax}}">
 					<td>Tax</td>
 					<td>$ {{result.calcs.tax | formatPrice}}</td>
 				</tr>
-				<tr ng-if="!result.hourly && result.calcs.delivery_fee && pay_type_payment" positive-or-negative-color="{{result.calcs.delivery_fee}}">
+				<tr ng-if="( !result.hourly || result.driver_payment_type == 'making_whole' ) && result.calcs.delivery_fee && pay_type_payment" positive-or-negative-color="{{result.calcs.delivery_fee}}">
 					<td>Delivery Fee</td>
 					<td>$ {{result.calcs.delivery_fee | formatPrice}}</td>
 				</tr>
@@ -146,7 +146,7 @@
 					<td>Tip</td>
 					<td>$ {{result.calcs.tip | formatPrice}}</td>
 				</tr>
-				<tr ng-if="!result.hourly && result.calcs.customer_fee && pay_type_payment" positive-or-negative-color="{{result.calcs.customer_fee}}">
+				<tr ng-if="( !result.hourly || result.driver_payment_type == 'making_whole' ) && result.calcs.customer_fee && pay_type_payment" positive-or-negative-color="{{result.calcs.customer_fee}}">
 					<td>Customer Fee</td>
 					<td>$ {{result.calcs.customer_fee | formatPrice}}</td>
 				</tr>
@@ -163,11 +163,11 @@
 					<td>$ {{result.calcs.customer_fee_collected | formatPrice}}</td>
 				</tr>
 
-				<tr ng-if="!result.hourly && result.calcs.credit_charge && pay_type_payment" positive-or-negative-color="{{result.calcs.credit_charge}}">
+				<tr ng-if="( !result.hourly || result.driver_payment_type == 'making_whole' ) && result.calcs.credit_charge && pay_type_payment" positive-or-negative-color="{{result.calcs.credit_charge}}">
 					<td>Credit Card Charge</td>
 					<td>$ {{result.calcs.credit_charge | formatPrice}}</td>
 				</tr>
-				<tr ng-if="!result.hourly && result.calcs.gift_card && pay_type_payment" positive-or-negative-color="{{result.calcs.gift_card}}">
+				<tr ng-if="( !result.hourly || result.driver_payment_type == 'making_whole' ) && result.calcs.gift_card && pay_type_payment" positive-or-negative-color="{{result.calcs.gift_card}}">
 					<td>Gift Card</td>
 					<td>$ {{result.calcs.gift_card | formatPrice}}</td>
 				</tr>
@@ -368,7 +368,7 @@
 					<td></td>
 					<td></td>
 				</tr>
-				<tr class="transparent" ng-if="pay_type_payment && !result.hourly && result.calcs.delivery_fee">
+				<tr class="transparent" ng-if="pay_type_payment && ( !result.hourly || result.driver_payment_type == 'making_whole' ) && result.calcs.delivery_fee">
 					<td></td>
 					<td></td>
 					<td>Total Delivery Fee</td>
