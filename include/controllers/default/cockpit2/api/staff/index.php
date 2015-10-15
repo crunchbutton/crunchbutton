@@ -397,12 +397,18 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
 		$keys = [];
 
-		$brandreps = $this->request()['brandreps'] ? $this->request()['brandreps'] : false;
 
-		if( ( !c::admin()->permission()->check(['global']) && c::admin()->isCampusManager() ) || $brandreps ){
-			$brandreps = true;
-			$type = 'marketing-rep';
-			$community = c::user()->getMarketingRepGroups();
+		if( ( !c::admin()->permission()->check(['global']) && c::admin()->isCampusManager() ) ){
+			$brandreps = $this->request()['brandreps'] ? $this->request()['brandreps'] : false;
+			$drivers = $this->request()['drivers'] ? $this->request()['drivers'] : false;
+			if( $brandreps ){
+				$type = 'marketing-rep';
+				$community = c::user()->getMarketingRepGroups();
+			}
+			if( $drivers ){
+				$type = 'driver';
+				$community = c::user()->getMarketingRepGroups();
+			}
 		}
 
 		if ($page == 1) {
