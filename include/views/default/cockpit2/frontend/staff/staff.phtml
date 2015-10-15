@@ -31,12 +31,8 @@
 
 				<th>Type</th>
 				<td>
-					<select ng-model="query.type" name="searchType" tabindex="2">
-						<option value="all">All</option>
-						<option value="driver">Drivers</option>
-						<option value="marketing-rep">Brand Representative</option>
-						<option value="community-manager">Community Manager</option>
-					</select>
+					<select name="searchType" tabindex="2" ng-model="query.type" ng-options="opt.value as opt.label for opt in staffType" ></select>
+						</div>
 				</td>
 				<th>Status</th>
 				<td>
