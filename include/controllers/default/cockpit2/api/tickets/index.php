@@ -40,9 +40,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 						WHERE
 							support_message.id_support=s.id_support
 							AND ( support_message.from=\'client\' OR support_message.from=\'system\' )
-					)
--- or sm.id_support_message IS NOT NULL
-)
+					) or sm.id_support_message IS NOT NULL )
 					and smr.id_support_message=(
 						SELECT MAX(support_message.id_support_message) a
 						FROM support_message
@@ -182,10 +180,16 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 
 			$o->media = $lastReplyFrom->media;
 
-			if( $o->status == Crunchbutton_Support::STATUS_CLOSED ){
-				$messageBeforeLast = Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ? AND id_support_message < ? ORDER BY id_support_message DESC LIMIT 1', [ $o->id_support, $lastReplyFrom->id_support_message ] )->get( 0 );
+			$lastNonSystemMessage = $support->lastNonSystemMessage();
+
+			if( $lastNonSystemMessage->id_support_message ){
+				$o->message_client = $lastNonSystemMessage->body;
+			}
+
+			if( $o->status == Crunchbutton_Support::STATUS_CLOSED && $lastNonSystemMessage->id_support_message ){
+				$messageBeforeLast = Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ? AND id_support_message > ? ORDER BY id_support_message DESC LIMIT 1', [ $o->id_support, $lastNonSystemMessage->id_support_message ] )->get( 0 );
 				if( $messageBeforeLast->id_support_message ){
-					$o->message_client = $messageBeforeLast->body . "<br><i>{$o->message_client}</i>" ;
+					$o->message_client = $o->message_client . "<br><i>{$messageBeforeLast->body}</i>" ;
 				}
 			}
 
