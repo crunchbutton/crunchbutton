@@ -321,7 +321,41 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 
 		if( $crunchbutton_id ){
 			$card = Cockpit_Admin_Pexcard::getByCardSerial( $crunchbutton_id );
-			$this->_funds( $card );
+			if( $card ){
+				$this->_funds( $card );
+			} else {
+				if( $crunchbutton_id ){
+
+					$cards = Crunchbutton_Pexcard_Card::card_list();
+
+					if( is_array( $cards->body ) ){
+
+						foreach( $cards->body as $card ){
+
+							if( intval( $card->lastName ) == intval( $crunchbutton_id ) ){
+
+								$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $card->id );
+
+								if( $card->cards ){
+									$_cards = $card->cards;
+								} else {
+									$_cards = Crunchbutton_Pexcard_Details::cards( $card->id );
+								}
+
+								foreach( $_cards as $_card ){
+									$card_number = str_replace( 'X', '', $_card->cardNumber );
+									if( intval( $card_number ) == intval( $last_four_digits ) ){
+										$card->cards = $_cards;
+										echo json_encode( $card );exit;
+									}
+								}
+							}
+						}
+					} else {
+						$this->_error( 'Oops, something is wrong!' );
+					}
+				}
+			}
 		}
 		$this->_error( 'Card Not Found' );
 	}

@@ -5,7 +5,7 @@ class Cana_Cache_File extends Cana_Model {
 
 	public function __construct($params) {
 
-		if (!$params) {
+		if (!$params || !is_object( $params ) ) {
 			$params = new Cana_Model;
 		}
 
@@ -25,7 +25,7 @@ class Cana_Cache_File extends Cana_Model {
 			$this->suffix = $params->suffix;
 		}
 	}
-	
+
 	public function cached($fileName, $expire = null) {
 		if (file_exists($this->dir.sha1($fileName).$suffix) && filemtime($this->dir.sha1($fileName).$suffix) < time()+(!is_null($expire) ? $expire : $this->expire)) {
 			return true;
@@ -33,7 +33,7 @@ class Cana_Cache_File extends Cana_Model {
 			return false;
 		}
 	}
-	
+
 	public function read($fileName) {
 		return file_get_contents($this->dir.sha1($fileName).$suffix);
 	}
@@ -41,7 +41,7 @@ class Cana_Cache_File extends Cana_Model {
 	public function write($fileName, $file) {
 		return file_put_contents($this->dir.sha1($fileName).$suffix, $file);
 	}
-	
+
 	public function mtime($fileName) {
 		return filemtime($this->dir.sha1($fileName).$suffix);
 	}
