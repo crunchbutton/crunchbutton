@@ -500,6 +500,20 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			$keys[] = $pexcard == 'yes' ? true : false;
 		}
 
+		if( $community && $type == 'marketing-rep'  ){
+			$q .= '
+				AND g.type = ?
+			';
+			$keys[] = Crunchbutton_Group::TYPE_MARKETING_REP;
+		}
+
+		if( $community && $type == 'community-manager'  ){
+			$q .= '
+				AND g.name = ?
+			';
+			$keys[] = Crunchbutton_Group::CAMPUS_MANAGER_GROUP;
+		}
+
 
 		if ($type == 'driver') {
 			if( $send_text != 'all' ){
@@ -598,20 +612,6 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			}
 
 			$admin = Admin::o( $s );
-
-			if( $community && $type == 'marketing-rep' ){
-				if( !$admin->isMarketingRep() ){
-					$count--;
-					continue;
-				}
-			}
-
-			if( $community && $type == 'community-manager' ){
-				if( !$admin->isCampusManager() ){
-					$count--;
-					continue;
-				}
-			}
 
 			$staff = $admin->exports(['permissions', 'groups', 'working' => ($working == 'all' ? false : true)]);
 
@@ -727,7 +727,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		}
 
 		if ($working == 'all' ) {
-			$pages = ceil($count / $limit);
+			$pages = ceil( $count / $limit );
 		} else {
 			$pages = 1;
 		}
