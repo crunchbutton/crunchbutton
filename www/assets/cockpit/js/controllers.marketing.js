@@ -15,7 +15,41 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			templateUrl: 'assets/view/marketing-brand-representative.html',
 			reloadOnSearch: false
 		})
+		.when('/marketing/drivers', {
+			action: 'drivers',
+			controller: 'MarketingDriversCtrl',
+			templateUrl: 'assets/view/marketing-drivers.html',
+			reloadOnSearch: false
+		})
 }]);
+
+
+NGApp.controller('MarketingDriversCtrl', function ($scope, StaffService, ViewListService ) {
+
+	angular.extend( $scope, ViewListService );
+
+	$scope.view({
+		scope: $scope,
+		watch: {
+			search: '',
+			type: 'all',
+			status: 'active',
+			working: 'all',
+			pexcard: 'all',
+			community: '',
+			drivers: true,
+			fullcount: true
+		},
+		update: function() {
+			StaffService.list($scope.query, function(d) {
+				$scope.community = d.community;
+				$scope.staff = d.results;
+				$scope.complete(d);
+			});
+		}
+	});
+
+});
 
 NGApp.controller('MarketingBrandRepsCtrl', function ($scope, StaffService, ViewListService ) {
 
@@ -41,21 +75,6 @@ NGApp.controller('MarketingBrandRepsCtrl', function ($scope, StaffService, ViewL
 			});
 		}
 	});
-
-	$scope.show_more_options = false;
-
-	$scope.moreOptions = function(){
-		$scope.show_more_options = !$scope.show_more_options;
-
-		if( $scope.show_more_options) {
-
-			if( !$scope.communities ){
-				CommunityService.listSimple( function( json ){
-					$scope.communities = json;
-				} );
-			}
-		}
-	}
 
 });
 

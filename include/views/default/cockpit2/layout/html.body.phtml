@@ -4,7 +4,7 @@
 			<div class="user-initials" ng-if="account.user.id"><span>{{account.user.initials}}</span></div>
 
 			<div class="menu-tabs">
-				<div class="menu-tab" ng-if="account.isDriver && account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'driver')}" ng-click="menu.toggle='driver'">
+				<div class="menu-tab" ng-if="account.isDriver || account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'driver')}" ng-click="menu.toggle='driver'">
 					<i class="fa fa-truck"></i>
 				</div>
 
@@ -89,6 +89,15 @@
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-users"></i></td>
 							<td class="side-menu-label">Brand Reps</a></td>
+						</tr>
+					</table>
+				</a>
+
+				<a href="/marketing/drivers" ng-click="instant()" class="menu-link" ng-if="account.isCampusManager && menu.toggle=='marketing-rep'" ng-class="{'nav-active': (navigation.page == 'drivers')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-road"></i></td>
+							<td class="side-menu-label">Drivers</a></td>
 						</tr>
 					</table>
 				</a>

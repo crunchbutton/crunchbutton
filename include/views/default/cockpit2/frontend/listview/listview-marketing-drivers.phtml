@@ -1,0 +1,32 @@
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th>Driver</th>
+			<th>Invite Code</th>
+			<th>Total Referrals</th>
+			<th>Total Referrals Last Week</th>
+			<th>Working</th>
+		</tr>
+		<tr ng-repeat="s in staff track by $index" ng-attr-tabindex="{{$index+4}}">
+			<td>
+				<span class="listview-bold">{{s.name}}</span>
+				<br><a href ng-click="callText(s.phone)" class="listview-smaller">{{s.phone | formatPhone}}</a>
+				<br><a href="mailto:{{s.email}}">{{s.email}}</a>
+			</td>
+			<td>
+				{{s.invite_code}}
+			</td>
+			<td>
+				{{s.referral_total}}
+			</td>
+			<td>
+				{{s.referral_total_last_week}}
+			</td>
+			<td>
+				<span class="tag tag-green" ng-if="driver.working">Working Now</span>
+				<span class="tag tag-blue" ng-if="driver.working_today && !driver.working">Working Today</span>
+				<span class="tag tag-lightblue" ng-if="!driver.working_today && !driver.working">Not Today</span>
+			</td>
+		</tr>
+	</table>
+</div>
