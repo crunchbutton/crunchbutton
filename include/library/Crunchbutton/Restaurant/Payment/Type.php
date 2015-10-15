@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
+class Crunchbutton_Restaurant_Payment_Type extends Cana_Table_Trackchange {
 
 	const PAYMENT_METHOD_CHECK = 'check';
 	const PAYMENT_METHOD_DEPOSIT = 'deposit';
