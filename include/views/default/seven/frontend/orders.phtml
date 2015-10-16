@@ -125,7 +125,7 @@
 	</div>
 
 
-	<div ng-show="credit" class="gift-card-balance">
+	<div ng-show="credit && credit > 0" class="gift-card-balance">
 		<div class="divider"></div>
 		<div class="bubble-tail bubble-tail-green bubble-animated noselect">
 			<div class="text" ng-switch="pushMessage">
