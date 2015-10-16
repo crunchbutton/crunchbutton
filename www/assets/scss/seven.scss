@@ -4072,14 +4072,17 @@ font-familt: "Museo Slab";
 		margin-top: 2em;
 	}
 
-	.user-account-credit .delivery-free, .account-your-orders, .order-buttons .delivery-free {
+	.user-account-credit .delivery-free, .account-your-orders, .order-buttons .delivery-free, .account-gift-card {
 		font-size: 2em;
 		margin-bottom: 1.1em;
 		display: inline-block;
 	}
+
+
 	.delivery-free{
 		font-size:2.8em !important;
 		display:block !important;
+		line-height: 1em;
 	}
 	.col-box {
 		@include flex(row, row wrap, space-between);
@@ -4598,6 +4601,15 @@ textarea {
  	font-size: .9em;
  }
 .gift-card-balance{
-	margin-top: -0.5em !important;
-	display: block !important;
+	margin-top: 3em;
+}
+.gift-card-gorillia {
+	background: url(../images/micro/gorillia.svg) no-repeat;
+	background-position: top center;
+	width: 20em;
+	height: 20em;
+	background-size: 100%;
+	margin-left: 8.5em ;
+	margin-top: 5em;
+	margin-bottom: 2em;
 }

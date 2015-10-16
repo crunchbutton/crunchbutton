@@ -343,7 +343,14 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						echo json_encode(['error' => 'invalid request']);
 					}
 				} else {
-					echo json_encode(['error' => 'invalid request']);
+					$user = c::user();
+					if ( $user->id_user ){
+						$id_restaurant = c::getPagePiece(3);
+						$credit = Crunchbutton_Credit::creditByUserValidToAnyRestaurant( $user->id_user );
+						echo json_encode( [ 'credit' => $credit ] );
+					} else {
+						echo json_encode(['error' => 'invalid request']);
+					}
 				}
 				break;
 			default:

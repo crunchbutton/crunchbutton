@@ -8,8 +8,9 @@
 
 			<div ng-show="!account.user.points.free_delivery_message && account.user.points.away_free_delivery">
 				<p>
-					<span class="delivery-free">You are <b>{{account.user.points.away_free_delivery || 0}}</b> points away</span>
-					<span class="hide-mobile"><br></span>&nbsp;from a <b>free delivery</b>. Earn points by ordering food, sharing your order, or referring friends.
+					<span class="delivery-free">You are <b>{{account.user.points.away_free_delivery || 0}}</b> points away
+					<span class="hide-mobile"><br></span>
+					&nbsp;from a <b>free delivery</b>. </span> Earn points by ordering food, sharing your order, or referring friends.
 				</p><br/>
 			</div>
 			<div ng-show="account.user.points.free_delivery_message && account.user.points.free_delivery">
@@ -122,5 +123,21 @@
 			</li>
 		</ul>
 	</div>
+
+
+	<div ng-show="credit" class="gift-card-balance">
+		<div class="divider"></div>
+		<div class="bubble-tail bubble-tail-green bubble-animated noselect">
+			<div class="text" ng-switch="pushMessage">
+				You have a ${{credit}} gift card.
+			</div>
+			<div class="bubble-tail-spacer"></div>
+		</div>
+		<br>
+		<div class="gift-card-gorillia"></div>
+		<div class="divider"></div>
+	</div>
+
+
 	<button class="button lightorange button-logout" ng-click="signout()" ng-if="account.user.id_user">Log Out</button>
 </div>
