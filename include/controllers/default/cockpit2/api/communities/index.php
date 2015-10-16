@@ -31,6 +31,7 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 			LEFT JOIN restaurant_community ON community.id_community=restaurant_community.id_community
 			LEFT JOIN restaurant ON restaurant_community.id_restaurant=restaurant.id_restaurant
 			LEFT JOIN `order` ON restaurant.id_restaurant=`order`.id_order
+			LEFT JOIN `community_alias` ON community_alias.id_community = community.id_community
 
 			WHERE
 				community.name IS NOT NULL
@@ -68,6 +69,9 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 					'community.name' => 'like',
 					'community.permalink' => 'like',
 					'community.name_alt' => 'like',
+					'community.name_alt' => 'like',
+					'community_alias.alias' => 'like',
+					'community_alias.name_alt' => 'like',
 					'community.id_community' => 'inteq'
 				]
 			]);
