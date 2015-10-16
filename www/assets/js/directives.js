@@ -536,7 +536,7 @@ NGApp.directive( 'geoComplete', function() {
 					} else {
 						val = el.value;
 					}
-					 
+
 					val = val.replace(/, United States/,'').replace(/, USA/,'');
 
 					scope.$apply( function() {
