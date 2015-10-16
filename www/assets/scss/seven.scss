@@ -2214,7 +2214,6 @@ select.form-input {
 .form-group {
 	display: table;
 	width: 100%;
-	white-space:nowrap;
 	margin-bottom: .45em;
 	@include box-sizing(border-box);
 }
