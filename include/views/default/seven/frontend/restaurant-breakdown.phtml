@@ -1,6 +1,11 @@
 <div class="divider dots spacer-one-two" ng-if="order.info.subtotal && order.info.subtotal!='0.00' && restaurant._open && !isMobileWidth"></div>
 <div class="payment-total content-padding" ng-if="order.info.subtotal && order.info.subtotal!='0.00' && restaurant._open">
 
+
+	<div class="giftcard-balance-container" ng-show="credit.hasValue">
+		You have a <span class="giftcard-value">{{AB.dollar}}{{credit.value}}</span> gift card!
+	</div>
+
 	<div ng-if="isMobileWidth" class="restaurant-banana animated-resize hide-desktop"></div>
 
 	<div class="payment-wrap">
