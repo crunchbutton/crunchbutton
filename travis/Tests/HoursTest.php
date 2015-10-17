@@ -101,8 +101,6 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 		// delete community
 		c::db()->query( 'DELETE FROM community WHERE community.name = ?', [$name] );
 
-		self::unfakeNotCli();
-		self::unfakeIsCockpit();
 	}
 
 	public function setUp() {
@@ -150,7 +148,7 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 		$shifts = $this->shifts();
 		$this->assertEquals( $shifts->count(), self::SHIFTS_CREATED );
 	}
-
+/*
 	public static function fakeNotCli(){
 		$_SERVER['ACT_AS_NOT_IS_CLI'] = true;
 	}
@@ -235,7 +233,7 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 		self::unfakeIsCockpit();
 		self::unfakeNotCli();
 	}
-
+*/
 	// public function testRestaurantsAreOpenAfterReopenCommunity() {
 		// continue here!
 	// }
