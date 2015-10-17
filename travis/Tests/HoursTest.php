@@ -217,14 +217,11 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 			$assignment->confirmed = true;
 			$assignment->date = date('Y-m-d H:i:s');
 			$assignment->save();
-			if( $assignment->id_admin_shift_assign ){
-				$shift_assigned++;
-			}
+			$shift_assigned++;
 			$this->assertEquals( is_numeric( $assignment->id_admin_shift_assign ), true );
 		}
 		$this->assertEquals( $shift_assigned, self::SHIFTS_CREATED );
 	}
-
 
 	public function testReopenAutoClosedCommunity(){
 
