@@ -316,7 +316,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		return self::createNewWarning( $params );
 	}
 
-	public function createNewWarning( $params = [] ){
+	public static function createNewWarning( $params = [] ){
 		$support = false;
 
 		if( $params[ 'staff' ] && $params[ 'phone' ] ){
