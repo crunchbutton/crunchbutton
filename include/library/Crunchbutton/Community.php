@@ -943,7 +943,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 						// last Shift
 						$lastShift = Crunchbutton_Community_Shift::q( "SELECT * FROM community_shift cs WHERE cs.date_start >= ? AND cs.date_end <= ? AND cs.id_community = ? ORDER BY cs.date_end DESC LIMIT 1", [ $shift_day, $shift_next_day, $this->id_community ] )->get( 0 );
-						$date_end = $lastShift->dateEnd( $this->timezone );
+						if( $lastShift->id_community_shift ){
+							$date_end = $lastShift->dateEnd( $this->timezone );
+						}
 						$message .= $date_end->format( 'g' );
 						if( $date_end->format( 'i' ) != '00' ){
 							$message .= ':' . $date_end->format( 'i' );
