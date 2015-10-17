@@ -177,7 +177,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			return false;
 	}
 
-	public function currentAssignedShiftByCommunity( $id_community ){
+	public static function currentAssignedShiftByCommunity( $id_community ){
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 			$community = Crunchbutton_Community::o( $id_community );
 			$timezone = ( $community->timezone ) ? $community->timezone : c::config()->timezone;
