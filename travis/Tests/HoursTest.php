@@ -236,8 +236,8 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 		self::unfakeNotCli();
 	}
 
-	public function testRestaurantsAreOpenAfterReopenCommunity() {
+	// public function testRestaurantsAreOpenAfterReopenCommunity() {
 		// continue here!
-	}
+	// }
 
 }
