@@ -7,11 +7,11 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 		$this->table('admin_shift_assign')->idVar('id_admin_shift_assign')->load($id);
 	}
 
-	public function save(){
+	public function save($newItem = 0){
 		if( !$this->id_admin_shift_assign ){
 			Crunchbutton_Admin_Shift_Assign_Log::addAssignment( [ 'id_driver' => $this->id_admin, 'id_community_shift' => $this->id_community_shift ] );
 		}
-		return parent::save();
+		return parent::save($newItem);
 	}
 
 	public function admin(){

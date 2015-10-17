@@ -2,7 +2,7 @@
 
 class Cockpit_User extends Crunchbutton_User {
 
-	public function exports() {
+	public function exports($params = []) {
 
 		$out = parent::exports();
 
