@@ -148,7 +148,7 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 		$shifts = $this->shifts();
 		$this->assertEquals( $shifts->count(), self::SHIFTS_CREATED );
 	}
-/*
+
 	public static function fakeNotCli(){
 		$_SERVER['ACT_AS_NOT_IS_CLI'] = true;
 	}
@@ -182,7 +182,7 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $this->deliveryServiceRestaurant()->open(), false );
 		$this->assertEquals( $this->thirdParyDeliveryRestaurant()->open(), true );
 	}
-
+/*
 	public function testAutoCloseCommunity(){
 
 		self::fakeIsCockpit();
@@ -202,7 +202,7 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $this->deliveryServiceRestaurant()->open(), false );
 		$this->assertEquals( $this->thirdParyDeliveryRestaurant()->open(), true );
 	}
-
+*/
 	public function testShiftAssignment(){
 
 		$shift_assigned = 0;
@@ -220,7 +220,7 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 		}
 		$this->assertEquals( $shift_assigned, self::SHIFTS_CREATED );
 	}
-
+/*
 	public function testReopenAutoClosedCommunity(){
 
 		self::fakeIsCockpit();
@@ -233,9 +233,9 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 		self::unfakeIsCockpit();
 		self::unfakeNotCli();
 	}
-*/
-	// public function testRestaurantsAreOpenAfterReopenCommunity() {
-		// continue here!
-	// }
 
+	public function testRestaurantsAreOpenAfterReopenCommunity() {
+		continue here!
+	}
+*/
 }
