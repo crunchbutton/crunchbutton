@@ -250,8 +250,6 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			}
 		}
 		$restaurant->_hours_ = $hours;
-
-
 		if( Crunchbutton_Util::isCockpit() && !Crunchbutton_Util::isCLI() && !$restaurant->force_buffer ){
 			return $restaurant->_hours_;
 		}

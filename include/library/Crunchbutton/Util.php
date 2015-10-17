@@ -10,6 +10,9 @@ class Crunchbutton_Util extends Cana_Model {
 	}
 
 	public static function isCLI(){
+		if( $_SERVER[ 'ACT_AS_NOT_IS_CLI' ] ){
+			return false;
+		}
 		return getenv('CLI');
 	}
 

@@ -9,18 +9,19 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 	public static function setUpBeforeClass() {
 
 		$name = self::NAME;
+
 		// restaurant stuff
 		$r1 = new Restaurant([ 'name' => $name . ' 3rd Party Delivery', 'formal_relationship' => false, 'active' => true, 'delivery' => true, 'credit' => 1, 'delivery_fee' => '1.5', 'confirmation' => 0, 'community' => 'test', 'timezone' => 'America/Los_Angeles', 'open_for_business' => true, 'delivery_service' => false ] );
 		$r1->save();
-		$r2 = new Restaurant([ 'name' => $name . ' Delivery Service', 'formal_relationship' => false, 'active' => true, 'delivery' => true, 'credit' => 1, 'delivery_fee' => '1.5', 'confirmation' => 0, 'community' => 'test', 'timezone' => 'America/Los_Angeles', 'open_for_business' => true, 'delivery_service' => false ] );
+		$r2 = new Restaurant([ 'name' => $name . ' Delivery Service', 'formal_relationship' => false, 'active' => true, 'delivery' => true, 'credit' => 1, 'delivery_fee' => '1.5', 'confirmation' => 0, 'community' => 'test', 'timezone' => 'America/Los_Angeles', 'open_for_business' => true, 'delivery_service' => true ] );
 		$r2->save();
 
 		// community
-		$c1 = new Community(['name' => $name, 'active' => 1, 'timezone' => 'America/New_York', 'driver-group' => 'drivers-testlogistics', 'range' => 2, 'private' => 1, 'loc_lat' => 34.023281, 'loc_lon' => -118.2881961, 'delivery_logistics' => null ]);
+		$c1 = new Community(['name' => $name, 'active' => 1, 'timezone' => 'America/New_York', 'driver-group' => 'drivers-testlogistics', 'range' => 2, 'private' => 1, 'loc_lat' => 34.023281, 'loc_lon' => -118.2881961, 'delivery_logistics' => null, 'auto_close' => true, 'combine_restaurant_driver_hours' => false ]);
 		$c1->save();
 
-
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->setTimezone( new DateTimeZone( $c1->timezone ) );
 		$today = strtolower( $now->format( 'D' ) );
 		$now->modify( '- 1 hour' );
 		$date_start = $now->format( 'Y-m-d H:i' );
@@ -28,10 +29,8 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 		$date_end = $now->format( 'Y-m-d H:i' );
 		$cs1 = new Community_Shift([ 'id_community' => $c1->id_community, 'date_start' => $date_start, 'date_end' => $date_end, 'active' => 1 ]);
 		$cs1->save();
-
-		$now->modify( '+ 1 hour' );
 		$date_start = $now->format( 'Y-m-d H:i' );
-		$now->modify( '+30 minutes' );
+		$now->modify( '+2 hour' );
 		$date_end = $now->format( 'Y-m-d H:i' );
 		$cs2 = new Community_Shift([ 'id_community' => $c1->id_community, 'date_start' => $date_start, 'date_end' => $date_end, 'active' => 1 ]);
 		$cs2->save();
@@ -101,6 +100,9 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 
 		// delete community
 		c::db()->query( 'DELETE FROM community WHERE community.name = ?', [$name] );
+
+		self::unfakeNotCli();
+		self::unfakeIsCockpit();
 	}
 
 	public function setUp() {
@@ -149,6 +151,60 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $shifts->count(), self::SHIFTS_CREATED );
 	}
 
+	public static function fakeNotCli(){
+		$_SERVER['ACT_AS_NOT_IS_CLI'] = true;
+	}
+
+	public static function unfakeNotCli(){
+		$_SERVER['ACT_AS_NOT_IS_CLI'] = false;
+	}
+
+	public static function fakeIsCockpit(){
+		$_SERVER['HTTP_HOST'] = 'cockpit.la';
+	}
+
+	public static function unfakeIsCockpit(){
+		$_SERVER['HTTP_HOST'] = '';
+	}
+
+	public function testRelateRestaurantCommunity(){
+		// relate
+		$this->deliveryServiceRestaurant()->saveCommunity( $this->community()->id_community );
+		$this->thirdParyDeliveryRestaurant()->saveCommunity( $this->community()->id_community );
+
+		$id_community_1 = $this->deliveryServiceRestaurant()->community()->id_community;
+		$id_community_2 = $this->thirdParyDeliveryRestaurant()->community()->id_community;
+
+		$this->assertEquals( $id_community_1, $this->community()->id_community );
+		$this->assertEquals( $id_community_2, $this->community()->id_community );
+	}
+
+	public function testRestaurantsStatusAfterRelatedWithCommunity() {
+		// it should be closed because it now has a community related but the community has no drivers
+		$this->assertEquals( $this->deliveryServiceRestaurant()->open(), false );
+		$this->assertEquals( $this->thirdParyDeliveryRestaurant()->open(), true );
+	}
+
+	public function testAutoCloseCommunity(){
+
+		self::fakeIsCockpit();
+		self::fakeNotCli();
+
+		$community = $this->community();
+		$community->shutDownCommunity();
+
+		$this->assertEquals( $community->isAutoClosed(), true );
+
+		self::unfakeIsCockpit();
+		self::unfakeNotCli();
+
+	}
+
+	public function testRestaurantsIsClosedAfterCloseCommunity() {
+		$this->assertEquals( $this->deliveryServiceRestaurant()->open(), false );
+		$this->assertEquals( $this->thirdParyDeliveryRestaurant()->open(), true );
+	}
+
 	public function testShiftAssignment(){
 
 		$shift_assigned = 0;
@@ -158,13 +214,31 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 			$assignment = new Crunchbutton_Admin_Shift_Assign();
 			$assignment->id_admin = $this->driver()->id_admin;
 			$assignment->id_community_shift = $shift->id_community_shift;
+			$assignment->confirmed = true;
 			$assignment->date = date('Y-m-d H:i:s');
 			$assignment->save();
 			$shift_assigned++;
 			$this->assertEquals( is_numeric( $assignment->id_admin_shift_assign ), true );
 		}
-		$this->assertEquals( $shift_assigned, self::SHIFTS_CREATED  );
+		$this->assertEquals( $shift_assigned, self::SHIFTS_CREATED );
+	}
 
+
+	public function testReopenAutoClosedCommunity(){
+
+		self::fakeIsCockpit();
+		self::fakeNotCli();
+
+		$community = $this->community();
+		$community->reopenAutoClosedCommunity();
+		$this->assertEquals( $community->isAutoClosed(), false );
+
+		self::unfakeIsCockpit();
+		self::unfakeNotCli();
+	}
+
+	public function testRestaurantsAreOpenAfterReopenCommunity() {
+		// continue here!
 	}
 
 }
