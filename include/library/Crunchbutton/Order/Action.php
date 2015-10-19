@@ -101,10 +101,16 @@ class Crunchbutton_Order_Action extends Cana_Table {
 		}
 	}
 
-	public static function isForcedToBeCommissioned( $id_order ){
+	public static function isForcedToBeCommissioned( $id_order, $id_admin = false ){
 		$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND type = ? ORDER BY id_order_action DESC LIMIT 1', [ $id_order, Crunchbutton_Order_Action::FORCE_COMMISSION_PAYMENT ] )->get( 0 );
 		if( $action->id_order_action ){
-			return true;
+			if( !$id_admin ){
+				return true;
+			} else {
+				if( $id_admin == $action->id_admin ){
+					return true;
+				}
+			}
 		}
 		return false;
 	}

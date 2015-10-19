@@ -2835,10 +2835,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 
 		// mark the order to be paid by commission structure
-		if( $admin->openedCommunity() && !$this->isForcedToBeCommissioned() ){
+		if( $admin->openedCommunity() && !$this->isForcedToBeCommissioned( $admin->id_admin ) ){
 			$this->markToBeCommissioned( $admin->id_admin );
 		}
-
 		return true;
 	}
 
@@ -2851,8 +2850,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		]))->save();
 	}
 
-	public function isForcedToBeCommissioned(){
-		return Crunchbutton_Order_Action::isForcedToBeCommissioned( $this->id_order );
+	public function isForcedToBeCommissioned( $id_admin = false ){
+		return Crunchbutton_Order_Action::isForcedToBeCommissioned( $this->id_order, $id_admin );
 	}
 
 	public function pexcardFunds(){
