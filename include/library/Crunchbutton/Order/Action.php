@@ -13,6 +13,7 @@ class Crunchbutton_Order_Action extends Cana_Table {
 	const RESTAURANT_REJECTED = 'restaurant-rejected';
 	const RESTAURANT_READY		= 'restaurant-ready';
 	const DELIVERY_ORDER_TEXT_5_MIN = 'delivery-text-5min';
+	const FORCE_COMMISSION_PAYMENT = 'force-commission-payment';
 	const TICKET_NOT_GEOMATCHED = 'ticket-not-geomatched';
 
 	public function __construct($id = null) {
@@ -98,6 +99,14 @@ class Crunchbutton_Order_Action extends Cana_Table {
 			$body = "The order #$id_order was rejected by {$action->admin()->name}.";
 			Crunchbutton_Support::createNewWarning( [ 'id_order' => $id_order, 'body' => $body, 'bubble' => true, 'staff' => true, 'phone' => $action->admin()->phone ] );
 		}
+	}
+
+	public static function isForcedToBeCommissioned( $id_order ){
+		$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND type = ? ORDER BY id_order_action DESC LIMIT 1', [ $id_order, Crunchbutton_Order_Action::FORCE_COMMISSION_PAYMENT ] )->get( 0 );
+		if( $action->id_order_action ){
+			return true;
+		}
+		return false;
 	}
 
 	public function admin(){
