@@ -628,7 +628,14 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		// @remove -- remove it before commit
 		$start = '10/19/2015';
 		$end = '10/20/2015';;
-		$id_driver = 5;
+		$id_driver = 13284;
+
+		// http://dev.la/settlement/drivers/scheduled/48040
+
+		// 13281 comission - http://dev.la/drivers/payment/48037
+		// 13278 hours without tips - http://dev.la/drivers/payment/48041
+		// 13275 hours with tips - http://dev.la/drivers/payment/48040
+		// 13284 madewhole - http://dev.la/drivers/payment/48042
 
 		if( !$start || !$end ){
 			$this->_error();
