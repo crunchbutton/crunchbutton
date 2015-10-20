@@ -101,7 +101,7 @@
 					</tr>
 
 					<tr ng-if="pay_type_payment && result.calcs.total_commissioned" positive-or-negative-color="{{result.calcs.total_commissioned}}">
-						<td>Comissioned Orders</td>
+						<td>Commissioned Orders</td>
 						<td>${{result.calcs.total_commissioned | formatPrice}}</td>
 					</tr>
 
@@ -329,7 +329,7 @@
 		<table class="tb-grid tb-zebra" ng-if="pay_type_payment && result.has_commissioned_order">
 			<thead ng-if="result.orders.included.length">
 				<tr>
-					<td colspan="9" class="title">Comissioned Orders</td>
+					<td colspan="9" class="title">Commissioned Orders</td>
 				</tr>
 			</thead>
 			<thead ng-if="result.orders.included.length">

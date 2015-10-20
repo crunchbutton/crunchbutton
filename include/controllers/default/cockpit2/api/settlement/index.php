@@ -626,9 +626,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$id_driver = $this->request()['id_driver'];
 
 		// @remove -- remove it before commit
-		$start = '10/19/2015';
-		$end = '10/20/2015';;
-		$id_driver = 13284;
+		// $start = '10/19/2015';
+		// $end = '10/20/2015';;
+		// $id_driver = 13284;
 
 		// http://dev.la/settlement/drivers/scheduled/48040
 
