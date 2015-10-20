@@ -506,7 +506,10 @@
 							<tbody>
 								<tr ng-repeat="order in driver.orders">
 									<td></td>
-									<td ng-class="{ 'excluded': !order.included }">{{order.id_order}}</td>
+									<td ng-class="{ 'excluded': !order.included }">
+										<span title="Order delivered during a shift created by driver" ng-if="order.force_to_be_commissioned"><i class="fa fa-money"></i></span>
+										{{order.id_order}}
+									</td>
 									<td ng-class="{ 'excluded': !order.included }">{{order.restaurant}}</td>
 									<td ng-class="{ 'excluded': !order.included }">{{order.name}}</td>
 									<td ng-class="{ 'excluded': !order.included }">{{order.pay_type}}</td>
