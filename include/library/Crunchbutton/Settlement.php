@@ -1826,6 +1826,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$summary[ 'orders_count' ] = 0;
 			$summary[ 'orders_not_included' ] = 0;
 			$_total_commissioned = 0;
+			$_total_commissioned_tip = 0;
 			$summary[ 'orders' ] = [ 'included' => [], 'not_included' => [] ];
 			foreach( $orders as $order ){
 				$_order = $order->order();
@@ -1848,6 +1849,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 					if( $variables[ 'force_to_be_commissioned' ] ){
 						$_total_commissioned += $variables[ 'amount_per_order' ];
+						$_total_commissioned_tip += $variables[ 'tip' ];
 					}
 
 
@@ -1923,6 +1925,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 															'gift_card' => floatval( $calcs[ $index ][ 'gift_card' ] ),
 															'subtotal' => floatval( $calcs[ $index ][ 'subtotal' ] ),
 															'total_commissioned' => floatval( $_total_commissioned ),
+															'total_commissioned_tip' => floatval( $_total_commissioned_tip ),
 														];
 
 			$summary[ 'admin' ] = [ 'id_admin' => $schedule->id_admin, 'name' => $schedule->admin()->name ];

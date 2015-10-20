@@ -95,16 +95,19 @@
 						<td>${{result.calcs.amount_per_order | formatPrice}}</td>
 					</tr>
 
+					<tr ng-if="( !result.hourly || result.show_credit_card_tips && !result.driver_payment_type == 'making_whole' ) && result.calcs.tip && pay_type_payment" positive-or-negative-color="{{result.calcs.tip}}">
+						<td>Tip</td>
+						<td>${{result.calcs.tip | formatPrice}}</td>
+					</tr>
+
 					<tr ng-if="pay_type_payment && result.calcs.total_commissioned" positive-or-negative-color="{{result.calcs.total_commissioned}}">
 						<td>Comissioned Orders</td>
 						<td>${{result.calcs.total_commissioned | formatPrice}}</td>
 					</tr>
 
-
-
-					<tr ng-if="result.calcs.tip && pay_type_payment && ( result.show_credit_card_tips || result.calcs.total_commissioned )" positive-or-negative-color="{{result.calcs.tip}}">
+					<tr ng-if="pay_type_payment && result.calcs.total_commissioned_tip && ( !result.show_credit_card_tips || result.driver_payment_type == 'making_whole' )" positive-or-negative-color="{{result.calcs.total_commissioned_tip}}">
 						<td>Tip</td>
-						<td>${{result.calcs.tip | formatPrice}}</td>
+						<td>${{result.calcs.total_commissioned_tip | formatPrice}}</td>
 					</tr>
 
 					<tr ng-if="result.calcs.delivery_fee_collected < 0 && pay_type_payment" positive-or-negative-color="{{result.calcs.delivery_fee_collected}}">
