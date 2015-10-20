@@ -1815,9 +1815,12 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 			$orders = $schedule->orders();
 
+			$has_commissioned_order = false;
+
 			$_orders = [];
 			$summary[ 'orders_count' ] = 0;
 			$summary[ 'orders_not_included' ] = 0;
+			$_total_commissioned = 0;
 			$summary[ 'orders' ] = [ 'included' => [], 'not_included' => [] ];
 			foreach( $orders as $order ){
 				$_order = $order->order();
@@ -1838,6 +1841,12 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$_total_payment = $_total_payment;
 					$_total_reimburse = max( 0, $pay_info[ 0 ][ 'total_reimburse' ] );
 
+					if( $variables[ 'force_to_be_commissioned' ] ){
+						$_total_commissioned += $variables[ 'amount_per_order' ];
+					}
+
+
+
 					$summary[ 'orders' ][ 'included' ][] = [ 	'id_order' => $variables[ 'id_order' ],
 																										'name' => $variables[ 'name' ],
 																										'total' => $variables[ 'final_price_plus_delivery_markup' ],
@@ -1854,6 +1863,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 																										'total_reimburse' => $_total_reimburse,
 																										'total_payment' => $_total_payment
 																									];
+					if( $variables[ 'force_to_be_commissioned' ] ){
+						$has_commissioned_order = true;
+					}
 					if( $variables[ 'cash' ] ){
 						// Hourly drivers are ALSO collecting the $3 delivery fee for all cash orders, and keeping it. They shouldn't be! #5053
 						$summary[ 'collected_in_cash' ] += $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'markup' ];
@@ -1905,6 +1917,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 															'restaurant_fee' => floatval( $calcs[ $index ][ 'restaurant_fee' ] ),
 															'gift_card' => floatval( $calcs[ $index ][ 'gift_card' ] ),
 															'subtotal' => floatval( $calcs[ $index ][ 'subtotal' ] ),
+															'total_commissioned' => floatval( $_total_commissioned ),
 														];
 
 			$summary[ 'admin' ] = [ 'id_admin' => $schedule->id_admin, 'name' => $schedule->admin()->name ];
@@ -1919,6 +1932,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$summary[ 'total_reimburse' ] = max( $summary[ 'amount' ], 0 );
 				$summary[ 'calcs' ][ 'total_reimburse' ] = floatval( $summary[ 'total_reimburse' ] );
 			}
+
+			$summary[ 'has_commissioned_order' ] = $has_commissioned_order;
 
 			return $summary;
 		} else {
