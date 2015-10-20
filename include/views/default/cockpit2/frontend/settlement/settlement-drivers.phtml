@@ -352,23 +352,23 @@
 										</ul>
 									</td>
 								</tr>
-								<tr ng-if="driver.worked_hours" positive-or-negative-color="{{driver.worked_hours}}">
+								<tr positive-or-negative-color="{{driver.worked_hours}}">
 									<td>Worked Hours</td>
 									<td>$ {{driver.worked_hours | formatPrice}}</td>
 								</tr>
-								<tr positive-or-negative-color="{{driver.subtotal}}" ng-if="driver.salary_type == 'orders'">
+								<tr positive-or-negative-color="{{driver.subtotal}}">
 									<td>Subtotal</td>
 									<td>$ {{driver.subtotal | formatPrice}}</td>
 								</tr>
-								<tr positive-or-negative-color="{{driver.tax}}" ng-if="driver.salary_type == 'orders'">
+								<tr positive-or-negative-color="{{driver.tax}}">
 									<td>Tax</td>
 									<td>$ {{driver.tax | formatPrice}}</td>
 								</tr>
-								<tr positive-or-negative-color="{{driver.delivery_fee}}" ng-if="driver.salary_type == 'orders'">
+								<tr positive-or-negative-color="{{driver.delivery_fee}}">
 									<td>Delivery Fee</td>
 									<td>$ {{driver.delivery_fee_collected | formatPrice}}</td>
 								</tr>
-								<tr positive-or-negative-color="{{driver.delivery_fee_collected}}" ng-if="driver.salary_type == 'orders'">
+								<tr positive-or-negative-color="{{driver.delivery_fee_collected}}">
 									<td>Delivery Fee Collected</td>
 									<td>$ {{driver.delivery_fee_collected | formatPrice}}</td>
 								</tr>

@@ -102,7 +102,7 @@
 
 
 
-					<tr ng-if="result.calcs.tip && pay_type_payment && result.show_credit_card_tips" positive-or-negative-color="{{result.calcs.tip}}">
+					<tr ng-if="result.calcs.tip && pay_type_payment && ( result.show_credit_card_tips || result.calcs.total_commissioned )" positive-or-negative-color="{{result.calcs.tip}}">
 						<td>Tip</td>
 						<td>${{result.calcs.tip | formatPrice}}</td>
 					</tr>

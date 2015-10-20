@@ -320,7 +320,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 				// dont include commisioned orders
 				if( $order[ 'pay_type_making_whole' ] && $order[ 'pay_info' ][ 'force_to_be_commissioned' ] ){
-					$order[ 'pay_info' ][ 'total_payment_commision' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ], true );
+					$order[ 'pay_info' ][ 'total_payment_commision' ] = ( $order[ 'pay_info' ][ 'tip' ] + $order[ 'amount_per_order' ] );
 				} else {
 					$order[ 'pay_info' ][ 'total_payment_per_order' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ], true );
 				}
@@ -753,6 +753,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'id_admin' ] = $admin->id_admin; // driver
 		$payment_type = $admin->payment_type();
 		$payment_type = $payment_type->payment_type;
+
+		if( $payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS ){
+			$values[ 'force_to_be_commissioned' ] = 0;
+		}
+
 		$values[ 'pay_type_hour' ] = ( $payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ) ? 1 : 0;
 		$values[ 'pay_type_order' ] = ( $payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS ) ? 1 : 0;
 
