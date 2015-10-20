@@ -152,13 +152,13 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$start = new DateTime( $filters[ 'start' ] );
 		$end = new DateTime( $filters[ 'end' ] . ' 00:00:00', new DateTimeZone( c::config()->timezone ) );
 		$end->modify( '+ 28 hours' );
-
+		// @remove -- remove it before commit -> TEST
 		$query = 'SELECT o.* FROM `order` o
 									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 									WHERE o.date >= "' . $start->format('Y-m-d') . '"
 										AND o.date <= "' . $end->format('Y-m-d H:i:s') . '"
-										AND o.name NOT LIKE "%test%"
-										AND r.name NOT LIKE "%test%"
+										-- AND o.name NOT LIKE "%test%"
+										-- AND r.name NOT LIKE "%test%"
 									ORDER BY o.date ASC';
 		return Order::q( $query );
 	}
@@ -291,12 +291,16 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 				$order[ 'pay_info' ] = [];
 				$order[ 'pay_info' ][ 'pay_by_order' ] = ( $pay[ $driver ][ 'pay_type' ][ 'payment_type' ] != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ? 1 : 0 );
+				if( $order[ 'force_to_be_commissioned' ] ){
+					$order[ 'pay_info' ][ 'pay_by_order' ] = 1;
+				}
 				$order[ 'pay_info' ][ 'amount_per_order' ] = $order[ 'amount_per_order' ];
 				$order[ 'pay_info' ][ 'hourly' ] = ( $pay[ $driver ][ 'pay_type' ][ 'payment_type' ] == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ? 1 : 0 );
 				$order[ 'pay_info' ][ 'cash' ] = $order[ 'cash' ];
 				$order[ 'pay_info' ][ 'subtotal' ] = $this->orderSubtotalDriveryPay( $order );
 				$order[ 'pay_info' ][ 'tax' ] = $this->orderTaxDriverPay( $order );
 				$order[ 'pay_info' ][ 'pay_credit_card_tip' ] = $order[ 'pay_credit_card_tips' ];
+				$order[ 'pay_info' ][ 'force_to_be_commissioned' ] = $order[ 'force_to_be_commissioned' ];
 				$order[ 'pay_info' ][ 'delivery_fee' ] = $this->orderDeliveryFeeDriverPay( $order );
 				$order[ 'pay_info' ][ 'delivery_fee_collected' ] = $this->orderDeliveryFeeDriverCollected( $order );
 				$order[ 'pay_info' ][ 'tip' ] = $this->orderTipDriverPay( $order );
@@ -308,11 +312,20 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$order[ 'pay_info' ][ 'gift_card' ] = $this->orderGiftCardDriverPay( $order );
 				$order[ 'pay_info' ][ 'total_reimburse' ] = $this->orderReimburseDriver( $order );
 				$order[ 'pay_info' ][ 'standard_reimburse' ] = $this->orderReimburseDriver( $order );
-				$order[ 'pay_info' ][ 'total_payment' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ] );
-				if( $order[ 'pay_type_hours_without_tips' ] && $order[ 'pay_info' ][ 'total_payment' ] > 0 ){
+				$order[ 'pay_info' ][ 'total_payment' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ], $order[ 'pay_info' ][ 'force_to_be_commissioned' ] );
+
+				if( ( !$order[ 'pay_info' ][ 'force_to_be_commissioned' ] && $order[ 'pay_type_hours_without_tips' ] ) && $order[ 'pay_info' ][ 'total_payment' ] > 0 ){
 					$order[ 'pay_info' ][ 'total_payment' ] = 0;
 				}
-				$order[ 'pay_info' ][ 'total_payment_per_order' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ], true );
+
+				// dont include commisioned orders
+				if( $order[ 'pay_type_making_whole' ] && $order[ 'pay_info' ][ 'force_to_be_commissioned' ] ){
+					$order[ 'pay_info' ][ 'total_payment_commision' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ], true );
+				} else {
+					$order[ 'pay_info' ][ 'total_payment_per_order' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ], true );
+				}
+
+
 				$order[ 'pay_info' ][ 'total_spent' ] = $this->orderCalculateTotalSpent( $order );
 				$order[ 'pay_info' ][ 'driver_reimbursed' ] = $order[ 'driver_reimbursed' ];
 
@@ -361,9 +374,12 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ $driver ][ 'total_reimburse' ] += $order[ 'pay_info' ][ 'total_reimburse' ];
 				$pay[ $driver ][ 'total_payment' ] += $order[ 'pay_info' ][ 'total_payment' ];
 				$pay[ $driver ][ 'total_payment_per_order' ] += $order[ 'pay_info' ][ 'total_payment_per_order' ];
+				$pay[ $driver ][ 'total_payment_commision' ] += $order[ 'pay_info' ][ 'total_payment_commision' ];
 				$pay[ $driver ][ 'total_spent' ] += $order[ 'pay_info' ][ 'total_spent' ];
+
 			}
 		}
+
 		// Get all the shifts between the dates
 		if( $process_shifts ){
 			$shifts = $this->shifts( $id_driver );
@@ -400,33 +416,55 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$_shift[ 'id_admin_shift_assign' ] = $shift->id_admin_shift_assign;
 						$_shift[ 'period' ] = $shift->startEndToStringCommunityTz();
 						$_shift[ 'hours' ] = $shift->duration();
-						$_shift[ 'amount' ] = round( $shift->duration() * $pay_type->hour_rate, 2 );
-						$pay[ $id_driver ][ 'shifts' ][ 'worked_total' ]++;
+						$_shift[ 'created_by_driver' ] = $shift->isShiftCreatedByDriver();
+						if( !$_shift[ 'created_by_driver' ] ){
+							$_shift[ 'amount' ] = round( $shift->duration() * $pay_type->hour_rate, 2 );
+						} else {
+							$_shift[ 'amount' ] = 0;
+						}
 						$pay[ $id_driver ][ 'shifts' ][ 'amount' ] += round( $_shift[ 'amount' ], 2 );
+						$pay[ $id_driver ][ 'shifts' ][ 'worked_total' ]++;
 						$worked_shifts[] = $_shift;
 					}
 				}
 				$tip = 0;
+				$commission = 0;
+
 				foreach( $pay[ $id_driver ][ 'orders' ] as $id_order => $order ){
 					if( !$order[ 'driver_paid' ] || $recalculatePaidOrders ){
 						$tip += ( $order[ 'pay_info' ][ 'tip' ] * $order[ 'pay_info' ][ 'pay_credit_card_tip' ] );
+						if( $order[ 'pay_info' ][ 'force_to_be_commissioned' ] ){
+							if( $pay[ $id_driver ][ 'pay_type' ][ 'payment_type' ] == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+								$commission += $order[ 'pay_info' ][ 'amount_per_order' ];
+							}
+							if( $pay[ $id_driver ][ 'pay_type' ][ 'payment_type' ] == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS_WITHOUT_TIPS ){
+								$commission += $order[ 'pay_info' ][ 'amount_per_order' ];
+								$tip += ( $order[ 'pay_info' ][ 'tip' ] );
+							}
+							if( $pay[ $id_driver ][ 'pay_type' ][ 'payment_type' ] == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_MAKING_WHOLE ){
+								$tip -= ( $order[ 'pay_info' ][ 'tip' ] );
+							}
+						}
 					}
 				}
+
+				// total_payment_commision
 				$pay[ $id_driver ][ 'shifts' ][ 'worked' ] = $worked_shifts;
 				$pay[ $id_driver ][ 'worked_hours' ] = $pay[ $id_driver ][ 'shifts' ][ 'amount' ];
 				$payment_by_shift = $pay[ $id_driver ][ 'shifts' ][ 'amount' ] + $pay[ $id_driver ][ 'markup' ] + $pay[ $id_driver ][ 'delivery_fee_collected' ] + $pay[ $id_driver ][ 'customer_fee_collected' ];
+
 				if( $pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_MAKING_WHOLE ){
-					$pay[ $id_driver ][ 'total_payment_by_order' ] = $pay[ $id_driver ][ 'total_payment' ];
-					$pay[ $id_driver ][ 'total_payment_by_hour' ] = max( $payment_by_shift, 0 );
+					$pay[ $id_driver ][ 'total_payment_by_order' ] = $pay[ $id_driver ][ 'total_payment_per_order' ];
+					$pay[ $id_driver ][ 'total_payment_by_hour' ] = $payment_by_shift;
 					$pay[ $id_driver ][ 'total_payment' ] = max( $pay[ $id_driver ][ 'total_payment_by_order' ], $pay[ $id_driver ][ 'total_payment_by_hour' ] );
+					$pay[ $id_driver ][ 'total_payment' ] += $pay[ $id_driver ][ 'total_payment_commision' ];
 				} else {
-					$pay[ $id_driver ][ 'total_payment' ] = ( $payment_by_shift + $tip );
+					$pay[ $id_driver ][ 'total_payment' ] = ( $payment_by_shift + $tip + $commission );
 				}
 				$pay[ $id_driver ][ 'shifts' ][ 'worked' ] = $worked_shifts;
 
 			} else {
 				$pay[ $id_driver ][ 'salary_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
-				// $pay[ $id_driver ][ 'total_payment_per_order' ] = 0;
 			}
 		}
 
@@ -708,6 +746,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'restaurant_fee_percent' ] = $order->restaurant_fee_percent();
 		$values[ 'delivery_service_markup' ] = $order->delivery_service_markup;
 		$values[ 'delivery_service_markup_value' ] = $order->delivery_service_markup_value;
+		$values[ 'force_to_be_commissioned' ] = $order->isForcedToBeCommissioned();
 
 		$admin = Admin::o( $order->getDeliveryDriver()->id_admin );
 
@@ -717,7 +756,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'pay_type_hour' ] = ( $payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ) ? 1 : 0;
 		$values[ 'pay_type_order' ] = ( $payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS ) ? 1 : 0;
 
-		$amount_per_order = $admin->payment_type()->amountPerOrder( $order->id_community );
+		$amount_per_order = $admin->payment_type()->amountPerOrder( $order->id_community, true );
 		if( $amount_per_order ){
 			$values[ 'amount_per_order' ] = $amount_per_order;
 		} else {
@@ -1758,6 +1797,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$summary[ 'shifts' ] = [];
 				foreach( $shifts as $shift ){
 					$_shift = [];
+					$_shift[ 'created_by_driver' ] = $shift->isShiftCreatedByDriver();
 					$_shift[ 'amount' ] = $shift->amount;
 					$_shift[ 'hours' ] = $shift->hours;
 					$_shift[ 'period' ] = $shift->shift()->startEndToStringCommunityTz();
@@ -1802,6 +1842,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 																										'name' => $variables[ 'name' ],
 																										'total' => $variables[ 'final_price_plus_delivery_markup' ],
 																										'amount_per_order' => $variables[ 'amount_per_order' ],
+																										'force_to_be_commissioned' => $variables[ 'force_to_be_commissioned' ],
 																										'date' => $variables[ 'short_date' ],
 																										'tip' => $pay_info[0][ 'orders' ][ 0 ][ 'pay_info' ][ 'tip' ],
 																										'restaurant' => $variables[ 'restaurant' ],

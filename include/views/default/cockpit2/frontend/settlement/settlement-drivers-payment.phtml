@@ -341,7 +341,10 @@
 			</thead>
 			<tbody ng-if="result.orders.included">
 				<tr ng-repeat="order in result.orders.included">
-					<td>{{order.id_order}}</td>
+					<td>
+						<span title="Order delivered during a shift created by driver" ng-if="order.force_to_be_commissioned"><i class="fa fa-money"></i></span>
+						{{order.id_order}}
+					</td>
 					<td>{{order.name}}</td>
 					<td>{{order.restaurant}}</td>
 					<td>{{order.date}}</td>

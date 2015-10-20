@@ -11,11 +11,17 @@ class Cockpit_Payment_Schedule_Shift extends Cana_Table {
 	}
 
 	public function shift_assign(){
-		return Crunchbutton_Admin_Shift_Assign::o( $this->id_admin_shift_assign );
+		if( !$this->_shift_assign ){
+			$this->_shift_assign = Crunchbutton_Admin_Shift_Assign::o( $this->id_admin_shift_assign );
+		}
+		return $this->_shift_assign;
 	}
 
 	public function shift(){
-		return $this->shift_assign()->shift();
+		if( !$this->_shift ){
+			$this->_shift = $this->shift_assign()->shift();
+		}
+		return $this->_shift;
 	}
 
 	public function payment(){
@@ -24,6 +30,10 @@ class Cockpit_Payment_Schedule_Shift extends Cana_Table {
 			return $payment;
 		}
 		return false;
+	}
+
+	public function isShiftCreatedByDriver(){
+		return ( $this->shift()->id_driver ? true : false );
 	}
 
 	public static function checkShiftWasPaidDriver( $id_admin_shift_assign ){

@@ -4,6 +4,11 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
+		// $this->_driverScheduled();
+		// exit();
+		$this->_driverBegin();
+		exit;
+
 		$this->resultsPerPage = 20;
 
 		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
@@ -620,6 +625,11 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$end = $this->request()['end'];
 		$id_driver = $this->request()['id_driver'];
 
+		// @remove -- remove it before commit
+		$start = '10/19/2015';
+		$end = '10/20/2015';;
+		$id_driver = 5;
+
 		if( !$start || !$end ){
 			$this->_error();
 		}
@@ -654,6 +664,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 					$_order[ 'customer_fee' ] = $order[ 'pay_info' ][ 'customer_fee' ] ;
 					$_order[ 'customer_fee_collected' ] = $order[ 'pay_info' ][ 'customer_fee_collected' ] ;
 					$_order[ 'standard_reimburse' ] = $order[ 'pay_info' ][ 'standard_reimburse' ] ;
+					$_order[ 'force_to_be_commissioned' ] = $order[ 'pay_info' ][ 'force_to_be_commissioned' ] ;
 					$_order[ 'markup' ] = $order[ 'pay_info' ][ 'markup' ] ;
 					$_order[ 'amount_per_order' ] = $order[ 'pay_info' ][ 'amount_per_order' ] ;
 					$_order[ 'delivery_fee' ] = $order[ 'pay_info' ][ 'delivery_fee' ] ;

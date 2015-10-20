@@ -16,6 +16,10 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return $out;
 	}
 
+	public function isShiftCreatedByDriver(){
+		return ( $this->id_driver ? true : false );
+	}
+
 	public static function driversCouldDeliveryOrder( $id_order ){
 		if( !$id_order ){
 			return false;
