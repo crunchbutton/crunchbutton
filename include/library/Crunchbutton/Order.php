@@ -2834,10 +2834,16 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			Order_Action::ticketForRejectedOrder( $this->id_order );
 		}
 
+
 		// mark the order to be paid by commission structure
 		if( $admin->openedCommunity() && !$this->isForcedToBeCommissioned( $admin->id_admin ) ){
 			$this->markToBeCommissioned( $admin->id_admin );
 		}
+
+		if( $status == Crunchbutton_Order_Action::DELIVERY_CANCELED ){
+			$this->tellDriverTheOrderWasCanceled();
+		}
+
 		return true;
 	}
 
