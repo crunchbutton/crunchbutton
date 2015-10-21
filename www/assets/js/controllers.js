@@ -109,6 +109,14 @@ NGApp.controller('RepsApplyShareCtrl', function ($scope, $location, $routeParams
 		} else {
 			$scope.code = json.code;
 			$scope.loaded = true;
+
+			var text = 'I love @crunchbutton delivery :) use my code ' + $scope.code + ' in the Notes section for $3 off!';
+
+			if( App.iOS() ){
+				$scope.sms = 'sms:&body=' + text;
+			} else {
+				$scope.sms = 'sms:?body=' + text;
+			}
 		}
 	} );
 
