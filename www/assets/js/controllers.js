@@ -203,7 +203,9 @@ NGApp.controller('WorkCtrl', function ($scope) {
 	var reps = 'moc.nottubhcnurc@gnitekram'.split('').reverse().join('');
 	var devs = 'moc.nottubhcnurc@reebdnaedoc'.split('').reverse().join('');
 	var recruiting = 'moc.nottubhcnurc@gnitiurcer'.split('').reverse().join('');
+	var resumes = 'moc.nottubhcnurc@semuser'.split('').reverse().join('');
 
+	$scope.resumes = resumes;
 	$scope.recruiting = recruiting;
 	$scope.reps = reps;
 	$scope.devs = devs;
