@@ -1001,6 +1001,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
 			$schedule->log = 'Schedule created';
 			$schedule->note = $notes;
+			$schedule->payment_type = $pay_type->payment_type;
 			$schedule->adjustment_note = $adjustment_notes;
 			$schedule->id_admin = $id_admin;
 			$schedule->save();
