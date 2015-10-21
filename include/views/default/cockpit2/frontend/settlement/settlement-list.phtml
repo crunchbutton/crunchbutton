@@ -70,11 +70,20 @@
 					<td>
 						{{payment.name}}
 						<div>
-							<span class="tag tag-blue" ng-if="payment.type == 'driver'">Driver</span>
+
+							<span class="tag tag-orange" ng-if="payment.type == 'driver'">Driver</span>
 							<span class="tag tag-purple" ng-if="payment.type == 'restaurant'">Restaurant</span>
+
 							<span ng-if="payment.type == 'driver'">
 								<span class="tag tag-green" ng-if="payment.pay_type == 'payment'">Payment</span>
 								<span class="tag tag-orange" ng-if="payment.pay_type == 'reimbursement'">Reimbursement</span>
+
+								<span class="tag tag-blue" ng-if="payment.payment_type == 'orders'">Commission</span>
+								<span class="tag tag-purple" ng-if="payment.payment_type == 'hours'">Hourly with tips</span>
+								<span class="tag tag-orange" ng-if="payment.payment_type == 'hours_without_tips'">Hourly without tips</span>
+								<span class="tag tag-yellow" ng-if="payment.payment_type == 'making_whole'">Making whole</span>
+								<span class="tag tag-grey" ng-if="!payment || !payment.payment_type || payment.payment_type == '-' ">Payment Type Missing</span>
+
 							</span>
 						</div>
 					</td>
