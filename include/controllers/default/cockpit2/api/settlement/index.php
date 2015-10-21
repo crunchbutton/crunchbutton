@@ -1039,6 +1039,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			case 'driver':
 				$q .= '
 								INNER JOIN admin d ON d.id_admin = ps.id_driver
+								INNER JOIN admin_payment_type apt ON apt.id_admin = d.id_admin
 						';
 				if( $id_driver ){
 					$q .= ' AND d.id_admin = ?';
@@ -1124,7 +1125,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 				break;
 
 			case 'driver':
-				$query = str_replace( '-WILD-','  ps.*, p.id_payment, p.check_id, p.payment_status, d.name AS driver ', $q );
+				$query = str_replace( '-WILD-','  ps.*, p.id_payment, p.check_id, p.payment_status, d.name AS driver, apt.payment_type ', $q );
 				break;
 
 			default:
