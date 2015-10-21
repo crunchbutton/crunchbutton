@@ -23,6 +23,9 @@ class Controller_api_driver_payments extends Crunchbutton_Controller_RestAccount
 			$id_payment_schedule = c::getPagePiece( 4 );
 			$summary = $settlement->driverSummary( $id_payment_schedule );
 			if( $summary[ 'id_driver' ] == c::user()->id_admin || c::admin()->permission()->check( [ 'global', 'drivers-all' ] ) ){
+				foreach( $summary[ 'calcs' ] as $key => $value ){
+					$summary[ 'calcs' ][ $key ] = ( $value < 0 ? ( $value * -1 ) : $value );
+				}
 				echo json_encode( $summary );
 			} else {
 				$this->_error();
