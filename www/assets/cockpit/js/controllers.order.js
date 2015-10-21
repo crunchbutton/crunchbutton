@@ -346,6 +346,7 @@ NGApp.controller('OrderDeliveryStatusCtrl', function ( $scope, $rootScope, Order
 	$rootScope.$on( 'orderDeliveryStatusChange', function(e, data) {
 		$scope.status = null;
 		$scope.notify_customer = false;
+		$scope.isSaving = false;
 		id_order = data.id_order;
 		id_community = data.id_community;
 		App.dialog.show('.change-status-dialog-container');

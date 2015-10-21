@@ -2833,6 +2833,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			Order_Action::ticketForRejectedOrder( $this->id_order );
 		}
 
+		if( $status == Crunchbutton_Order_Action::DELIVERY_CANCELED ){
+			$this->tellDriverTheOrderWasCanceled();
+		}
+
 		return true;
 	}
 
