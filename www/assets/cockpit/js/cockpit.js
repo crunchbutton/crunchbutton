@@ -588,6 +588,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			angular.element( 'body' ).addClass( 'loading' );
 			$rootScope.isBusy = true;
 		}
+		setTimeout( function(){
+			$rootScope.unBusy();
+		}, 10000 );
 	}
 
 	$rootScope.openMap = function( type, address1, address2 ){
