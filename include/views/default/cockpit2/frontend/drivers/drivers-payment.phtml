@@ -11,37 +11,7 @@
 		<div class="divider"></div>
 
 			<table class="tb-grid tb-zebra">
-<!--
-				<tbody ng-if="pay_type_payment">
 
-					<tr>
-						<td>Amount Already Collected in Cash</td>
-						<td>${{result.calcs.collected_in_cash | formatPrice}}</td>
-					</tr>
-
-					<tr>
-						<td>Additional Payment Due Through Deposit</td>
-						<td>${{result.calcs.total_payment | formatPrice}}</td>
-					</tr>
-
-					<tr class="total-due" ng-if="pay_type_reimbursement">
-						<td class="td-medium">Amount</td>
-						<td class="td-medium">${{result.calcs.total_reimburse | formatPrice}}</td>
-					</tr>
-					<tr class="total-due" ng-if="pay_type_payment">
-						<td class="td-medium">Amount</td>
-						<td class="td-medium">${{result.calcs.total_payment | formatPrice}}</td>
-					</tr>
-
-
-					<tr>
-						<td>{{result.title}} Notes</td>
-						<td>{{result.note}}</td>
-					</tr>
-
-					<tr class="transparent"><td></td><td></td></tr>
-				</tbody>
--->
 				<tbody>
 
 					<tr ng-if="result.range_date">
@@ -74,17 +44,19 @@
 						</td>
 					</tr>
 
-					<tr ng-if="result.payment_date && payment">
-						<td><span class="link orange" ng-click="view_summary()">View Summary</span></td>
-						<td><span class="link orange" ng-click="send_summary()">Send Summary</span></td>
-					</tr>
-
 					<tr class="transparent"><td></td><td></td></tr>
 
-					<tr ng-if="result.driver_payment_hours">
+					<tr ng-if="result.driver_payment_hours && result.driver_payment_type != 'making_whole'">
 						<td>Worked hours</td>
 						<td><div class="summary-calc-values">${{result.shifts_hours_amount | formatPrice}}</div></td>
 					</tr>
+
+					<tr ng-if="result.driver_payment_type == 'making_whole'">
+						<td><i>Worked hours</i></td>
+						<td><div class="summary-calc-values">${{result.shifts_hours_amount | formatPrice}}</div></td>
+					</tr>
+
+					<tr ng-if="result.driver_payment_type == 'making_whole'" class="transparent"><td></td><td></td></tr>
 
 					<tr ng-if="( !result.hourly || result.driver_payment_type == 'making_whole' ) && result.calcs.delivery_fee && pay_type_payment && result.show_delivery_fees">
 						<td>Delivery Commission</td>
@@ -111,7 +83,15 @@
 						<td><div class="summary-calc-values">+ ${{result.invites_amount | formatPrice}}</div></td>
 					</tr>
 
+					<tr ng-if="result.driver_payment_type == 'making_whole' && result.calcs.delivery_fee_plus_tips">
+						<td></td>
+						<td><div class="summary-calc-values calcs-dash">&nbsp;&nbsp;${{result.calcs.delivery_fee_plus_tips | formatPrice}}</div></td>
+					</tr>
 
+					<tr ng-if="result.driver_payment_type == 'making_whole' && result.calcs.make_whole_amount">
+						<td>Make Whole Amount</td>
+						<td><div class="summary-calc-values">+ ${{result.calcs.make_whole_amount | formatPrice}}</div></td>
+					</tr>
 
 					<tr ng-show="result.show_money_make_week">
 						<td>Total Money Made This Week</td>
@@ -147,6 +127,8 @@
 						<td>Reimbursement</td>
 						<td>${{result._total_reimburse_ | formatPrice}}</td>
 					</tr>
+
+					<tr ng-if="result.adjustment" class="transparent"><td></td><td></td></tr>
 
 					<tr ng-if="result.adjustment">
 						<td>*Cash Already Collected From Orders Paid With Pex Card</td>
