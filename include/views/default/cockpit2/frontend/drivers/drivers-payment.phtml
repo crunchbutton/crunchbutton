@@ -106,7 +106,14 @@
 						<td><div class="summary-calc-values">+ ${{result.calcs.tip | formatPrice}}</div></td>
 					</tr>
 
-					<tr ng-hide="(result.driver_payment_type == 'hours_without_tips' && !result.calcs.total_commissioned_tip)">
+					<tr ng-if="result.invites_amount">
+						<td>New Invited Users</td>
+						<td><div class="summary-calc-values">+ ${{result.invites_amount | formatPrice}}</div></td>
+					</tr>
+
+
+
+					<tr ng-show="result.show_money_make_week">
 						<td>Total Money Made This Week</td>
 						<td><div class="summary-calc-values calcs-dash">&nbsp;&nbsp;${{result.calcs.earnings | formatPrice}}</div></td>
 					</tr>
@@ -133,7 +140,7 @@
 
 					<tr ng-if="result.total_payment && pay_type_payment">
 						<td>Total Deposited</td>
-						<td><div class="summary-calc-values calcs-dash">${{result.total_payment | formatPrice}}</div></td>
+						<td><div class="summary-calc-values" ng-class="{'calcs-dash':result.has_stuff_to_remove}">${{result.total_payment | formatPrice}}</div></td>
 					</tr>
 
 					<tr ng-if="result._total_reimburse_ && pay_type_reimbursement">
