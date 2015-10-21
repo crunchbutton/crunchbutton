@@ -1700,7 +1700,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 			$summary = $schedule->exports();
 
-
 			$summary[ 'adjustment' ] = floatval( $summary[ 'adjustment' ] );
 			$summary[ 'collected_in_cash' ] = 0;
 			$summary[ 'driver' ] = $schedule->driver()->name;
@@ -1708,7 +1707,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$summary[ 'driver' ] = $schedule->driver()->name;
 			$summary[ 'payment_method' ] = $schedule->driver()->payment_type()->payment_method;
 			$summary[ 'salary_type' ] = ( $schedule->driver_payment_hours ) ? Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS : Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
-			$summary[ 'driver_payment_type' ] = $schedule->driver()->payment_type()->payment_type;
+			$summary[ 'driver_payment_type' ] = ( $schedule->payment_type ? $schedule->payment_type : $schedule->driver()->payment_type()->payment_type );
 			$summary[ 'show_credit_card_tips' ] = $schedule->driver()->showCreditCardTips();
 			$summary[ 'show_delivery_fees' ] = $schedule->driver()->showDeliveryFees();
 			$summary[ 'type' ] = Cockpit_Payment_Schedule::TYPE_DRIVER;
