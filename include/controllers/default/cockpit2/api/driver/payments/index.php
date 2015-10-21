@@ -23,10 +23,29 @@ class Controller_api_driver_payments extends Crunchbutton_Controller_RestAccount
 			$id_payment_schedule = c::getPagePiece( 4 );
 			$summary = $settlement->driverSummary( $id_payment_schedule );
 			if( $summary[ 'id_driver' ] == c::user()->id_admin || c::admin()->permission()->check( [ 'global', 'drivers-all' ] ) ){
-				foreach( $summary[ 'calcs' ] as $key => $value ){
-					$summary[ 'calcs' ][ $key ] = ( $value < 0 ? ( $value * -1 ) : $value );
+				$summary[ 'has_stuff_to_remove' ] = false;
+				$summary[ 'show_money_make_week' ] = false;
+
+				if( $summary[ 'calcs' ] ){
+					foreach( $summary[ 'calcs' ] as $key => $value ){
+						$summary[ 'calcs' ][ $key ] = ( $value < 0 ? ( $value * -1 ) : $value );
+					}
+					if( $summary[ 'calcs' ][ 'amount_per_order' ] ||
+							$summary[ 'calcs' ][ 'total_commissioned' ] ||
+							$summary[ 'calcs' ][ 'total_commissioned_tip' ] ||
+							$summary[ 'calcs' ][ 'tip' ] ||
+							$summary[ 'invites_amount' ] ){
+						$summary[ 'show_money_make_week' ] = true;
+					}
+					if( $summary[ 'calcs' ][ 'delivery_fee_collected' ] ||
+							$summary[ 'calcs' ][ 'markup' ] ||
+							$summary[ 'calcs' ][ 'customer_fee_collected' ] ||
+							$summary[ 'calcs' ][ 'adjustment' ] ){
+						$summary[ 'has_stuff_to_remove' ] = true;
+					}
 				}
-				echo json_encode( $summary );
+
+			echo json_encode( $summary );
 			} else {
 				$this->_error();
 			}
