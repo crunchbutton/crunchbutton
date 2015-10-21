@@ -724,7 +724,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 					$driver[ 'id_admin' ] == 13278 ||
 					$driver[ 'id_admin' ] == 13275 ||
 					$driver[ 'id_admin' ] == 13284 ||
-					$driver[ 'id_admin' ] == 5 ||){
+					$driver[ 'id_admin' ] == 5 ){
 				$out[ 'drivers' ][] = $driver;
 			}
 
