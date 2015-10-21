@@ -157,8 +157,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 									WHERE o.date >= "' . $start->format('Y-m-d') . '"
 										AND o.date <= "' . $end->format('Y-m-d H:i:s') . '"
-										AND o.name NOT LIKE "%test%"
-										AND r.name NOT LIKE "%test%"
+										-- AND o.name NOT LIKE "%test%"
+										-- AND r.name NOT LIKE "%test%"
 									ORDER BY o.date ASC';
 		return Order::q( $query );
 	}

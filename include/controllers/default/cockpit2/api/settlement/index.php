@@ -636,7 +636,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		// 13278 hours without tips - http://dev.la/drivers/payment/48041 - ok
 		// 13275 hours with tips - http://dev.la/drivers/payment/48040 - ok
 		// 13284 madewhole - http://dev.la/drivers/payment/48042 - ok
-
+		//
 		if( !$start || !$end ){
 			$this->_error();
 		}
@@ -713,7 +713,18 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 				$driver[ 'pay_type' ] = [ 'payment_type' => '-' ];
 			}
 
-			if( !$id_driver || ( $id_driver && $id_driver == $driver[ 'id_admin' ] ) ){
+			// @remove -- remove it before commit
+		// 13281 comission - http://dev.la/drivers/payment/48037 - ok
+		// 13278 hours without tips - http://dev.la/drivers/payment/48041 - ok
+		// 13275 hours with tips - http://dev.la/drivers/payment/48040 - ok
+		// 13284 madewhole - http://dev.la/drivers/payment/48042 - ok
+
+			// if( !$id_driver || ( $id_driver && $id_driver == $driver[ 'id_admin' ] ) ){
+			if( $driver[ 'id_admin' ] == 13281 ||
+					$driver[ 'id_admin' ] == 13278 ||
+					$driver[ 'id_admin' ] == 13275 ||
+					$driver[ 'id_admin' ] == 13284 ||
+					$driver[ 'id_admin' ] == 5 ||){
 				$out[ 'drivers' ][] = $driver;
 			}
 
