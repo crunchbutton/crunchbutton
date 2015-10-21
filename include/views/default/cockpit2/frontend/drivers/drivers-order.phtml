@@ -79,9 +79,6 @@
 		</div>
 
 		<br><br>
-		<div class="dialog-message dialog-message-notice check-reminder" ng-if="oc.order.status.status != 'delivered' && oc.order.status.status != 'rejected' && oc.order.status.driver.id_admin == account.user.id_admin">
-			<b>Double check</b> to make sure you received exactly the right food!
-		</div>
 		<? /*
 		<div class="order-item-info">
 			<div class="order-item-block left">
@@ -190,6 +187,13 @@
 									<div class="order-info2 order-info-small">
 										<span ng-bind-html-unsafe="oc.order.notes | nl2br"></span>
 									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="4">
+								<div class="dialog-message dialog-message-notice check-reminder" ng-if="oc.order.status.status != 'delivered' && oc.order.status.status != 'rejected' && oc.order.status.driver.id_admin == account.user.id_admin">
+									<b>Double check</b> to make sure you received exactly the right food!
 								</div>
 							</td>
 						</tr>
