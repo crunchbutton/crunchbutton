@@ -376,7 +376,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ $driver ][ 'total_payment_per_order' ] += $order[ 'pay_info' ][ 'total_payment_per_order' ];
 				$pay[ $driver ][ 'total_payment_commision' ] += $order[ 'pay_info' ][ 'total_payment_commision' ];
 				$pay[ $driver ][ 'total_spent' ] += $order[ 'pay_info' ][ 'total_spent' ];
-
 			}
 		}
 
@@ -820,6 +819,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		if( !$values[ 'driver_paid' ] ){
 			$values[ 'driver_paid' ] = Crunchbutton_Order_Transaction::checkOrderWasPaidDriver( $order->id_order );
 		}
+
 		// get the amount paid
 		if( $values[ 'driver_paid' ] ){
 			$amount_per_order = Cockpit_Payment_Schedule_Order::getAmountPaidByOrder( $order->id_order );
@@ -832,9 +832,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 		// Checklist for AFTER new settlement is deployed #3603 - item 2
 		$id_order_start = $this->id_order_start();
 		if( intval( $values[ 'id_order' ] ) <= $id_order_start ){
-			$values[ 'restaurant_paid' ] = true;
-			$values[ 'driver_reimbursed' ] = true;
-			$values[ 'driver_paid' ] = true;
+			// @remove -- remove it before commit
+			// $values[ 'restaurant_paid' ] = true;
+			// $values[ 'driver_reimbursed' ] = true;
+			// $values[ 'driver_paid' ] = true;
 		}
 
 		if( $values[ 'id_admin' ] ){
