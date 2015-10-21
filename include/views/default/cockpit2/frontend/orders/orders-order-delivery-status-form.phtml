@@ -45,7 +45,8 @@
 					<div ng-if="status.status != 'canceled'">
 						<br>
 					</div>
-					<button class="button button-empty button-border button-green button-full" ng-click="formDeliveryStatusSave();"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>
+					<button class="button button-empty button-border button-green button-full" ng-show="!isSaving" ng-click="formDeliveryStatusSave();"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>
+					<span ng-show="isSaving"><i class="fa fa-spinner fa-spin"></i>&nbsp;&nbsp;Saving</span>
 				</div>
 				<br><br>
 
