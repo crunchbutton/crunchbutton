@@ -71,7 +71,9 @@ class Crunchbutton_App extends Cana_App {
 		// anything by heroku use its own db
 		} elseif (preg_match('/^(heroku.*)|(.*.herokuapp.com)$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'heroku';
-		} elseif (preg_match('/beta.cockpit.la$/',$_SERVER['SERVER_NAME'])) {
+		}
+		// @remove -- remove it before commit
+		elseif (preg_match('/beta.cockpit.la$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'beta';
 		// any one of our cull live urls, or staging prefixes
 		} elseif (preg_match('/^(.*?crunchbutton.nody.co)|cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com|(staging[0-9]?.(cockpit.la|crunchr.co))$/',$_SERVER['SERVER_NAME'])) {
