@@ -51,7 +51,7 @@ class Crunchbutton_App extends Cana_App {
 				$_SERVER['SERVER_NAME'] = 'heroku.crunchr.co';
 			}
 		}
-		
+
 		if (getenv('DOCKER')) {
 			$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'];
 		}
@@ -69,7 +69,7 @@ class Crunchbutton_App extends Cana_App {
 		} elseif (preg_match('/^(heroku.*)|(.*.herokuapp.com)$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'heroku';
 		// any one of our cull live urls, or staging prefixes
-		} elseif (preg_match('/^(.*?crunchbutton.nody.co)|cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com|(staging[0-9]?.(cockpit.la|crunchr.co))$/',$_SERVER['SERVER_NAME'])) {
+		} elseif (preg_match('/^(.*?arzynik.svc.tutum.io)|(.*?crunchbutton.nody.co)|(.*?cockpit.nody.co)|cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com|(staging[0-9]?.(cockpit.la|crunchr.co))$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'live';
 		// anything ._DOMAIN_ fails
 		} elseif (preg_match('/_DOMAIN_$/',$_SERVER['SERVER_NAME'])) {
@@ -89,7 +89,7 @@ class Crunchbutton_App extends Cana_App {
 		if ($cliEnv) {
 			$db = $cliEnv;
 		}
-		
+
 		if ($db == 'local' && function_exists('php_sapi_name') && php_sapi_name() == 'cli-server') {
 			$params['config']->db->local->host = '127.0.0.1';
 		}
@@ -102,7 +102,7 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		// special settings for live web views
-		if ($db != 'heroku' && preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|spicywithdelivery.com$/',$_SERVER['SERVER_NAME']) && !$cli && !isset($_REQUEST['__host']) && $_SERVER['SERVER_NAME'] != 'old.cockpit._DOMAIN_' && $_SERVER['SERVER_NAME'] != 'cockpit._DOMAIN_') {
+		if ($db != 'heroku' && preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|spicywithdelivery.com|nody.co$/',$_SERVER['SERVER_NAME']) && !$cli && !isset($_REQUEST['__host']) && $_SERVER['SERVER_NAME'] != 'old.cockpit._DOMAIN_' && $_SERVER['SERVER_NAME'] != 'cockpit._DOMAIN_') {
 			error_reporting(E_ERROR | E_PARSE);
 
 			if ($_SERVER['HTTPS'] != 'on') {
@@ -124,14 +124,14 @@ class Crunchbutton_App extends Cana_App {
 			];
 			$db = 'readDB';
 		}
-		
+
 		if (getenv('REDIS_URL')) {
 			$params['config']->cache->default = $params['config']->cache->redis;
 			$params['config']->cache->default->url = getenv('REDIS_URL');
 		} else {
 			$params['config']->cache->default = $params['config']->cache->{$params['config']->cache->default};
 		}
-		
+
 		if (getenv('DATABASE_URL_WRITE')) {
 			$params['config']->db->writeDB = (object)[
 				'url' => getenv('DATABASE_URL_WRITE'),
@@ -154,7 +154,7 @@ class Crunchbutton_App extends Cana_App {
 				print_r($db);
 				print_r($_SERVER['SERVER_NAME'].$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 				print_r($e->getMessage());
-				
+
 			}
 			error_log('>> Finished init');
 
@@ -686,7 +686,7 @@ class Crunchbutton_App extends Cana_App {
 		new Crunchbutton_S3;
 		S3::setAuth(c::config()->s3->key, c::config()->s3->secret);
 	}
-	
+
 	public function getIp() {
 		if (!isset($this->_ip)) {
 			if ($_SERVER['HTTP_X_FORWARDED_FOR'] && strpos($_SERVER['REMOTE_ADDR'], '192.168.') === 0 ) {
