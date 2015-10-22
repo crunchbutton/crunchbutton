@@ -54,6 +54,11 @@ class Crunchbutton_Payment extends Cana_Table {
 
 	public function wasReversed(){
 
+		if( $this->payment_status = Crunchbutton_Payment::PAYMENT_STATUS_REVERSED ){
+			$this->schedule_reversed();
+		}
+		return;
+
 		if( $this->amount > 0 ){
 
 			$env = c::getEnv();
