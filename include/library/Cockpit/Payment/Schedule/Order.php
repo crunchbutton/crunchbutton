@@ -30,7 +30,7 @@ class Cockpit_Payment_Schedule_Order extends Cana_Table {
 
 	public static function checkOrderWasReimbursedDriver( $id_order ){
 		$query = 'SELECT * FROM payment_schedule_order pso
-								INNER JOIN payment_schedule ps ON pso.id_payment_schedule = ps.id_payment_schedule AND ps.type = ? AND ps.pay_type = ? AND ps.payment_status != ?
+								INNER JOIN payment_schedule ps ON pso.id_payment_schedule = ps.id_payment_schedule AND ps.type = ? AND ps.pay_type = ? AND ps.status != ?
 							WHERE pso.id_order = ? LIMIT 1';
 		$order = Cockpit_Payment_Schedule_Order::q( $query, [Cockpit_Payment_Schedule::TYPE_DRIVER, Cockpit_Payment_Schedule::PAY_TYPE_REIMBURSEMENT, Cockpit_Payment_Schedule::STATUS_REVERSED, $id_order]);
 		if( $order->id_payment_schedule_order ){
@@ -41,7 +41,7 @@ class Cockpit_Payment_Schedule_Order extends Cana_Table {
 
 	public static function checkOrderWasPaidDriver( $id_order ){
 		$query = 'SELECT * FROM payment_schedule_order pso
-								INNER JOIN payment_schedule ps ON pso.id_payment_schedule = ps.id_payment_schedule AND ps.type = ? AND ps.pay_type = ? AND ps.payment_status != ?
+								INNER JOIN payment_schedule ps ON pso.id_payment_schedule = ps.id_payment_schedule AND ps.type = ? AND ps.pay_type = ? AND ps.status != ?
 							WHERE pso.id_order = ? LIMIT 1';
 		$order = Cockpit_Payment_Schedule_Order::q( $query, [Cockpit_Payment_Schedule::TYPE_DRIVER, Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT, Cockpit_Payment_Schedule::STATUS_REVERSED, $id_order]);
 		if( $order->id_payment_schedule_order ){
