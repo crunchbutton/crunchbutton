@@ -778,6 +778,8 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 
 	var schedule = function( pay_type ){
 
+		$scope.scheduling = true;
+
 		$scope.makeBusy();
 
 		var params = { 'start': $filter( 'date' )( $scope.range.start, 'yyyy-MM-dd' ),
@@ -796,6 +798,7 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 		id_drivers = id_drivers.join( ',' );
 		params[ 'id_drivers' ] = id_drivers;
 		SettlementService.drivers.schedule( params, function( json ){
+			$scope.scheduling = false;
 			if( json.success ){
 				$scope.unBusy();
 				$scope.navigation.link( '/settlement/drivers/scheduled' );
