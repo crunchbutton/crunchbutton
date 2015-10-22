@@ -14,7 +14,8 @@ class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
 		foreach( $payments as $payment ){
 			if( !$payment->wasReversed() ){
 				echo "id_payment: {$payment->id_payment}	stripe:<a target='_blank' href='https://dashboard.stripe.com/transfers/{$payment->stripe_id}'>{$payment->stripe_id}</a>	amount:{$payment->amount}	driver:{$payment->name}\n";
-				exit;
+			} else {
+				echo "REVERSED: id_payment: {$payment->id_payment}	stripe:<a target='_blank' href='https://dashboard.stripe.com/transfers/{$payment->stripe_id}'>{$payment->stripe_id}</a>	amount:{$payment->amount}	driver:{$payment->name}\n";
 			}
 		}
 
