@@ -3231,7 +3231,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	public function ticketsForNotGeomatchedOrders(){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->modify( '- 5 min' );
-		$orders = Order::sq( 'SELECT * FROM `order` WHERE date > ? AND ( geomatched IS NULL OR geomatched = 0 )', [ $now->format( 'Y-m-d H:i:s' ) ] );
+		$orders = Order::q( 'SELECT * FROM `order` WHERE date > ? AND ( geomatched IS NULL OR geomatched = 0 )', [ $now->format( 'Y-m-d H:i:s' ) ] );
 		$pattern = "%s just did Place Order Anyway! Order details: Order %d in the %s community to this address %s. Please double check that this address is close enough to be delivered (if it's just slightly out of range it may be fine), and cancel the order if necessary. Thanks!";
 		foreach( $orders as $order ){
 			if( !$order->orderHasGeomatchedTicket() ){
