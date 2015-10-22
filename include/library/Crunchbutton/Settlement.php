@@ -1988,7 +1988,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 		$invites = Crunchbutton_Referral::q( 'SELECT r.* FROM referral r
 																					INNER JOIN admin a ON r.id_admin_inviter = a.id_admin AND r.new_user = 1 ' . $where . '
-																					WHERE r.id_referral NOT IN( SELECT psr.id_referral FROM payment_schedule_referral psr )' );
+																					WHERE r.id_referral NOT IN( SELECT psr.id_referral FROM payment_schedule_referral psr INNER JOIN payment_schedule ON payment_schedule.id_payment_schedule = psr.id_payment_schedule WHERE payment_schedule.status != "reversed" )' );
 		foreach( $invites as $invite ){
 			$_invite = $invite->settlementExport();
 			if( !$out[ $invite->id_admin_inviter ] ){
