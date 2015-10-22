@@ -1,7 +1,5 @@
 <?php
 
-// Big Payment Mess #4055
-
 class Controller_Api_Script_CheckReversedPayments extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
@@ -16,8 +14,9 @@ class Controller_Api_Script_CheckReversedPayments extends Crunchbutton_Controlle
 		foreach( $payments as $payment ){
 			if( !$payment->wasReversed() ){
 				echo "id_payment: {$payment->id_payment}	stripe:<a target='_blank' href='https://dashboard.stripe.com/transfers/{$payment->stripe_id}'>{$payment->stripe_id}</a>	amount:{$payment->amount}	driver:{$payment->name}\n";
+			} else {
+				echo "REVERSED: id_payment: {$payment->id_payment}	stripe:<a target='_blank' href='https://dashboard.stripe.com/transfers/{$payment->stripe_id}'>{$payment->stripe_id}</a>	amount:{$payment->amount}	driver:{$payment->name}\n";
 			}
 		}
-
 	}
 }
