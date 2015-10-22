@@ -104,8 +104,9 @@
 							<span class="tag tag-red" ng-if="payment.payment_status == 'canceled'">Canceled</span>
 							<span class="tag tag-black" ng-if="payment.payment_status == 'failed'">Failed</span>
 							<span class="tag tag-green" ng-if="payment.payment_status == 'succeeded'">Succeeded</span>
+							<span class="tag tag-black" ng-if="payment.payment_status == 'reversed'">Reversed</span>
 
-							<button ng-if="!payment.check && payment.id_payment && payment.payment_status != 'succeeded'" title="Check payment status" ng-click="payment_status( payment.id_payment );" class="button button-small button-empty button-green"><i class="fa fa-refresh" ng-class="{'fa-spin': balancedRefresh == payment.id_payment}"></i></button>
+							<button ng-if="!payment.check && payment.id_payment && payment.payment_status != 'succeeded' && payment.payment_status != 'reversed'" title="Check payment status" ng-click="payment_status( payment.id_payment );" class="button button-small button-empty button-green"><i class="fa fa-refresh" ng-class="{'fa-spin': balancedRefresh == payment.id_payment}"></i></button>
 							  </span>
 					</td>
 					<td>$ {{payment.amount | formatPrice}}</td>

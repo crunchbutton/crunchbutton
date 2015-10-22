@@ -2001,6 +2001,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	public function sendDriverPaymentNotification( $id_payment ){
 
+		return;
 		$summary = $this->driverSummaryByIdPayment( $id_payment );
 
 		if( !$summary ){

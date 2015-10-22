@@ -67,15 +67,13 @@ class Crunchbutton_Payment extends Cana_Table {
 				$credit = \Stripe\Transfer::retrieve( $this->stripe_id );
 
 				if( $credit->reversed ){
-					// $this->payment_status = Crunchbutton_Payment::PAYMENT_STATUS_REVERSED;
-					// $this->save();
+					$this->payment_status = Crunchbutton_Payment::PAYMENT_STATUS_REVERSED;
+					$this->save();
+					$this->schedule_reversed();
 					return true;
 				}
-
 			}
-
 		}
-
 		return false;
 	}
 
@@ -149,6 +147,7 @@ class Crunchbutton_Payment extends Cana_Table {
 		return false;
 	}
 
+
 	public function schedule_error(){
 		$schedule = $this->schedule();
 		if( $schedule ){
@@ -159,6 +158,16 @@ class Crunchbutton_Payment extends Cana_Table {
 
 			$settlement = new Settlement;
 			$settlement->driverPaymentError( $schedule->id_payment_schedule );
+		}
+	}
+
+	public function schedule_reversed(){
+		$schedule = $this->schedule();
+		if( $schedule ){
+			$schedule->payment_status = Cockpit_Payment_Schedule::STATUS_REVERSED;
+			$schedule->status_date = date('Y-m-d H:i:s');
+			$schedule->log = 'Payment reversed';
+			$schedule->save();
 		}
 	}
 
