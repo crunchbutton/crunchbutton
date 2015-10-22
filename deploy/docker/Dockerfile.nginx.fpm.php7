@@ -27,6 +27,6 @@ ADD ./ /var/www/app
 #RUN chmod -R 0777 /var/www/app
 #RUN ln -s /opt/www /var/www/app
 
-RUN echo php -v
+RUN php -v
 
 CMD nginx && php-fpm
