@@ -3,6 +3,9 @@
 class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
+		echo '<pre>';var_dump( Cockpit_Payment_Schedule_Referral::checkReferralWasPaidDriver( 5850 ) );exit();
+		exit;
+
 		header( 'Content-Type: text/html' );
 		header( 'Expires: 0' );
 		header( 'Cache-Control: must-revalidate' );
