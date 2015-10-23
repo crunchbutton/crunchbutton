@@ -182,9 +182,10 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 
 			$lastNonSystemMessage = $support->lastNonSystemMessage();
 
-			if( $lastNonSystemMessage->id_support_message ){
-				$o->message_client = $lastNonSystemMessage->body;
-			}
+			// if( $lastNonSystemMessage->id_support_message ){
+				// $o->message_client = $lastNonSystemMessage->body;
+			// }
+			$o->message_client = $lastReplyFrom->body;
 
 			if( $o->status == Crunchbutton_Support::STATUS_CLOSED && $lastNonSystemMessage->id_support_message ){
 				$messageBeforeLast = Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ? AND id_support_message > ? ORDER BY id_support_message DESC LIMIT 1', [ $o->id_support, $lastNonSystemMessage->id_support_message ] )->get( 0 );
