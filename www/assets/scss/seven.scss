@@ -4078,12 +4078,15 @@ font-familt: "Museo Slab";
 		display: inline-block;
 	}
 
-
 	.delivery-free{
-		font-size:2.8em !important;
-		display:block !important;
 		line-height: 1em;
 	}
+
+	.points-earned-message{
+		font-size: 2.8em !important;
+		display: block !important;
+	}
+
 	.col-box {
 		@include flex(row, row wrap, space-between);
 	}
