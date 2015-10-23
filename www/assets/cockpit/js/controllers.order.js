@@ -166,15 +166,15 @@ NGApp.controller('OrderRefundCtrl', function ($scope, $rootScope, OrderService )
 		callback = data.callback;
 
 		// means that the restaurant should be warned
-		if( data.delivery_service ){
-			refundMessage();
-		} else {
+		if( !data.delivery_service || data.formal_relationship ){
 			var text = "The restaurant has already received this order! To cancel this order, 1st call the restaurant to see if the food has already been prepared. If it hasn't, tell the restaurant we are cancelling it. If the food HAS been prepared, tell the customer that we cannot cancel the order.";
 			App.confirm(
 				text,
 				'Action required',
 				function(){ setTimeout( function(){ refundMessage(); }, 500 ); },
 				function(){}, 'Ok,Cancel', true );
+		} else {
+			refundMessage();
 		}
 
 	});
@@ -283,7 +283,7 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 	}
 
 	$scope.refund = function(){
-		OrderService.askRefund( $routeParams.id, $scope.order.delivery_service, function(){
+		OrderService.askRefund( $routeParams.id, $scope.order.delivery_service, $scope.order.restaurant.formal_relationship, function(){
 			$rootScope.closePopup();
 			setTimeout( function(){ App.alert( 'Order refunded' ); }, 300 );
 			$rootScope.reload();

@@ -192,7 +192,8 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			max(community.permalink) as _community_permalink,
 			max(community.id_community) as _community_id,
 			max(admin.name) as _driver_name,
-			max(admin.id_admin) as _driver_id
+			max(admin.id_admin) as _driver_id,
+			restaurant.formal_relationship
 		', $q);
 
 		$r = c::db()->query($query, $keys);
@@ -231,7 +232,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 					$o->returning_customer = ( $o->orders_by_phone > 1 );
 				}
 
-				$boolFields = ['confirmed','refunded','delivery_service','do_not_reimburse_driver','paid_with_cb_card','pay_if_refunded','asked_to_call'];
+				$boolFields = ['confirmed','refunded','delivery_service','do_not_reimburse_driver','paid_with_cb_card','pay_if_refunded','asked_to_call', 'formal_relationship'];
 
 				foreach (get_object_vars($o) as $key => $value) {
 					$type = gettype($value);
