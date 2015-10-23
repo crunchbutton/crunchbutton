@@ -22,7 +22,44 @@ class Controller_api_driver_payments extends Crunchbutton_Controller_RestAccount
 			$settlement = new Settlement;
 			$id_payment_schedule = c::getPagePiece( 4 );
 			$summary = $settlement->driverSummary( $id_payment_schedule );
+
 			if( $summary[ 'id_driver' ] == c::user()->id_admin || c::admin()->permission()->check( [ 'global', 'drivers-all' ] ) ){
+
+				$summary[ 'has_stuff_to_remove' ] = false;
+				$summary[ 'show_money_make_week' ] = false;
+
+				if( $summary[ 'calcs' ] ){
+					foreach( $summary[ 'calcs' ] as $key => $value ){
+						$summary[ 'calcs' ][ $key ] = ( $value < 0 ? ( $value * -1 ) : $value );
+					}
+					if( $summary[ 'calcs' ][ 'amount_per_order' ] ||
+							$summary[ 'calcs' ][ 'total_commissioned' ] ||
+							$summary[ 'calcs' ][ 'total_commissioned_tip' ] ||
+							$summary[ 'calcs' ][ 'tip' ] ||
+							$summary[ 'invites_amount' ] ){
+						$summary[ 'show_money_make_week' ] = true;
+					}
+					if( $summary[ 'calcs' ][ 'delivery_fee_collected' ] ||
+							$summary[ 'calcs' ][ 'markup' ] ||
+							$summary[ 'calcs' ][ 'customer_fee_collected' ] ||
+							$summary[ 'calcs' ][ 'adjustment' ] ){
+						$summary[ 'has_stuff_to_remove' ] = true;
+					}
+
+					if( $summary[ 'driver_payment_type' ] == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_MAKING_WHOLE ){
+						$summary[ 'calcs' ][ 'delivery_fee_plus_tips' ] = $summary[ 'calcs' ][ 'tip' ] + $summary[ 'calcs' ][ 'amount_per_order' ];
+						if( $summary[ 'shifts_hours_amount' ] > $summary[ 'calcs' ][ 'delivery_fee_plus_tips' ] ){
+							$summary[ 'calcs' ][ 'make_whole_amount' ] = $summary[ 'shifts_hours_amount' ] - $summary[ 'calcs' ][ 'delivery_fee_plus_tips' ];
+							// before 10/15 make whole was also paying tips
+							if( $summary[ 'id_payment_schedule' ] <= 47946 ){
+								$summary[ 'calcs' ][ 'make_whole_amount' ] += $summary[ 'calcs' ][ 'tip' ];
+							}
+						}
+
+					}
+
+				}
+
 				echo json_encode( $summary );
 			} else {
 				$this->_error();

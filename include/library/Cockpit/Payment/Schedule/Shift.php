@@ -37,8 +37,8 @@ class Cockpit_Payment_Schedule_Shift extends Cana_Table {
 	}
 
 	public static function checkShiftWasPaidDriver( $id_admin_shift_assign ){
-		$query = 'SELECT * FROM payment_schedule_shift WHERE id_admin_shift_assign = ? LIMIT 1';
-		$shift = Cockpit_Payment_Schedule_Shift::q( $query, [$id_admin_shift_assign]);
+		$query = 'SELECT * FROM payment_schedule_shift INNER JOIN payment_schedule ON payment_schedule.id_payment_schedule = payment_schedule_shift.id_payment_schedule WHERE id_admin_shift_assign = ? AND payment_schedule.status != ? LIMIT 1';
+		$shift = Cockpit_Payment_Schedule_Shift::q( $query, [$id_admin_shift_assign, Cockpit_Payment_Schedule::STATUS_REVERSED]);
 		if( $shift->id_payment_schedule_shift ){
 			return $shift;
 		}

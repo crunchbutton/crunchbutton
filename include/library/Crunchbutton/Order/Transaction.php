@@ -34,8 +34,13 @@ class Crunchbutton_Order_Transaction extends Cana_Table {
 	}
 
 	public static function checkOrderWasPaidDriver( $id_order ){
-		$query = 'SELECT * FROM order_transaction ot WHERE type = ? AND id_order = ? LIMIT 1';
-		$order = Crunchbutton_Order_Transaction::q( $query, [Crunchbutton_Order_Transaction::TYPE_PAID_TO_DRIVER, $id_order]);
+
+		$query = 'SELECT * FROM order_transaction ot
+								INNER JOIN payment_order_transaction pot ON pot.id_order_transaction = ot.id_order_transaction
+								INNER JOIN payment p ON p.id_payment = pot.id_payment AND p.payment_status != ?
+								WHERE type = ? AND id_order = ? LIMIT 1';
+
+		$order = Crunchbutton_Order_Transaction::q( $query, [Crunchbutton_Payment::PAYMENT_STATUS_REVERSED, Crunchbutton_Order_Transaction::TYPE_PAID_TO_DRIVER, $id_order]);
 		if( $order->id_order_transaction ){
 			return true;
 		}

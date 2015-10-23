@@ -1046,6 +1046,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
 			$schedule->log = 'Schedule created';
 			$schedule->note = $notes;
+			$schedule->payment_type = $pay_type->payment_type;
 			$schedule->adjustment_note = $adjustment_notes;
 			$schedule->id_admin = $id_admin;
 			$schedule->save();
@@ -1744,7 +1745,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 			$summary = $schedule->exports();
 
-
 			$summary[ 'adjustment' ] = floatval( $summary[ 'adjustment' ] );
 			$summary[ 'collected_in_cash' ] = 0;
 			$summary[ 'driver' ] = $schedule->driver()->name;
@@ -1752,7 +1752,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$summary[ 'driver' ] = $schedule->driver()->name;
 			$summary[ 'payment_method' ] = $schedule->driver()->payment_type()->payment_method;
 			$summary[ 'salary_type' ] = ( $schedule->driver_payment_hours ) ? Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS : Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
-			$summary[ 'driver_payment_type' ] = $schedule->driver()->payment_type()->payment_type;
+			$summary[ 'driver_payment_type' ] = ( $schedule->payment_type ? $schedule->payment_type : $schedule->driver()->payment_type()->payment_type );
 			$summary[ 'show_credit_card_tips' ] = $schedule->driver()->showCreditCardTips();
 			$summary[ 'show_delivery_fees' ] = $schedule->driver()->showDeliveryFees();
 			$summary[ 'type' ] = Cockpit_Payment_Schedule::TYPE_DRIVER;
@@ -2053,7 +2053,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 		$invites = Crunchbutton_Referral::q( 'SELECT r.* FROM referral r
 																					INNER JOIN admin a ON r.id_admin_inviter = a.id_admin AND r.new_user = 1 ' . $where . '
-																					WHERE r.id_referral NOT IN( SELECT psr.id_referral FROM payment_schedule_referral psr )' );
+																					WHERE r.id_referral NOT IN( SELECT psr.id_referral FROM payment_schedule_referral psr INNER JOIN payment_schedule ON payment_schedule.id_payment_schedule = psr.id_payment_schedule WHERE payment_schedule.status != "reversed" )' );
 		foreach( $invites as $invite ){
 			$_invite = $invite->settlementExport();
 			if( !$out[ $invite->id_admin_inviter ] ){
@@ -2066,6 +2066,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	public function sendDriverPaymentNotification( $id_payment ){
 
+		return;
 		$summary = $this->driverSummaryByIdPayment( $id_payment );
 
 		if( !$summary ){

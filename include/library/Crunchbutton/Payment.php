@@ -14,13 +14,13 @@ class Crunchbutton_Payment extends Cana_Table {
 	const PAYMENT_STATUS_FAILED = 'failed';
 	const PAYMENT_STATUS_CANCELED = 'canceled';
 	const PAYMENT_STATUS_PAID = 'paid';
+	const PAYMENT_STATUS_REVERSED = 'reversed';
 
 	public static function credit($params = null) {
 
 		$payment = new Payment((object)$params);
 		$payment->date = date('Y-m-d H:i:s');
 		$payment_type = Crunchbutton_Restaurant_Payment_Type::byRestaurant( $payment->id_restaurant );
-
 
 		switch ( Crunchbutton_Payment::processor() ) {
 
@@ -52,6 +52,36 @@ class Crunchbutton_Payment extends Cana_Table {
 		}
 	}
 
+	public function wasReversed(){
+
+		if( $this->payment_status = Crunchbutton_Payment::PAYMENT_STATUS_REVERSED ){
+			$this->schedule_reversed();
+		}
+		return;
+
+		if( $this->amount > 0 ){
+
+			$env = c::getEnv();
+
+			if( $this->stripe_id && $this->env ){
+
+				$env = ( $this->env == 'live' ) ? 'live' : 'dev';
+
+				\Stripe\Stripe::setApiKey( c::config()->stripe->{ $env }->secret );
+
+				$credit = \Stripe\Transfer::retrieve( $this->stripe_id );
+
+				if( $credit->reversed ){
+					$this->payment_status = Crunchbutton_Payment::PAYMENT_STATUS_REVERSED;
+					$this->save();
+					$this->schedule_reversed();
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public function checkStripeStatus(){
 
 		if( $this->amount > 0 ){
@@ -74,6 +104,9 @@ class Crunchbutton_Payment extends Cana_Table {
 					case Crunchbutton_Payment::PAYMENT_STATUS_CANCELED:
 						$this->payment_status = Crunchbutton_Payment::PAYMENT_STATUS_FAILED;
 						$this->payment_failure_reason = 'Canceled';
+						break;
+					case Crunchbutton_Payment::PAYMENT_STATUS_PAID:
+						$this->payment_status = Crunchbutton_Payment::PAYMENT_STATUS_SUCCEEDED;
 						break;
 					case Crunchbutton_Payment::PAYMENT_STATUS_PAID:
 						$this->payment_status = Crunchbutton_Payment::PAYMENT_STATUS_SUCCEEDED;
@@ -119,6 +152,7 @@ class Crunchbutton_Payment extends Cana_Table {
 		return false;
 	}
 
+
 	public function schedule_error(){
 		$schedule = $this->schedule();
 		if( $schedule ){
@@ -129,6 +163,16 @@ class Crunchbutton_Payment extends Cana_Table {
 
 			$settlement = new Settlement;
 			$settlement->driverPaymentError( $schedule->id_payment_schedule );
+		}
+	}
+
+	public function schedule_reversed(){
+		$schedule = $this->schedule();
+		if( $schedule ){
+			$schedule->status = Cockpit_Payment_Schedule::STATUS_REVERSED;
+			$schedule->status_date = date('Y-m-d H:i:s');
+			$schedule->log = 'Payment reversed';
+			$schedule->save();
 		}
 	}
 
