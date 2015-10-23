@@ -118,8 +118,8 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 		});
 	}
 
-	service.askRefund = function( id_order, delivery_service, callback ){
-		$rootScope.$broadcast( 'openRefundOrderOptions', { id_order: id_order, delivery_service: delivery_service, callback: callback } );
+	service.askRefund = function( id_order, delivery_service, formal_relationship, callback ){
+		$rootScope.$broadcast( 'openRefundOrderOptions', { id_order: id_order, delivery_service: delivery_service, formal_relationship: formal_relationship, callback: callback } );
 	}
 
 	service.do_not_reimburse_driver = function( id_order, callback ){
