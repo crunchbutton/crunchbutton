@@ -26,8 +26,8 @@ class Cockpit_Payment_Schedule_Referral extends Cana_Table {
 	}
 
 	public function checkReferralWasPaidDriver( $id_referral ){
-		$query = 'SELECT * FROM payment_schedule_referral WHERE id_referral = "' . $id_referral . '" LIMIT 1';
-		$referral = Cockpit_Payment_Schedule_Referral::q( $query );
+		$query = 'SELECT * FROM payment_schedule_referral INNER JOIN payment_schedule ON payment_schedule.id_payment_schedule = payment_schedule_referral.id_payment_schedule WHERE id_referral = ? AND payment_schedule.status != ? LIMIT 1';
+		$shift = Cockpit_Payment_Schedule_Referral::q( $query, [$id_referral, Cockpit_Payment_Schedule::STATUS_REVERSED]);
 		if( $referral->id_payment_schedule_referral ){
 			return $referral;
 		}

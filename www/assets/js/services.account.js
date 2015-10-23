@@ -2,6 +2,7 @@
 NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService ){
 
 	var service = {
+		processing : false,
 		callback : false,
 		user : false,
 		form : {
@@ -30,6 +31,7 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 		};
 
 	service.reset = function(){
+		service.processing = false;
 		service.form.email = '';
 		service.form.password = '';
 	}
@@ -76,16 +78,19 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 
 	// This method will sign in or sign up an user
 	service.enter = function(){
+		service.processing = true;
 		service.errorReset();
 		if( !service.isValidEmailPhone() ){
 			service.errors.push( service.errorsList[ 'enter-email-phone' ] );
 			$rootScope.focus( '.signin-email' );
+			service.processing = false;
 			return;
 		}
 
 		if( !service.isValidPassword() ){
 			service.errors.push( service.errorsList[ 'enter-password' ] );
 			$rootScope.focus( '.signin-password' );
+			service.processing = false;
 			return;
 		}
 
@@ -99,6 +104,7 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 			data: $.param( { 'email' : service.form.email, 'password' : service.form.password } ),
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			} ).success( function( data ) {
+					service.processing = false;
 					if( data.error ){
 						service.errors.push( service.errorsList[ 'login-incorrect' ] );
 						App.rootScope.$safeApply();

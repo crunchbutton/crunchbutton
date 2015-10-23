@@ -530,7 +530,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 
 		if ($type == 'driver') {
-			if( $send_text != 'all' ){
+			if( !is_null( $send_text ) && $send_text != 'all' ){
 				if( intval( $send_text ) == 0 ){
 					$q .= '
 						AND ac.value IS NULL OR ac.value = \'0\'

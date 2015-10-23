@@ -27,6 +27,9 @@
 					<a href="/restaurant/{{order._restaurant_permalink}}">{{order._restaurant_name}}</a><br>
 					<a href="/community/{{order._community_permalink}}" ng-if="!community" class="no-underline">{{order._community_name}}</a>
 				</span>
+				<div ng-if="order.formal_relationship">
+					<span class="tag tag-grey">Formal Relationship</span>
+				</div>
 				<? /* Restaurant */ ?>
 			</td>
 			<td>

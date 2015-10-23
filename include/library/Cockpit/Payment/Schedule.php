@@ -13,6 +13,7 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 	const STATUS_ERROR = 'error';
 	const STATUS_ARCHIVED = 'archived';
 	const STATUS_DELETED = 'deleted';
+	const STATUS_REVERSED = 'reversed';
 
 	public function __construct($id = null) {
 		parent::__construct();

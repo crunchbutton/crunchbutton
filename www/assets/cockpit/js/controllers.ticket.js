@@ -76,7 +76,7 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	var id_support = $routeParams.id;
 
 	$scope.refund = function(){
-		OrderService.askRefund( $scope.ticket.order.id_order, $scope.ticket.order.delivery_service, function(){
+		OrderService.askRefund( $scope.ticket.order.id_order, $scope.ticket.order.delivery_service, $scope.ticket.restaurant.formal_relationship, function(){
 			$rootScope.closePopup();
 			setTimeout( function(){ App.alert( 'Order refunded' ); }, 300 );
 			update();
