@@ -321,10 +321,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 				// dont include commisioned orders for making whole - it is a different calc
 				if( $order[ 'pay_type_making_whole' ] && $order[ 'pay_info' ][ 'force_to_be_commissioned' ] ){
 					$order[ 'pay_info' ][ 'total_payment_commision' ] = ( $order[ 'pay_info' ][ 'tip' ] +
-																																$order[ 'amount_per_order' ] +
-																																$order[ 'pay_info' ][ 'delivery_fee_collected' ] +
+																																$order[ 'amount_per_order' ] );
+					$order[ 'pay_info' ][ 'total_payment_per_order' ] = $order[ 'pay_info' ][ 'delivery_fee_collected' ] +
 																																$order[ 'pay_info' ][ 'customer_fee_collected' ] +
-																																$order[ 'pay_info' ][ 'markup' ] );
+																																$order[ 'pay_info' ][ 'markup' ];
 				} else {
 					$order[ 'pay_info' ][ 'total_payment_per_order' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ], true );
 				}
@@ -347,6 +347,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$order[ 'pay_info' ][ 'total_payment_per_order' ] = 0;
 					$order[ 'pay_info' ][ 'delivery_fee_collected' ] = 0;
 					$order[ 'pay_info' ][ 'customer_fee_collected' ] = 0;
+					continue;
 				}
 
 				if( $order[ 'do_not_pay_driver' ] == 1 ){
@@ -837,11 +838,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 		// Assumes the order was already paid
 		// Checklist for AFTER new settlement is deployed #3603 - item 2
 		$id_order_start = $this->id_order_start();
-		if( intval( $values[ 'id_order' ] ) <= $id_order_start ){
-			// @remove -- remove it before commit
-			// $values[ 'restaurant_paid' ] = true;
-			// $values[ 'driver_reimbursed' ] = true;
-			// $values[ 'driver_paid' ] = true;
+		if( intval( $values[ 'id_order' ] ) <= $id_order_start && c::env() == 'live' ){
+			$values[ 'restaurant_paid' ] = true;
+			$values[ 'driver_reimbursed' ] = true;
+			$values[ 'driver_paid' ] = true;
 		}
 
 		if( $values[ 'id_admin' ] ){
