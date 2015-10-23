@@ -1019,11 +1019,10 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		switch ( $weekday ) {
 			case 'Wednesday':
 				$sendWarning = true;
-				$now->modify( '+ 1 day' );
 				$dateStart = $now->format( 'Y-m-d' );
-				$now->modify( '+ 6 days' );
+				$now->modify( '+ 7 days' );
 				$dateEnd = $now->format( 'Y-m-d' );
-				$template = "Hi %s! You're scheduled for the following shifts at %s this week: ";
+				$template = "Hi %s! You are scheduled for the following shifts for this schedule cycle: ";
 				break;
 			case 'Friday':
 				$sendWarning = true;
@@ -1031,7 +1030,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				$dateStart = $now->format( 'Y-m-d' );
 				$now->modify( '+ 6 days' );
 				$dateEnd = $now->format( 'Y-m-d' );
-				$template = "Hi %s! Just a reminder of your next shifts at %s: ";
+				$template = "Hi %s! Just a reminder of your upcoming shifts at %s: ";
 				break;
 		}
 
@@ -1068,9 +1067,9 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 						$message .= $commas;
 
 						if( intval( $shift->dateStart()->format( 'i' ) ) > 0 ){
-							$message .= $shift->dateStart()->format( 'D g:ia' );
+							$message .= $shift->dateStart()->format( 'D (m/d) g:ia' );
 						} else {
-							$message .= $shift->dateStart()->format( 'D ga' );
+							$message .= $shift->dateStart()->format( 'D (m/d) ga' );
 						}
 						$message .= '-';
 						if( intval( $shift->dateEnd()->format( 'i' ) ) > 0 ){
