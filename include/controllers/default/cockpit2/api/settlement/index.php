@@ -689,8 +689,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 				$driver[ 'pay' ] = false;
 			}
 
-			$driver[ 'pay' ] = false;
-
 			$driver[ 'orders_count' ] = count( $driver[ 'orders' ] );
 
 			if( !$driver[ 'pay_type' ] || !$driver[ 'pay_type' ][ 'payment_type' ] ){
