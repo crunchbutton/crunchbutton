@@ -55,9 +55,7 @@ class Controller_api_driver_payments extends Crunchbutton_Controller_RestAccount
 								$summary[ 'calcs' ][ 'make_whole_amount' ] += $summary[ 'calcs' ][ 'tip' ];
 							}
 						}
-
 					}
-
 				}
 
 				echo json_encode( $summary );

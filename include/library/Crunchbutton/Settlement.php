@@ -1937,6 +1937,12 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 			$summary[ 'admin' ] = [ 'id_admin' => $schedule->id_admin, 'name' => $schedule->admin()->name ];
 
+			if( $summary[ 'payment_type' ] == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_MAKING_WHOLE ){
+				// remove the commissioned orders - #6685
+				$summary[ 'calcs' ][ 'amount_per_order' ] = ( $summary[ 'calcs' ][ 'amount_per_order' ] - $summary[ 'calcs' ][ 'total_commissioned' ] );
+				$summary[ 'calcs' ][ 'tip' ] = ( $summary[ 'calcs' ][ 'tip' ] - $summary[ 'calcs' ][ 'total_commissioned_tip' ] );
+			}
+
 			if( $summary[ 'pay_type' ] == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ){
 				$summary[ 'total_payment' ] = max( $summary[ 'amount' ], 0 );
 				$summary[ 'calcs' ][ 'total_payment' ] = floatval( $summary[ 'total_payment' ] );
