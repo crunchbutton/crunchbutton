@@ -318,9 +318,13 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$order[ 'pay_info' ][ 'total_payment' ] = 0;
 				}
 
-				// dont include commisioned orders
+				// dont include commisioned orders for making whole - it is a different calc
 				if( $order[ 'pay_type_making_whole' ] && $order[ 'pay_info' ][ 'force_to_be_commissioned' ] ){
-					$order[ 'pay_info' ][ 'total_payment_commision' ] = ( $order[ 'pay_info' ][ 'tip' ] + $order[ 'amount_per_order' ] );
+					$order[ 'pay_info' ][ 'total_payment_commision' ] = ( $order[ 'pay_info' ][ 'tip' ] +
+																																$order[ 'amount_per_order' ] +
+																																$order[ 'pay_info' ][ 'delivery_fee_collected' ] +
+																																$order[ 'pay_info' ][ 'customer_fee_collected' ] +
+																																$order[ 'pay_info' ][ 'markup' ] );
 				} else {
 					$order[ 'pay_info' ][ 'total_payment_per_order' ] = $this->orderCalculateTotalDueDriver( $order[ 'pay_info' ], true );
 				}
@@ -453,10 +457,12 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$payment_by_shift = $pay[ $id_driver ][ 'shifts' ][ 'amount' ] + $pay[ $id_driver ][ 'markup' ] + $pay[ $id_driver ][ 'delivery_fee_collected' ] + $pay[ $id_driver ][ 'customer_fee_collected' ];
 
 				if( $pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_MAKING_WHOLE ){
+
 					$pay[ $id_driver ][ 'total_payment_by_order' ] = $pay[ $id_driver ][ 'total_payment_per_order' ];
 					$pay[ $id_driver ][ 'total_payment_by_hour' ] = $payment_by_shift;
 					$pay[ $id_driver ][ 'total_payment' ] = max( $pay[ $id_driver ][ 'total_payment_by_order' ], $pay[ $id_driver ][ 'total_payment_by_hour' ] );
 					$pay[ $id_driver ][ 'total_payment' ] += $pay[ $id_driver ][ 'total_payment_commision' ];
+
 				} else {
 					$pay[ $id_driver ][ 'total_payment' ] = ( $payment_by_shift + $tip + $commission );
 				}

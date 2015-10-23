@@ -64,12 +64,12 @@
 					</tr>
 
 					<tr ng-if="pay_type_payment && result.calcs.total_commissioned">
-						<td>Delivery Commission</td>
+						<td>Delivery Commission for commission</td>
 						<td><div class="summary-calc-values">+ ${{result.calcs.total_commissioned | formatPrice}}</div></td>
 					</tr>
 
 					<tr ng-if="pay_type_payment && result.calcs.total_commissioned_tip && ( !result.show_credit_card_tips || result.driver_payment_type == 'making_whole' )">
-						<td>Tips</td>
+						<td>Tips for commission</td>
 						<td><div class="summary-calc-values">+ ${{result.calcs.total_commissioned_tip | formatPrice}}</div></td>
 					</tr>
 
