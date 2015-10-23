@@ -60,9 +60,20 @@
 			</div>
 			<div class="dialog-divider"></div>
 			<div class="dialog-padding dialog-bottom-buttons" ng-if="!support.thanks">
-				<div class="button-pushable">
+				<div class="button-pushable" ng-if="!account.processing">
 					<button class="button account-submit lightorange" ng-click="account.enter()">Enter the cool kids club</button>
 				</div>
+				<div class="button-pushable" ng-if="account.processing">
+					<button class="button account-submit lightorange">
+						Just a sec
+						<div id="circleG">
+							<div id="circleG_1" class="circleG"></div>
+							<div id="circleG_2" class="circleG"></div>
+							<div id="circleG_3" class="circleG"></div>
+						</div>
+					</button>
+				</div>
+
 			</div>
 		</div>
 
