@@ -4,11 +4,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		// $this->_driverScheduled();
-		// exit();
-		// $this->_driverBegin();
-		// exit;
-
 		$this->resultsPerPage = 20;
 
 		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
@@ -625,18 +620,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$end = $this->request()['end'];
 		$id_driver = $this->request()['id_driver'];
 
-		// @remove -- remove it before commit
-		// $start = '10/19/2015';
-		// $end = '10/20/2015';;
-		// $id_driver = 13284;
-
-		// http://dev.la/settlement/drivers/scheduled/48040
-
-		// 13281 comission - http://dev.la/drivers/payment/48037 - ok
-		// 13278 hours without tips - http://dev.la/drivers/payment/48041 - ok
-		// 13275 hours with tips - http://dev.la/drivers/payment/48040 - ok
-		// 13284 madewhole - http://dev.la/drivers/payment/48042 - ok
-		//
 		if( !$start || !$end ){
 			$this->_error();
 		}
@@ -713,21 +696,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 				$driver[ 'pay_type' ] = [ 'payment_type' => '-' ];
 			}
 
-			// @remove -- remove it before commit
-		// 13281 comission - http://dev.la/drivers/payment/48037 - ok
-		// 13278 hours without tips - http://dev.la/drivers/payment/48041 - ok
-		// 13275 hours with tips - http://dev.la/drivers/payment/48040 - ok
-		// 13284 madewhole - http://dev.la/drivers/payment/48042 - ok
-
-			// if( !$id_driver || ( $id_driver && $id_driver == $driver[ 'id_admin' ] ) ){
-			if( $driver[ 'id_admin' ] == 13281 ||
-					$driver[ 'id_admin' ] == 13278 ||
-					$driver[ 'id_admin' ] == 13275 ||
-					$driver[ 'id_admin' ] == 13284 ||
-					$driver[ 'id_admin' ] == 5 ){
+			if( !$id_driver || ( $id_driver && $id_driver == $driver[ 'id_admin' ] ) ){
 				$out[ 'drivers' ][] = $driver;
 			}
-
 		}
 		echo json_encode( $out );
 	}
