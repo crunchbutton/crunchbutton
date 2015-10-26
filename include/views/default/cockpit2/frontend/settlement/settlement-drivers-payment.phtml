@@ -64,6 +64,17 @@
 					<td><strong>Method</strong></td>
 					<td>{{result.payment_method}}</td>
 				</tr>
+				<tr>
+					<td><strong>Salary Type</strong></td>
+					<td>
+						<span class="tag tag-blue" ng-if="result.driver_payment_type == 'orders'">Commission</span>
+						<span class="tag tag-purple" ng-if="result.driver_payment_type == 'hours'">Hourly with tips</span>
+						<span class="tag tag-orange" ng-if="result.driver_payment_type == 'hours_without_tips'">Hourly without tips</span>
+						<span class="tag tag-yellow" ng-if="result.driver_payment_type == 'making_whole'">Making whole</span>
+						<span class="tag tag-grey" ng-if="!result || !result.driver_payment_type || result.driver_payment_type == '-' ">Payment Type Missing</span>
+					</td>
+				</tr>
+
 				<tr ng-if="result.payment_date">
 					<td>
 						<strong>Summary sent date</strong>
@@ -126,54 +137,71 @@
 						<a target="_blank" href="https://dashboard.stripe.com/transfers/{{result.stripe_id}}">{{result.stripe_id}}</a>
 					</td>
 				</tr>
-				<tr ng-if="result.hourly" positive-or-negative-color="{{result.shifts_hours_amount}}">
-					<td>Worked hours</td>
-					<td>$ {{result.shifts_hours_amount | formatPrice}}</td>
-				</tr>
 				<tr ng-if="result.range_date">
 					<td>Period</td>
 					<td>{{result.range_date}}</td>
 				</tr>
+				<tr ng-if="result.hourly" positive-or-negative-color="{{result.shifts_hours_amount}}">
+					<td>Worked hours</td>
+					<td>${{result.shifts_hours_amount | formatPrice}}</td>
+				</tr>
+
 				<tr ng-if="( !result.hourly || result.driver_payment_type == 'making_whole' ) && result.calcs.tax && pay_type_payment" positive-or-negative-color="{{result.calcs.tax}}">
 					<td>Tax</td>
-					<td>$ {{result.calcs.tax | formatPrice}}</td>
+					<td>${{result.calcs.tax | formatPrice}}</td>
 				</tr>
 				<tr ng-if="( !result.hourly || result.driver_payment_type == 'making_whole' ) && result.calcs.delivery_fee && pay_type_payment" positive-or-negative-color="{{result.calcs.delivery_fee}}">
 					<td>Delivery Fee</td>
-					<td>$ {{result.calcs.delivery_fee | formatPrice}}</td>
+					<td>${{result.calcs.delivery_fee | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.tip}}" ng-if="result.calcs.tip && pay_type_payment">
+				<tr ng-if="( !result.hourly || result.driver_payment_type == 'making_whole' ) && result.calcs.delivery_fee && pay_type_payment && result.show_delivery_fees" positive-or-negative-color="{{result.calcs.delivery_fee}}">
+					<td>Delivery Commission</td>
+					<td>${{result.calcs.amount_per_order | formatPrice}}</td>
+				</tr>
+
+				<tr ng-if="( !result.hourly || result.show_credit_card_tips && !result.driver_payment_type == 'making_whole' ) && result.calcs.tip && pay_type_payment" positive-or-negative-color="{{result.calcs.tip}}">
 					<td>Tip</td>
-					<td>$ {{result.calcs.tip | formatPrice}}</td>
+					<td>${{result.calcs.tip | formatPrice}}</td>
 				</tr>
+
+				<tr ng-if="pay_type_payment && result.calcs.total_commissioned" positive-or-negative-color="{{result.calcs.total_commissioned}}">
+					<td>Commissioned Orders</td>
+					<td>${{result.calcs.total_commissioned | formatPrice}}</td>
+				</tr>
+
+				<tr ng-if="pay_type_payment && result.calcs.total_commissioned_tip && ( !result.show_credit_card_tips || result.driver_payment_type == 'making_whole' )" positive-or-negative-color="{{result.calcs.total_commissioned_tip}}">
+					<td>Tip</td>
+					<td>${{result.calcs.total_commissioned_tip | formatPrice}}</td>
+				</tr>
+
 				<tr ng-if="( !result.hourly || result.driver_payment_type == 'making_whole' ) && result.calcs.customer_fee && pay_type_payment" positive-or-negative-color="{{result.calcs.customer_fee}}">
 					<td>Customer Fee</td>
-					<td>$ {{result.calcs.customer_fee | formatPrice}}</td>
+					<td>${{result.calcs.customer_fee | formatPrice}}</td>
 				</tr>
 				<tr ng-if="result.calcs.markup && pay_type_payment" positive-or-negative-color="{{result.calcs.markup}}">
 					<td>Crunchbutton’s Markup Already Collected In Cash</td>
-					<td>$ {{result.calcs.markup | formatPrice}}</td>
+					<td>${{result.calcs.markup | formatPrice}}</td>
 				</tr>
 				<tr ng-if="result.calcs.delivery_fee_collected && pay_type_payment" positive-or-negative-color="{{result.calcs.delivery_fee_collected}}">
 					<td>Delivery Fee Collected In Cash</td>
-					<td>$ {{result.calcs.delivery_fee_collected | formatPrice}}</td>
+					<td>${{result.calcs.delivery_fee_collected | formatPrice}}</td>
 				</tr>
 				<tr ng-if="result.calcs.customer_fee_collected && pay_type_payment" positive-or-negative-color="{{result.calcs.customer_fee_collected}}">
 					<td>Customer Fee Collected In Cash</td>
-					<td>$ {{result.calcs.customer_fee_collected | formatPrice}}</td>
+					<td>${{result.calcs.customer_fee_collected | formatPrice}}</td>
 				</tr>
 
 				<tr ng-if="( !result.hourly || result.driver_payment_type == 'making_whole' ) && result.calcs.credit_charge && pay_type_payment" positive-or-negative-color="{{result.calcs.credit_charge}}">
 					<td>Credit Card Charge</td>
-					<td>$ {{result.calcs.credit_charge | formatPrice}}</td>
+					<td>${{result.calcs.credit_charge | formatPrice}}</td>
 				</tr>
 				<tr ng-if="( !result.hourly || result.driver_payment_type == 'making_whole' ) && result.calcs.gift_card && pay_type_payment" positive-or-negative-color="{{result.calcs.gift_card}}">
 					<td>Gift Card</td>
-					<td>$ {{result.calcs.gift_card | formatPrice}}</td>
+					<td>${{result.calcs.gift_card | formatPrice}}</td>
 				</tr>
 				<tr positive-or-negative-color="{{result.invites_amount}}" ng-if="result.invites_amount && pay_type_payment">
 					<td>New Invited Users</td>
-					<td>$ {{result.invites_amount | formatPrice}}</td>
+					<td>${{result.invites_amount | formatPrice}}</td>
 				</tr>
 				<tr ng-if="result.adjustment && result._total_reimburse_ && pay_type_reimbursement" positive-or-negative-color="{{result._total_reimburse_}}">
 					<td>Reimbursement</td>
@@ -232,7 +260,7 @@
 				<tr ng-repeat="invite in result.invites">
 					<td>{{invite.user.name}}</td>
 					<td>{{invite.date}}</td>
-					<td>$ {{invite.amount | formatPrice}}</td>
+					<td>${{invite.amount | formatPrice}}</td>
 				</tr>
 			</tbody>
 		</table>
@@ -267,7 +295,10 @@
 					<td>{{shift.period.start}}</td>
 					<td>{{shift.period.end}}</td>
 					<td>{{shift.hours}}</td>
-					<td>$ {{shift.amount | formatPrice}}</td>
+					<td>
+						<span ng-if="!shift.created_by_driver">${{shift.amount | formatPrice}}</span>
+						<span ng-if="shift.created_by_driver">$0.00</span>
+					</td>
 				</tr>
 			</tbody>
 			<tbody>
@@ -280,7 +311,7 @@
 				<tr class="transparent">
 					<td></td>
 					<td>Total By Hours</td>
-					<td>$ {{result.shifts_hours_amount | formatPrice}}</td>
+					<td>${{result.shifts_hours_amount | formatPrice}}</td>
 					<td></td>
 				</tr>
 			</tbody>
@@ -341,19 +372,22 @@
 			</thead>
 			<tbody ng-if="result.orders.included">
 				<tr ng-repeat="order in result.orders.included">
-					<td>{{order.id_order}}</td>
+					<td>
+						<span title="Order delivered during a shift created by driver" ng-if="order.force_to_be_commissioned"><i class="fa fa-money"></i></span>
+						{{order.id_order}}
+					</td>
 					<td>{{order.name}}</td>
 					<td>{{order.restaurant}}</td>
 					<td>{{order.date}}</td>
 					<td>{{order.pay_type}}</td>
-					<td><span ng-if="pay_type_payment">$ {{order.tip | formatPrice}}</span></td>
-					<td><span ng-if="pay_type_payment">$ {{order.amount_per_order | formatPrice}}</span></td>
-					<td><span ng-if="pay_type_payment">$ {{order.delivery_fee | formatPrice}}</span></td>
-					<td><span ng-if="pay_type_payment">$ {{order.markup | formatPrice}}</span></td>
-					<td><span ng-if="pay_type_payment">$ {{order.delivery_fee_collected | formatPrice}}</span></td>
-					<td><span ng-if="pay_type_payment">$ {{order.customer_fee_collected | formatPrice}}</span></td>
-					<td ng-if="pay_type_reimbursement">$ {{order.total_reimburse | formatPrice}}</td>
-					<td ng-if="pay_type_payment">$ {{order.total_payment | formatPrice}}</td>
+					<td><span ng-if="pay_type_payment">${{order.tip | formatPrice}}</span></td>
+					<td><span ng-if="pay_type_payment">${{order.amount_per_order | formatPrice}}</span></td>
+					<td><span ng-if="pay_type_payment">${{order.delivery_fee | formatPrice}}</span></td>
+					<td><span ng-if="pay_type_payment">${{order.markup | formatPrice}}</span></td>
+					<td><span ng-if="pay_type_payment">${{order.delivery_fee_collected | formatPrice}}</span></td>
+					<td><span ng-if="pay_type_payment">${{order.customer_fee_collected | formatPrice}}</span></td>
+					<td ng-if="pay_type_reimbursement">${{order.total_reimburse | formatPrice}}</td>
+					<td ng-if="pay_type_payment">${{order.total_payment | formatPrice}}</td>
 				</tr>
 			</tbody>
 			<tbody>
@@ -372,7 +406,7 @@
 					<td></td>
 					<td></td>
 					<td>Total Delivery Fee</td>
-					<td>$ {{result.calcs.delivery_fee | formatPrice}}</td>
+					<td>${{result.calcs.delivery_fee | formatPrice}}</td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -382,7 +416,7 @@
 					<td></td>
 					<td></td>
 					<td>Total New Invited Users</td>
-					<td>$ {{result.invites_amount | formatPrice}}</td>
+					<td>${{result.invites_amount | formatPrice}}</td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -392,7 +426,7 @@
 					<td></td>
 					<td></td>
 					<td>Tips by Card</td>
-					<td>$ {{result.calcs.tip | formatPrice}}</td>
+					<td>${{result.calcs.tip | formatPrice}}</td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -422,7 +456,7 @@
 					<td></td>
 					<td></td>
 					<td>Adjustment</td>
-					<td>$ {{result.adjustment | formatPrice}}</td>
+					<td>${{result.adjustment | formatPrice}}</td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -432,7 +466,7 @@
 					<td></td>
 					<td></td>
 					<td><strong>Total Reimbursed</strong></td>
-					<td><strong>$ {{result.calcs.total_reimburse | formatPrice}}</strong></td>
+					<td><strong>${{result.calcs.total_reimburse | formatPrice}}</strong></td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -442,7 +476,7 @@
 					<td></td>
 					<td></td>
 					<td><strong>Markup</strong></td>
-					<td><strong>$ {{result.calcs.markup | formatPrice}}</strong></td>
+					<td><strong>${{result.calcs.markup | formatPrice}}</strong></td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -452,7 +486,7 @@
 					<td></td>
 					<td></td>
 					<td><strong>Total Payment</strong></td>
-					<td><strong>$ {{result.calcs.total_payment | formatPrice}}</strong></td>
+					<td><strong>${{result.calcs.total_payment | formatPrice}}</strong></td>
 					<td></td>
 					<td></td>
 					<td></td>

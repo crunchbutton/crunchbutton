@@ -51,13 +51,11 @@ class Controller_api_driver_payments extends Crunchbutton_Controller_RestAccount
 						if( $summary[ 'shifts_hours_amount' ] > $summary[ 'calcs' ][ 'delivery_fee_plus_tips' ] ){
 							$summary[ 'calcs' ][ 'make_whole_amount' ] = $summary[ 'shifts_hours_amount' ] - $summary[ 'calcs' ][ 'delivery_fee_plus_tips' ];
 							// before 10/15 make whole was also paying tips
-							if( $summary[ 'id_payment_schedule' ] <= 47946 ){
+							if( c::env() == 'live' && $summary[ 'id_payment_schedule' ] <= 47946 ){
 								$summary[ 'calcs' ][ 'make_whole_amount' ] += $summary[ 'calcs' ][ 'tip' ];
 							}
 						}
-
 					}
-
 				}
 
 				echo json_encode( $summary );
