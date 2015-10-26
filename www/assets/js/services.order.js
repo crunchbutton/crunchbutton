@@ -86,6 +86,11 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			service.form.pay_type = 'card';
 		}
 
+		service.campus_cash = false;
+		if( service.restaurant.campus_cash ){
+			service.campus_cash = { name: service.restaurant.campus_cash_name, fee: service.restaurant.campus_cash_fee };
+		}
+
 		// Rules at #669
 		service.form.delivery_type = (service.account.user && service.account.user.presets && service.account.user.presets[service.restaurant.id_restaurant]) ? service.account.user.presets[service.restaurant.id_restaurant].delivery_type : 'delivery';
 
@@ -180,7 +185,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		}
 
 		// Force the takeout verification
-		if(! service.restaurant.takeout){
+		if(!service.restaurant.takeout){
 			service.form.delivery_type = 'delivery';
 		}
 
@@ -554,6 +559,12 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		}
 		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardYear) || (!service.account.user.id_user && !service.form.cardYear) || (!service.form.cardYear) || service.form.cardYear == '-' ) ) {
 			errors['card_year'] = 'Please enter the card expiration year.';
+		}
+		if (order.pay_type == 'campus_cash' && !service.form.campusCash ) {
+			errors['campus_cash'] = 'Please enter the ' + service.campus_cash.name + '.';
+		}
+		if (order.pay_type == 'campus_cash' && !order.email ) {
+			errors['email'] = 'Please enter your email.';
 		}
 		if (!service.cart.hasItems()) {
 			errors['noorder'] = 'Please add something to your order.';

@@ -5,20 +5,20 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 		$this->_customer = $params['customer_id'];
 		$this->_card = $params['card_id'];
 	}
-	
+
 	public function charge($params = []) {
-		
+
 		c::stripe();
 
 		$success = false;
-		
+
 		if (!$params['card'] && !$this->_customer) {
 			$errors[] = 'Missing all card information. Please try entering your card information again.';
 		}
 
 		// The user changed its card or it is a new one
 		if ($params['card']) {
-			
+
 			// create a customer if it doesnt exist
 			if (!$this->_customer) {
 				try {
@@ -38,13 +38,13 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 					$errors[] = 'Connection error communicating with Stripe.';
 				} catch (\Stripe\Error\Base $e) {
 					$error[] = 'Some wierd error when communicating with Stripe.';
-					
+
 				} catch (Exception $e) {
 					$errors[] = 'Could not create a new user for some strange reason.';
 				}
 
 				$this->_customer = $customer->id;
-						
+
 			// there is already a customer
 			} else {
 				try {
@@ -65,12 +65,12 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 					$errors[] = 'Connection error communicating with Stripe.';
 				} catch (\Stripe\Error\Base $e) {
 					$error[] = 'Some wierd error when communicating with Stripe.';
-					
+
 				} catch (Exception $e) {
 					$errors[] = 'Could not add new card for some reason. Try using the old one.';
 				}
 			}
-			
+
 			$this->_card = $params['card']['id'];
 		}
 
@@ -106,7 +106,7 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 		if ($charge && $charge->paid && !$charge->refunded) {
 			$success = true;
 			$txn = $charge->id;
-		} 
+		}
 
 		if (!$success && !$errors) {
 			$errors[] = 'Completly vague payment error. Contact support and complain. We love complaints.'."\n\n".'angrycustomers@_DOMAIN_';
@@ -120,5 +120,5 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 			'card' => $this->_card
 		];
 
-	}	
+	}
 }

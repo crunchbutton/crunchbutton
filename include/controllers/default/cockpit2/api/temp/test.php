@@ -3,24 +3,44 @@
 class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
-		echo '<pre>';var_dump( Cockpit_Payment_Schedule_Referral::checkReferralWasPaidDriver( 5850 ) );exit();
-		exit;
+			$money = c::crypt()->encrypt( 'T12356778' );
+			$money_sha1 = sha1($money);
 
-		header( 'Content-Type: text/html' );
-		header( 'Expires: 0' );
-		header( 'Cache-Control: must-revalidate' );
-		header( 'Pragma: public' );
-		echo "<pre>";
-		$payments = Payment::q( 'SELECT payment.*, admin.name FROM payment
-															INNER JOIN admin ON admin.id_admin = payment.id_driver
-															WHERE DATE_FORMAT( payment.date, "%Y%m%d" ) = "20151022" AND payment.id_driver IS NOT NULL AND payment.stripe_id IS NOT NULL' );
-		foreach( $payments as $payment ){
-			if( !$payment->wasReversed() ){
-				echo "id_payment: {$payment->id_payment}	stripe:<a target='_blank' href='https://dashboard.stripe.com/transfers/{$payment->stripe_id}'>{$payment->stripe_id}</a>	amount:{$payment->amount}	driver:{$payment->name}\n";
-			} else {
-				echo "REVERSED: id_payment: {$payment->id_payment}	stripe:<a target='_blank' href='https://dashboard.stripe.com/transfers/{$payment->stripe_id}'>{$payment->stripe_id}</a>	amount:{$payment->amount}	driver:{$payment->name}\n";
-			}
-		}
+			// $money = c::crypt()->decrypt( 'Fi2awEaIJNMFPIy+6lyLEg==' );
+
+			// echo '<pre>';var_dump( $money );exit();
+
+			c::stripe();
+
+			try {
+					$customer = \Stripe\Customer::create([
+						'description' => 'Daniel Camargo',
+						'email' => 'daniel@_DOMAIN_',
+						'metadata' => [ 'campus_cash' => $money, 'campus_cash_sha1' => $money_sha1 ]
+					]);
+
+				} catch(\Stripe\Error\Card $e) {
+					$errors[] = $e->getMessage();
+				} catch (\Stripe\Error\InvalidRequest $e) {
+					$errors[] = 'Invalid parameters for payment request. Try refreshing your page or reloading your app and trying again.';
+				} catch (\Stripe\Error\Authentication $e) {
+					$errors[] = 'Payment authention failed';
+				} catch (\Stripe\Error\ApiConnection $e) {
+					$errors[] = 'Connection error communicating with Stripe.';
+				} catch (\Stripe\Error\Base $e) {
+					$error[] = 'Some wierd error when communicating with Stripe.';
+
+				} catch (Exception $e) {
+					$errors[] = 'Could not create a new user for some strange reason.';
+				}
+
+				if( count( $errors ) ){
+					echo '<pre>';var_dump( $errors );exit();
+				} else {
+					echo '<pre>';var_dump( $customer );exit();
+				}
+
+				$this->_customer = $customer->id;
 
 	}
 }

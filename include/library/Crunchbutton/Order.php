@@ -14,6 +14,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	const PAY_TYPE_CASH        = 'cash';
 	const PAY_TYPE_CREDIT_CARD = 'card';
+	const PAY_TYPE_CAMPUS_CASH = 'campus_cash';
 	const PAY_TYPE_APPLE_PAY	 = 'applepay';
 	const SHIPPING_DELIVERY    = 'delivery';
 	const SHIPPING_TAKEOUT     = 'takeout';
@@ -37,12 +38,15 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	 */
 	public function process($params, $processType = 'web')
 	{
-		$this->pay_type = ($params['pay_type'] == 'cash') ? 'cash' : 'card';
-		$this->address  = $params['address'];
-		$this->phone    = $params['phone'];
-		$this->name     = $params['name'];
-		$this->notes    = $params['notes'];
-		$this->local_gid    = $params['local_gid'];
+
+		$this->campus_cash = ( $params['pay_type'] == self::PAY_TYPE_CAMPUS_CASH );
+
+		$this->pay_type  = ($params['pay_type'] == 'cash') ? 'cash' : 'card';
+		$this->address   = $params['address'];
+		$this->phone     = $params['phone'];
+		$this->name      = $params['name'];
+		$this->notes     = $params['notes'];
+		$this->local_gid = $params['local_gid'];
 
 		// Log the order - process started
 		Log::debug([
@@ -59,6 +63,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 							'restaurant' 		=> $params['restaurant'],
 							'notes' 				=> $params['notes'],
 							'cart' 					=> $params['cart'],
+							'campus_cash'		=> $this->campus_cash,
 							'type' 					=> 'order-log'
 						]);
 
@@ -298,6 +303,15 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		if (!$this->restaurant()->meetDeliveryMin($this) && $this->delivery_type == 'delivery') {
 			$errors['minimum'] = 'Please meet the delivery minimum of '.$this->restaurant()->delivery_min.'.';
 		}
+
+		if( $this->campus_cash && !$params[ 'campusCash' ] ){
+			$errors['campusCash'] = 'Please fill the field '.$this->restaurant()->campusCashName().'.';
+		}
+
+		if( $this->campus_cash && !$params[ 'email' ] ){
+			$errors['campusCash'] = 'Please enter your email.';
+		}
+
 
 		if ($errors) {
 			// Log the order - validation error
@@ -588,7 +602,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$this->location_lon = $params['lon'];
 
 		$user->name = $this->name;
-		$user->email = $params['email'];;
+		$user->email = $params['email'];
 		$user->phone = $this->phone;
 
 		$phone = Crunchbutton_Phone::byPhone( $this->phone );
@@ -1030,80 +1044,84 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				break;
 
 			case 'card':
-				$user = c::user()->id_user ? c::user() : null;
+				// campus cash
+				if( $this->campus_cash ){
+					//  here
+				} else {
+					$user = c::user()->id_user ? c::user() : null;
 
-				if ($user) {
-					$paymentType = $user->payment_type();
-				}
-
-				// use a stored users card and the apporiate payment type
-
-				if (!$this->_card['id'] && $paymentType->id_user_payment_type) {
-
-					if (Crunchbutton_User_Payment_Type::processor() == 'stripe' && $paymentType->stripe_id) {
-						$charge = new Charge_Stripe([
-							'card_id' => $paymentType->stripe_id,
-							'customer_id' => $user->stripe_id
-						]);
-
-					} else {
-						// there is a mismatch with stripe and balanced
+					if ($user) {
+						$paymentType = $user->payment_type();
 					}
-				}
 
-				// create the objects with no params
-				if (!$charge) {
-					switch (Crunchbutton_User_Payment_Type::processor()) {
-						case 'stripe':
+					// use a stored users card and the apporiate payment type
+
+					if (!$this->_card['id'] && $paymentType->id_user_payment_type) {
+
+						if (Crunchbutton_User_Payment_Type::processor() == 'stripe' && $paymentType->stripe_id) {
 							$charge = new Charge_Stripe([
+								'card_id' => $paymentType->stripe_id,
 								'customer_id' => $user->stripe_id
 							]);
-							break;
+
+						} else {
+							// there is a mismatch with stripe and balanced
+						}
 					}
-				}
 
-				// If the amount is 0 it means that the user used his credit.
-				$amount = $this->calcFinalPriceMinusUsersCredit();
-				Log::debug([ 'issue' => '#1551', 'method' => 'verifyPayment', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, 'amount' => $amount ]);
+					// create the objects with no params
+					if (!$charge) {
+						switch (Crunchbutton_User_Payment_Type::processor()) {
+							case 'stripe':
+								$charge = new Charge_Stripe([
+									'customer_id' => $user->stripe_id
+								]);
+								break;
+						}
+					}
+
+					// If the amount is 0 it means that the user used his credit.
+					$amount = $this->calcFinalPriceMinusUsersCredit();
+					Log::debug([ 'issue' => '#1551', 'method' => 'verifyPayment', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, 'amount' => $amount ]);
 
 
-				// issue #3145
-				if ($amount > .5) {
-					$r = $charge->charge([
-						'amount' => $amount,
-						'card' => $this->_card,
-						'name' => $this->name,
-						'address' => $this->address,
-						'email' => $user->email,
-						'phone' => $this->phone,
-						'user' => $user,
-						'restaurant' => $this->restaurant()
-					]);
-					if ($r['status']) {
-						$this->_txn = $r['txn'];
-						$this->_user = $user;
-						$this->_customer = $r['customer'];
-						$this->_paymentType = $r['card'];
+					// issue #3145
+					if ($amount > .5) {
+						$r = $charge->charge([
+							'amount' => $amount,
+							'card' => $this->_card,
+							'name' => $this->name,
+							'address' => $this->address,
+							'email' => $user->email,
+							'phone' => $this->phone,
+							'user' => $user,
+							'restaurant' => $this->restaurant()
+						]);
+						if ($r['status']) {
+							$this->_txn = $r['txn'];
+							$this->_user = $user;
+							$this->_customer = $r['customer'];
+							$this->_paymentType = $r['card'];
+							$status = true;
+						} else {
+							$status = $r;
+						}
+
+					} elseif ($amount > 0) {
+						// we just gave them 50c or something
+						Log::debug([
+							'issue' => '#3145',
+							'method' => 'verifyPayment',
+							'$this->final_price' => $this->final_price,
+							'giftcardValue'=> $this->giftcardValue,
+							'amount' => $amount
+						]);
 						$status = true;
+
 					} else {
-						$status = $r;
+						$status = true;
 					}
-
-				} elseif ($amount > 0) {
-					// we just gave them 50c or something
-					Log::debug([
-						'issue' => '#3145',
-						'method' => 'verifyPayment',
-						'$this->final_price' => $this->final_price,
-						'giftcardValue'=> $this->giftcardValue,
-						'amount' => $amount
-					]);
-					$status = true;
-
-				} else {
-					$status = true;
 				}
-
 				break;
 		}
 		return $status;
