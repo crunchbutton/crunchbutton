@@ -1320,6 +1320,24 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return self::DRIVER_OPEN_COMMUNITY_ERROR_COMMUNITY;
 	}
 
+	public function campusCash(){
+		return ( $this->campus_cash ) ? true : false;
+	}
+
+	public function campusCashName(){
+		if( $this->campusCash() && $this->campus_cash_name ){
+			return $this->campus_cash_name;
+		}
+		return null;
+	}
+
+	public function campusCashFee(){
+		if( $this->campusCash() && $this->campus_cash_fee ){
+			return max( $this->campus_cash_fee, 0 );
+		}
+		return 0;
+	}
+
 	// Smart population of "our most popular locations" on UI2 #6056
 	public static function smartSortPopulation(){
 		$query = Crunchbutton_Custom_Query::mostPopularLocationQuery();
