@@ -2822,6 +2822,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			]);
 		}
 
+
 		// Add/Remove pex card funds
 		$q = Queue::create([
 			'type' => Crunchbutton_Queue::TYPE_ORDER_PEXCARD_FUNDS,
@@ -2833,11 +2834,30 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			Order_Action::ticketForRejectedOrder( $this->id_order );
 		}
 
+
+		// mark the order to be paid by commission structure
+		if( $admin->openedCommunity() && !$this->isForcedToBeCommissioned( $admin->id_admin ) ){
+			$this->markToBeCommissioned( $admin->id_admin );
+		}
+
 		if( $status == Crunchbutton_Order_Action::DELIVERY_CANCELED ){
 			$this->tellDriverTheOrderWasCanceled();
 		}
 
 		return true;
+	}
+
+	public function markToBeCommissioned( $id_admin ){
+		(new Order_Action([
+			'id_order' => $this->id_order,
+			'id_admin' => $id_admin,
+			'timestamp' => date('Y-m-d H:i:s'),
+			'type' => Crunchbutton_Order_Action::FORCE_COMMISSION_PAYMENT
+		]))->save();
+	}
+
+	public function isForcedToBeCommissioned( $id_admin = false ){
+		return Crunchbutton_Order_Action::isForcedToBeCommissioned( $this->id_order, $id_admin );
 	}
 
 	public function pexcardFunds(){
