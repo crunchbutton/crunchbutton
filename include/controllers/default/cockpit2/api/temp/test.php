@@ -3,6 +3,12 @@
 class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
+			$campus_money = new Crunchbutton_Stripe_Customer;
+			$money = 'T12345678';
+			$success = $campus_money->storeCampusMoney( [ 'campus_cash' => $money, 'name' => 'daniel camargo', 'email' => '_EMAIL' ] );
+
+			echo json_encode( $success );exit;
+
 			$money = c::crypt()->encrypt( 'T12356778' );
 			$money_sha1 = sha1($money);
 

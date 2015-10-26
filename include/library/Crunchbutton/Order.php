@@ -312,7 +312,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$errors['campusCash'] = 'Please enter your email.';
 		}
 
-
 		if ($errors) {
 			// Log the order - validation error
 			Log::debug([
@@ -1046,7 +1045,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			case 'card':
 				// campus cash
 				if( $this->campus_cash ){
-					//  here
+
+
+
 				} else {
 					$user = c::user()->id_user ? c::user() : null;
 
