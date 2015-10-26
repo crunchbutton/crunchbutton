@@ -126,6 +126,9 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		service.form.cardMonth = ( service.account.user.card_exp_month ) ? ( service.account.user.card_exp_month ).toString() : '';
 		service.form.cardYear = ( service.account.user.card_exp_year ) ? ( service.account.user.card_exp_year ).toString() : '';
 
+		// Campus cash stuff
+		service.form.campusCash = '';
+
 		service.updateTotal();
 		if( !service.account.user.id_user ){
 			var userEntered = $.totalStorage( 'userEntered' );
@@ -505,7 +508,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			geomatched : service.geomatched
 		};
 
-		if (order.pay_type == 'card' || order.pay_type == 'applepay') {
+		if (order.pay_type == 'card' || order.pay_type == 'applepay' || order.pay_type == 'campus_cash') {
 			order.tip = service.form.tip;
 			order.autotip_value = service.form.autotip;
 		}
@@ -525,7 +528,6 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			}
 			return false;
 		}
-
 
 		var errors = {};
 		if (!order.name) {
