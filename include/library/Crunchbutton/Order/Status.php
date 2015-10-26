@@ -9,8 +9,9 @@ class Crunchbutton_Order_Status extends Cana_Table {
 			select * from order_action
 			where id_order=?
 			and type!=?
+			and type!=?
 			order by id_order_action desc
-		', [$order->id_order, Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED]);
+		', [$order->id_order, Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED, Crunchbutton_Order_Action::FORCE_COMMISSION_PAYMENT]);
 		$this->_order = $order;
 
 		$this->_actions = [];
