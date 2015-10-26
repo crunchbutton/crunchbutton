@@ -528,7 +528,6 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			$keys[] = Crunchbutton_Group::CAMPUS_MANAGER_GROUP;
 		}
 
-
 		if ($type == 'driver') {
 			if( !is_null( $send_text ) && $send_text != 'all' ){
 				if( intval( $send_text ) == 0 ){
@@ -543,7 +542,6 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				}
 			}
 		}
-
 
 		if ($search) {
 			$s = Crunchbutton_Query::search([

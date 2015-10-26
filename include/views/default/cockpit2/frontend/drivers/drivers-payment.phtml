@@ -63,19 +63,19 @@
 						<td><div class="summary-calc-values">${{result.calcs.amount_per_order | formatPrice}}</div></td>
 					</tr>
 
-					<tr ng-if="pay_type_payment && result.calcs.total_commissioned">
+					<tr ng-if="( result.driver_payment_type == 'making_whole' || result.driver_payment_type == 'hours' || result.driver_payment_type == 'orders' ) && result.calcs.tip && pay_type_payment">
+						<td>Tips</td>
+						<td><div class="summary-calc-values">+ ${{result.calcs.tip | formatPrice}}</div></td>
+					</tr>
+
+					<tr ng-if="pay_type_payment && result.calcs.total_commissioned && result.driver_payment_type != 'making_whole'">
 						<td>Delivery Commission</td>
 						<td><div class="summary-calc-values">+ ${{result.calcs.total_commissioned | formatPrice}}</div></td>
 					</tr>
 
-					<tr ng-if="pay_type_payment && result.calcs.total_commissioned_tip && ( !result.show_credit_card_tips || result.driver_payment_type == 'making_whole' )">
+					<tr ng-if="pay_type_payment && result.calcs.total_commissioned_tip && result.driver_payment_type != 'making_whole' && result.driver_payment_type != 'hours'">
 						<td>Tips</td>
 						<td><div class="summary-calc-values">+ ${{result.calcs.total_commissioned_tip | formatPrice}}</div></td>
-					</tr>
-
-					<tr ng-if="( result.driver_payment_type == 'making_whole' || result.driver_payment_type == 'hours' || result.driver_payment_type == 'orders' ) && result.calcs.tip && pay_type_payment">
-						<td>Tips</td>
-						<td><div class="summary-calc-values">+ ${{result.calcs.tip | formatPrice}}</div></td>
 					</tr>
 
 					<tr ng-if="result.invites_amount">
@@ -92,6 +92,16 @@
 						<td>Make Whole Amount</td>
 						<td><div class="summary-calc-values">+ ${{result.calcs.make_whole_amount | formatPrice}}</div></td>
 					</tr>
+
+					<tr ng-if="pay_type_payment && result.calcs.total_commissioned && result.driver_payment_type == 'making_whole'">
+						<td>(Commissioned Orders) Delivery Commission</td>
+						<td><div class="summary-calc-values">+ ${{result.calcs.total_commissioned | formatPrice}}</div></td>
+					</tr>
+					<tr ng-if="pay_type_payment && result.calcs.total_commissioned_tip && result.driver_payment_type == 'making_whole'">
+						<td>(Commissioned Orders) Tips</td>
+						<td><div class="summary-calc-values">+ ${{result.calcs.total_commissioned_tip | formatPrice}}</div></td>
+					</tr>
+
 
 					<tr ng-show="result.show_money_make_week">
 						<td>Total Money Made This Week</td>

@@ -654,6 +654,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 					$_order[ 'customer_fee' ] = $order[ 'pay_info' ][ 'customer_fee' ] ;
 					$_order[ 'customer_fee_collected' ] = $order[ 'pay_info' ][ 'customer_fee_collected' ] ;
 					$_order[ 'standard_reimburse' ] = $order[ 'pay_info' ][ 'standard_reimburse' ] ;
+					$_order[ 'force_to_be_commissioned' ] = $order[ 'pay_info' ][ 'force_to_be_commissioned' ] ;
 					$_order[ 'markup' ] = $order[ 'pay_info' ][ 'markup' ] ;
 					$_order[ 'amount_per_order' ] = $order[ 'pay_info' ][ 'amount_per_order' ] ;
 					$_order[ 'delivery_fee' ] = $order[ 'pay_info' ][ 'delivery_fee' ] ;
@@ -698,7 +699,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			if( !$id_driver || ( $id_driver && $id_driver == $driver[ 'id_admin' ] ) ){
 				$out[ 'drivers' ][] = $driver;
 			}
-
 		}
 		echo json_encode( $out );
 	}
