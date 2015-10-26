@@ -1495,7 +1495,6 @@ NGApp.controller('OrderCtrl', function ($interval, $rootScope, $scope, $http, $l
 		} else {
 			$scope.order.reward.shared.twitter = true;
 		}
-
 		$scope.$safeApply();
 	}
 
