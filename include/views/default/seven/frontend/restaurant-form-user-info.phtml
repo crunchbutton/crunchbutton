@@ -117,6 +117,13 @@
 					<input type="hidden" name="pay-autotip-value" ng-model="order.form.autotip" value="0">
 					<div class="form-input-select"><select ng-model="order.form.tip" ng-options="tip.value as tip.label for tip in order._tips" ng-change="order.tipChanged();" class="tip payment-form-select payment-form-input form-input form-field" tabindex="9"></select></div>
 				</div>
+
+				<div ng-if="order.form.pay_type == 'campus_cash'">
+					<p class="delivery-free restaurant-delivery-free">
+						<i>You will be required to present card to the delivery driver for verification.</i><br><br>
+					</p>
+				</div>
+
 			</div>
 
 			<div class="divider spacer-two-two"></div>
