@@ -152,13 +152,12 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$start = new DateTime( $filters[ 'start' ] );
 		$end = new DateTime( $filters[ 'end' ] . ' 00:00:00', new DateTimeZone( c::config()->timezone ) );
 		$end->modify( '+ 28 hours' );
-		// @remove -- remove it before commit -> TEST
 		$query = 'SELECT o.* FROM `order` o
 									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 									WHERE o.date >= "' . $start->format('Y-m-d') . '"
 										AND o.date <= "' . $end->format('Y-m-d H:i:s') . '"
-										-- AND o.name NOT LIKE "%test%"
-										-- AND r.name NOT LIKE "%test%"
+										AND o.name NOT LIKE "%test%"
+										AND r.name NOT LIKE "%test%"
 									ORDER BY o.date ASC';
 		return Order::q( $query );
 	}
@@ -405,6 +404,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$admin = Admin::o( $id_driver );
 			$pay_type = $admin->payment_type();
 			$pay[ $id_driver ][ 'salary_type' ] = $pay_type->payment_type;
+
 			// $pay[ $id_driver ][ 'total_payment_per_order' ] = 0;
 			if( $pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ||
 					$pay_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS_WITHOUT_TIPS ||
@@ -473,7 +473,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ $id_driver ][ 'salary_type' ] = Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_ORDERS;
 			}
 		}
-
 		// Add the invites data
 		// https://github.com/crunchbutton/crunchbutton/issues/2561#issuecomment-49223406
 		if( $include_invites ){
