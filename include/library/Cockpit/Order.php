@@ -348,6 +348,10 @@ class Cockpit_Order extends Crunchbutton_Order {
 			return 'Order refunded!';
 		}
 
+		if( $this->campus_cash_times_viewed() >= Cockpit_Campus_Cash_Log::VIEW_LIMIT ){
+			return 'Sorry, you have reached the view limit of this information!';
+		}
+
 		$paymentType = $this->paymentType();
 		$stripe_customer = $paymentType->stripe_customer;
 		if( !$stripe_customer || $paymentType->stripe_id != $sha1 ){
@@ -357,6 +361,12 @@ class Cockpit_Order extends Crunchbutton_Order {
 		if( $student_ID ){
 			return $student_ID;
 		}
+	}
+
+	public function campus_cash_times_viewed(){
+		$paymentType = $this->paymentType();
+		$id_user_payment_type = $paymentType->id_user_payment_type;
+		return Cockpit_Campus_Cash_Log::timesViewed( $id_user_payment_type );
 	}
 
 	public function campus_cash_charged(){
