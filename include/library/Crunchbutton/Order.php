@@ -21,9 +21,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	const TIP_PERCENT 				 = 'percent';
 	const TIP_NUMBER				 	 = 'number';
 
-	const PROCESS_TYPE_RESTAURANT 	= 'restaurant';
-	const PROCESS_TYPE_WEB			= 'web';
-	const PROCESS_TYPE_ADMIN		= 'admin';
+	const PROCESS_TYPE_RESTAURANT = 'restaurant';
+	const PROCESS_TYPE_WEB				= 'web';
+	const PROCESS_TYPE_ADMIN			= 'admin';
 
 	/**
 	 * Process an order
@@ -321,12 +321,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					if( $this->campus_cash && !$this->campusCash ){
 						$errors['campusCashInvalid'] = 'Please enter a valid '.$this->restaurant()->campusCashName().'.';
 					}
-				}
-
-				if( $this->campus_cash && !$params[ 'email' ] ){
-					$errors['campusCash'] = 'Please enter your email.';
-				} else {
-					$this->email = $params[ 'email' ];
 				}
 			} else {
 				$errors['payment_method'] = 'Please select a valid payment method.';
@@ -654,11 +648,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			if (!$payment_type || $this->_card['id'] || $this->campus_cash) {
 
 				if( $this->campus_cash && $this->_campus_cash_sha1 ){
+
+					$last_four = substr( $this->campusCash, -4 );
+
 					// create a new payment type
 					$payment_type = new User_Payment_Type([
 						'id_user' => $user->id_user,
 						'active' => 1,
-						'card' => '************1234',
+						'card' => $last_four,
 						'card_type' => Crunchbutton_User_Payment_Type::CARD_TYPE_CAMPUS_CASH,
 						'stripe_id' => $this->_campus_cash_sha1,
 						'stripe_customer' => $this->_customer,
@@ -974,6 +971,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function campusCashName(){
 		return ( $this->restaurant()->campusCashName() ? $this->restaurant()->campusCashName() : 'Student ID Number' );
+	}
+
+	public function campusCashLastFour(){
+		$paymentType = $this->paymentType();
+		return $paymentType->card;
 	}
 
 	public function campusCashFee(){
