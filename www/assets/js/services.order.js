@@ -869,6 +869,10 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 									$rootScope.$broadcast( 'newOrder' );
 									OrderViewService.newOrder = true;
 
+									if( service.campus_cash ){
+										OrderViewService._campus_cash[ uuid ] = service.form.campusCash;
+									}
+console.log('OrderViewService._campus_cash',OrderViewService._campus_cash);
 									$rootScope.navigation.link('/order/' + uuid + '/confirm', 'push');
 
 									if( App.push && App.push.register ){
@@ -1249,10 +1253,9 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 // OrdersService service
 NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope, $http, FacebookService) {
 
-	var service = { order : false, reload : true, newOrder : false };
+	var service = { order : false, reload : true, newOrder : false, _campus_cash: {} };
 
 	service.facebook = FacebookService;
-
 
 	service.load = function(refresh){
 		var url = App.service + 'order/' + $routeParams.id;
@@ -1267,6 +1270,10 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 			cache: !refresh
 		}).success( function( data ) {
 			service.order = data;
+
+			if( service._campus_cash && service._campus_cash[ service.order.uuid ] ){
+				service.order.campus_cash_number = service._campus_cash[ service.order.uuid ];
+			}
 
 			if (service.order.uuid) {
 				service.order._final_price = parseFloat(service.order.final_price).toFixed(2);
