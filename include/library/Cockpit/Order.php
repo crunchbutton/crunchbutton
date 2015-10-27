@@ -283,6 +283,10 @@ class Cockpit_Order extends Crunchbutton_Order {
 		// informed eta
 		$out[ 'informed_eta' ] = Crunchbutton_Order_Eta::informedEtaByOrder( $this->id_order );
 
+		if( $out[ 'campus_cash' ] ){
+			$out[ 'campus_cash_name' ] = $this->campusCashName();
+		}
+
 		return $out;
 	}
 

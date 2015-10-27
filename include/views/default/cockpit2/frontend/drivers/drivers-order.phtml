@@ -243,7 +243,11 @@
 					<i class="fa fa-credit-card" ng-if="oc.order.pay_type=='card'"></i>
 				</div>
 				<div class="order-info2 order-info-small">
-					Customer is paying by {{oc.order.pay_type}}
+					<span ng-if="oc.order.pay_type == 'card' && oc.order.campus_cash">
+						{{oc.order.campus_cash_name}}/campus cash order: Pay with Pex. REQUIRED to visually inspect the card to confirm card belongs to customer when dropping off the food.
+					</span>
+					<span ng-if="oc.order.pay_type == 'card' && !oc.order.campus_cash">Customer is paying by card</span>
+					<span ng-if="oc.order.pay_type == 'cash'">Customer is paying by cash</span>
 				</div>
 			</div>
 			<div class="info-block" ng-if="oc.order._instructions_fax">
