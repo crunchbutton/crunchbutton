@@ -2280,8 +2280,17 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					}
 				} else {
 					$spacer = ' / ';
-					$payment =
-					$msg = $this->name . $spacer . strtoupper( $this->pay_type ) . $spacer . strtoupper( $this->delivery_type ) . $spacer . preg_replace( '/[^\d.]/', '', $this->phone ) . $spacer;
+
+					if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD ){
+						$pay_type = 'CARD';
+						if( $this->campus_cash ){
+							$pay_type = strtoupper( $this->campusCashName() );
+						}
+					} else {
+						$pay_type = 'CASH';
+					}
+
+					$msg = $this->name . $spacer . $pay_type . $spacer . strtoupper( $this->delivery_type ) . $spacer . preg_replace( '/[^\d.]/', '', $this->phone ) . $spacer;
 
 					if( $this->delivery_type == Crunchbutton_Order::SHIPPING_DELIVERY ){
 						$msg .= $this->address . $spacer;
@@ -2300,6 +2309,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					}
 
 					$msg .= $spacer . $this->driverInstructionsFoodStatus() . $spacer . $this->driverInstructionsPaymentStatus();
+
+					if( $this->campus_cash ){
+						$msg .= $spacer . 'Check ID at delivery';
+					}
+
 				}
 
 				break;
@@ -3348,10 +3362,38 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					$action->save();
 			}
 		}
+		self::ticketForCampusCashOrder();
 	}
 
-	public function orderHasGeomatchedTicket(){
+	public static function ticketForCampusCashOrder(){
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->modify( '- 5 min' );
+		$orders = Order::q( 'SELECT * FROM `order` WHERE date > ? AND ( geomatched IS NULL OR geomatched = 0 )', [ $now->format( 'Y-m-d H:i:s' ) ] );
+		$pattern = "%s just placed an %s (Campus Cash) Order! Order details: Order %d in the %s community to this address %s. ";
+		foreach( $orders as $order ){
+			if( !$order->orderHasCampusCashTicket() ){
+					$campus_cash_name = $order->campusCashName();
+					$message = sprintf( $pattern, $order->name, $campus_cash_name, $order->id_order, $order->community()->name, $order->address );
+					Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message, 'bubble' => true ] );
+					$action = new Crunchbutton_Order_Action;
+					$action->id_order = $order->id_order;
+					$action->timestamp = date( 'Y-m-d H:i:s' );
+					$action->type = Crunchbutton_Order_Action::TICKET_CAMPUS_CASH;
+					$action->save();
+			}
+		}
+	}
+
+	public static function orderHasGeomatchedTicket(){
 		$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND type = ? ORDER BY id_order_action DESC LIMIT 1', [ $this->id_order, Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED ] );
+		if( $action->id_order_action ){
+			return true;
+		}
+		return false;
+	}
+
+	public function orderHasCampusCashTicket(){
+		$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND type = ? ORDER BY id_order_action DESC LIMIT 1', [ $this->id_order, Crunchbutton_Order_Action::TICKET_CAMPUS_CASH ] );
 		if( $action->id_order_action ){
 			return true;
 		}
