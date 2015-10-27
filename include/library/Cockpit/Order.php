@@ -285,7 +285,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 		if( $out[ 'campus_cash' ] ){
 			$out[ 'campus_cash_name' ] = $this->campusCashName();
-			$out[ 'campus_cash_last_four' ] = $this->campusCashLastFour();
+			$out[ 'campus_cash_last_digits' ] = $this->campusCashLastDigits();
 		}
 
 		return $out;

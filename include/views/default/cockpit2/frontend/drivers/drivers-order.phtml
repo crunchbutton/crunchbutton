@@ -244,7 +244,7 @@
 				</div>
 				<div class="order-info2 order-info-small">
 					<span ng-if="oc.order.pay_type == 'card' && oc.order.campus_cash">
-						REQUIRED to visually inspect student ID card to confirm info matches customer info when dropping off food. <span ng-if="oc.order.campus_cash_last_four">Last Four Digits {{oc.order.campus_cash_last_four}}</span>
+						REQUIRED to visually inspect student ID card to confirm info matches customer info when dropping off food. <span ng-if="oc.order.campus_cash_last_digits">Last Digits {{oc.order.campus_cash_last_digits}}</span>
 					</span>
 					<span ng-if="oc.order.pay_type == 'card' && !oc.order.campus_cash">Customer is paying by card</span>
 					<span ng-if="oc.order.pay_type == 'cash'">Customer is paying by cash</span>
