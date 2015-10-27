@@ -309,28 +309,28 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 
 		// check if the restaurant accepts campus cash payment method
-		if( $this->campus_cash && $this->restaurant()->campusCash() ){
+		if( $this->campus_cash ){
+			if( $this->restaurant()->campusCash() ){
+				if( $this->campus_cash && !$params[ 'campusCash' ] ){
+					$errors['campusCash'] = 'Please fill the field '.$this->restaurant()->campusCashName().'.';
+				} else {
+					if( $this->campus_cash ){
+						$this->campusCash = $this->restaurant()->campusCashValidate( $params[ 'campusCash' ] );
+					}
 
-			if( $this->campus_cash && !$params[ 'campusCash' ] ){
-				$errors['campusCash'] = 'Please fill the field '.$this->restaurant()->campusCashName().'.';
-			} else {
-				if( $this->campus_cash ){
-					$this->campusCash = $this->restaurant()->campusCashValidate( $params[ 'campusCash' ] );
+					if( $this->campus_cash && !$this->campusCash ){
+						$errors['campusCashInvalid'] = 'Please enter a valid '.$this->restaurant()->campusCashName().'.';
+					}
 				}
 
-				if( $this->campus_cash && !$this->campusCash ){
-					$errors['campusCashInvalid'] = 'Please enter a valid '.$this->restaurant()->campusCashName().'.';
+				if( $this->campus_cash && !$params[ 'email' ] ){
+					$errors['campusCash'] = 'Please enter your email.';
+				} else {
+					$this->email = $params[ 'email' ];
 				}
-			}
-
-			if( $this->campus_cash && !$params[ 'email' ] ){
-				$errors['campusCash'] = 'Please enter your email.';
 			} else {
-				$this->email = $params[ 'email' ];
+				$errors['payment_method'] = 'Please select a valid payment method.';
 			}
-
-		} else {
-			$errors['payment_method'] = 'Please select a valid payment method.';
 		}
 
 		if ($errors) {
