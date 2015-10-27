@@ -280,7 +280,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 		}
 
-
 		if (!$this->restaurant()->open()) {
 			$errors['closed'] = 'This restaurant is closed.';
 
@@ -304,12 +303,29 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$errors['minimum'] = 'Please meet the delivery minimum of '.$this->restaurant()->delivery_min.'.';
 		}
 
-		if( $this->campus_cash && !$params[ 'campusCash' ] ){
-			$errors['campusCash'] = 'Please fill the field '.$this->restaurant()->campusCashName().'.';
-		}
+		// check if the restaurant accepts campus cash payment method
+		if( $this->campus_cash && $this->restaurant()->campusCash() ){
 
-		if( $this->campus_cash && !$params[ 'email' ] ){
-			$errors['campusCash'] = 'Please enter your email.';
+			if( $this->campus_cash && !$params[ 'campusCash' ] ){
+				$errors['campusCash'] = 'Please fill the field '.$this->restaurant()->campusCashName().'.';
+			} else {
+				if( $this->campus_cash ){
+					$this->campusCash = $this->restaurant()->campusCashValidate( $params[ 'campusCash' ] );
+				}
+
+				if( $this->campus_cash && !$this->campusCash ){
+					$errors['campusCashInvalid'] = 'Please enter a valid '.$this->restaurant()->campusCashName().'.';
+				}
+			}
+
+			if( $this->campus_cash && !$params[ 'email' ] ){
+				$errors['campusCash'] = 'Please enter your email.';
+			} else {
+				$this->email = $params[ 'email' ];
+			}
+
+		} else {
+			$errors['payment_method'] = 'Please select a valid payment method.';
 		}
 
 		if ($errors) {
@@ -630,33 +646,52 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$payment_type = $user->payment_type();
 
 			// if the user gave us a new card, store it because thats the one we used
-			if (!$payment_type || $this->_card['id']) {
+			if (!$payment_type || $this->_card['id'] || $this->campus_cash) {
 
-				// create a new payment type
-				$payment_type = new User_Payment_Type([
-					'id_user' => $user->id_user,
-					'active' => 1,
-					'card' => $this->_card['lastfour'] ? ('************'.$this->_card['lastfour']) : '',
-					'card_type' => $this->_card['card_type'],
-					'card_exp_year' => $this->_card['year'],
-					'card_exp_month' => $this->_card['month'],
-					'date' => date('Y-m-d H:i:s')
-				]);
+				if( $this->campus_cash && $this->_campus_cash_sha1 ){
+					// create a new payment type
+					$payment_type = new User_Payment_Type([
+						'id_user' => $user->id_user,
+						'active' => 1,
+						'card' => '************1234',
+						'card_type' => Crunchbutton_User_Payment_Type::CARD_TYPE_CAMPUS_CASH,
+						'stripe_id' => $this->_campus_cash_sha1,
+						'card_exp_year' => null,
+						'card_exp_month' => null,
+						'date' => date('Y-m-d H:i:s')
+					]);
 
-				switch (Crunchbutton_User_Payment_Type::processor()) {
-					case 'stripe':
-						$payment_type->stripe_id = $this->_paymentType;
-						$user->stripe_id = $this->_customer;
-						$user->save();
-						break;
+					$payment_type->save();
+
+					// Desactive others payments
+					$payment_type->desactiveOlderPaymentsType();
+
+				} else {
+					// create a new payment type
+					$payment_type = new User_Payment_Type([
+						'id_user' => $user->id_user,
+						'active' => 1,
+						'card' => $this->_card['lastfour'] ? ('************'.$this->_card['lastfour']) : '',
+						'card_type' => $this->_card['card_type'],
+						'card_exp_year' => $this->_card['year'],
+						'card_exp_month' => $this->_card['month'],
+						'date' => date('Y-m-d H:i:s')
+					]);
+
+					switch (Crunchbutton_User_Payment_Type::processor()) {
+						case 'stripe':
+							$payment_type->stripe_id = $this->_paymentType;
+							$user->stripe_id = $this->_customer;
+							$user->save();
+							break;
+					}
+
+					$payment_type->save();
+
+					// Desactive others payments
+					$payment_type->desactiveOlderPaymentsType();
 				}
-
-				$payment_type->save();
-
-				// Desactive others payments
-				$payment_type->desactiveOlderPaymentsType();
 			}
-
 			$this->id_user_payment_type = $payment_type->id_user_payment_type;
 		}
 
@@ -931,6 +966,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 	}
 
+	public function campusCashName(){
+		return ( $this->restaurant()->campusCashName() ? $this->restaurant()->campusCashName() : 'Student ID Number' );
+	}
+
+	public function campusCashFee(){
+		return $this->restaurant()->campusCashFee();
+	}
+
 	public function calcFinalPriceMinusUsersCredit(){
 		$final_price = $this->final_price_plus_delivery_markup;
 		if( $this->pay_type == 'card' ){
@@ -1043,12 +1086,24 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				break;
 
 			case 'card':
+
 				// campus cash
 				if( $this->campus_cash ){
 
+					$campus_money = new Crunchbutton_Stripe_Campus_Cash;
+					$success = $campus_money->store( [
+						'campus_cash' => $this->campusCash,
+						'name' => $this->name,
+						'email' => $this->email ] );
 
+					if( $success && $success[ 'campus_cash_sha1' ] ){
+						$this->_campus_cash_sha1 = $success[ 'campus_cash_sha1' ];
+						$this->_customer = $success['customer'];
+						$status = true;
+					}
 
 				} else {
+
 					$user = c::user()->id_user ? c::user() : null;
 
 					if ($user) {
@@ -1474,7 +1529,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function serviceFee() {
-		return number_format(($this->price + $this->delivery_fee) * ($this->service_fee/100),2);
+		$fee = number_format(($this->price + $this->delivery_fee) * ($this->service_fee/100),2);
+		if( $this->campus_cash && $this->campusCashFee() ){
+			$fee += number_format(($this->price + $this->delivery_fee) * ($this->campusCashFee()/100),2);
+		}
+		return $fee;
 	}
 
 	public function cbFee() {
@@ -2322,6 +2381,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$out['card_ending'] = false;
 		}
 
+		if( $paymentType->card_type == Crunchbutton_User_Payment_Type::CARD_TYPE_CAMPUS_CASH ){
+			$out['card_ending'] = false;
+			$out['campus_cash'] = true;
+			$out['campus_cash_name'] = $this->campusCashName();
+		}
 
 		$date = new DateTime($this->date);
 		$date->setTimeZone($timezone);

@@ -1156,6 +1156,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return 0;
 	}
 
+	public function campusCashValidate( $card ){
+		if( $this->campusCash() ){
+			$community = $this->community()->get(0);
+			return $community->campusCashValidate( $card );
+		}
+		return false;
+	}
+
 	/**
 	 * Returns an array with all the information for a Restaurant.
 	 *

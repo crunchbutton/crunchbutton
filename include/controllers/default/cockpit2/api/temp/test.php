@@ -1,7 +1,19 @@
 <?php
 
 class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
+
 	public function init() {
+
+		$code = 'tZwk0AYc+E0FPIy+6lyLEg==';
+
+		echo '<pre>';var_dump( c::crypt()->decrypt( $code ) );exit();
+
+		echo '<pre>';var_dump( $code );exit();
+
+		$community = Community::o( 6 );
+		echo '<pre>';var_dump( $community->campusCashValidate( 'ts01234567' ) );exit();
+
+		echo '<pre>';var_dump( 1 );exit();
 
 			$campus_money = new Crunchbutton_Stripe_Customer;
 			$money = 'T12345678';
