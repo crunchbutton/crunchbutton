@@ -330,6 +330,52 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 	}
 
+	public function campus_cash_studentID( $sha1 ){
+
+		if( !$sha1 ){
+			return Crunchbutton_Stripe_Campus_Cash::ERROR_NOT_FOUND;
+		}
+
+		$charged = $this->campus_cash_charged();
+		if( $charged ){
+			return 'Order already charged. ' . $charged[ 'name' ] . ' at ' . $charged[ 'date' ] . '.';
+		}
+		if( $this->refunded ){
+			return 'Order refunded!';
+		}
+
+		$paymentType = $this->paymentType();
+		$stripe_customer = $paymentType->stripe_customer;
+		if( !$stripe_customer || $paymentType->stripe_id != $sha1 ){
+			return Crunchbutton_Stripe_Campus_Cash::ERROR_NOT_FOUND;
+		}
+		$student_ID = Crunchbutton_Stripe_Campus_Cash::retrieve( $stripe_customer, $paymentType->id_user_payment_type );
+		if( $student_ID ){
+			return $student_ID;
+		}
+	}
+
+	public function campus_cash_charged(){
+		$transaction = Crunchbutton_Order_Transaction::q( 'SELECT * FROM order_transaction WHERE id_order = ? AND type = ? ORDER BY id_order_transaction DESC LIMIT 1', [ $this->id_order, Crunchbutton_Order_Transaction::TYPE_CAMPUS_CASH_CHARGED ] )->get( 0 );
+		if( $transaction->id_order_transaction ){
+			return [ 'name' => $transaction->admin()->name, 'date' => $transaction->date()->format( 'M dS g:i a' ) ];
+		}
+		return false;
+	}
+
+	public function mark_cash_card_charged(){
+		$transaction = new Crunchbutton_Order_Transaction;
+		$transaction->id_order = $this->id_order;
+		$transaction->id_admin = c::user()->id_admin;
+		$transaction->type = Crunchbutton_Order_Transaction::TYPE_CAMPUS_CASH_CHARGED;
+		$transaction->date = date( 'Y-m-d H:i:s' );
+		$transaction->save();
+		if( $transaction->id_order_transaction ){
+			return true;
+		}
+		return false;
+	}
+
 	public function hasCustomerBeenTexted5Minutes(){
 		$texts = Order::q( 'SELECT * FROM order_action WHERE `type`=\'delivery-text-5min\' AND id_order=? limit 1',[$this->id_order])->get(0);
 		if ($texts->id_order) {

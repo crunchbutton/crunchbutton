@@ -1,1 +1,2 @@
 ALTER TABLE user_payment_type CHANGE COLUMN `card_type` `card_type` enum('visa','mastercard','amex','discover','campus_cash') DEFAULT NULL;
+ALTER TABLE user_payment_type ADD COLUMN `stripe_customer` varchar(100) DEFAULT NULL;
