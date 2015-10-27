@@ -1333,9 +1333,22 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 	public function campusCashFee(){
 		if( $this->campusCash() && $this->campus_cash_fee ){
-			return max( $this->campus_cash_fee, 0 );
+			return floatval( max( $this->campus_cash_fee, 0 ) );
 		}
 		return 0;
+	}
+
+	public function campusCashValidate( $card ){
+		if( $this->campusCash() ){
+			if( $this->campus_cash_validation ){
+				preg_match( $this->campus_cash_validation, $card, $results );
+				if( $results[ 0 ] ){
+					return trim( $results[ 0 ] );
+				}
+				return false;
+			}
+		}
+		return false;
 	}
 
 	// Smart population of "our most popular locations" on UI2 #6056

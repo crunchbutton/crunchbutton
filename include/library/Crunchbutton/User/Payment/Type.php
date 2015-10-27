@@ -2,9 +2,11 @@
 
 class Crunchbutton_User_Payment_Type extends Cana_Table {
 
+	const CARD_TYPE_CAMPUS_CASH = 'campus_cash';
+
 	public static function processor() {
 		return c::config()->site->config('processor_payments')->value;
-	}	
+	}
 
 	public static function getUserPaymentType($id_user = null) {
 		$id_user = $id_user ? $id_user : c::user()->id_user;
@@ -35,12 +37,12 @@ class Crunchbutton_User_Payment_Type extends Cana_Table {
 			$this->deactivate();
 		});
 	}
-	
+
 	public function deactivate() {
 		$this->active = 0;
 		$this->save();
 	}
-	
+
 	public function user() {
 		return User::o($this->id_user);
 	}
@@ -50,6 +52,6 @@ class Crunchbutton_User_Payment_Type extends Cana_Table {
 		$this
 			->table('user_payment_type')
 			->idVar('id_user_payment_type')
-			->load($id); 
+			->load($id);
 	}
 }

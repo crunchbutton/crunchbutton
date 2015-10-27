@@ -72,8 +72,8 @@
 
 					<button ng-click="order.tooglePayment( 'card' )" ng-if="(restaurant.credit == '1')" ng-class="{'toggle-active': order.form.pay_type=='card' }" class="payment-form-toggle">card</button>
 					<button ng-click="order.tooglePayment( 'cash' )" ng-if="(restaurant.cash == '1')" ng-class="{'toggle-active': order.form.pay_type=='cash' }" class="payment-form-toggle">
-						<span ng-if="(restaurant.cash == '1' && restaurant.credit == '1')">Cash</span>
-						<span ng-if="(restaurant.cash == '1' && restaurant.credit == '0')">Only Cash Accepted</span>
+						<span ng-if="(restaurant.cash == '1' && ( restaurant.credit == '1' || restaurant.campus_cash ) )">Cash</span>
+						<span ng-if="(restaurant.cash == '1' && restaurant.credit == '0' && !restaurant.campus_cash )">Only Cash Accepted</span>
 					</button>
 
 					<button ng-click="order.tooglePayment( 'applepay' )" ng-if="(restaurant.credit == '1') && applePay"  ng-class="{'toggle-active': order.form.pay_type=='applepay' }" class="payment-form-toggle">apple pay</button>

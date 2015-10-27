@@ -1,10 +1,10 @@
 <?php
 
-class Crunchbutton_Stripe_Customer extends Crunchbutton_Charge {
+class Crunchbutton_Stripe_Campus_Cash extends Crunchbutton_Charge {
 
 	public function __construct() {}
 
-	public function storeCampusMoney($params = []) {
+	public function store($params = []) {
 
 		$success = false;
 

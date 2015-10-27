@@ -1315,9 +1315,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 		var process = function(){
 
-
 			// Point redemption system improvements for customer-customer referrals #4248
-
 			$scope.points = order.account.user.points;
 
 			order.init();
