@@ -4,7 +4,9 @@
 	<meta property="og:title" content="<?=$this->restaurant->name?> on Crunchbutton">
 	<meta property="og:description" content="One click food ordering from <?=$this->restaurant->name?>. We find the best restaurants <?=$this->community->prep?> <?=$this->community->name?> and make ordering your favorite dishes as easy as one click.">
 	<? if ($this->restaurant->image()) : ?>
-		<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/cache/images/<?=$this->restaurant->facebook()->getFileName()?>">
+		<?php if( $this->restaurant->facebook() ) { ?>
+			<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/cache/images/<?=$this->restaurant->facebook()->getFileName()?>">
+		<?php } ?>
 	<? else : ?>
 		<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/facebook-like.png">
 	<? endif ; ?>
