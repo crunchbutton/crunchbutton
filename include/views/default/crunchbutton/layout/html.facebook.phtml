@@ -1,38 +1,38 @@
-<? if (strpos($_SERVER['HTTP_USER_AGENT'],'facebookexternalhit') !== false) : ?>
 
-	<? if ($this->restaurant->id_restaurant) : ?>
-		<meta property="og:title" content="<?=$this->restaurant->name?> on Crunchbutton">
-		<meta property="og:description" content="One click food ordering from <?=$this->restaurant->name?>. We find the best restaurants <?=$this->community->prep?> <?=$this->community->name?> and make ordering your favorite dishes as easy as one click.">
-		<? if ($this->restaurant->image()) : ?>
-			<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/cache/images/<?=$this->restaurant->facebook()->getFileName()?>">
+
+<? if ($this->restaurant->id_restaurant) : ?>
+	<meta property="og:title" content="<?=$this->restaurant->name?> on Crunchbutton">
+	<meta property="og:description" content="One click food ordering from <?=$this->restaurant->name?>. We find the best restaurants <?=$this->community->prep?> <?=$this->community->name?> and make ordering your favorite dishes as easy as one click.">
+	<? if ($this->restaurant->image()) : ?>
+		<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/cache/images/<?=$this->restaurant->facebook()->getFileName()?>">
+	<? else : ?>
+		<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/facebook-like.png">
+	<? endif ; ?>
+
+<? elseif ($this->community->id_community) : ?>
+	<meta property="og:title" content="Crunchbutton - One click food ordering from <?=$this->community->name?>">
+	<meta property="og:description" content="Your favorite restaurants <?=$this->community->prep?> <?=$this->community->name?> delivered. Get food delivered from places that don't deliver. Place an order, and we save it for next time, along with your delivery and payment info. Order your favorite dishes with a click of one button from your computer or phone.">
+	<? foreach ($this->community->restaurants() as $restaurant) : ?>
+		<? if ($restaurant->image()) : ?>
+			<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/cache/images/<?=$restaurant->facebook()->getFileName()?>">
 		<? else : ?>
 			<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/facebook-like.png">
 		<? endif ; ?>
 
-	<? elseif ($this->community->id_community) : ?>
-		<meta property="og:title" content="Crunchbutton - One click food ordering from <?=$this->community->name?>">
-		<meta property="og:description" content="We feature the top restaurants <?=$this->community->prep?> <?=$this->community->name?>. Order your favorite dishes with a click of one button from your computer or phone.">
-		<? foreach ($this->community->restaurants() as $restaurant) : ?>
-			<? if ($restaurant->image()) : ?>
-				<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/cache/images/<?=$restaurant->facebook()->getFileName()?>">
-			<? else : ?>
-				<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/facebook-like.png">
-			<? endif ; ?>
+		<? break;?>
+	<? endforeach; ?>
 
-			<? break;?>
-		<? endforeach; ?>
-
-	<? else : ?>
-		<meta property="og:title" content="Crunchbutton - One click food ordering">
-		<meta property="og:description" content="We feature the top restaurants in your neighborhood. Order your favorite dishes with a click of one button from your computer or phone.">
-		<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/facebook-like.png">
-	<? endif ; ?>
-
-	<meta property="og:type" content="company">
-	<meta property="og:url" content="https://<?=$_SERVER['HTTP_HOST']?><?=$_SERVER['REQUEST_URI']?>">
-	<meta property="og:site_name" content="Crunchbutton">
-	<meta property="fb:app_id" content="***REMOVED***">
+<? else : ?>
+	<meta property="og:title" content="Crunchbutton - One click food ordering">
+	<meta property="og:description" content="Your favorite restaurants, delivered. Get food delivered from places that don't deliver. Place an order, and we save it for next time, along with your delivery and payment info. Come back and reorder your favorites with just one click.">
+	<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/facebook-like.png">
 <? endif ; ?>
+
+<meta property="og:type" content="company">
+<meta property="og:url" content="https://<?=$_SERVER['HTTP_HOST']?><?=$_SERVER['REQUEST_URI']?>">
+<meta property="og:site_name" content="Crunchbutton">
+<meta property="fb:app_id" content="***REMOVED***">
+
 <? if ($_SERVER['__HTTP_HOST'] == 'crunchbutton.com') : ?>
 	<script>
 		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
