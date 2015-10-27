@@ -193,6 +193,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		// service fee for customer
 		$this->service_fee = $this->restaurant()->fee_customer;
 		$serviceFee = ($this->price + $this->delivery_fee) * Util::ceil(($this->service_fee/100),2);
+
+		if( $this->campus_cash && $this->campusCashFee() ){
+			$serviceFee += number_format(($this->price + $this->delivery_fee) * ($this->campusCashFee()/100),2);
+		}
+
 		$serviceFee = Util::ceil( $serviceFee, 2);
 		$totalWithFees = $this->price + $this->delivery_fee + $serviceFee;
 		$totalWithFees = Util::ceil( $totalWithFees, 2);
