@@ -8,6 +8,7 @@ class Crunchbutton_Order_Transaction extends Cana_Table {
 	const TYPE_PAID_TO_RESTAURANT = 'paid-to-restaurant';
 	const TYPE_PAID_TO_DRIVER = 'paid-to-driver';
 	const TYPE_REFUNDED = 'refunded';
+	const TYPE_CAMPUS_CASH_CHARGED = 'campus-cash-charged';
 	const TYPE_REIMBURSED_TO_DRIVER = 'reimbursed-driver';
 	const PAYMENT_TYPE_GIFT = 'gift';
 	const PAYMENT_TYPE_CARD = 'card';
@@ -68,6 +69,10 @@ class Crunchbutton_Order_Transaction extends Cana_Table {
 		return false;
 	}
 
+	public function admin(){
+		return Admin::o($this->id_admin);
+	}
+
 	public static function orderPaymentInfoDriver( $id_order ){
 		$query = 'SELECT p.* FROM order_transaction ot
 								INNER JOIN payment_order_transaction pot ON pot.id_order_transaction = ot.id_order_transaction
@@ -78,6 +83,13 @@ class Crunchbutton_Order_Transaction extends Cana_Table {
 			return $payment->get( 0 );
 		}
 		return false;
+	}
+
+	public function date() {
+		if (!isset($this->_date)) {
+			$this->_date = new DateTime($this->timestamp, new DateTimeZone(c::config()->timezone));
+		}
+		return $this->_date;
 	}
 
 	public function __construct($id = null) {

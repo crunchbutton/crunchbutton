@@ -232,7 +232,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 					$o->returning_customer = ( $o->orders_by_phone > 1 );
 				}
 
-				$boolFields = ['confirmed','refunded','delivery_service','do_not_reimburse_driver','paid_with_cb_card','pay_if_refunded','asked_to_call', 'formal_relationship'];
+				$boolFields = ['confirmed','refunded','delivery_service','do_not_reimburse_driver','paid_with_cb_card','pay_if_refunded','asked_to_call', 'formal_relationship', 'campus_cash'];
 
 				foreach (get_object_vars($o) as $key => $value) {
 					$type = gettype($value);

@@ -2,7 +2,39 @@
 
 class Crunchbutton_Stripe_Campus_Cash extends Crunchbutton_Charge {
 
+	const ERROR_NOT_FOUND = 'Student ID not found!';
+
 	public function __construct() {}
+
+	public static function retrieve( $stripe_customer, $id_user_payment_type ){
+
+		try {
+			$customer = \Stripe\Customer::retrieve( $stripe_customer );
+		} catch(\Stripe\Error\Card $e) {
+			$errors[] = $e->getMessage();
+		} catch (\Stripe\Error\InvalidRequest $e) {
+			$errors[] = 'Invalid parameters for payment request. Try refreshing your page or reloading your app and trying again.';
+		} catch (\Stripe\Error\Authentication $e) {
+			$errors[] = 'Payment authention failed';
+		} catch (\Stripe\Error\ApiConnection $e) {
+			$errors[] = 'Connection error communicating with Stripe.';
+		} catch (\Stripe\Error\Base $e) {
+			$error[] = 'Some wierd error when communicating with Stripe.';
+		} catch (Exception $e) {
+			$errors[] = 'Could not add new card for some reason. Try using the old one.';
+		}
+
+		if( !$errors ){
+			if( $customer && $customer->metadata && $customer->metadata->campus_cash ){
+				Cockpit_Campus_Cash_Log::retrieved( $id_user_payment_type );
+				return c::crypt()->decrypt( $customer->metadata->campus_cash );
+			} else {
+				return self::ERROR_NOT_FOUND;
+			}
+		} else {
+			return join( '.', $errors );
+		}
+	}
 
 	public function store($params = []) {
 

@@ -37,6 +37,11 @@
 					<a href="/customer/{{order.id_user}}">{{order.name}}</a><br>
 					<a href ng-click="callText(order.phone)" class="listview-smaller">{{order.phone | formatPhone}}</a>
 				<?php /* Customer */ ?>
+				<div>
+					<span class="tag tag-purple" ng-if="order.pay_type == 'cash'">Cash</span>
+					<span class="tag tag-green" ng-if="order.pay_type == 'card' && !order.campus_cash">Card</span>
+					<span class="tag tag-blue" ng-if="order.pay_type == 'card' && order.campus_cash">Campus Cash</span>
+				</div>
 			</td>
 			<td>
 				<?php /* Order */ ?>

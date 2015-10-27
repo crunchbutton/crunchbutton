@@ -110,6 +110,17 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 				break;
 
+			case 'campus-cash':
+				if (!c::admin()->permission()->check(['global', 'campus-cash'])) {
+					$this->error(401);
+				}
+				if ($this->method() == 'post') {
+					$sha1 = $this->request()[ 'sha1' ];
+					echo json_encode( [ 'success' => $order->campus_cash_studentID( $sha1 ) ] );
+				} else {
+					$this->error(401);
+				}
+				break;
 			case 'refund':
 				if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
 					$this->error(401);
@@ -163,6 +174,17 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				$order->do_not_pay_restaurant = ( $order->do_not_pay_restaurant == 1 ? 0 : 1 );
 				$order->save();
 				echo json_encode( [ 'success' => true ] );
+				break;
+
+			case 'mark_cash_card_charged':
+				if (!c::admin()->permission()->check(['global', 'support-all'])) {
+					$this->error(401);
+				}
+				if( $order->mark_cash_card_charged() ){
+					echo json_encode( [ 'success' => true ] );
+				} else {
+					echo json_encode( [ 'error' => true ] );
+				}
 				break;
 
 			case 'resend_notification':
@@ -287,6 +309,18 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				$out[ 'do_not_reimburse_driver' ] = ( intval( $out[ 'do_not_reimburse_driver' ] ) > 0 ) ? true : false;
 				$out[ 'do_not_pay_driver' ] = ( intval( $out[ 'do_not_pay_driver' ] ) > 0 ) ? true : false;
 				$out[ 'do_not_pay_restaurant' ] = ( intval( $out[ 'do_not_pay_restaurant' ] ) > 0 ) ? true : false;
+
+				$campus_card_charged = $order->campus_cash_charged();
+
+				if( $campus_card_charged ){
+					$out[ 'campus_cash_charged' ] = true;
+					$out[ 'campus_cash_charged_info' ] = $campus_card_charged;
+				} else {
+					$out[ 'campus_cash_charged' ] = false;
+					$paymentType = $order->paymentType();
+					$out[ 'campus_cash_sha1' ] = $paymentType->stripe_id;
+				}
+
 				echo json_encode($out);
 				break;
 		}

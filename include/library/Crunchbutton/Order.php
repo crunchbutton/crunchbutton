@@ -656,6 +656,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						'card' => '************1234',
 						'card_type' => Crunchbutton_User_Payment_Type::CARD_TYPE_CAMPUS_CASH,
 						'stripe_id' => $this->_campus_cash_sha1,
+						'stripe_customer' => $this->_customer,
 						'card_exp_year' => null,
 						'card_exp_month' => null,
 						'date' => date('Y-m-d H:i:s')
