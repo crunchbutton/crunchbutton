@@ -173,11 +173,9 @@
 				<p>
 					<span ng-show="(order.pay_type == 'card')">
 						Paid <b>$<span ng-bind-html-unsafe="order.charged | formatPrice"></span></b>
-						<span ng-show="order.campus_cash">
-							by <b>{{order.campus_cash_name}}</b>
+						<span ng-show="order.campus_cash">&nbsp;by <b>{{order.campus_cash_name}}</b>
 						</span>
-						<span ng-show="!order.campus_cash">
-							by card <span ng-show="order.card_ending">ending in <b>{{order.card_ending}}</b>
+						<span ng-show="!order.campus_cash">&nbsp;by card <span ng-show="order.card_ending">ending in <b>{{order.card_ending}}</b>
 						</span>
 						</span>
 						<div class="credit" ng-show="!order.reward_delivery_free && (order.credit && order.credit > 0)">( ${{order._credit}} credit )</div>
