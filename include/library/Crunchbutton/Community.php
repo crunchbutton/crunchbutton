@@ -1331,6 +1331,13 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return null;
 	}
 
+	public function campusCashReceiptInfo(){
+		if( $this->campusCash() && $this->campus_cash_receipt_info ){
+			return $this->campus_cash_receipt_info;
+		}
+		return null;
+	}
+
 	public function campusCashFee(){
 		if( $this->campusCash() && $this->campus_cash_fee ){
 			return floatval( max( $this->campus_cash_fee, 0 ) );

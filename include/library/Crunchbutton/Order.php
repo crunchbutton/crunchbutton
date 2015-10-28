@@ -973,6 +973,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return ( $this->restaurant()->campusCashName() ? $this->restaurant()->campusCashName() : 'Student ID Number' );
 	}
 
+	public function campusCashReceiptInfo(){
+		return $this->restaurant()->campusCashReceiptInfo();
+	}
+
 	public function campusCashLastDigits(){
 		$paymentType = $this->paymentType();
 		return $paymentType->card;
@@ -2407,6 +2411,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$out['card_ending'] = false;
 			$out['campus_cash'] = true;
 			$out['campus_cash_name'] = $this->campusCashName();
+			$out['campus_cash_receipt_info'] = $this->campusCashReceiptInfo();
 		}
 
 		$date = new DateTime($this->date);

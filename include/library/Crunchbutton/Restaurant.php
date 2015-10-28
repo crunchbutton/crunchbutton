@@ -1148,6 +1148,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return null;
 	}
 
+	public function campusCashReceiptInfo(){
+		if( $this->campusCash() ){
+			$community = $this->community()->get(0);
+			return $community->campusCashReceiptInfo();
+		}
+		return null;
+	}
+
 	public function campusCashFee(){
 		if( $this->campusCash() ){
 			$community = $this->community()->get(0);
