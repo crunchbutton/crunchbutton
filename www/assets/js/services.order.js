@@ -872,7 +872,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 									if( service.campus_cash ){
 										OrderViewService._campus_cash[ uuid ] = service.form.campusCash;
 									}
-console.log('OrderViewService._campus_cash',OrderViewService._campus_cash);
+
 									$rootScope.navigation.link('/order/' + uuid + '/confirm', 'push');
 
 									if( App.push && App.push.register ){

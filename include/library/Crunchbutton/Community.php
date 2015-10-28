@@ -130,6 +130,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	 * @see Cana_Table::exports()
 	 */
 	public function exports() {
+
 		$out = $this->properties();
 		$out[ 'name_alt' ] = $this->name_alt();
 		$out[ 'prep' ] = $this->prep();
@@ -164,7 +165,6 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		} else {
 			$out[ 'dont_warn_till' ] = null;
 		}
-
 
 		$out[ 'driver_group' ] = $this->driver_group()->name;
 		$out[ 'amount_per_order' ] = floatval( $this->amount_per_order );
@@ -1336,6 +1336,13 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			return floatval( max( $this->campus_cash_fee, 0 ) );
 		}
 		return 0;
+	}
+
+	public function campusCashMask(){
+		if( $this->campusCash() && $this->campus_cash_mask ){
+			return $this->campus_cash_mask;
+		}
+		return null;
 	}
 
 	public function campusCashValidate( $card ){

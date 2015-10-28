@@ -250,13 +250,24 @@
 						<div class="notes">Feature disabled!</div>
 					</li>
 
-					<li class="li-input" ng-show="community.campus_cash" ng-class="{'error':form.campusCashName.$invalid}">
+					<li class="li-input" ng-show="community.campus_cash" ng-class="{'error':form.campusCashValidation.$invalid}">
 						<div class="label">Campus Cash Validation:</div>
-						<div class="input"><input type="text" name="campusCashName" ng-model="community.campus_cash_validation" required placeholder="Campus Cash Validation (Regular Expression)" ng-maxlength="255" ></div>
+						<div class="input"><input type="text" name="campusCashValidation" ng-model="community.campus_cash_validation" required placeholder="Campus Cash Validation (Regular Expression)" ng-maxlength="255" ></div>
 						<div class="box-error">
 							<small ng-show="form.communityName.$error.required">Required.</small>
 						</div>
 					</li>
+
+					<li class="li-input" ng-show="community.campus_cash" ng-class="{'error':form.campusCashMask.$invalid}">
+						<div class="label">Campus Cash Mask:</div>
+						<div class="input"><input type="text" name="campusCashMask" ng-model="community.campus_cash_mask" ng-maxlength="255" ></div>
+						<div class="box-error">
+							<small ng-show="form.communityName.$error.required">Required.</small>
+						</div>
+					</li>
+
+
+
 				</ul>
 			</div>
 		</div>
