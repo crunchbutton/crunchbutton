@@ -860,7 +860,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		return $values;
 	}
 
-	public function scheduleRestaurantPayment( $id_restaurants ){
+	public function scheduleRestaurantPayment( $id_restaurants, $id_admin ){
 		$this->log( 'scheduleRestaurantPayment', $id_restaurants );
 		$restaurants = $this->startRestaurant();
 		foreach ( $restaurants as $_restaurant ) {
@@ -898,7 +898,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
 				$schedule->note = $notes;
 				$schedule->processor = Crunchbutton_Payment::processor();
-				$schedule->id_admin = c::user()->id_admin;
+				$schedule->id_admin = $id_admin;
 
 				$range = ( new DateTime( $this->filters[ 'start' ] ) )->format( 'm/d/Y' );
 				$range .= ' => ';
@@ -921,8 +921,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$this->log( 'scheduleRestaurantPayment', $schedule->properties() );
 			}
 		}
+		return true;
 	}
-
 
 	public function scheduleRestaurantArbitraryPayment( $id_restaurant, $amount, $pay_type, $notes ){
 
@@ -1103,7 +1103,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 	}
 
-	public function scheduleDriverPayment( $id_drivers, $type ){
+	public function scheduleDriverPayment( $id_drivers, $type, $id_admin ){
 
 		$this->log( 'scheduleDriversPayment', $id_drivers );
 
@@ -1118,7 +1118,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$adjustment = $id_drivers[ $key ][ 'adjustment' ];
 				$adjustment_notes = $id_drivers[ $key ][ 'adjustment_notes' ];
 				$id_driver = $key;
-				$id_admin = c::user()->id_admin;
+				$id_admin = $id_admin;
 				$this->log( 'scheduleDriverPayment', [ $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type, $id_admin ] );
 				$this->scheduleDriverPaymentTimeout( $_driver, $notes, $adjustment, $adjustment_notes, $id_driver, $type, $id_admin );
 			}
@@ -2191,6 +2191,22 @@ class Crunchbutton_Settlement extends Cana_Model {
 		if( $schedule->id_payment_schedule ){
 			Crunchbutton_Settlement::revertPaymentByScheduleId( $schedule->id_payment_schedule );
 		}
+	}
+
+	public static function hasSettlementQueRunning( $type, $id_queue ){
+		$queue = Crunchbutton_Queue::q( 'SELECT * FROM queue q INNER JOIN queue_type qt ON qt.id_queue_type = q.id_queue_type AND qt.type = ? AND q.status = ? AND q.id_queue != ? ORDER BY id_queue DESC LIMIT 1', [ $type, Crunchbutton_Queue::STATUS_RUNNING, $id_queue ] )->get( 0 );
+		if( $queue->id_queue ){
+			return $queue;
+		}
+		return false;
+	}
+
+	public static function canCreateSettlementQueue( $type ){
+		$queue = Crunchbutton_Queue::q( 'SELECT * FROM queue q INNER JOIN queue_type qt ON qt.id_queue_type = q.id_queue_type AND qt.type = ? AND ( q.status = ? OR q.status = ? ) ORDER BY id_queue DESC LIMIT 1', [ $type, Crunchbutton_Queue::STATUS_RUNNING, Crunchbutton_Queue::STATUS_NEW ] )->get( 0 );
+		if( $queue->id_queue ){
+			return false;
+		}
+		return true;
 	}
 
 	public function revertPaymentByScheduleId( $id_payment_schedule ){
