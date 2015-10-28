@@ -81,6 +81,38 @@ NGApp.controller('SettlementListCtrl', function ($scope, $location, SettlementSe
 
 });
 
+NGApp.controller('SettlementQueueListCtrl', function ($scope, $location, SettlementService, ViewListService ) {
+
+	angular.extend($scope, ViewListService);
+
+	$scope.view({
+		scope: $scope,
+		watch: {
+			search: '',
+			type: null,
+			status: null,
+			fullcount: false
+		},
+		update: function() {
+			update();
+		}
+	});
+
+	var update = function(){
+		$scope.ready = false;
+		SettlementService.queue({
+			'page': $scope.query.page,
+			'type': $scope.query.type,
+			'status': $scope.query.status,
+			'date': $scope.query.date
+		}, function( data ){
+			$scope.queues = data.results;
+			$scope.pages = data.pages;
+			$scope.complete(data);
+		});
+	}
+});
+
 NGApp.controller( 'SettlementRestaurantsPaymentArbitraryCtrl', function ( $scope, $rootScope, $routeParams, SettlementService, RestaurantService) {
 
 	$scope.ready = false;
@@ -281,6 +313,9 @@ NGApp.controller( 'SettlementRestaurantsCtrl', function ( $scope, $filter, Settl
 	}
 
 	$scope.schedule = function(){
+
+		$scope.scheduling = true;
+
 		$scope.makeBusy();
 
 		var params = { 'start': $filter( 'date' )( $scope.range.start, 'yyyy-MM-dd' ),
@@ -300,8 +335,13 @@ NGApp.controller( 'SettlementRestaurantsCtrl', function ( $scope, $filter, Settl
 		params[ 'id_restaurants' ] = id_restaurants;
 
 		SettlementService.restaurants.schedule( params, function( json ){
+			$scope.scheduling = false;
 			$scope.unBusy();
-			$scope.navigation.link( '/settlement/restaurants/scheduled' );
+			if( json.success ){
+				$scope.navigation.link( '/settlement/queue/' );
+			} else {
+				App.alert( "Oops, something bad happened!<br>Make sure that the system isn't running another restaurant's payment queue at Schedule Queue's page." );
+			}
 		} );
 	}
 
@@ -799,12 +839,11 @@ NGApp.controller( 'SettlementDriversCtrl', function ( $scope, $filter, Settlemen
 		params[ 'id_drivers' ] = id_drivers;
 		SettlementService.drivers.schedule( params, function( json ){
 			$scope.scheduling = false;
+			$scope.unBusy();
 			if( json.success ){
-				$scope.unBusy();
-				$scope.navigation.link( '/settlement/drivers/scheduled' );
+				$scope.navigation.link( '/settlement/queue/' );
 			} else {
-				$scope.unBusy();
-				App.alert( 'Oops, something bad happened!' )
+				App.alert( "Oops, something bad happened!<br>Make sure that the system isn't running another driver's payment queue at Schedule Queue's page." );
 			}
 		} );
 	}

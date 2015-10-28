@@ -10,6 +10,8 @@ class Crunchbutton_Queue extends Cana_Table {
 	const TYPE_CLASS_NOTIFICATION_DRIVER_PRIORITY	= 'Crunchbutton_Queue_Notification_Driver_Priority';
 	const TYPE_CLASS_NOTIFICATION_YOUR_DRIVER		= 'Crunchbutton_Queue_Notification_Your_Driver';
 	const TYPE_CLASS_NOTIFICATION_MINUTES_WAY		= 'Crunchbutton_Queue_Notification_Minutes_Way';
+	const TYPE_CLASS_SETTLEMENT_DRIVER		= 'Crunchbutton_Queue_Settlement_Driver';
+	const TYPE_CLASS_SETTLEMENT_RESTAURANT		= 'Crunchbutton_Queue_Settlement_Restaurant';
 
 	const TYPE_ORDER						= 'order';
 	const TYPE_ORDER_RECEIPT				= 'order-receipt';
@@ -19,6 +21,8 @@ class Crunchbutton_Queue extends Cana_Table {
 	const TYPE_NOTIFICATION_DRIVER_PRIORITY = 'notification-driver-priority';
 	const TYPE_NOTIFICATION_YOUR_DRIVER		= 'notification-your-driver';
 	const TYPE_NOTIFICATION_MINUTES_WAY		= 'notification-minutes-way';
+	const TYPE_SETTLEMENT_DRIVER		= 'settlement-driver';
+	const TYPE_SETTLEMENT_RESTAURANT		= 'settlement-restaurant';
 
 	const STATUS_NEW		= 'new';
 	const STATUS_SUCCESS	= 'success';
@@ -116,7 +120,7 @@ class Crunchbutton_Queue extends Cana_Table {
 	}
 
 	public static function create($params = []) {
-		
+
 		// backwards compatable so i dont break things
 		if ($params['date_start']) {
 			$params['date_run'] = $params['date_start'];
