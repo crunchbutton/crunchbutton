@@ -170,7 +170,7 @@ NGApp.controller( 'ProfilePasswordCtrl', function ($scope, ProfileService) {
 });
 
 NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
-	$rootScope.$on('notificationAlert', function(e, title, message, fn) {
+	$rootScope.$on('notificationAlert', function(e, title, message, fn, unselectable) {
 
 		if (!App.isPhoneGap) {
 			$(':focus').blur();
@@ -182,6 +182,8 @@ NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
 				fn();
 			}
 		};
+
+		$scope.unselectable = unselectable;
 
 		if ($scope.$$phase) {
 			$scope.alertTitle = title;
