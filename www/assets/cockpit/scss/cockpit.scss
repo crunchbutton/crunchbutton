@@ -4415,3 +4415,10 @@ h1.title.box-title {
 	padding-right:.5em;
 	text-align:right;
 }
+.unselectable {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}

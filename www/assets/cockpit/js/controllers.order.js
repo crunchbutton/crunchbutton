@@ -310,7 +310,7 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 		var params = { id_order:$scope.order.id_order, sha1: $scope.order.campus_cash_sha1 }
 		OrderService.campus_cash( params, function( result ){
 			if( result.success ){
-				App.alert( result.success );
+				App.alert( result.success, null, null, function(){}, true );
 			} else {
 				App.alert( 'Error!' );
 			}

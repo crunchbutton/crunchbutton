@@ -843,14 +843,14 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 });
 
 
-App.alert = function(txt, title, useNativeAlert, fn) {
+App.alert = function(txt, title, useNativeAlert, fn, unselectable ) {
 	setTimeout(function() {
 		if (useNativeAlert && App.isPhoneGap && parent.window.navigator && parent.window.navigator.notification) {
 			parent.window.navigator.notification.alert(txt, null, title || 'Crunchbutton');
 		} else if ( useNativeAlert ) {
 			alert( txt );
 		} else {
-			App.rootScope.$broadcast('notificationAlert', title || '', txt, fn);
+			App.rootScope.$broadcast('notificationAlert', title || '', txt, fn, unselectable);
 		}
 	});
 };
