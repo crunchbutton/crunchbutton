@@ -87,7 +87,7 @@ App.NGinit = function() {
 	}
 };
 
-var modules = [ 'ngRoute', 'ngResource' ];
+var modules = [ 'ngRoute', 'ngResource', 'ngMask' ];
 if (!App.minimalMode) {
 	modules.push('ngAnimate');
 }
