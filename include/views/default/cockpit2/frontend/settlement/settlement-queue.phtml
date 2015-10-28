@@ -1,0 +1,51 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="title"><i class="fa fa-bank"></i>Settlement:: Queue<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
+
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<div ng-if="count">
+		<div class="box-content2 box-content-table">
+			<table class="tb-zebra">
+				<tr>
+					<th>ID</th>
+					<th>Range</th>
+					<th>Type</th>
+					<th>Payment Type</th>
+					<th>Created By</th>
+					<th>Started At</th>
+					<th>Finished At</th>
+					<th>Status</th>
+				</tr>
+				<tr ng-repeat="queue in queues">
+					<td>{{queue.id_queue}}</td>
+					<td>{{queue.range}}</td>
+					<td>
+						<span class="tag tag-purple" ng-if="queue.type == 'settlement-restaurant'">Restaurant</span>
+						<span class="tag tag-orange" ng-if="queue.type == 'settlement-driver'">Driver</span>
+					</td>
+					<td>
+						<span class="tag tag-darkgreen" ng-if="queue.pay_type == 'payment'">Payment</span>
+						<span class="tag tag-lightblue" ng-if="queue.pay_type == 'reimbursement'">Reimbursement</span>
+						<span class="tag tag-darkgreen" ng-if="queue.type == 'settlement-restaurant'">Payment</span>
+					</td>
+					<td>{{queue.name}}</td>
+					<td><span class="listview-smaller">{{queue.started_at | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}</span></td>
+					<td><span class="listview-smaller">{{queue.finished_at | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}</span></td>
+					<td>
+						<span class="tag tag-lightblue" ng-if="queue.status == 'new'">New</span>
+						<span class="tag tag-green" ng-if="queue.status == 'success'">Success</span>
+						<span class="tag tag-blue" ng-if="queue.status == 'running'">Running</span>
+						<span class="tag tag-red" ng-if="queue.status == 'failed'">Failed</span>
+						<span class="tag tag-black" ng-if="queue.status == 'stopped'">Stopped</span>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+		<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+		<div class="divider"></div>
+	</div>
+</div>
