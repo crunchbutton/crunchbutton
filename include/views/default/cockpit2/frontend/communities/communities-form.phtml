@@ -244,6 +244,14 @@
 						</div>
 					</li>
 
+					<li class="li-input" ng-show="community.campus_cash" ng-class="{'error':form.campusCashReceiptInfo.$invalid}">
+						<div class="label">Campus Cash Receipt Info:</div>
+						<div class="input"><input type="text" name="campusCashReceiptInfo" ng-model="community.campus_cash_receipt_info" required placeholder="Footer receipt info" ng-required="community.campus_cash" ng-minlength="2" ng-maxlength="250" ></div>
+						<div class="box-error">
+							<small ng-show="form.communityName.$error.required">Required.</small>
+						</div>
+					</li>
+
 					<li class="li-input" ng-show="community.campus_cash">
 						<div class="label">Campus Cash Fee (% per order):</div>
 						<div class="input"><input type="number" ignore-mouse-wheel step="0.01" name="campusCashFee" ng-model="community.campus_cash_fee" disabled="disabled" placeholder="Campus Cash Fee"></div>
