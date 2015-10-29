@@ -70,6 +70,9 @@ class Controller_api_apply_rep extends Crunchbutton_Controller_Rest {
 				$rep->save();
 			}
 			$out = [ 'login' => $rep->login ];
+
+
+
 			echo json_encode( [ 'success' => $out ] );exit;
 		} else {
 			$error[] = 'Ops, there is something wrong here!';
@@ -176,7 +179,7 @@ class Controller_api_apply_rep extends Crunchbutton_Controller_Rest {
 			$message .= "\nYour password is {$random_pass}.";
 			$message .= "\n" . "Url http://cockpit.la/";
 
-			// Crunchbutton_Message_Sms::send([ 'to' => $rep->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_REP_SETUP ]);
+			Crunchbutton_Message_Sms::send([ 'to' => $rep->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_REP_SETUP ]);
 
 			echo json_encode( [ 'success' => $out ] );exit;
 		}
