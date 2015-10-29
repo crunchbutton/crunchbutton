@@ -139,15 +139,7 @@ class Crunchbutton_Referral extends Cana_Table{
 		$out[ 'id_order' ] = $this->id_order;
 		if( $out[ 'id_admin' ] ){
 			$admin = Admin::o( $out[ 'id_admin' ] );
-			if( $admin->referral_admin_credit ){
-				$credit = floatval( $admin->referral_admin_credit );
-			} else {
-				if( $admin->isDriver() ){
-					$referral = new Crunchbutton_Reward;
-					$settings = $referral->loadSettings();
-					$credit = floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_ADMIN_REFER_USER_AMOUNT ] );
-				}
-			}
+			$credit = $admin->referralAdminCredit();
 		}
 
 		if( $credit != $this->admin_credit ){
