@@ -3374,13 +3374,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					$action->save();
 			}
 		}
-		self::ticketForCampusCashOrder();
 	}
 
 	public static function ticketForCampusCashOrder(){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->modify( '- 5 min' );
-		$orders = Order::q( 'SELECT * FROM `order` WHERE date > ? AND ( geomatched IS NULL OR geomatched = 0 )', [ $now->format( 'Y-m-d H:i:s' ) ] );
+		$orders = Order::q( 'SELECT * FROM `order` WHERE date > ? AND campus_cash = 1', [ $now->format( 'Y-m-d H:i:s' ) ] );
 		$pattern = "%s just placed an %s (Campus Cash) Order! Order details: Order %d in the %s community to this address %s. ";
 		foreach( $orders as $order ){
 			if( !$order->orderHasCampusCashTicket() ){
