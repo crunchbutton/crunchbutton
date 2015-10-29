@@ -736,16 +736,17 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				$nextShifts = Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
 
 				if( $nextShifts && $nextShifts->count() ){
+
 					foreach( $nextShifts as $nextShift ){
 						if( $nextShift->id_community_shift ){
 							$createTicket = true;
 							$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 							$dont_warn_till = $this->dontWarnTill();
+
 							if( $dont_warn_till && intval( $dont_warn_till->format( 'YmdHis' ) ) > intval( $now->format( 'YmdHis' ) ) ){
-								if( $createTicket ){
-									$createTicket = false;
-								}
+								$createTicket = false;
 							}
+
 							$date_start = $nextShift->dateStart( $this->timezone );
 							$date_start->setTimezone( new DateTimeZone( c::config()->timezone ) );
 							$date_end = $nextShift->dateEnd( $this->timezone );

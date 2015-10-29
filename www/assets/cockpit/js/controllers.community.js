@@ -260,6 +260,10 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 			$scope.close_3rd_party_delivery_restaurants_original = d.close_3rd_party_delivery_restaurants;
 			$scope.close_all_restaurants_original = d.close_all_restaurants;
 
+			if( !$scope.community.dont_warn_till ){
+				$scope.community.dont_warn_till = ( new Date() );
+			}
+
 			$scope.status_changed = false;
 
 			DriverService.byCommunity( $scope.community.id_community, function( data ){
@@ -304,7 +308,10 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 
 		if( $scope.community.dont_warn_till_enabled && $scope.community.dont_warn_till ){
 			$scope.community.dont_warn_till_fmt = $filter( 'date' )( $scope.community.dont_warn_till, 'yyyy-MM-dd HH:mm:ss' )
+		} else {
+			$scope.community.dont_warn_till_fmt = null;
 		}
+
 		$scope.isSavingOpenClose = true;
 		CommunityService.saveOpenClose( $scope.community, function( json ){
 			$scope.isSavingOpenClose = false;
