@@ -2524,7 +2524,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 			if ( intval( $this->charged() ) > 0 ) {
 
-				if ($this->pay_type == self::PAY_TYPE_CREDIT_CARD) {
+				$paymentType = $this->paymentType();
+
+				if ($this->pay_type == self::PAY_TYPE_CREDIT_CARD && $paymentType->card_type != Crunchbutton_User_Payment_Type::CARD_TYPE_CAMPUS_CASH) {
 
 					switch ($this->processor) {
 						case 'stripe':
