@@ -56,6 +56,14 @@ class Crunchbutton_User extends Cana_Table {
 		return $user;
 	}
 
+	public static function byEmail( $email ){
+		$user = User::q( 'SELECT * FROM user WHERE email = ? ORDER BY id_user DESC LIMIT 1', [ $email ] )->get( 0 );
+		if( $user->id_user ){
+			return $user;
+		}
+		return null;
+	}
+
 	public function lastOrder() {
 		$order = Order::q('select * from `order` where id_user=? and id_user is not null order by date desc limit 1', [$this->id_user]);
 		return $order;
