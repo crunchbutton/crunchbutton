@@ -84,6 +84,9 @@
 								</ul>
 							</div>
 					</div>
+
+					<span class="tag tag-red" ng-if="ticket.type == 'EMAIL'">Email Ticket</span>
+
 				</div>
 			</div>
 		</td>
@@ -131,6 +134,7 @@
 							<span ng-if="message.sending">sending...</span>
 						</div>
 						<div class="support-chat-contents-message-body">
+							<div ng-if="message.subject"><b><i>{{message.subject}}</i></b></div>
 							<span ng-bind-html="message.body | linkfy: true"></span>
 							<div ng-repeat="image in message.media">
 								<img class="support-side-image" src="{{image}}">

@@ -13,13 +13,11 @@
 		<div class="ticket-status-top" ng-click="openCloseTicket()">
 			<div class="ticket-status-open" ng-if="ticket.status=='open'">Open</div>
 			<div class="ticket-status-closed" ng-if="ticket.status=='closed'">Closed</div>
+			<span class="tag tag-red" ng-if="ticket.type == 'EMAIL'">Email Ticket</span>
 		</div>
 	</div>
 
-
-
 	<div class="divider"></div>
-
 
 	<div class="bar-loader bar-loader-search bar-loader-boxes-top" ng-class="{'bar-loader-loading': loading}"></div>
 
@@ -33,6 +31,26 @@
 
 			<div class="no-box-content-color">
 				<br>No action is required.
+			</div>
+		</div>
+
+		<div class="support-box-wrap box-content2" ng-if="ticket.type == 'EMAIL'" class="support-box-wrap">
+			<div class="support-box-wrap-header">
+				<h1>Email Ticket</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Name</div>
+						<div class="field-value">{{ticket.name}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Email</div>
+						<div class="field-value">{{ticket.email}}</div>
+					</div>
+				</div>
 			</div>
 		</div>
 
