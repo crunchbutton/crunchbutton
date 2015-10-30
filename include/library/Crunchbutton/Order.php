@@ -3368,6 +3368,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		foreach( $orders as $order ){
 			if( !$order->orderHasGeomatchedTicket() ){
 					$message = sprintf( $pattern, $order->name, $order->id_order, $order->community()->name, $order->address );
+					echo $message . "\n";
 					Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
 					$action = new Crunchbutton_Order_Action;
 					$action->id_order = $order->id_order;
@@ -3387,6 +3388,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			if( !$order->orderHasCampusCashTicket() ){
 					$campus_cash_name = $order->campusCashName();
 					$message = sprintf( $pattern, $order->name, $campus_cash_name, $order->id_order, $order->community()->name, $order->address );
+					echo $message . "\n";
 					Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message, 'bubble' => true ] );
 					$action = new Crunchbutton_Order_Action;
 					$action->id_order = $order->id_order;
@@ -3397,7 +3399,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 	}
 
-	public static function orderHasGeomatchedTicket(){
+	public function orderHasGeomatchedTicket(){
 		$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND type = ? ORDER BY id_order_action DESC LIMIT 1', [ $this->id_order, Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED ] );
 		if( $action->id_order_action ){
 			return true;
