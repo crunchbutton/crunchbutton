@@ -136,6 +136,18 @@
 			</div>
 		</div>
 
+		<div class="order-item-block-big" ng-if="oc.order.campus_cash">
+			<div class="order-icon2"><i class="fa fa-thumbs-o-up"></i></div>
+			<div class="order-info2 order-info-small">
+				<span ng-if="oc.order.campus_cash_name">
+					{{oc.order.campus_cash_name}} Order
+				</span>
+				<span ng-if="!oc.order.campus_cash_name">
+					Campus Cash Order
+				</span>
+			</div>
+		</div>
+
 		<span ng-if="oc.order._stealth_notification">
 			<div class="order-item-block-bigger">
 				Skip the line. Tell restaurant: <i>"I'm here to pick up a faxed order for {{oc.order.name}}, #{{oc.order.id_order}}</i>".
@@ -237,6 +249,7 @@
 					</table>
 				</div>
 			</div>
+
 			<div ng-class="oc.order.pay_type=='cash' ? 'order-item-block-big' : 'info-block'">
 				<div class="order-icon2">
 					<i class="fa fa-money" ng-if="oc.order.pay_type=='cash'"></i>
