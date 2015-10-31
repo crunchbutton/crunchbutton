@@ -1315,9 +1315,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 		var process = function(){
 
-
 			// Point redemption system improvements for customer-customer referrals #4248
-
 			$scope.points = order.account.user.points;
 
 			order.init();
@@ -1495,7 +1493,6 @@ NGApp.controller('OrderCtrl', function ($interval, $rootScope, $scope, $http, $l
 		} else {
 			$scope.order.reward.shared.twitter = true;
 		}
-
 		$scope.$safeApply();
 	}
 

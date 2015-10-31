@@ -1,0 +1,1 @@
+ALTER TABLE `order` ADD COLUMN `campus_cash` tinyint(1) unsigned NOT NULL DEFAULT 0;

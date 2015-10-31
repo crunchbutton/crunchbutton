@@ -48,6 +48,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 					case 'list':
 						$this->_paymentList();
 						break;
+					case 'queue':
+						$this->_queueList();
+						break;
 					default:
 						$this->_error();
 						break;
@@ -369,22 +372,17 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _restaurantSchedule(){
-		$start = $this->request()['start'];
-		$end = $this->request()['end'];
-		$_id_restaurants = explode( ',', $this->request()['id_restaurants'] );
-		$id_restaurants = [];
-		foreach ( $_id_restaurants as $key => $val ) {
-			$id_restaurant = trim( $val );
-			$notes = $this->request()[ 'notes_' . $id_restaurant ];
-			$adjustment = $this->request()[ 'adjustments_' . $id_restaurant ];
-			$id_restaurants[ $id_restaurant ] = [];
-			$id_restaurants[ $id_restaurant ][ 'notes' ] = ( $notes ) ? $notes : Crunchbutton_Settlement::DEFAULT_NOTES;
-			$id_restaurants[ $id_restaurant ][ 'adjustment' ] = $adjustment;
+		if( Settlement::canCreateSettlementQueue( Crunchbutton_Queue::TYPE_SETTLEMENT_RESTAURANT ) ){
+			$q = Queue::create([
+				'type' 			=> Crunchbutton_Queue::TYPE_SETTLEMENT_RESTAURANT,
+				'id_admin' 	=> c::user()->id_admin,
+				'info'			=> file_get_contents('php://input')
+			]);
+			echo json_encode( [ 'success' => true ] );
+			exit;
+		} else {
+			echo json_encode( [ 'error' => true ] );
 		}
-		$pay_type = ( $this->request()['pay_type'] == 'all' ) ? '' : $this->request()['pay_type'];
-		$settlement = new Settlement( [ 'payment_method' => $pay_type, 'start' => $start, 'end' => $end ] );
-		$settlement->scheduleRestaurantPayment( $id_restaurants );
-		echo json_encode( [ 'success' => true ] );
 	}
 
 	private function _restaurantPayments(){
@@ -727,7 +725,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _driverScheduleArbitraryPayment(){
-
 		$id_driver = $this->request()['id_driver'];
 		$amount = $this->request()['amount'];
 		$pay_type = $this->request()['pay_type'];
@@ -743,26 +740,15 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _driverSchedule(){
-		$start = $this->request()['start'];
-		$end = $this->request()['end'];
-		$pay_type = $this->request()['pay_type'];
 
-		$_id_drivers = explode( ',', $this->request()['id_drivers'] );
-
-		foreach ( $_id_drivers as $key => $val ) {
-			$id_driver = floatval( trim( $val ) );
-			$notes = $this->request()[ 'notes_' . $id_driver ];
-			$adjustment = $this->request()[ 'adjustments_' . $id_driver ];
-			$adjustment_notes = $this->request()[ 'adjustments_notes_' . $id_driver ];
-			$id_drivers[ $id_driver ] = [];
-			$id_drivers[ $id_driver ][ 'notes' ] = ( $notes ) ? $notes : Crunchbutton_Settlement::DEFAULT_NOTES;
-			$id_drivers[ $id_driver ][ 'adjustment' ] = $adjustment;
-			$id_drivers[ $id_driver ][ 'adjustment_notes' ] = $adjustment_notes;
-		}
-
-		$settlement = new Settlement( [ 'payment_method' => $pay_type, 'start' => $start, 'end' => $end ] );
-		if( $settlement->scheduleDriverPayment( $id_drivers, $pay_type ) ){
+		if( Settlement::canCreateSettlementQueue( Crunchbutton_Queue::TYPE_SETTLEMENT_DRIVER ) ){
+			$q = Queue::create([
+				'type' 			=> Crunchbutton_Queue::TYPE_SETTLEMENT_DRIVER,
+				'id_admin' 	=> c::user()->id_admin,
+				'info'			=> file_get_contents('php://input')
+			]);
 			echo json_encode( [ 'success' => true ] );
+			exit;
 		} else {
 			echo json_encode( [ 'error' => true ] );
 		}
@@ -996,6 +982,88 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 	private function _error( $error = 'invalid request' ){
 		echo json_encode( [ 'error' => $error ] );
 		exit();
+	}
+
+	private function _queueList(){
+		$limit = $this->request()['limit'] ? $this->request()['limit'] : $this->resultsPerPage;
+		$page = $this->request()['page'] ? $this->request()['page'] : 1;
+		$status = ( $this->request()['status'] ) ? $this->request()['status'] : null;
+		$type = ( $this->request()['type'] ) ? $this->request()['type'] : null;
+
+
+		$q = '
+					SELECT -WILD- FROM queue q
+					LEFT JOIN queue_type qt ON qt.id_queue_type = q.id_queue_type
+					LEFT JOIN admin a ON a.id_admin = q.id_admin
+				';
+
+		$q .= ' WHERE 1 = 1 ';
+
+		$keys = [];
+
+		if( $type ){
+			$q .= ' AND q.type = ? ';
+			$keys[] = $type;
+		} else {
+			$q .= ' AND ( q.type = ? OR q.type = ? ) ';
+			$keys[] = Crunchbutton_Queue::TYPE_SETTLEMENT_DRIVER;
+			$keys[] = Crunchbutton_Queue::TYPE_SETTLEMENT_RESTAURANT;
+		}
+
+		if( $status ){
+			$q .= ' AND q.status = ? ';
+			$keys[] = $status;
+		}
+
+		if ($page == 1) {
+			$offset = 0;
+		} else {
+			$offset = intval( ($page-1) * $limit );
+		}
+
+		$count = 0;
+
+		$r = c::db()->query(str_replace( '-WILD-','COUNT(*) as c', $q), $keys);
+		while ($c = $r->fetch()) {
+			$count = intval( $c->c );
+		}
+
+		$q .= ' ORDER BY id_queue DESC ';
+
+		$q .= ' LIMIT ? OFFSET ? ';
+		$keys[] = $limit;
+		$keys[] = $offset;
+
+		$query = str_replace( '-WILD-',' q.id_queue, q.type, q.date_end AS finished_at, q.date_start AS started_at, q.status, qt.type, a.name, q.info ', $q );
+
+		$r = c::db()->query($query, $keys);
+
+		$i = 1;
+
+		while ( $q = $r->fetch() ) {
+			$info = json_decode( $q->info );
+
+			$q->range = ( new DateTime( $info->start ) )->format( 'm/d/Y' );
+			$q->range .= ' => ';
+			$q->range .= ( new DateTime( $info->end ) )->format( 'm/d/Y' );
+
+			$q->pay_type = $info->pay_type;
+
+			unset( $q->info );
+
+			$data[] = $q;
+		}
+
+		$pages = ceil($count / $limit);
+
+		echo json_encode([
+			'more' => ( $pages > $page ),
+			'count' => intval( $count ),
+			'pages' => $pages,
+			'page' => intval($page),
+			'results' => $data
+		], JSON_PRETTY_PRINT);
+
 	}
 
 	private function _paymentList(){

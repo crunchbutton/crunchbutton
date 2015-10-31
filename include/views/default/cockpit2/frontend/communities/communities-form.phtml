@@ -217,6 +217,68 @@
 
 		</div>
 
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Payment option</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+					<li class="li-input" ng-class="{'error':form.campusCash.$invalid}">
+						<div class="label">Campus Cash:</div>
+						<div class="input">
+							<select name="campusCash" required ng-model="community.campus_cash" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
+
+
+					<li class="li-input" ng-show="community.campus_cash" ng-class="{'error':form.campusCashName.$invalid}">
+						<div class="label">Campus Cash Name:</div>
+						<div class="input"><input type="text" name="campusCashName" ng-model="community.campus_cash_name" required placeholder="Campus Cash Name" ng-required="community.campus_cash" ng-minlength="2" ng-maxlength="50" ></div>
+						<div class="box-error">
+							<small ng-show="form.communityName.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-show="community.campus_cash" ng-class="{'error':form.campusCashReceiptInfo.$invalid}">
+						<div class="label">Campus Cash Receipt Info:</div>
+						<div class="input"><input type="text" name="campusCashReceiptInfo" ng-model="community.campus_cash_receipt_info" required placeholder="Footer receipt info" ng-required="community.campus_cash" ng-minlength="2" ng-maxlength="250" ></div>
+						<div class="box-error">
+							<small ng-show="form.communityName.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-show="community.campus_cash">
+						<div class="label">Campus Cash Fee (% per order):</div>
+						<div class="input"><input type="number" ignore-mouse-wheel step="0.01" name="campusCashFee" ng-model="community.campus_cash_fee" disabled="disabled" placeholder="Campus Cash Fee"></div>
+						<div class="notes">Feature disabled!</div>
+					</li>
+
+					<li class="li-input" ng-show="community.campus_cash" ng-class="{'error':form.campusCashValidation.$invalid}">
+						<div class="label">Campus Cash Validation:</div>
+						<div class="input"><input type="text" name="campusCashValidation" ng-model="community.campus_cash_validation" required placeholder="Campus Cash Validation (Regular Expression)" ng-maxlength="255" ></div>
+						<div class="box-error">
+							<small ng-show="form.communityName.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-show="community.campus_cash" ng-class="{'error':form.campusCashMask.$invalid}">
+						<div class="label">Campus Cash Mask:</div>
+						<div class="input"><input type="text" name="campusCashMask" ng-model="community.campus_cash_mask" ng-maxlength="255" ></div>
+						<div class="box-error">
+							<small ng-show="form.communityName.$error.required">Required.</small>
+						</div>
+					</li>
+
+
+
+				</ul>
+			</div>
+		</div>
 	</form>
 
 

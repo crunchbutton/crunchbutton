@@ -1,4 +1,4 @@
-<form class="payment-form restaurant-side-bar" ng-if="order.loaded && order.cart.hasItems() && order.showForm" novalidate>
+<form name="form" class="payment-form restaurant-side-bar" ng-if="order.loaded && order.cart.hasItems() && order.showForm" novalidate>
 
 	<div class="divider dots spacer-one-one"></div>
 
@@ -69,12 +69,17 @@
 
 			<div class="payment-info field-container">
 				<div class="toggle-wrapper clearfix">
+
 					<button ng-click="order.tooglePayment( 'card' )" ng-if="(restaurant.credit == '1')" ng-class="{'toggle-active': order.form.pay_type=='card' }" class="payment-form-toggle">card</button>
 					<button ng-click="order.tooglePayment( 'cash' )" ng-if="(restaurant.cash == '1')" ng-class="{'toggle-active': order.form.pay_type=='cash' }" class="payment-form-toggle">
-						<span ng-if="(restaurant.cash == '1' && restaurant.credit == '1')">Cash</span>
-						<span ng-if="(restaurant.cash == '1' && restaurant.credit == '0')">Only Cash Accepted</span>
+						<span ng-if="(restaurant.cash == '1' && ( restaurant.credit == '1' || restaurant.campus_cash ) )">Cash</span>
+						<span ng-if="(restaurant.cash == '1' && restaurant.credit == '0' && !restaurant.campus_cash )">Only Cash Accepted</span>
 					</button>
+
 					<button ng-click="order.tooglePayment( 'applepay' )" ng-if="(restaurant.credit == '1') && applePay"  ng-class="{'toggle-active': order.form.pay_type=='applepay' }" class="payment-form-toggle">apple pay</button>
+
+					<button ng-click="order.tooglePayment( 'campus_cash' )" ng-if="restaurant.campus_cash"  ng-class="{'toggle-active': order.form.pay_type=='campus_cash' }" class="payment-form-toggle">{{restaurant.campus_cash_name}}</button>
+
 				</div>
 
 				<div class="divider spacer-two-two"></div>
@@ -91,6 +96,11 @@
 					</p>
 				</div>
 
+				<div class="payment-form-group form-group" ng-if="order.form.pay_type=='campus_cash'">
+					<i class="fa fa-credit-card payment-form-icon form-icon form-field"></i>
+					<input ng-class="{'form-input-invalid':!form.campusCash.$valid}" ng-focus="softKeyboard($event);" type="text" name="campusCash" mask="{{restaurant.campus_cash_mask}}" tabindex="6" ng-model="order.form.campusCash" class="payment-form-input form-input form-field" id="campusCash">
+				</div>
+
 				<div class="payment-form-group form-group" ng-if="order.form.pay_type=='card'">
 					<i class="fa fa-credit-card payment-form-icon form-icon form-field"></i>
 					<input ng-focus="softKeyboard($event);" type="tel" name="pay-card-number" tabindex="6" ng-change="order.creditCardChanged();" ng-model="order.form.cardNumber" class="payment-form-input form-input form-field" id="cardNumber" autocomplete="cc-number" x-autocompletetype="cc-number">
@@ -102,11 +112,18 @@
 					<div class="form-input-select"><select ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years" tabindex="8" class="payment-form-select payment-form-input form-input form-field payment-form-select-year" id="cardExpirationYear" autocomplete="cc-exp-year" x-autocompletetype="cc-exp-year"></select></div>
 				</div>
 
-				<div class="payment-form-group form-group" ng-if="order.form.pay_type=='card'">
+				<div class="payment-form-group form-group" ng-if="order.form.pay_type=='card' || order.form.pay_type=='campus_cash'">
 					<i class="fa fa-thumbs-up payment-form-icon form-icon form-field"></i>
 					<input type="hidden" name="pay-autotip-value" ng-model="order.form.autotip" value="0">
 					<div class="form-input-select"><select ng-model="order.form.tip" ng-options="tip.value as tip.label for tip in order._tips" ng-change="order.tipChanged();" class="tip payment-form-select payment-form-input form-input form-field" tabindex="9"></select></div>
 				</div>
+
+				<div ng-if="order.form.pay_type == 'campus_cash'">
+					<p class="delivery-free restaurant-delivery-free">
+						<i>You will be required to present your student ID to the delivery driver for verification.</i><br><br>
+					</p>
+				</div>
+
 			</div>
 
 			<div class="divider spacer-two-two"></div>

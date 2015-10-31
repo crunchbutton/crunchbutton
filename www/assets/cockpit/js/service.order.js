@@ -66,7 +66,9 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 		'refund' : { url: App.service + 'order/:id_order/refund', method: 'POST', params : {} },
 		'do_not_reimburse_driver' : { url: App.service + 'order/:id_order/do_not_reimburse_driver', method: 'GET', params : {} },
 		'do_not_pay_driver' : { url: App.service + 'order/:id_order/do_not_pay_driver', method: 'GET', params : {} },
-		'do_not_pay_restaurant' : { url: App.service + 'order/:id_order/do_not_pay_restaurant', method: 'GET', params : {} }
+		'do_not_pay_restaurant' : { url: App.service + 'order/:id_order/do_not_pay_restaurant', method: 'GET', params : {} },
+		'mark_cash_card_charged' : { url: App.service + 'order/:id_order/mark_cash_card_charged', method: 'GET', params : {} },
+		'campus_cash' : { url: App.service + 'order/:id_order/campus-cash', method: 'POST', params : {} }
 	});
 
 	service.list = function(params, callback) {
@@ -128,6 +130,12 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 		});
 	}
 
+	service.mark_cash_card_charged = function( id_order, callback ){
+		order.mark_cash_card_charged( { id_order: id_order }, function( data ) {
+			callback( data );
+		});
+	}
+
 	service.do_not_pay_driver = function( id_order, callback ){
 		order.do_not_pay_driver( { id_order: id_order }, function( data ) {
 			callback( data );
@@ -139,6 +147,14 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 			callback( data );
 		});
 	}
+
+	service.campus_cash = function( params, callback ){
+		order.campus_cash( params, function( data ) {
+			callback( data );
+		});
+	}
+
+
 
 	service.text_5_min_away = function( id_order, callback ){
 		order.text_5_min_away( { id_order: id_order }, function( data ) {

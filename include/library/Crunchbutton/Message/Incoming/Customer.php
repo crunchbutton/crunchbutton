@@ -172,7 +172,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 			}
 		}
 
-		return false;
+		return ['verb' => self::ACTION_REPLY, 'message' => $body];
 	}
 
 	public function log($content) {

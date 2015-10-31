@@ -3,6 +3,7 @@
 class Crunchbutton_Support_Message extends Cana_Table {
 
 	const TYPE_SMS = 'sms';
+	const TYPE_EMAIL = 'email';
 	const TYPE_NOTE = 'note';
 	const TYPE_WARNING = 'warning';
 	const TYPE_AUTO_REPLY = 'auto-reply';
@@ -34,6 +35,7 @@ class Crunchbutton_Support_Message extends Cana_Table {
 
 		parent::save();
 
+
 		if ($new) {
 			Event::emit([
 				'room' => [
@@ -52,7 +54,12 @@ class Crunchbutton_Support_Message extends Cana_Table {
 	}
 
 	public function notify() {
-		self::notify_by_sms();
+		if( $this->support()->type == Crunchbutton_Support::TYPE_EMAIL ){
+			self::notify_by_email();
+		} else {
+			self::notify_by_sms();
+		}
+
 	}
 
 	public function totalMessagesByPhone( $phone ){
@@ -61,6 +68,13 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		$r = c::db()->get( $query, [ $phone ] )->get( 0 );
  		return intval( $r->total );
 	}
+
+	public static function totalMessagesByEmail( $email ){
+		$query = 'SELECT COUNT(*) AS total FROM support_message INNER JOIN support ON support.id_support = support_message.id_support AND email = ?';
+		$r = c::db()->get( $query, [ $email ] )->get( 0 );
+ 		return intval( $r->total );
+	}
+
 
  	public function byPhone( $phone, $id_support = false, $page = false, $limit = false ){
  		$phone = Phone::clean( $phone );
@@ -87,13 +101,38 @@ class Crunchbutton_Support_Message extends Cana_Table {
  																							WHERE p.phone = ? ORDER BY sm.id_support_message ASC ' . $_limit, [ $phone ] );
 	}
 
+ 	public static function byEmail( $email, $id_support = false, $page = false, $limit = false ){
+ 		$where = ( $id_support ) ? ' OR sm.id_support = "' . $id_support . '" ' : '';
+ 		if( $page && $limit ){
+ 			$total = Crunchbutton_Support_Message::totalMessagesByEmail( $email );
+ 			$pages = ceil( $total / $limit );
+ 			if( $page > $pages ){
+ 				return false;
+ 			}
+ 			$start = $total - ( $limit * $page );
+ 			$end = ( ( $start + $limit ) <= $total ) ? ( $limit ) : 0;
+ 			if( $start < 0 ){
+ 				$end = $start + $limit;
+ 				$start = 0;
+ 			}
+ 			$_limit = ' LIMIT ' . $start . ',' . $end;
+ 		} else {
+ 			$_limit = '';
+ 		}
+ 		return Crunchbutton_Support_Message::q( 'SELECT sm.* FROM support_message sm
+ 																							INNER JOIN support s ON s.id_support = sm.id_support
+ 																							WHERE s.email = ? ORDER BY sm.id_support_message ASC ' . $_limit, [ $email ] );
+	}
+
+
 	public function exports($guid = null) {
 		// @todo: #5734
 		$out = $this->properties();
 
-		 $info = Phone::name( $this, true );
-
-		 $out['name'] = $info[ 'name' ];
+		if( $this->type != Crunchbutton_Support_Message::TYPE_EMAIL ){
+			$info = Phone::name( $this, true );
+		 	$out['name'] = $info[ 'name' ];
+		}
 
 		 if( !$out[ 'id_admin' ] && $info[ 'id_admin' ] ){
 			 $out[ 'id_admin' ] = $info[ 'id_admin' ];
@@ -165,6 +204,20 @@ class Crunchbutton_Support_Message extends Cana_Table {
 			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT
 		]);
 
+	}
+
+	public function notify_by_email() {
+		$support = $this->support();
+		if (!$support->email) return;
+		if( $this->admin()->id_admin ){
+			$rep_name = $this->admin()->firstName();
+		} else {
+			$rep_name = '';
+		}
+		$subject = 'Re: ' . $support->lastSubject();
+		$params = [ 'to' => $support->email, 'message' => $this->body, 'subject' => $subject ];
+		$email = new Crunchbutton_Email_CSReply( $params );
+		$email->send();
 	}
 
 	public function admin() {
