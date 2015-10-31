@@ -74,7 +74,7 @@ html {
 
 
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1125px) {
 	.content-padding, .content-padding-mobile {
 		padding: 10px;
 	}
@@ -546,7 +546,7 @@ a.button{
 
 
 /* GLOBAL */
-@media(min-width:769px) {
+@media(min-width:1126px) {
 	.menu.drop {
 		display: block;
 	}
@@ -557,7 +557,7 @@ a.button{
 		@include transition(opacity 0.1s);
 	}
 }
-@media(max-width: 768px) {
+@media(max-width: 1125px) {
 	.menu.drop {
 		display: none;
 	}
@@ -777,13 +777,13 @@ a.button{
 
 
 /* SNAPS */
-@media(min-width:769px) {
+@media(min-width:1126px) {
 	.snap-drawers {
 		display:none;
 	}
 }
 
-@media(max-width:768px) {
+@media(max-width:1125px) {
 	.dropdown {
 		display: none !important;
 	}
@@ -1090,7 +1090,7 @@ a.button{
 }
 
 
-@media screen and (min-width: 1025px) {
+@media screen and (min-width: 1126px) {
 	.restaurants-item .restaurants-open:hover {
 		border: 1px solid #f78256;
 	}
@@ -1319,11 +1319,13 @@ a.button{
 }
 
 
-@media screen and (min-width: 1025px) {
+@media screen and (min-width: 1126px) {
+
 	body {
 		background: #f78053 !important;
 		margin-bottom: 500px;
 	}
+
 	.footer .quote-wrap {
 		margin-top: 1em;
 		width: 19em;
@@ -1422,6 +1424,7 @@ a.button{
 	.footer-columns {
 		@include flex(row, row wrap, space-between);
 	}
+
 	.footer ul a {
 		text-decoration: none;
 		color: #b5b5b6;
@@ -1435,6 +1438,7 @@ a.button{
 		line-height: 1.7em;
 		font-size: 1.15em;
 	}
+
 	.footer-column-description {
 		width: 30%;
 		text-align: left;
@@ -1445,6 +1449,7 @@ a.button{
 	.footer-column-quote {
 		vertical-align: center;
 	}
+
 	.footer-column-quote .quote {
 		font-size: 4em;
 	}
@@ -1852,7 +1857,7 @@ a.button{
 	padding-right: .5em;
 }
 
-@media screen and (min-width: 1025px) {
+@media screen and (min-width: 1126px) {
 	.form-icon {
 		color: #00bea0;
 	}
@@ -3818,7 +3823,7 @@ select {
 }
 
 
-@media screen and (min-width: 1025px) {
+@media screen and (min-width: 1126px) {
 	.content-padding, .content-padding-desktop {
 		padding-top: 10px;
 		padding-bottom: 10px;
@@ -4007,7 +4012,7 @@ font-familt: "Museo Slab";
 	display: inline-block;
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1125px) {
 	.order-tagline {
 		font-size: 1.4em;
 	}
@@ -4024,7 +4029,7 @@ font-familt: "Museo Slab";
 	}
 }
 
-@media screen and (min-width: 1025px) {
+@media screen and (min-width: 1126px) {
 	.cart-item-name {
 		text-overflow: ellipsis;
 		white-space: nowrap;
@@ -4222,7 +4227,7 @@ font-familt: "Museo Slab";
 	font-weight: bold !important;
 	text-align: center;
 }
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1125px) {
 	.button-refer {
 		margin-bottom: 1em;
 	}
@@ -4230,7 +4235,7 @@ font-familt: "Museo Slab";
 		margin-top: 1.5em !important;
 	}
 }
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1125px) {
 	.hide-mobile {
 		display: none;
 	}
@@ -4397,7 +4402,7 @@ textarea {
 	width: 22px;
 	padding-right: 5px;
 }
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1125px) {
 	.pay-title-label {
 		font-size: 1.4em;
 		display: block;
@@ -4410,7 +4415,7 @@ textarea {
 	margin-top:3em;
 }
 
-@media screen and (min-width: 1025px) {
+@media screen and (min-width: 1126px) {
 	/*
 	.button.green.button-empty {
 		border: 1px solid #00bea0;
