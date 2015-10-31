@@ -4,7 +4,9 @@
 	<meta property="og:title" content="<?=$this->restaurant->name?> on Crunchbutton">
 	<meta property="og:description" content="One click food ordering from <?=$this->restaurant->name?>. We find the best restaurants <?=$this->community->prep?> <?=$this->community->name?> and make ordering your favorite dishes as easy as one click.">
 	<? if ($this->restaurant->image()) : ?>
-		<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/cache/images/<?=$this->restaurant->facebook()->getFileName()?>">
+		<?php if( $this->restaurant->facebook() ) { ?>
+			<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/cache/images/<?=$this->restaurant->facebook()->getFileName()?>">
+		<?php } ?>
 	<? else : ?>
 		<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/facebook-like.png">
 	<? endif ; ?>
@@ -13,7 +15,7 @@
 	<meta property="og:title" content="Crunchbutton - One click food ordering from <?=$this->community->name?>">
 	<meta property="og:description" content="Your favorite restaurants <?=$this->community->prep?> <?=$this->community->name?> delivered. Get food delivered from places that don't deliver. Place an order, and we save it for next time, along with your delivery and payment info. Order your favorite dishes with a click of one button from your computer or phone.">
 	<? foreach ($this->community->restaurants() as $restaurant) : ?>
-		<? if ($restaurant->image()) : ?>
+		<? if ($restaurant->image() && $restaurant->facebook() ) : ?>
 			<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/cache/images/<?=$restaurant->facebook()->getFileName()?>">
 		<? else : ?>
 			<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/facebook-like.png">

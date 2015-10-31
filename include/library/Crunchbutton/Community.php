@@ -130,6 +130,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	 * @see Cana_Table::exports()
 	 */
 	public function exports() {
+
 		$out = $this->properties();
 		$out[ 'name_alt' ] = $this->name_alt();
 		$out[ 'prep' ] = $this->prep();
@@ -164,7 +165,6 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		} else {
 			$out[ 'dont_warn_till' ] = null;
 		}
-
 
 		$out[ 'driver_group' ] = $this->driver_group()->name;
 		$out[ 'amount_per_order' ] = floatval( $this->amount_per_order );
@@ -736,16 +736,17 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				$nextShifts = Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
 
 				if( $nextShifts && $nextShifts->count() ){
+
 					foreach( $nextShifts as $nextShift ){
 						if( $nextShift->id_community_shift ){
 							$createTicket = true;
 							$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 							$dont_warn_till = $this->dontWarnTill();
+
 							if( $dont_warn_till && intval( $dont_warn_till->format( 'YmdHis' ) ) > intval( $now->format( 'YmdHis' ) ) ){
-								if( $createTicket ){
-									$createTicket = false;
-								}
+								$createTicket = false;
 							}
+
 							$date_start = $nextShift->dateStart( $this->timezone );
 							$date_start->setTimezone( new DateTimeZone( c::config()->timezone ) );
 							$date_end = $nextShift->dateEnd( $this->timezone );
@@ -1318,6 +1319,51 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			}
 		}
 		return self::DRIVER_OPEN_COMMUNITY_ERROR_COMMUNITY;
+	}
+
+	public function campusCash(){
+		return ( $this->campus_cash ) ? true : false;
+	}
+
+	public function campusCashName(){
+		if( $this->campusCash() && $this->campus_cash_name ){
+			return $this->campus_cash_name;
+		}
+		return null;
+	}
+
+	public function campusCashReceiptInfo(){
+		if( $this->campusCash() && $this->campus_cash_receipt_info ){
+			return $this->campus_cash_receipt_info;
+		}
+		return null;
+	}
+
+	public function campusCashFee(){
+		if( $this->campusCash() && $this->campus_cash_fee ){
+			return floatval( max( $this->campus_cash_fee, 0 ) );
+		}
+		return 0;
+	}
+
+	public function campusCashMask(){
+		if( $this->campusCash() && $this->campus_cash_mask ){
+			return $this->campus_cash_mask;
+		}
+		return null;
+	}
+
+	public function campusCashValidate( $card ){
+		if( $this->campusCash() ){
+			if( $this->campus_cash_validation ){
+				preg_match( $this->campus_cash_validation, $card, $results );
+				if( $results[ 0 ] ){
+					return trim( $results[ 0 ] );
+				}
+				return false;
+			}
+		}
+		return false;
 	}
 
 	// Smart population of "our most popular locations" on UI2 #6056

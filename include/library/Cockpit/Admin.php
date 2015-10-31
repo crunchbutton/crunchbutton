@@ -342,12 +342,22 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		return intval( $total->total );
 	}
 
+	public function referralAdminCredit(){
+		if( !$this->referral_admin_credit ){
+			$referral = new Crunchbutton_Reward;
+			$settings = $referral->loadSettings();
+			$credit = floatval( $settings[ Crunchbutton_Reward::CONFIG_KEY_ADMIN_REFER_USER_AMOUNT ] );
+			$this->referral_admin_credit = $credit;
+		}
+		return floatval( $this->referral_admin_credit );
+	}
+
 	public function exports( $params = [] ) {
 		$out = parent::exports( $params );
 		$out['shifts'] = [];
 		$out['working'] = false;
 		$out['working_today'] = false;
-		$out['referral_admin_credit'] = floatval( $this->referral_admin_credit );
+		$out['referral_admin_credit'] = $this->referralAdminCredit();
 		$out['referral_customer_credit'] = floatval( $this->referral_customer_credit );
 		$out['invite_code'] = $this->invite_code;
 		$out['dob'] = $this->dob;

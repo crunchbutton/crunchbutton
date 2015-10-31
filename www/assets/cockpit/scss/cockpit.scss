@@ -4045,6 +4045,10 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 		width: 320px;
 		height: 173px;
 	}
+	.switch-wrap{
+		background: #000;
+		float:none;
+	}
 }
 
 .driver-top-pad {
@@ -4414,4 +4418,11 @@ h1.title.box-title {
 	width:5.5em;
 	padding-right:.5em;
 	text-align:right;
+}
+.unselectable {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
 }

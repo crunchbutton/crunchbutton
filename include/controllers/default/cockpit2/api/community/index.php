@@ -269,6 +269,13 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						$community->timezone = $this->request()[ 'timezone' ];
 						$community->id_driver_restaurant = $this->request()[ 'id_driver_restaurant' ];
 						$community->amount_per_order = $this->request()[ 'amount_per_order' ];
+						$community->campus_cash = $this->request()[ 'campus_cash' ];
+						$community->campus_cash_name = $this->request()[ 'campus_cash_name' ];
+						// feature disabled
+						$community->campus_cash_fee = 0;
+						$community->campus_cash_mask = $this->request()[ 'campus_cash_mask' ];
+						$community->campus_cash_validation = $this->request()[ 'campus_cash_validation' ];
+						$community->campus_cash_receipt_info = $this->request()[ 'campus_cash_receipt_info' ];
 
 						$community->save();
 

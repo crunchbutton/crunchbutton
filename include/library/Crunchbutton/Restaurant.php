@@ -1130,6 +1130,56 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $out;
 	}
 
+	public function campusCash(){
+		if( $this->delivery_service ){
+			$community = $this->community()->get(0);
+			if( $community && $community->id_community && $community->campusCash() ){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public function campusCashName(){
+		if( $this->campusCash() ){
+			$community = $this->community()->get(0);
+			return $community->campusCashName();
+		}
+		return null;
+	}
+
+	public function campusCashReceiptInfo(){
+		if( $this->campusCash() ){
+			$community = $this->community()->get(0);
+			return $community->campusCashReceiptInfo();
+		}
+		return null;
+	}
+
+	public function campusCashFee(){
+		if( $this->campusCash() ){
+			$community = $this->community()->get(0);
+			return $community->campusCashFee();
+		}
+		return 0;
+	}
+
+	public function campusCashMask(){
+		if( $this->campusCash() ){
+			$community = $this->community()->get(0);
+			return $community->campusCashMask();
+		}
+		return null;
+	}
+
+	public function campusCashValidate( $card ){
+		if( $this->campusCash() ){
+			$community = $this->community()->get(0);
+			return $community->campusCashValidate( $card );
+		}
+		return false;
+	}
+
 	/**
 	 * Returns an array with all the information for a Restaurant.
 	 *
@@ -1326,7 +1376,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			}
 		}
 
-
+		if( $this->campusCash() ){
+			$out[ 'campus_cash' ] = true;
+			$out[ 'campus_cash_name' ] = $this->campusCashName();
+			$out[ 'campus_cash_fee' ] = $this->campusCashFee();
+			$out[ 'campus_cash_mask' ] = $this->campusCashMask();
+		}
 		return $out;
 	}
 

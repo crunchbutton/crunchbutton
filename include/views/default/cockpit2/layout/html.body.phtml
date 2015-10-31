@@ -565,7 +565,7 @@
 	<!-- Notification -->
 	<div class="notification-alert-container zoom-anim-dialog mfp-hide dialog" ng-controller="NotificationAlertCtrl">
 		<h1 ng-bind="alertTitle" ng-show="alertTitle"></h1>
-		<p ng-bind-html-unsafe="message" class="small-message"></p>
+		<p ng-class="{'unselectable': unselectable}" ng-bind-html-unsafe="message" class="small-message"></p>
 		<button ng-click="complete()" class="button green">OK</button>
 	</div>
 

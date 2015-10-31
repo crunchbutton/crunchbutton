@@ -56,6 +56,14 @@ class Crunchbutton_User extends Cana_Table {
 		return $user;
 	}
 
+	public static function byEmail( $email ){
+		$user = User::q( 'SELECT * FROM user WHERE email = ? ORDER BY id_user DESC LIMIT 1', [ $email ] )->get( 0 );
+		if( $user->id_user ){
+			return $user;
+		}
+		return null;
+	}
+
 	public function lastOrder() {
 		$order = Order::q('select * from `order` where id_user=? and id_user is not null order by date desc limit 1', [$this->id_user]);
 		return $order;
@@ -233,10 +241,13 @@ class Crunchbutton_User extends Cana_Table {
 			// Get user payment type
 			$payment_type = $this->payment_type();
 			if( $payment_type ){
-				$out[ 'card' ] = $payment_type->card;
 				$out[ 'card_type' ] = $payment_type->card_type;
-				$out[ 'card_exp_year' ] = $payment_type->card_exp_year;
-				$out[ 'card_exp_month' ] = $payment_type->card_exp_month;
+				if( $payment_type->card_type != Crunchbutton_User_Payment_Type::CARD_TYPE_CAMPUS_CASH ){
+					$out[ 'card' ] = $payment_type->card;
+					$out[ 'card_type' ] = $payment_type->card_type;
+					$out[ 'card_exp_year' ] = $payment_type->card_exp_year;
+					$out[ 'card_exp_month' ] = $payment_type->card_exp_month;
+				}
 			}
 
 
@@ -267,7 +278,7 @@ class Crunchbutton_User extends Cana_Table {
 		// blocked
 		$out['blocked'] = Crunchbutton_Blocked::isUserBlocked( $this->id_user );
 		$out['phone_blocked'] = Crunchbutton_Blocked::isPhoneBlocked( $this->id_phone );
-		
+
 		// return the auth token
 		if ($params['auth']) {
 			$out['token'] = c::auth()->session()->token;

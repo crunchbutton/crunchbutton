@@ -130,9 +130,6 @@
 							<a href="/vieworder/{{order.uuid}}/customer" target="_blank">Customer Receipt</a>
 						</div>
 					</div>
-
-
-
 				</div>
 
 				<br><br>
@@ -158,6 +155,47 @@
 			</div>
 		</div>
 
+		<? /* delivery status */ ?>
+		<div class="support-box-wrap box-content2" ng-show="order.campus_cash">
+			<div class="support-box-wrap-header">
+				<h1>Campus Cash <span ng-show="order.campus_cash_charged"> Already Charged</span></h1>
+				<div class="divider"></div>
+			</div>
+			<div class="divider"></div>
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row" ng-show="order.campus_cash_charged && order.campus_cash_charged_info">
+						<div class="field-key">{{order.campus_cash_charged_info.name}}</div>
+						<div class="field-value">
+							by {{order.campus_cash_charged_info.date}}
+						</div>
+					</div>
+					<div class="field-row" ng-hide="order.campus_cash_charged && order.campus_cash_charged_info">
+						<div class="field-key">
+							Mark as already charged
+						</div>
+						<div class="field-value">
+							<label class="switch-wrap">
+								<input type="checkbox" ng-click="mark_cash_card_charged()" class="switch" ng-disabled="order.campus_cash_charged" ng-model="order.campus_cash_charged"/><div></div>
+							</label>
+						</div>
+					</div>
+				</div>
+				<br>
+				<div ng-hide="order.campus_cash_charged">
+					<button class="button button-empty button-border button-blue" ng-click="campus_cash()">
+						<i class="fa fa-credit-card" ng-show="!campus_cash_retrieving"></i>
+						<i class="fa fa-spinner fa-pulse" ng-show="campus_cash_retrieving"></i>
+						<span class="label">&nbsp;&nbsp;Show Student ID</span>
+					</button>
+					<br>
+				</div>
+				<br>
+			</div>
+
+
+			<div class="divider"></div>
+		</div>
 
 		<? /* delivery status */ ?>
 		<div class="support-box-wrap box-content2" ng-if="order.status && order.delivery_service">

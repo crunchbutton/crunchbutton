@@ -3,6 +3,7 @@
 class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 	const TYPE_SMS = 'SMS';
+	const TYPE_EMAIL = 'EMAIL';
 	const TYPE_BOX_NEED_HELP = 'BOX_NEED_HELP';
 	const TYPE_WARNING = 'WARNING';
 	const TYPE_TICKET = 'TICKET';
@@ -37,9 +38,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT
 		]);
 
-
 		Log::debug( [ 'to' => Crunchbutton_Support::getUsers(), 'message' => $message, 'type' => 'support-tell-cs' ] );
-
 	}
 
 
@@ -455,7 +454,13 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		return false;
 	}
 
+	public function lastSubject(){
+		$lastMessage = $this->lastCustomerMessage();
+		return $lastMessage->subject;
+	}
+
 	public function addAdminReply($body, $guid = null){
+
 		$body = trim($body);
 		if ($body) {
 			$admin = Crunchbutton_Admin::o( c::admin()->id_admin );
@@ -465,6 +470,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 				'id_admin' => c::admin()->id_admin,
 				'guid' => $guid
 			]);
+
 			if( $message->id_support_message ){
 				$message->notify();
 			}
@@ -489,8 +495,9 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			$admin = Crunchbutton_Admin::getByPhone( $params[ 'phone' ] );
 		}
 		if( $admin->id_admin ){
+			$type = ( $this->type == Crunchbutton_Support::TYPE_EMAIL ) ? Crunchbutton_Support_Message::TYPE_EMAIL : Crunchbutton_Support_Message::TYPE_SMS;
 			$messageParams[ 'id_admin' ] = $admin->id_admin;
-			$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_SMS;
+			$messageParams[ 'type' ] = $type;
 			$messageParams[ 'from' ] = Crunchbutton_Support_Message::TYPE_FROM_REP;
 			$messageParams[ 'visibility' ] = Crunchbutton_Support_Message::TYPE_VISIBILITY_EXTERNAL;
 			$messageParams[ 'name' ] = $admin->firstName();
@@ -587,6 +594,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		$message->name = $params[ 'name' ];
 		$message->body = $params[ 'body' ];
 		$message->media = $params[ 'media' ];
+		$message->subject = $params[ 'subject' ];
 		$today = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$message->date = $today->format( 'Y-m-d H:i:s' );
 		$message->save();
@@ -949,9 +957,20 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 	public function exportMessages( $params = [] ){
 		$out = [];
+
 		if( $this->type == Crunchbutton_Support::TYPE_WARNING && !$this->id_user ){
 			$messages = $this->messages();
 			$out[ 'total_messages' ] = $messages->count();
+		} else if ( $this->type == Crunchbutton_Support::TYPE_EMAIL ) {
+			$out[ 'type' ] = Crunchbutton_Support::TYPE_EMAIL;
+			$out[ 'total_messages' ] = Crunchbutton_Support_Message::totalMessagesByEmail( $this->email );
+			if( $params[ 'messages_page' ] ){
+				$page = $params[ 'messages_page' ];
+				$limit = ( $params[ 'messages_limit' ] ? $params[ 'messages_limit' ] : 15 );
+				$messages = Crunchbutton_Support_Message::byEmail( $this->email, $this->id_support, $page, $limit );
+			} else {
+				$messages = Crunchbutton_Support_Message::byEmail( $this->email, $this->id_support );
+			}
 		} else {
 			$out[ 'total_messages' ] = Crunchbutton_Support_Message::totalMessagesByPhone( $this->phone );
 			if( $params[ 'messages_page' ] ){
@@ -1114,4 +1133,51 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		return $out;
 	}
 
+	public static function addEmailTicket( $params ){
+
+		$createTicket = true;
+
+		// get the last ticket
+		$support = Support::q( 'SELECT * FROM support WHERE email = ? ORDER BY id_support DESC LIMIT 1', [ $params[ 'email' ] ] )->get( 0 );
+		if( $support->id_support ){
+
+			$user = User::byEmail( $params[ 'email' ] );
+			if( $user && $support->id_user == $user->id_user  ){
+				$order = $user->lastOrder();
+				if( $order->id_order == $support->id_order ){
+					$createTicket = false;
+					$support->status = Crunchbutton_Support::STATUS_OPEN;
+					$support->save();
+				}
+			}
+		}
+		if( $createTicket ){
+			$support = new Support;
+			$support->email = $params[ 'email' ];
+			$user = User::byEmail( $params[ 'email' ] );
+			if( $user->id_user ){
+				$support->id_user = $user->id_user;
+				$support->name = $user->name;
+			} else {
+				$support->name = $params[ 'name' ];
+			}
+			$order = $user->lastOrder();
+			if( $order && $order->id_order ){
+				$support->id_order = $order->id_order;
+				$support->id_restaurant = $order->id_restaurant;
+			}
+			$support->type = Crunchbutton_Support::TYPE_EMAIL;
+			$support->status = Crunchbutton_Support::STATUS_OPEN;
+			$support->datetime = date( 'Y-m-d H:i:s' );
+			$support->save();
+		}
+		$message = [];
+		$message[ 'from' ] = 'client';
+		$message[ 'type' ] = Crunchbutton_Support_Message::TYPE_EMAIL;
+		$message[ 'visibility' ] = Crunchbutton_Support_Message::TYPE_VISIBILITY_EXTERNAL;
+		$message[ 'name' ] = $support->name;
+		$message[ 'subject' ] = $params[ 'subject' ];
+		$message[ 'body' ] = $params[ 'body' ];
+		$support->addMessage( $message );
+	}
 }

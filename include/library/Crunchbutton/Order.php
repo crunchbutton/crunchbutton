@@ -14,15 +14,16 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	const PAY_TYPE_CASH        = 'cash';
 	const PAY_TYPE_CREDIT_CARD = 'card';
+	const PAY_TYPE_CAMPUS_CASH = 'campus_cash';
 	const PAY_TYPE_APPLE_PAY	 = 'applepay';
 	const SHIPPING_DELIVERY    = 'delivery';
 	const SHIPPING_TAKEOUT     = 'takeout';
 	const TIP_PERCENT 				 = 'percent';
 	const TIP_NUMBER				 	 = 'number';
 
-	const PROCESS_TYPE_RESTAURANT 	= 'restaurant';
-	const PROCESS_TYPE_WEB			= 'web';
-	const PROCESS_TYPE_ADMIN		= 'admin';
+	const PROCESS_TYPE_RESTAURANT = 'restaurant';
+	const PROCESS_TYPE_WEB				= 'web';
+	const PROCESS_TYPE_ADMIN			= 'admin';
 
 	/**
 	 * Process an order
@@ -37,12 +38,15 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	 */
 	public function process($params, $processType = 'web')
 	{
-		$this->pay_type = ($params['pay_type'] == 'cash') ? 'cash' : 'card';
-		$this->address  = $params['address'];
-		$this->phone    = $params['phone'];
-		$this->name     = $params['name'];
-		$this->notes    = $params['notes'];
-		$this->local_gid    = $params['local_gid'];
+
+		$this->campus_cash = ( $params['pay_type'] == self::PAY_TYPE_CAMPUS_CASH );
+
+		$this->pay_type  = ($params['pay_type'] == 'cash') ? 'cash' : 'card';
+		$this->address   = $params['address'];
+		$this->phone     = $params['phone'];
+		$this->name      = $params['name'];
+		$this->notes     = $params['notes'];
+		$this->local_gid = $params['local_gid'];
 
 		// Log the order - process started
 		Log::debug([
@@ -59,6 +63,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 							'restaurant' 		=> $params['restaurant'],
 							'notes' 				=> $params['notes'],
 							'cart' 					=> $params['cart'],
+							'campus_cash'		=> $this->campus_cash,
 							'type' 					=> 'order-log'
 						]);
 
@@ -188,6 +193,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		// service fee for customer
 		$this->service_fee = $this->restaurant()->fee_customer;
 		$serviceFee = ($this->price + $this->delivery_fee) * Util::ceil(($this->service_fee/100),2);
+
+		if( $this->campus_cash && $this->campusCashFee() ){
+			$serviceFee += number_format(($this->price + $this->delivery_fee) * ($this->campusCashFee()/100),2);
+		}
+
 		$serviceFee = Util::ceil( $serviceFee, 2);
 		$totalWithFees = $this->price + $this->delivery_fee + $serviceFee;
 		$totalWithFees = Util::ceil( $totalWithFees, 2);
@@ -275,7 +285,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 		}
 
-
 		if (!$this->restaurant()->open()) {
 			$errors['closed'] = 'This restaurant is closed.';
 
@@ -297,6 +306,25 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		if (!$this->restaurant()->meetDeliveryMin($this) && $this->delivery_type == 'delivery') {
 			$errors['minimum'] = 'Please meet the delivery minimum of '.$this->restaurant()->delivery_min.'.';
+		}
+
+		// check if the restaurant accepts campus cash payment method
+		if( $this->campus_cash ){
+			if( $this->restaurant()->campusCash() ){
+				if( $this->campus_cash && !$params[ 'campusCash' ] ){
+					$errors['campusCash'] = 'Please fill the field '.$this->restaurant()->campusCashName().'.';
+				} else {
+					if( $this->campus_cash ){
+						$this->campusCash = $this->restaurant()->campusCashValidate( $params[ 'campusCash' ] );
+					}
+
+					if( $this->campus_cash && !$this->campusCash ){
+						$errors['campusCashInvalid'] = 'Please enter a valid '.$this->restaurant()->campusCashName().'.';
+					}
+				}
+			} else {
+				$errors['payment_method'] = 'Please select a valid payment method.';
+			}
 		}
 
 		if ($errors) {
@@ -588,7 +616,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$this->location_lon = $params['lon'];
 
 		$user->name = $this->name;
-		$user->email = $params['email'];;
+		$user->email = $params['email'];
 		$user->phone = $this->phone;
 
 		$phone = Crunchbutton_Phone::byPhone( $this->phone );
@@ -617,33 +645,56 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$payment_type = $user->payment_type();
 
 			// if the user gave us a new card, store it because thats the one we used
-			if (!$payment_type || $this->_card['id']) {
+			if (!$payment_type || $this->_card['id'] || $this->campus_cash) {
 
-				// create a new payment type
-				$payment_type = new User_Payment_Type([
-					'id_user' => $user->id_user,
-					'active' => 1,
-					'card' => $this->_card['lastfour'] ? ('************'.$this->_card['lastfour']) : '',
-					'card_type' => $this->_card['card_type'],
-					'card_exp_year' => $this->_card['year'],
-					'card_exp_month' => $this->_card['month'],
-					'date' => date('Y-m-d H:i:s')
-				]);
+				if( $this->campus_cash && $this->_campus_cash_sha1 ){
 
-				switch (Crunchbutton_User_Payment_Type::processor()) {
-					case 'stripe':
-						$payment_type->stripe_id = $this->_paymentType;
-						$user->stripe_id = $this->_customer;
-						$user->save();
-						break;
+					$last_digits = substr( $this->campusCash, -3 );
+
+					// create a new payment type
+					$payment_type = new User_Payment_Type([
+						'id_user' => $user->id_user,
+						'active' => 1,
+						'card' => $last_digits,
+						'card_type' => Crunchbutton_User_Payment_Type::CARD_TYPE_CAMPUS_CASH,
+						'stripe_id' => $this->_campus_cash_sha1,
+						'stripe_customer' => $this->_customer,
+						'card_exp_year' => null,
+						'card_exp_month' => null,
+						'date' => date('Y-m-d H:i:s')
+					]);
+
+					$payment_type->save();
+
+					// Desactive others payments
+					$payment_type->desactiveOlderPaymentsType();
+
+				} else {
+					// create a new payment type
+					$payment_type = new User_Payment_Type([
+						'id_user' => $user->id_user,
+						'active' => 1,
+						'card' => $this->_card['lastfour'] ? ('************'.$this->_card['lastfour']) : '',
+						'card_type' => $this->_card['card_type'],
+						'card_exp_year' => $this->_card['year'],
+						'card_exp_month' => $this->_card['month'],
+						'date' => date('Y-m-d H:i:s')
+					]);
+
+					switch (Crunchbutton_User_Payment_Type::processor()) {
+						case 'stripe':
+							$payment_type->stripe_id = $this->_paymentType;
+							$user->stripe_id = $this->_customer;
+							$user->save();
+							break;
+					}
+
+					$payment_type->save();
+
+					// Desactive others payments
+					$payment_type->desactiveOlderPaymentsType();
 				}
-
-				$payment_type->save();
-
-				// Desactive others payments
-				$payment_type->desactiveOlderPaymentsType();
 			}
-
 			$this->id_user_payment_type = $payment_type->id_user_payment_type;
 		}
 
@@ -918,6 +969,23 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 	}
 
+	public function campusCashName(){
+		return ( $this->restaurant()->campusCashName() ? $this->restaurant()->campusCashName() : 'Student ID Number' );
+	}
+
+	public function campusCashReceiptInfo(){
+		return $this->restaurant()->campusCashReceiptInfo();
+	}
+
+	public function campusCashLastDigits(){
+		$paymentType = $this->paymentType();
+		return $paymentType->card;
+	}
+
+	public function campusCashFee(){
+		return $this->restaurant()->campusCashFee();
+	}
+
 	public function calcFinalPriceMinusUsersCredit(){
 		$final_price = $this->final_price_plus_delivery_markup;
 		if( $this->pay_type == 'card' ){
@@ -1030,80 +1098,98 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				break;
 
 			case 'card':
-				$user = c::user()->id_user ? c::user() : null;
 
-				if ($user) {
-					$paymentType = $user->payment_type();
-				}
+				// campus cash
+				if( $this->campus_cash ){
 
-				// use a stored users card and the apporiate payment type
-
-				if (!$this->_card['id'] && $paymentType->id_user_payment_type) {
-
-					if (Crunchbutton_User_Payment_Type::processor() == 'stripe' && $paymentType->stripe_id) {
-						$charge = new Charge_Stripe([
-							'card_id' => $paymentType->stripe_id,
-							'customer_id' => $user->stripe_id
-						]);
-
-					} else {
-						// there is a mismatch with stripe and balanced
-					}
-				}
-
-				// create the objects with no params
-				if (!$charge) {
-					switch (Crunchbutton_User_Payment_Type::processor()) {
-						case 'stripe':
-							$charge = new Charge_Stripe([
-								'customer_id' => $user->stripe_id
-							]);
-							break;
-					}
-				}
-
-				// If the amount is 0 it means that the user used his credit.
-				$amount = $this->calcFinalPriceMinusUsersCredit();
-				Log::debug([ 'issue' => '#1551', 'method' => 'verifyPayment', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, 'amount' => $amount ]);
-
-
-				// issue #3145
-				if ($amount > .5) {
-					$r = $charge->charge([
-						'amount' => $amount,
-						'card' => $this->_card,
+					$campus_money = new Crunchbutton_Stripe_Campus_Cash;
+					$success = $campus_money->store( [
+						'campus_cash' => $this->campusCash,
 						'name' => $this->name,
-						'address' => $this->address,
-						'email' => $user->email,
-						'phone' => $this->phone,
-						'user' => $user,
-						'restaurant' => $this->restaurant()
-					]);
-					if ($r['status']) {
-						$this->_txn = $r['txn'];
-						$this->_user = $user;
-						$this->_customer = $r['customer'];
-						$this->_paymentType = $r['card'];
-						$status = true;
-					} else {
-						$status = $r;
-					}
+						'email' => $this->email ] );
 
-				} elseif ($amount > 0) {
-					// we just gave them 50c or something
-					Log::debug([
-						'issue' => '#3145',
-						'method' => 'verifyPayment',
-						'$this->final_price' => $this->final_price,
-						'giftcardValue'=> $this->giftcardValue,
-						'amount' => $amount
-					]);
-					$status = true;
+					if( $success && $success[ 'campus_cash_sha1' ] ){
+						$this->_campus_cash_sha1 = $success[ 'campus_cash_sha1' ];
+						$this->_customer = $success['customer'];
+						$status = true;
+					}
 
 				} else {
-					$status = true;
-				}
 
+					$user = c::user()->id_user ? c::user() : null;
+
+					if ($user) {
+						$paymentType = $user->payment_type();
+					}
+
+					// use a stored users card and the apporiate payment type
+
+					if (!$this->_card['id'] && $paymentType->id_user_payment_type) {
+
+						if (Crunchbutton_User_Payment_Type::processor() == 'stripe' && $paymentType->stripe_id) {
+							$charge = new Charge_Stripe([
+								'card_id' => $paymentType->stripe_id,
+								'customer_id' => $user->stripe_id
+							]);
+
+						} else {
+							// there is a mismatch with stripe and balanced
+						}
+					}
+
+					// create the objects with no params
+					if (!$charge) {
+						switch (Crunchbutton_User_Payment_Type::processor()) {
+							case 'stripe':
+								$charge = new Charge_Stripe([
+									'customer_id' => $user->stripe_id
+								]);
+								break;
+						}
+					}
+
+					// If the amount is 0 it means that the user used his credit.
+					$amount = $this->calcFinalPriceMinusUsersCredit();
+					Log::debug([ 'issue' => '#1551', 'method' => 'verifyPayment', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, 'amount' => $amount ]);
+
+
+					// issue #3145
+					if ($amount > .5) {
+						$r = $charge->charge([
+							'amount' => $amount,
+							'card' => $this->_card,
+							'name' => $this->name,
+							'address' => $this->address,
+							'email' => $user->email,
+							'phone' => $this->phone,
+							'user' => $user,
+							'restaurant' => $this->restaurant()
+						]);
+						if ($r['status']) {
+							$this->_txn = $r['txn'];
+							$this->_user = $user;
+							$this->_customer = $r['customer'];
+							$this->_paymentType = $r['card'];
+							$status = true;
+						} else {
+							$status = $r;
+						}
+
+					} elseif ($amount > 0) {
+						// we just gave them 50c or something
+						Log::debug([
+							'issue' => '#3145',
+							'method' => 'verifyPayment',
+							'$this->final_price' => $this->final_price,
+							'giftcardValue'=> $this->giftcardValue,
+							'amount' => $amount
+						]);
+						$status = true;
+
+					} else {
+						$status = true;
+					}
+				}
 				break;
 		}
 		return $status;
@@ -1455,7 +1541,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function serviceFee() {
-		return number_format(($this->price + $this->delivery_fee) * ($this->service_fee/100),2);
+		$fee = number_format(($this->price + $this->delivery_fee) * ($this->service_fee/100),2);
+		if( $this->campus_cash && $this->campusCashFee() ){
+			$fee += number_format(($this->price + $this->delivery_fee) * ($this->campusCashFee()/100),2);
+		}
+		return $fee;
 	}
 
 	public function cbFee() {
@@ -2201,8 +2291,17 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					}
 				} else {
 					$spacer = ' / ';
-					$payment =
-					$msg = $this->name . $spacer . strtoupper( $this->pay_type ) . $spacer . strtoupper( $this->delivery_type ) . $spacer . preg_replace( '/[^\d.]/', '', $this->phone ) . $spacer;
+
+					if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD ){
+						$pay_type = 'CARD';
+						if( $this->campus_cash ){
+							$pay_type = strtoupper( $this->campusCashName() );
+						}
+					} else {
+						$pay_type = 'CASH';
+					}
+
+					$msg = $this->name . $spacer . $pay_type . $spacer . strtoupper( $this->delivery_type ) . $spacer . preg_replace( '/[^\d.]/', '', $this->phone ) . $spacer;
 
 					if( $this->delivery_type == Crunchbutton_Order::SHIPPING_DELIVERY ){
 						$msg .= $this->address . $spacer;
@@ -2221,6 +2320,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					}
 
 					$msg .= $spacer . $this->driverInstructionsFoodStatus() . $spacer . $this->driverInstructionsPaymentStatus();
+
+					if( $this->campus_cash ){
+						$msg .= $spacer . 'Check ID at delivery';
+					}
+
 				}
 
 				break;
@@ -2303,6 +2407,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$out['card_ending'] = false;
 		}
 
+		if( $paymentType->card_type == Crunchbutton_User_Payment_Type::CARD_TYPE_CAMPUS_CASH ){
+			$out['card_ending'] = false;
+			$out['campus_cash'] = true;
+			$out['campus_cash_name'] = $this->campusCashName();
+			$out['campus_cash_receipt_info'] = $this->campusCashReceiptInfo();
+		}
 
 		$date = new DateTime($this->date);
 		$date->setTimeZone($timezone);
@@ -2414,7 +2524,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 			if ( intval( $this->charged() ) > 0 ) {
 
-				if ($this->pay_type == self::PAY_TYPE_CREDIT_CARD) {
+				$paymentType = $this->paymentType();
+
+				if ($this->pay_type == self::PAY_TYPE_CREDIT_CARD && $paymentType->card_type != Crunchbutton_User_Payment_Type::CARD_TYPE_CAMPUS_CASH) {
 
 					switch ($this->processor) {
 						case 'stripe':
@@ -3256,6 +3368,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		foreach( $orders as $order ){
 			if( !$order->orderHasGeomatchedTicket() ){
 					$message = sprintf( $pattern, $order->name, $order->id_order, $order->community()->name, $order->address );
+					echo $message . "\n";
 					Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
 					$action = new Crunchbutton_Order_Action;
 					$action->id_order = $order->id_order;
@@ -3266,8 +3379,36 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 	}
 
+	public static function ticketForCampusCashOrder(){
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->modify( '- 5 min' );
+		$orders = Order::q( 'SELECT * FROM `order` WHERE date > ? AND campus_cash = 1', [ $now->format( 'Y-m-d H:i:s' ) ] );
+		$pattern = "%s just placed an %s (Campus Cash) Order! Order details: Order %d in the %s community to this address %s. ";
+		foreach( $orders as $order ){
+			if( !$order->orderHasCampusCashTicket() ){
+					$campus_cash_name = $order->campusCashName();
+					$message = sprintf( $pattern, $order->name, $campus_cash_name, $order->id_order, $order->community()->name, $order->address );
+					echo $message . "\n";
+					Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message, 'bubble' => true ] );
+					$action = new Crunchbutton_Order_Action;
+					$action->id_order = $order->id_order;
+					$action->timestamp = date( 'Y-m-d H:i:s' );
+					$action->type = Crunchbutton_Order_Action::TICKET_CAMPUS_CASH;
+					$action->save();
+			}
+		}
+	}
+
 	public function orderHasGeomatchedTicket(){
 		$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND type = ? ORDER BY id_order_action DESC LIMIT 1', [ $this->id_order, Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED ] );
+		if( $action->id_order_action ){
+			return true;
+		}
+		return false;
+	}
+
+	public function orderHasCampusCashTicket(){
+		$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND type = ? ORDER BY id_order_action DESC LIMIT 1', [ $this->id_order, Crunchbutton_Order_Action::TICKET_CAMPUS_CASH ] );
 		if( $action->id_order_action ){
 			return true;
 		}

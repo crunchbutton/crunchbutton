@@ -86,6 +86,15 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			service.form.pay_type = 'card';
 		}
 
+		service.campus_cash = false;
+		if( service.restaurant.campus_cash ){
+			service.campus_cash = { name: service.restaurant.campus_cash_name, fee: service.restaurant.campus_cash_fee };
+		}
+
+		if( service.campus_cash && service.account.user && service.account.user.card_type == 'campus_cash'  ){
+			service.form.pay_type = 'campus_cash';
+		}
+
 		// Rules at #669
 		service.form.delivery_type = (service.account.user && service.account.user.presets && service.account.user.presets[service.restaurant.id_restaurant]) ? service.account.user.presets[service.restaurant.id_restaurant].delivery_type : 'delivery';
 
@@ -125,6 +134,9 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		service.form.cardNumber = service.account.user.card;
 		service.form.cardMonth = ( service.account.user.card_exp_month ) ? ( service.account.user.card_exp_month ).toString() : '';
 		service.form.cardYear = ( service.account.user.card_exp_year ) ? ( service.account.user.card_exp_year ).toString() : '';
+
+		// Campus cash stuff
+		service.form.campusCash = '';
 
 		service.updateTotal();
 		if( !service.account.user.id_user ){
@@ -177,7 +189,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		}
 
 		// Force the takeout verification
-		if(! service.restaurant.takeout){
+		if(!service.restaurant.takeout){
 			service.form.delivery_type = 'delivery';
 		}
 
@@ -188,6 +200,11 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		} else {
 			service.showForm = true;
 		}
+
+		if( service.form.pay_type == 'campus_cash' ){
+			service.showForm = true;
+		}
+
 		// Load the order
 		if (service.cart.hasItems()) {
 			service.reloadOrder();
@@ -297,7 +314,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	 * @return float
 	 */
 	service._breackDownDelivery = function () {
-		if( service.form.pay_type == 'card' && service._removeDeliveryFee ){
+		if( ( service.form.pay_type == 'card' || service.form.pay_type == 'campus_cash'  ) && service._removeDeliveryFee ){
 			return 0;
 		}
 
@@ -306,7 +323,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			delivery = parseFloat(service.restaurant.delivery_fee);
 		}
 
-		if( service.form.pay_type == 'card' &&
+		if( ( service.form.pay_type == 'card' || service.form.pay_type == 'campus_cash' ) &&
 				service && service.account &&
 				service.account.user.points &&
 				service.account.user.points.free_delivery_message &&
@@ -327,8 +344,6 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		service._breackDownDelivery();
 	}
 
-
-
 	/**
 	 * Crunchbutton service
 	 *
@@ -336,17 +351,24 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	 */
 	service._breackDownFee = function (feeTotal) {
 		var fee = 0;
+
 		if (service.restaurant.fee_customer) {
-			fee = (feeTotal * (parseFloat(service.restaurant.fee_customer) / 100));
+			fee += (feeTotal * (parseFloat(service.restaurant.fee_customer) / 100));
 		}
+
+		if( service.form.pay_type == 'campus_cash' && service.campus_cash && service.campus_cash.fee ){
+			fee += (feeTotal * (parseFloat(service.campus_cash.fee) / 100));
+		}
+
 		fee = App.ceil(fee);
 		// Issue - #5671
-		if( service.form.pay_type == 'card' &&
+		if( ( service.form.pay_type == 'card' || service.form.pay_type == 'campus_cash' ) &&
 			service && service.account &&
 			service.account.user.points &&
 			service.account.user.points.free_delivery_message ){
 			fee = 0;
 		}
+
 		return fee;
 	}
 	service._breackDownTaxes = function (feeTotal) {
@@ -357,7 +379,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	}
 	service._breakdownTip = function (total) {
 		var tip = 0;
-		if (service.form.pay_type == 'card') {
+		if (service.form.pay_type == 'card' || service.form.pay_type == 'campus_cash') {
 			if (service.form.tip === 'autotip') {
 				return parseFloat( service.form.autotip );
 			}
@@ -386,7 +408,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	service.charged = function () {
 		var finalAmount = this.total();
 		var credit = parseFloat(service.credit.value);
-		if (service.form.pay_type == 'card' && credit) {
+		if (service.form.pay_type == 'card' || service.form.pay_type == 'campus_cash' && credit) {
 			finalAmount = finalAmount - credit;
 			if (finalAmount < 0) {
 				finalAmount = 0;
@@ -505,7 +527,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			geomatched : service.geomatched
 		};
 
-		if (order.pay_type == 'card' || order.pay_type == 'applepay') {
+		if (order.pay_type == 'card' || order.pay_type == 'applepay' || order.pay_type == 'campus_cash') {
 			order.tip = service.form.tip;
 			order.autotip_value = service.form.autotip;
 		}
@@ -525,7 +547,6 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			}
 			return false;
 		}
-
 
 		var errors = {};
 		if (!order.name) {
@@ -552,6 +573,9 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		}
 		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardYear) || (!service.account.user.id_user && !service.form.cardYear) || (!service.form.cardYear) || service.form.cardYear == '-' ) ) {
 			errors['card_year'] = 'Please enter the card expiration year.';
+		}
+		if (order.pay_type == 'campus_cash' && !service.form.campusCash ) {
+			errors['campus_cash'] = 'Please enter the ' + service.campus_cash.name + '.';
 		}
 		if (!service.cart.hasItems()) {
 			errors['noorder'] = 'Please add something to your order.';
@@ -744,6 +768,11 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			var processor = ( App.config.processor && App.config.processor.type ) ? App.config.processor.type : false;
 			order.processor = processor;
 
+
+			if (order.pay_type == 'campus_cash' ) {
+				order.campusCash = service.form.campusCash;
+			}
+
 			var url = App.service + 'order';
 
 			$http( {
@@ -839,6 +868,10 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 								$rootScope.$safeApply( function(){
 									$rootScope.$broadcast( 'newOrder' );
 									OrderViewService.newOrder = true;
+
+									if( service.campus_cash ){
+										OrderViewService._campus_cash[ uuid ] = service.form.campusCash;
+									}
 
 									$rootScope.navigation.link('/order/' + uuid + '/confirm', 'push');
 
@@ -1220,10 +1253,9 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 // OrdersService service
 NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope, $http, FacebookService) {
 
-	var service = { order : false, reload : true, newOrder : false };
+	var service = { order : false, reload : true, newOrder : false, _campus_cash: {} };
 
 	service.facebook = FacebookService;
-
 
 	service.load = function(refresh){
 		var url = App.service + 'order/' + $routeParams.id;
@@ -1238,6 +1270,10 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 			cache: !refresh
 		}).success( function( data ) {
 			service.order = data;
+
+			if( service._campus_cash && service._campus_cash[ service.order.uuid ] ){
+				service.order.campus_cash_number = service._campus_cash[ service.order.uuid ];
+			}
 
 			if (service.order.uuid) {
 				service.order._final_price = parseFloat(service.order.final_price).toFixed(2);
