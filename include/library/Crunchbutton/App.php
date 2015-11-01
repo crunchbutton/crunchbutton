@@ -55,7 +55,7 @@ class Crunchbutton_App extends Cana_App {
 			}
 		}
 
-		if (getenv('DOCKER')) {
+		if (getenv('DOCKER') || getenv('TUTUM_CONTAINER_HOSTNAME')) {
 			$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'];
 		}
 
