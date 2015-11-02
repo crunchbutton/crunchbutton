@@ -11,6 +11,6 @@ class MysqlDateTest extends PHPUnit_Framework_TestCase {
 			return substr($i, 0, -(strlen($i) - strrpos($i, ':')));
 		};
 
-		$this->assertEquals($r($dbd->d), $r($phpd);
+		$this->assertEquals($r($dbd->d), $r($phpd));
 	}
 }
