@@ -75,7 +75,7 @@ class Crunchbutton_App extends Cana_App {
 		} elseif (preg_match('/beta.cockpit.la$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'beta';
 		// any one of our cull live urls, or staging prefixes
-		} elseif (preg_match('/^(.*?arzynik.svc.tutum.io)|(.*?crunchbutton.nody.co)|(.*?cockpit.nody.co)|cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com|(staging[0-9]?.(cockpit.la|crunchr.co))|(cockpit.crunchr.co)|(cockpit1.crunchr.co)$/',$_SERVER['SERVER_NAME'])) {
+		} elseif (preg_match('/^(.*?arzynik.svc.tutum.io)|(.*?crunchbutton.nody.co)|(.*?cockpit.nody.co)|cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com|(staging[0-9]?.(cockpit.la|crunchr.co))|((live\.)?cockpit1.crunchr.co)$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'live';
 		// anything ._DOMAIN_ fails
 		} elseif (preg_match('/_DOMAIN_$/',$_SERVER['SERVER_NAME'])) {
@@ -84,7 +84,7 @@ class Crunchbutton_App extends Cana_App {
 		} elseif (preg_match('/(ui1\.nody\.co)|(ui1\.crunchr\.co)/',$_SERVER['SERVER_NAME'])) {
 			$db = 'ui1archive';
 		// anything prefixed with beta or dev
-		} elseif (preg_match('/(crunchr.co$)|(^beta.|dev.|cockpitbeta.)|(dev.cockpit.crunchr.co)/',$_SERVER['SERVER_NAME'])) {
+		} elseif (preg_match('/(crunchr\.co$)|(^beta\.|dev\.)/',$_SERVER['SERVER_NAME'])) {
 			$db = 'beta';
 		// anything else (should be nothing)
 		} else {
