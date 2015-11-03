@@ -60,6 +60,10 @@ NGApp.factory('errorInterceptor', function($q) {
 			App.alert('<b>Error</b>. Please report this to dev:<br><br><ul class="ul-inputs"><li class="li-input"><div class="input"><textarea class="fatal-error-content">' + headers['php-fatal-error'] + '</textarea></div></li></ul>');
 			return false;
 		}
+
+		if( response.status == 401 && response.data && response.data.login ){
+			window.location.reload();
+		}
 		return true;
 	};
 	var unteruptable = [
