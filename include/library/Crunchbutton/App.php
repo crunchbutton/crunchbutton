@@ -55,7 +55,7 @@ class Crunchbutton_App extends Cana_App {
 			}
 		}
 
-		if (getenv('DOCKER')) {
+		if (getenv('DOCKER') || getenv('TUTUM_CONTAINER_HOSTNAME')) {
 			$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'];
 		}
 
@@ -75,7 +75,7 @@ class Crunchbutton_App extends Cana_App {
 		} elseif (preg_match('/beta.cockpit.la$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'beta';
 		// any one of our cull live urls, or staging prefixes
-		} elseif (preg_match('/^(.*?arzynik.svc.tutum.io)|(.*?crunchbutton.nody.co)|(.*?cockpit.nody.co)|cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com|(staging[0-9]?.(cockpit.la|crunchr.co))$/',$_SERVER['SERVER_NAME'])) {
+		} elseif (preg_match('/^(.*?arzynik.svc.tutum.io)|(.*?crunchbutton.nody.co)|(.*?cockpit.nody.co)|cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com|(staging[0-9]?.(cockpit.la|crunchr.co))|(cockpit.crunchr.co)|(cockpit1.crunchr.co)$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'live';
 		// anything ._DOMAIN_ fails
 		} elseif (preg_match('/_DOMAIN_$/',$_SERVER['SERVER_NAME'])) {
@@ -84,7 +84,7 @@ class Crunchbutton_App extends Cana_App {
 		} elseif (preg_match('/(ui1\.nody\.co)|(ui1\.crunchr\.co)/',$_SERVER['SERVER_NAME'])) {
 			$db = 'ui1archive';
 		// anything prefixed with beta or dev
-		} elseif (preg_match('/(crunchr.co$)|(^beta.|dev.|cockpitbeta.)/',$_SERVER['SERVER_NAME'])) {
+		} elseif (preg_match('/(crunchr.co$)|(^beta.|dev.|cockpitbeta.)|(dev.cockpit.crunchr.co)/',$_SERVER['SERVER_NAME'])) {
 			$db = 'beta';
 		// anything else (should be nothing)
 		} else {
@@ -108,10 +108,10 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		// special settings for live web views
-		if ($db != 'heroku' && preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|spicywithdelivery.com$/',$_SERVER['SERVER_NAME']) && !$cli && !isset($_REQUEST['__host']) && $_SERVER['SERVER_NAME'] != 'old.cockpit._DOMAIN_' && $_SERVER['SERVER_NAME'] != 'cockpit._DOMAIN_') {
+		if ($db != 'heroku' &&  !getenv('DOCKER') && !getenv('TUTUM_CONTAINER_HOSTNAME') && preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|spicywithdelivery.com$/',$_SERVER['SERVER_NAME']) && !$cli && !isset($_REQUEST['__host']) && $_SERVER['SERVER_NAME'] != 'old.cockpit._DOMAIN_' && $_SERVER['SERVER_NAME'] != 'cockpit._DOMAIN_') {
 			error_reporting(E_ERROR | E_PARSE);
 
-			if ($_SERVER['HTTPS'] != 'on') {
+			if ((!$_SERVER['HTTP_X_FORWARDED_PROTO'] && $_SERVER['HTTPS'] != 'on') || ($_SERVER['HTTP_X_FORWARDED_PROTO'] && $_SERVER['HTTP_X_FORWARDED_PROTO'] != 'https')) {
 				header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 				exit;
 			}
