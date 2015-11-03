@@ -136,9 +136,6 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 
 	// needs to be updated when the html is
 	$scope.welcome = Math.floor((Math.random() * 8) + 1);
-	console.debug('welcome message', $scope.welcome);
-
-
 });
 
 NGApp.controller( 'ProfileCtrl', function ($scope) {});

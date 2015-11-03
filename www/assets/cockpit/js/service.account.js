@@ -30,10 +30,12 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 		var pass = false;
 
 		for (var x in perms) {
-			if (service.user.permissions[perms[x].toUpperCase()] === true) {
-				pass = true;
-			} else if (service.user.permissions[perms[x].toUpperCase()] === false) {
-				return false;
+			if( service.user && service.user.permissions ){
+				if (service.user.permissions[perms[x].toUpperCase()] === true) {
+					pass = true;
+				} else if (service.user.permissions[perms[x].toUpperCase()] === false) {
+					return false;
+				}
 			}
 		}
 		return pass;

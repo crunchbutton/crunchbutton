@@ -238,7 +238,7 @@ NGApp.controller('SideSupportPexCardCtrl', function( $scope, StaffPayInfoService
 
 } );
 
-NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService, CallService, MainNavigationService, TwilioService) {
+NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService, CallService, MainNavigationService, TwilioService, AccountService) {
 
 	$scope.call = { staff : '', to : 'customer', _to: CallService.call_to() };
 	$scope.sms = { staff : '', to : 'customer', _to: CallService.call_to() };
@@ -252,10 +252,6 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 		$scope.sms.name = newValue.name;
 	}	);
 
-	StaffService.phones( function( response ){
-		$scope.staff = response;
-	} );
-
 	$scope.formCallSending = false;
 	$scope.formSMSSending = false;
 
@@ -263,6 +259,11 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 		$scope.call.phone = '';
 		$scope.sms.phone = '';
 		$scope.sms.message = '';
+
+		StaffService.phones( function( response ){
+			$scope.staff = response;
+		} );
+
 	}
 
 	$scope.sms.send = function(){
