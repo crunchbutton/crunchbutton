@@ -73,13 +73,24 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 
 		if ($lat && $lon && c::admin()->id_admin && $storeLocation ) {
 			(new Admin_Location([
-				'id_admin' => c::admin()->id_admin,
+				'id_admin' => c::user()->id_admin,
 				'date' => date('Y-m-d H:i:s'),
 				'lat' => $lat,
 				'lon' => $lon,
 				'accuracy' => $this->request()['accuracy']
 			]))->save();
 		}
+
+		Log::debug([
+							'id_admin' 	=> c::user()->id_admin,
+							'lat' 				=> $lat,
+							'lon' 				=> $lon,
+							'working' 		=> c::user()->isWorking(),
+							'request' 		=> $_REQUEST,
+							'storeLocation' 		=> $storeLocation,
+							'type' 				=> 'heartbeat'
+						]);
+
 
 
 		echo json_encode($r);
