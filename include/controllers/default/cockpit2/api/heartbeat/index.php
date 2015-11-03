@@ -58,12 +58,20 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 
 		$r['working'] = c::user()->isWorking();
 
+		$storeLocation = c::user()->isWorking();
+		if( !$storeLocation ){
+			$shiftFinishedAt = c::user()->getLastWorkedTimeHours();
+			if( $shiftFinishedAt > 0 && $shiftFinishedAt <= 1 ){
+				$storeLocation = true;
+			}
+		}
+
 
 		// location reporting
 		$lat = $this->request()['lat'] ? $this->request()['lat'] : $this->request()['latitude'];
 		$lon = $this->request()['lon'] ? $this->request()['lon'] : $this->request()['longitude'];
 
-		if ($lat && $lon && c::admin()->id_admin) {
+		if ($lat && $lon && c::admin()->id_admin && $storeLocation ) {
 			(new Admin_Location([
 				'id_admin' => c::admin()->id_admin,
 				'date' => date('Y-m-d H:i:s'),

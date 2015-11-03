@@ -467,8 +467,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			} else {
 				$hours = 0;
 			}
-
-			return intval( $hours );
+			return floatval( $hours );
 		}
 		return false;
 	}
