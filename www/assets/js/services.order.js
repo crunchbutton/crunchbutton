@@ -858,6 +858,10 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 									'cart': service.cart.getItems()
 								});
 
+								if( fbq ){ // #7077
+									fbq('track', 'Purchase', {value: service.info.total, currency: 'USD'});
+								}
+
 								// Clean the cart
 								service.cart.clean();
 								service.updateTotal();
