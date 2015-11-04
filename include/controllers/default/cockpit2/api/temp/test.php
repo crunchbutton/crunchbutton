@@ -2,6 +2,7 @@
 
 class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
 
-	public static function name( $from ){
+	public function init(){
+		Order::ticketForCampusCashOrder();
 	}
 }
