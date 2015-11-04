@@ -1,0 +1,1 @@
+ALTER TABLE `support` ADD `replyto` VARCHAR(200);

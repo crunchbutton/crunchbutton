@@ -81,21 +81,7 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 			]))->save();
 		}
 
-		Log::debug([
-							'id_admin' 	=> c::user()->id_admin,
-							'lat' 				=> $lat,
-							'lon' 				=> $lon,
-							'working' 		=> c::user()->isWorking(),
-							'request' 		=> $_REQUEST,
-							'storeLocation' 		=> $storeLocation,
-							'type' 				=> 'heartbeat'
-						]);
-
-
-
 		echo json_encode($r);
 		exit;
-
-
 	}
 }

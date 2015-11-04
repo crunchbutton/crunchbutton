@@ -209,13 +209,9 @@ class Crunchbutton_Support_Message extends Cana_Table {
 	public function notify_by_email() {
 		$support = $this->support();
 		if (!$support->email) return;
-		if( $this->admin()->id_admin ){
-			$rep_name = $this->admin()->firstName();
-		} else {
-			$rep_name = '';
-		}
 		$subject = 'Re: ' . $support->lastSubject();
-		$params = [ 'to' => $support->email, 'message' => $this->body, 'subject' => $subject ];
+		$to = $support->email . ',' . Crunchbutton_Support::SUPPORT_EMAIL;
+		$params = [ 'to' => $to, 'message' => $this->body, 'subject' => $subject, 'name' => c::user()->name ];
 		$email = new Crunchbutton_Email_CSReply( $params );
 		$email->send();
 	}

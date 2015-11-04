@@ -11,7 +11,7 @@ class Crunchbutton_Email_CSReply extends Email{
 
 		$this->buildView($params);
 
-		$params['messageHtml'] = $this->view()->render('cs/customerservice',['display' => true, 'set' => ['message' => $params['message'], ]]);
+		$params['messageHtml'] = $this->view()->render('cs/customerservice',['display' => true, 'set' => ['message' => $params['message'], 'name' => $params['name'] ]]);
 
 		parent::__construct($params);
 	}
