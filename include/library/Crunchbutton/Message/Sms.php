@@ -100,6 +100,10 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 				$t = $user;
 			}
 
+			if( $t == '0000000000' ){
+				continue;
+			}
+
 			$t = Phone::dirty($t);
 
 			if (!$t) {
