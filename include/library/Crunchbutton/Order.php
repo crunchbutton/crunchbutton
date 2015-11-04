@@ -3383,7 +3383,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->modify( '- 5 min' );
 		$orders = Order::q( 'SELECT * FROM `order` WHERE date > ? AND campus_cash = 1', [ $now->format( 'Y-m-d H:i:s' ) ] );
-		$pattern = "%s just placed an %s (Campus Cash) Order! Order details: Order %d in the %s community to this address %s. ";
+		$pattern = "Charge this customer now on Verifone in front room and mark as Already Charged from this Support ticket! - More info: %s just placed an %s (Campus Cash) Order! Order details: Order %s in the %s community to this address %s";
 		foreach( $orders as $order ){
 			if( !$order->orderHasCampusCashTicket() ){
 					$campus_cash_name = $order->campusCashName();

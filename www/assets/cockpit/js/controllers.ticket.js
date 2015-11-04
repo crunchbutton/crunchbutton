@@ -229,6 +229,42 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		$scope.ticket.driver.note = data;
 	});
 
+
+	$scope.campus_cash_retrieving = false;
+
+	$scope.campus_cash = function (){
+		if( $scope.campus_cash_retrieving ){
+			return;
+		}
+
+		$scope.campus_cash_retrieving = true;
+		var params = { id_order: $scope.ticket.order.id_order, sha1: $scope.ticket.order.campus_cash_sha1 }
+
+		OrderService.campus_cash( params, function( result ){
+			if( result.success ){
+				App.alert( result.success, null, null, function(){}, true );
+			} else {
+				App.alert( 'Error!' );
+			}
+			$scope.campus_cash_retrieving = false;
+		} );
+	}
+
+	$scope.mark_cash_card_charged = function(){
+		var success = function(){
+			OrderService.mark_cash_card_charged( $scope.ticket.order.id_order, function( result ){
+				if( result.success ){
+					$scope.ticket.order.campus_cash_charged = true;
+				} else {
+					App.alert( 'Error marking order as paid!' );
+				}
+			} );
+		}
+		$scope.ticket.order.campus_cash_charged = false;
+		var fail = function(){};
+		App.confirm('After you mark this order as charged you will not be able to see the Student ID Number anymore.', 'Confirm?', success, fail, 'Confirm,Cancel', true);
+	}
+
 	update();
 
 });

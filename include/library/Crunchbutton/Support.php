@@ -871,6 +871,19 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			}
 		}
 
+		if( $this->order() ){
+			$order = $this->order();
+			$campus_card_charged = $order->campus_cash_charged();
+			if( $campus_card_charged ){
+				$out['order'][ 'campus_cash_charged' ] = true;
+				$out['order'][ 'campus_cash_charged_info' ] = $campus_card_charged;
+			} else {
+				$out['order'][ 'campus_cash_charged' ] = false;
+				$paymentType = $order->paymentType();
+				$out['order'][ 'campus_cash_sha1' ] = $paymentType->stripe_id;
+			}
+		}
+
 		// Export the comments
 		$out[ 'comments' ] = [];
 		$comments = $this->comments();
