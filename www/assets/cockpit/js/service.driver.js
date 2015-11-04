@@ -15,6 +15,15 @@ NGApp.factory( 'DriverService', function( $rootScope, $resource, $routeParams ) 
 			}
 		);
 
+	// Create a private resource 'Driver'
+	var notifications = $resource( App.service + 'driver/notifications/:action/:id_admin/:id_admin_notification', { action: '@action', id_admin: '@id_admin', id_admin_notification: '@id_admin_notification' }, {
+				'list' : { 'method': 'GET', params : { 'action' : 'list' } },
+				'notification' : { 'method': 'GET', params : { 'action' : 'notification' } },
+				'change_status' : { 'method': 'POST', params : { 'action' : 'change_status' } },
+				'save' : { 'method': 'POST', params : { 'action' : 'save' } }
+			}
+		);
+
 	var payments = $resource( App.service + 'driver/payments/:action/:id_admin/:id_payment', { action: '@action', id_admin: '@id_admin', id_payment: '@id_payment' }, {
 				'all' : { 'method': 'GET', params : { 'action' : 'all' } },
 				'payment' : { 'method': 'GET', params : { 'action' : 'payment' } }
@@ -74,6 +83,29 @@ NGApp.factory( 'DriverService', function( $rootScope, $resource, $routeParams ) 
 		drivers.list_payment_type( function( data ){
 			callback( data );
 		} );
+	}
+
+	service.notifications = {
+		list: function( id_admin, callback ){
+			notifications.list( {id_admin: id_admin}, function( data ){
+				callback( data );
+			} );
+		},
+		save: function( params, callback ){
+			notifications.save( params, function( data ){
+				callback( data );
+			} );
+		},
+		change_status: function( id_admin_notification, callback ){
+			notifications.change_status( { id_admin_notification: id_admin_notification }, function( data ){
+				callback( data );
+			} );
+		},
+		notification: function( id_admin_notification, callback ){
+			notifications.list( { id_admin_notification: id_admin_notification }, function( data ){
+				callback( data );
+			} );
+		}
 	}
 
 	return service;

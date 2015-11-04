@@ -36,8 +36,14 @@
 				</ul>
 
 				<a href="/profile/password">
-					<button class="button button-green button-empty button-border">change your password</button>
+					<button class="button button-green button-empty button-border"><i class="fa fa-key"></i> change your password</button>
 				</a>
+				<div ng-if="account.isDriver">
+					<br><br>
+					<a href="/drivers/notification">
+						<button class="button button-blue button-empty button-border"><i class="fa fa-bell-o"></i> edit your notifications</button>
+					</a>
+				</div>
 
 			</div>
 		</div>
@@ -59,7 +65,7 @@
 		</div>
 
 
-		<button ng-click="account.logout()" class="button button-orange button-empty button-border">Logout</button>
+		<button ng-click="account.logout()" class="button button-orange button-empty button-border"><i class="fa fa-sign-out"></i> Logout</button>
 
 
 
