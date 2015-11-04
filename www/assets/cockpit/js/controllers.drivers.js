@@ -16,6 +16,12 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			templateUrl: 'assets/view/drivers-community.html'
 
 		})
+		.when('/drivers/notification/:id?', {
+			action: 'drivers-notification',
+			controller: 'DriversNotificationCtrl',
+			templateUrl: 'assets/view/drivers-notifications.html'
+
+		})
 }]);
 
 NGApp.controller( 'CommunityResourcesDriverCtrl', function ($rootScope, $scope, ResourceService ) {
@@ -956,6 +962,71 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 	$scope.$watch( 'ready', function( newValue, oldValue, scope ) {
 		start();
 	});
+
+} );
+
+NGApp.controller( 'DriversNotificationCtrl', function ( $scope, $routeParams, DriverService ) {
+
+	var id_admin = $routeParams.id;
+
+	$scope.loading = true;
+
+	var reset = function(){
+		$scope.notification = { 'value': null, 'type': null };
+	}
+
+	var types = [];
+	types.push( { value: 'email', label: 'Email' } );
+	types.push( { value: 'phone', label: 'Phone' } );
+	types.push( { value: 'sms-dumb', label: 'Dumb SMS' } );
+	types.push( { value: 'sms', label: 'SMS' } );
+
+	$scope.types = types;
+
+	$scope.save = function(){
+
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			return;
+		}
+
+		$scope.isSaving = true;
+
+		$scope.notification.id_admin = $scope.id_admin;
+
+		DriverService.notifications.save( $scope.notification, function( json ){
+			$scope.isSaving = false;
+			if( json.error ){
+				App.alert( 'Error saving: ' + json.error );
+			} else {
+				load();
+				reset();
+			}
+		} );
+	}
+
+
+	var load = function(){
+		DriverService.notifications.list( id_admin, function( json ){
+			$scope.driver = json.driver;
+			$scope.id_admin = json.id_admin;
+			$scope.add_notification = json.add_notification;
+			$scope.notifications = json.notifications;
+			$scope.loading = false;
+		} );
+	}
+
+	$scope.change_status = function( notification ){
+		DriverService.notifications.change_status( notification.id_admin_notification, function( json ){
+			if( json.error ){
+				App.alert( json.error );
+			}
+			load();
+		} );
+	}
+
+	reset();
+	load();
 
 } );
 

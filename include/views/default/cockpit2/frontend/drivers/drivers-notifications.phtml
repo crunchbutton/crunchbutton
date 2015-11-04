@@ -1,0 +1,85 @@
+
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="title box-title"><i class="fa fa-bell"></i><span><span ng-if="driver">{{driver}}'s </span>Notifications</span></h1>
+
+	<div class="bar-loader bar-loader-search bar-loader-boxes-top" ng-class="{'bar-loader-loading': loading}"></div>
+
+
+	<div class="support-box-wrap box-content2" ng-show="add_notification">
+
+		<form name="form" novalidate>
+			<div class="support-box-wrap-header">
+				<h1>Add Notification</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+					<li class="li-input" ng-class="{'error':form.type.$invalid}">
+						<div class="label">Type:</div>
+						<div class="input">
+							<select name="type" required ng-model="notification.type" ng-options="opt.value as opt.label for opt in types" ></select>
+						</div>
+						<div class="box-error">
+							<small ng-show="form.type.$error.required">Required.</small>
+						</div>
+					</li>
+					<li class="li-input" ng-class="{'error':form.value.$invalid}">
+						<div class="label">Value:</div>
+						<div class="input">
+							<input type="text" name="value" required ng-model="notification.value">
+						</div>
+						<div class="box-error">
+							<small ng-show="form.value.$error.required">Required.</small>
+						</div>
+					</li>
+					<li class="li-input" ng-show="!isSaving">
+						<button class="button save" ng-click="save();">Save</button>
+					</li>
+					<li class="li-input" ng-show="isSaving">
+						<i class="fa fa-circle-o-notch fa-spin"></i>
+					</li>
+				</ul>
+
+			</div>
+		</form>
+	</div>
+
+	<div class="divider"></div>
+	<div class="box-content2 box-content-table" ng-if="!loading && notifications.length">
+		<table class="tb-zebra">
+			<tr>
+				<th>Type</th>
+				<th>Value</th>
+				<th>Active</th>
+			</tr>
+			<tr ng-repeat="notification in notifications">
+				<td>
+					<span class="tag tag-green" ng-if="notification.type == 'sms'">SMS</span>
+					<span class="tag tag-blue" ng-if="notification.type == 'email'">Email</span>
+					<span class="tag tag-purple" ng-if="notification.type == 'phone'">Phone</span>
+					<span class="tag tag-grey" ng-if="notification.type == 'url'">URL</span>
+					<span class="tag tag-orange" ng-if="notification.type == 'fax'">FAX</span>
+					<span class="tag tag-darkgreen" ng-if="notification.type == 'sms-dumb'">Dumb SMS</span>
+					<span class="tag tag-lightblue" ng-if="notification.type == 'push-ios'">iOS Push Notification</span>
+					<span class="tag tag-yellow" ng-if="notification.type == 'push-android'">Android Push Notification</span>
+				</td>
+				<td>
+					<span ng-if="notification.type != 'push-android' && notification.type != 'push-ios'">{{notification.value}}</span>
+					<span ng-if="notification.type == 'push-android' || notification.type == 'push-ios'">-</span>
+				</td>
+				<td>
+					<label class="switch-wrap">
+						<input type="checkbox" ng-click="change_status( notification )" class="switch" ng-model="notification.active"/><div></div>
+					</label>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+</div>
+
