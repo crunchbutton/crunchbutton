@@ -25,6 +25,10 @@ class Crunchbutton_Referral extends Cana_Table{
 			->load($id);
 	}
 
+	public function wasPaid(){
+		return Cockpit_Payment_Schedule_Referral::checkReferralWasPaidDriver( $this->id_referral );
+	}
+
 	public function newReferredUsersByUser( $id_user ){
 		if( $id_user ){
 			$query = '
