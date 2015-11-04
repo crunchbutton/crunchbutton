@@ -34,9 +34,6 @@ include/config/config.xml
 /www/assets/cockpit/js/bundle.js
 /build/*
 
-#upload files
-www/upload/drivers-doc/*
-
 # huh?
 workflow*
 
