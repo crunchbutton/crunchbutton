@@ -16,6 +16,8 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 	const CUSTOM_SERVICE_GROUP_NAME_KEY = 'custom-service-group-name';
 
+	const SUPPORT_EMAIL = 'support@_DOMAIN_';
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
@@ -1153,7 +1155,6 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		// get the last ticket
 		$support = Support::q( 'SELECT * FROM support WHERE email = ? ORDER BY id_support DESC LIMIT 1', [ $params[ 'email' ] ] )->get( 0 );
 		if( $support->id_support ){
-
 			$user = User::byEmail( $params[ 'email' ] );
 			if( $user && $support->id_user == $user->id_user  ){
 				$order = $user->lastOrder();
@@ -1184,6 +1185,9 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			$support->datetime = date( 'Y-m-d H:i:s' );
 			$support->save();
 		}
+		$support->replyto = $params['replyto'];
+		$support->save();
+
 		$message = [];
 		$message[ 'from' ] = 'client';
 		$message[ 'type' ] = Crunchbutton_Support_Message::TYPE_EMAIL;
