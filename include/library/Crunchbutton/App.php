@@ -12,7 +12,7 @@
 class Crunchbutton_App extends Cana_App {
 	private $_crypt;
 
-	public function envByHost() {
+	public function envByHost($travis = true) {
 		if (!$_SERVER['SERVER_NAME']) {
 			putenv('CLI=true');
 			$this->cli = true;
@@ -57,9 +57,9 @@ class Crunchbutton_App extends Cana_App {
 
 		// db by hostname
 		// travis
-		if (getenv('TRAVISPOSTGRES')) {
+		if ($travis && getenv('TRAVISPOSTGRES')) {
 			$db = 'travispostgres';
-		} elseif (getenv('TRAVIS')) {
+		} elseif ($travis && getenv('TRAVIS')) {
 			$db = 'travis';
 		// anything local or dev
 		} elseif (preg_match('/192\.168\.0|localhost$|^(crunch|cockpit|cockpitla).dev$|^dev.(pit|la|crunch|seven)$|^pererinha.dyndns-web.com$/',$_SERVER['SERVER_NAME'])) {
