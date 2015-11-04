@@ -217,7 +217,6 @@
 
 		</div>
 
-
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
 				<h1>Payment option</h1>
@@ -260,7 +259,7 @@
 
 					<li class="li-input" ng-show="community.campus_cash" ng-class="{'error':form.campusCashValidation.$invalid}">
 						<div class="label">Campus Cash Validation:</div>
-						<div class="input"><input type="text" name="campusCashValidation" ng-model="community.campus_cash_validation" required placeholder="Campus Cash Validation (Regular Expression)" ng-maxlength="255" ></div>
+						<div class="input"><input type="text" name="campusCashValidation" ng-model="community.campus_cash_validation" ng-required="community.campus_cash" placeholder="Campus Cash Validation (Regular Expression)" ng-maxlength="255" ></div>
 						<div class="box-error">
 							<small ng-show="form.communityName.$error.required">Required.</small>
 						</div>
