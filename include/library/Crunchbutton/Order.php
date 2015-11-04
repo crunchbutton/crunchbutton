@@ -3397,6 +3397,27 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					$action->save();
 			}
 		}
+		self::ticketToReminderToChargeCampusCashOrder();
+	}
+
+	public static function ticketToReminderToChargeCampusCashOrder(){
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->modify( '- 15 min' );
+		$orders = Order::q( 'SELECT * FROM `order` WHERE date <= ? AND campus_cash = 1 AND id_order NOT IN ( SELECT id_order FROM order_transaction WHERE type = ? )', [ $now->format( 'Y-m-d H:i:s' ), Crunchbutton_Order_Transaction::TYPE_CAMPUS_CASH_CHARGED ] );
+		$pattern = "Remind to charge this customer now on Verifone in front room and mark as Already Charged from this Support ticket!";
+		foreach( $orders as $order ){
+			if( !$order->orderHasCampusCashTicketReminder() && !$order->campus_cash_charged() ){
+					$campus_cash_name = $order->campusCashName();
+					$message = sprintf( $pattern, $order->name, $campus_cash_name, $order->id_order, $order->community()->name, $order->address );
+					echo $message . "\n";
+					Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message, 'bubble' => true ] );
+					$action = new Crunchbutton_Order_Action;
+					$action->id_order = $order->id_order;
+					$action->timestamp = date( 'Y-m-d H:i:s' );
+					$action->type = Crunchbutton_Order_Action::TICKET_CAMPUS_CASH_REMINDER;
+					$action->save();
+			}
+		}
 	}
 
 	public function orderHasGeomatchedTicket(){
@@ -3409,6 +3430,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function orderHasCampusCashTicket(){
 		$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND type = ? ORDER BY id_order_action DESC LIMIT 1', [ $this->id_order, Crunchbutton_Order_Action::TICKET_CAMPUS_CASH ] );
+		if( $action->id_order_action ){
+			return true;
+		}
+		return false;
+	}
+
+	public function orderHasCampusCashTicketReminder(){
+		$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND type = ? ORDER BY id_order_action DESC LIMIT 1', [ $this->id_order, Crunchbutton_Order_Action::TICKET_CAMPUS_CASH_REMINDER ] );
 		if( $action->id_order_action ){
 			return true;
 		}

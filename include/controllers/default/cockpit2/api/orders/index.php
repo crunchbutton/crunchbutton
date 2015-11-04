@@ -226,6 +226,13 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 					}
 				}
 
+				if( $order->campus_cash ){
+					$o->campus_cash_charged = false;
+					if( $order->campus_cash_charged() ){
+						$o->campus_cash_charged = true;
+					}
+				}
+
 				if( $campusManager ){
 					$o->orders_by_phone = Order::totalOrdersByPhone( $o->phone );
 					$o->new_customer = ( $o->orders_by_phone == 1 );

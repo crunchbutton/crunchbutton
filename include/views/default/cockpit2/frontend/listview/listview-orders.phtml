@@ -40,7 +40,7 @@
 				<div>
 					<span class="tag tag-purple" ng-if="order.pay_type == 'cash'">Cash</span>
 					<span class="tag tag-green" ng-if="order.pay_type == 'card' && !order.campus_cash">Card</span>
-					<span class="tag tag-blue" ng-if="order.pay_type == 'card' && order.campus_cash">Campus Cash</span>
+					<span class="tag tag-blue" ng-if="order.pay_type == 'card' && order.campus_cash">Campus Cash<span ng-if="!order.campus_cash_charged"> - Not Charged!</span></span>
 				</div>
 			</td>
 			<td>
