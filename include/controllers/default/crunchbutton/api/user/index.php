@@ -303,9 +303,18 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 
 			case 'facebook':
 				if ($_REQUEST['fbrtoken']) {
+
 					// log in from the app
 					$fb = c::auth()->facebook(new Crunchbutton_Auth_Facebook($_REQUEST['fbrtoken']));
 					$user = c::user();
+
+					$isNew = true;
+
+					if( User_Auth::userHasFacebookAuth( $user->id_user ) ){
+						$isNew = false;
+					}
+
+
 
 					// if we have a user and they do not have an email, save it as the facebook email
 					if ($user->id_user && !$user->email && $fb->fbuser()->email) {
@@ -324,7 +333,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 
 					c::auth()->facebook()->check();
 					c::auth()->fbauth();
-					echo c::user()->json(['auth' => true]);
+					echo c::user()->json(['auth' => true,'fb_new' => $isNew]);
 
 					break;
 				}

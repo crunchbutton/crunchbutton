@@ -284,6 +284,10 @@ class Crunchbutton_User extends Cana_Table {
 			$out['token'] = c::auth()->session()->token;
 		}
 
+		if ($params['fb_new']) {
+			$out['fb_new'] = true;
+		}
+
 		return $out;
 	}
 

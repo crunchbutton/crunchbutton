@@ -151,6 +151,13 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 							service.running = false;
 							return;
 						} else {
+
+							if( data.fb_new ){ // #7077
+								if( fbq ){
+									fbq('track', 'CompleteRegistration');
+								}
+							}
+
 							service.account.updateInfo();
 							service.account.user = data;
 
