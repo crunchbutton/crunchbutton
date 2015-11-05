@@ -287,6 +287,14 @@ class Cockpit_Order extends Crunchbutton_Order {
 			$out[ 'campus_cash_name' ] = $this->campusCashName();
 		}
 
+		if( $out[ 'refunded' ] ){
+			$out[ 'refunded_status' ] = $this->refundedStatus();
+			if( $out[ 'refunded_status' ] == self::STATUS_REFUNDED_PARTIALLY ){
+				$out[ 'refunded_partial' ] = true;
+			}
+			$out[ 'refunded_amount' ] = $this->refundedTotal();
+		}
+
 		return $out;
 	}
 

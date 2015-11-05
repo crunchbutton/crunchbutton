@@ -90,7 +90,15 @@
 					<div class="field-row" ng-if="order.refunded">
 						<div class="field-key">Refunded</div>
 						<div class="field-value">
-							<span class="tag tag-green">Yes</span>
+							<span class="tag tag-green" ng-show="!order.refunded_partial">{{order.refunded_status}}</span>
+							<span class="tag tag-orange" ng-show="order.refunded_partial">{{order.refunded_status}}</span>
+						</div>
+					</div>
+
+					<div class="field-row" ng-if="order.refunded_partial">
+						<div class="field-key">Refunded Amount</div>
+						<div class="field-value">
+							${{order.refunded_amount | number:2}}
 						</div>
 					</div>
 
