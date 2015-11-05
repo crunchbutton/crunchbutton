@@ -126,7 +126,9 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _report(){
-
+		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud' ] ) ){
+			$this->error(404);
+		}
 		$start = $this->request()['start'];
 		$end = $this->request()['end'];
 		$import = $this->request()['import'];

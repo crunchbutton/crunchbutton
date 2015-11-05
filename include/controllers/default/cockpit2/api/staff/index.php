@@ -4,6 +4,10 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
+		if( !c::admin()->permission()->check( ['global', 'permission-users'] ) ){
+			$this->error( 401 );
+		}
+
 		if (c::getPagePiece(2) && c::getPagePiece(2) != 'support' ) {
 
 

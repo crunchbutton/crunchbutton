@@ -3,6 +3,11 @@
 class Controller_api_communities_closed extends Crunchbutton_Controller_Rest {
 
 	public function init() {
+
+		if( !c::admin()->permission()->check( ['global', 'community-all', 'community-list', 'support-all', 'support-view', 'support-crud' ] ) ){
+			$this->error( 401 );
+		}
+
 		$out = [];
 		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE ( close_all_restaurants = 1 OR close_3rd_party_delivery_restaurants = 1 OR is_auto_closed = 1 ) AND active = 1 AND name NOT LIKE "%test%" AND name NOT LIKE "%template%" ORDER BY name ASC' );
 		foreach( $communities as $community ){

@@ -4,6 +4,10 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 
 	public function init() {
 
+		if( !c::admin()->permission()->check( ['global', 'community-all', 'community-list', 'support-all', 'support-view', 'support-crud' ] ) ){
+			$this->error( 401 );
+		}
+
 		$limit = $this->request()['limit'] ?$this->request()['limit'] : 20;
 		$search = $this->request()['search'] ?$this->request()['search'] : '';
 		$page = $this->request()['page'] ?$this->request()['page'] : 1;

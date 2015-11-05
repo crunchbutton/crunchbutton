@@ -19,6 +19,9 @@ class Controller_Api_Report extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _first_time_user_gift_codes_used_per_school_per_day(){
+		if( !c::admin()->permission()->check( ['global', 'report-all', 'support-all', 'support-crud' ] ) ){
+			$this->error(404);
+		}
 
 		$start = $this->request()[ 'start' ];
 		$end = $this->request()[ 'end' ];

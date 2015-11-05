@@ -5,6 +5,10 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 	public function init() {
 		// sub queries for special cases
 
+		if( !c::admin()->permission()->check( ['global', 'restaurants-all', 'restaurants-list', 'restaurant-all', 'support-view', 'support-crud' ] ) ){
+			$this->error( 401 );
+		}
+
 		switch (c::getPagePiece(2)) {
 			// list of restaurants that were already paid
 			case 'paid-list':

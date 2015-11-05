@@ -4,6 +4,10 @@ class Controller_api_shifts_checkin extends Crunchbutton_Controller_RestAccount 
 
 	public function init() {
 
+		if( !c::admin()->permission()->check( ['global', 'support-all', 'support-view', 'support-crud' ] ) ){
+			$this->error( 401 );
+		}
+
 		$limit = 100;
 		$search = $this->request()['search'] ?$this->request()['search'] : '';
 		$page = $this->request()['page'] ?$this->request()['page'] : 1;

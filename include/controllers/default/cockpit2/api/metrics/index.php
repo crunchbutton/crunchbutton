@@ -46,6 +46,10 @@ class MetricsHttpException extends Exception {
 class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
+		if (!c::admin()->permission()->check(['global', 'metrics-all'])) {
+			$this->error(401);
+		}
+
 		try {
 			// selected communities = split string on , for community=
 			$allowedCommunities = Cockpit_Metrics::availableCommunities();
