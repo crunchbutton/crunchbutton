@@ -27,6 +27,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 
 				$communities[ $restaurant->community()->id_community ] = true;
 				$id_community = $restaurant->community()->id_community;
+				$data['id_community'] = $id_community;
 				if( $restaurant->open() ){
 					$_all_closed = false;
 				} else {

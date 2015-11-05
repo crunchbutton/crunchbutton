@@ -11,12 +11,12 @@
 <div class="container-fluid padded">
 	<div class="row-fluid">
 		<div class="box">
-			
+
 			<form id="restaurant-image" action="" method="post" enctype="multipart/form-data">
 				<table class="admin-restaurant-pay-form">
 					<tr>
 						<td>
-							<img src="https://i.crunchbutton.com/600x600/<?=$this->restaurant->image?>?<?php echo date('YmdHis');?>" style="max-width: 600px;">
+							<img src="<?=$this->restaurant->images->thumb?>?<?php echo date('YmdHis');?>" style="max-width: 600px;">
 						</td>
 					</tr>
 					<tr>
@@ -24,11 +24,11 @@
 							<input type="file" name="image">
 						</td>
 					</tr>
-					
+
 					<tr>
 						<td>
 							<br />
-							<button type="button" class="btn btn-blue admin-order-search restaurant-image-button"><i class="icon-upload-alt"></i>&nbsp;&nbsp;&nbsp; Upload </button>	
+							<button type="button" class="btn btn-blue admin-order-search restaurant-image-button"><i class="icon-upload-alt"></i>&nbsp;&nbsp;&nbsp; Upload </button>
 						</td>
 					</tr>
 				</table>
@@ -47,9 +47,9 @@
 				return;
 			} else {
 				var form = $(this).closest('form');
-				form.get(0).submit();	
+				form.get(0).submit();
 			}
-			
+
 		});
 	});
 </script>
