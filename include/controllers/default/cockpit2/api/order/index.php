@@ -103,6 +103,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 				$out[ 'id_order' ] = $order->id_order;
 				$out[ 'charged' ] = $order->charged();
+				$out[ 'campus_cash' ] = $order->campus_cash;
 				$out[ 'credit' ] = $order->chargedByCredit();
 				$out[ 'status' ] = $order->status()->last();
 
