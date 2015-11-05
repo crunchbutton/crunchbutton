@@ -69,8 +69,14 @@ if (App) {
 				oauth: true,
 				version: 'v2.2'
 			});
-			var facebookService = angular.element('html').injector().get('FacebookService');
-			FB.Event.subscribe('auth.statusChange', facebookService.processStatus);
+			angular.element(document).ready(function (){
+				setTimeout(function(){
+					var facebookService = angular.element('html').injector().get('FacebookService');
+					FB.Event.subscribe('auth.statusChange', facebookService.processStatus);
+				},100);
+
+			});
+
 		};
 
 		(function(d, s, id) {
