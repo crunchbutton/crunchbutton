@@ -11,15 +11,11 @@
 
 class Crunchbutton_App extends Cana_App {
 	private $_crypt;
-	public function init($params = null) {
-		set_exception_handler([$this, 'exception']);
 
-		new Crunchbutton_Headers;
-
-
+	public function envByHost($travis = true) {
 		if (!$_SERVER['SERVER_NAME']) {
 			putenv('CLI=true');
-			$cli = true;
+			$this->cli = true;
 			// get the env send by parameter
 			$a = (object)getopt('s::c::r::f::e::');
 			if ($a->e) {
@@ -61,9 +57,9 @@ class Crunchbutton_App extends Cana_App {
 
 		// db by hostname
 		// travis
-		if (getenv('TRAVISPOSTGRES')) {
+		if ($travis && getenv('TRAVISPOSTGRES')) {
 			$db = 'travispostgres';
-		} elseif (getenv('TRAVIS')) {
+		} elseif ($travis && getenv('TRAVIS')) {
 			$db = 'travis';
 		// anything local or dev
 		} elseif (preg_match('/192\.168\.0|localhost$|^(crunch|cockpit|cockpitla).dev$|^dev.(pit|la|crunch|seven)$|^pererinha.dyndns-web.com$/',$_SERVER['SERVER_NAME'])) {
@@ -72,7 +68,7 @@ class Crunchbutton_App extends Cana_App {
 		} elseif (preg_match('/^(heroku.*)|(.*.herokuapp.com)$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'heroku';
 		// time to time we need to use beta.cockpit.la over beta db
-		} elseif (preg_match('/beta.cockpit.la$/',$_SERVER['SERVER_NAME'])) {
+		} elseif (preg_match('/(beta.cockpit.la)|((^beta\.|^dev\.).*)/',$_SERVER['SERVER_NAME'])) {
 			$db = 'beta';
 		// any one of our cull live urls, or staging prefixes
 		} elseif (preg_match('/^(.*?arzynik.svc.tutum.io)|(.*?crunchbutton.nody.co)|(.*?cockpit.nody.co)|cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com|(staging[0-9]?.(cockpit.la|crunchr.co))|((live\.)?cockpit1.crunchr.co)|((live\..*)?crunchbutton.crunchr.co)|((live\.*)?cockpit.crunchr.co)$/',$_SERVER['SERVER_NAME'])) {
@@ -84,7 +80,7 @@ class Crunchbutton_App extends Cana_App {
 		} elseif (preg_match('/(ui1\.nody\.co)|(ui1\.crunchr\.co)/',$_SERVER['SERVER_NAME'])) {
 			$db = 'ui1archive';
 		// anything prefixed with beta or dev
-		} elseif (preg_match('/(crunchr\.co$)|(^beta\.|dev\.)/',$_SERVER['SERVER_NAME'])) {
+		} elseif (preg_match('/crunchr\.co$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'beta';
 		// anything else (should be nothing)
 		} else {
@@ -95,6 +91,16 @@ class Crunchbutton_App extends Cana_App {
 		if ($cliEnv) {
 			$db = $cliEnv;
 		}
+
+		return $db;
+	}
+
+	public function init($params = null) {
+		set_exception_handler([$this, 'exception']);
+
+		new Crunchbutton_Headers;
+
+		$db = $this->envByHost();
 
 		if ($db == 'local' && function_exists('php_sapi_name') && php_sapi_name() == 'cli-server') {
 			$params['config']->db->local->host = '127.0.0.1';
@@ -108,7 +114,7 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		// special settings for live web views
-		if ($db != 'heroku' &&  !getenv('DOCKER') && !getenv('TUTUM_CONTAINER_HOSTNAME') && preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|spicywithdelivery.com$/',$_SERVER['SERVER_NAME']) && !$cli && !isset($_REQUEST['__host']) && $_SERVER['SERVER_NAME'] != 'old.cockpit._DOMAIN_' && $_SERVER['SERVER_NAME'] != 'cockpit._DOMAIN_') {
+		if ($db != 'heroku' &&  !getenv('DOCKER') && !getenv('TUTUM_CONTAINER_HOSTNAME') && preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|spicywithdelivery.com$/',$_SERVER['SERVER_NAME']) && !$this->cli && !isset($_REQUEST['__host']) && $_SERVER['SERVER_NAME'] != 'old.cockpit._DOMAIN_' && $_SERVER['SERVER_NAME'] != 'cockpit._DOMAIN_') {
 			error_reporting(E_ERROR | E_PARSE);
 
 			if ((!$_SERVER['HTTP_X_FORWARDED_PROTO'] && $_SERVER['HTTPS'] != 'on') || ($_SERVER['HTTP_X_FORWARDED_PROTO'] && $_SERVER['HTTP_X_FORWARDED_PROTO'] != 'https')) {
@@ -181,7 +187,7 @@ class Crunchbutton_App extends Cana_App {
 			exit;
 		}
 
-		if ($config->site->name == 'Cockpit' || $config->site->name == 'Cockpit2' || $cli) {
+		if ($config->site->name == 'Cockpit' || $config->site->name == 'Cockpit2' || $this->cli) {
 			array_unshift($GLOBALS['config']['libraries'], 'Cockpit');
 		}
 
@@ -582,7 +588,7 @@ class Crunchbutton_App extends Cana_App {
 			$env = 'dev';
 		} elseif (c::env() == 'live' || c::env() == 'crondb') {
 			$env = 'live';
-		} elseif ($d) {
+		} elseif ($d === true) {
 			$env = 'dev';
 		} else {
 			$env = c::env();
