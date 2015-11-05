@@ -25,6 +25,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	const PROCESS_TYPE_WEB				= 'web';
 	const PROCESS_TYPE_ADMIN			= 'admin';
 
+	const STATUS_REFUNDED_TOTAL = 'Refunded';
+	const STATUS_REFUNDED_PARTIALLY = 'Partially Refunded';
+
 	/**
 	 * Process an order
 	 *
@@ -2534,7 +2537,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 							try {
 								$params = $amt ? ['amount' => $amt * 100] : null;
 								$ch = \Stripe\Charge::retrieve($this->txn);
-								$re = $ch->refunds->create();
+								$re = $ch->refunds->create( $params );
 
 							} catch (Exception $e) {
 								echo $e->getMessage();
@@ -2633,7 +2636,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			// saves an order transaction
 			$transaction = new Crunchbutton_Order_Transaction;
 			// needs to be changed when we start to do partial refund
-			$transaction->amt = $this->charged();
+			$transaction->amt = $amt ? $amt : $this->charged();
 			$transaction->type = Crunchbutton_Order_Transaction::TYPE_REFUNDED;
 			$transaction->date = date( 'Y-m-d H:i:s' );;
 			$transaction->note = $note;
@@ -2657,6 +2660,24 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			]);
 		}
 		return $support;
+	}
+
+	public function refundedStatus(){
+		if( $this->refunded ){
+			$transaction = $this->refundedReason();
+			if( $transaction->amt === $this->charged() ){
+				return self::STATUS_REFUNDED_TOTAL;
+			} else {
+				return self::STATUS_REFUNDED_PARTIALLY;
+			}
+		}
+	}
+
+	public function refundedTotal(){
+		if( $this->refunded ){
+			$transaction = $this->refundedReason();
+			return floatval( $transaction->amt );
+		}
 	}
 
 	public function refundedReason(){

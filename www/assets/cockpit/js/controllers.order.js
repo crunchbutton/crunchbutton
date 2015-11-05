@@ -186,6 +186,7 @@ NGApp.controller('OrderRefundCtrl', function ($scope, $rootScope, OrderService )
 			$scope.refund = {};
 			$scope.refund.id_order = d.id_order;
 			$scope.refund.amount = parseFloat( d.charged );
+			$scope.amount_max = parseFloat( d.charged );
 		});
 	}
 
@@ -213,9 +214,13 @@ NGApp.controller('OrderRefundCtrl', function ($scope, $rootScope, OrderService )
 					}
 					$rootScope.closePopup();
 				} else {
-					console.log( result.responseText );
-					var er = result.errors ? "<br>" + result.errors : 'See the console.log!';
-					App.alert('Refunding fail! ' + er);
+					if( result.error ){
+						App.alert( result.error );
+					} else {
+						console.log( result.responseText );
+						var er = result.errors ? "<br>" + result.errors : 'See the console.log!';
+						App.alert('Refunding fail! ' + er);
+					}
 				}
 		} );
 	}
