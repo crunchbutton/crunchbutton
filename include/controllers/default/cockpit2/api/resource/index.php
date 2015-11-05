@@ -5,6 +5,9 @@ class Controller_api_resource extends Crunchbutton_Controller_Rest {
 	public function init() {
 
 		if( c::getPagePiece( 2 ) == 'upload' ){
+			if (!c::admin()->permission()->check(['global', 'resource-all'])) {
+				$this->error(401);
+			}
 			$this->_upload();
 		}
 
