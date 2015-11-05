@@ -12,6 +12,11 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			controller: 'CustomerCreditCtrl',
 			templateUrl: 'assets/view/customers-credit.html'
 		})
+		.when('/customer/edit/:id', {
+			action: 'customer',
+			controller: 'CustomerEditCtrl',
+			templateUrl: 'assets/view/customers-form.html'
+		})
 		.when('/customer/:id', {
 			action: 'customer',
 			controller: 'CustomerCtrl',
@@ -59,6 +64,69 @@ NGApp.controller('CustomerCreditCtrl', function ($rootScope, $routeParams, $scop
 			});
 		}
 	});
+});
+
+
+NGApp.controller('CustomerEditCtrl', function ($scope, $routeParams, $rootScope, CustomerService ) {
+
+	$scope.loading = true;
+
+	var load = function(){
+		CustomerService.get($routeParams.id, function(d) {
+			$rootScope.title = d.name + ' | Edit';
+			$scope.customer = d;
+			$scope.loading = false;
+			CustomerService.active_orders( $scope.customer.id_user, function( json ){
+				$scope.orders = json;
+			} );
+		});
+	}
+
+	$scope.$watch( 'customer.name', function( newValue, oldValue, scope ) {
+		if( newValue != oldValue ){
+			$scope.customer.notify_driver = true;
+		}
+	});
+
+	$scope.$watch( 'customer.address', function( newValue, oldValue, scope ) {
+		if( newValue != oldValue ){
+			$scope.customer.notify_driver = true;
+		}
+	});
+
+	$scope.$watch( 'customer.phone', function( newValue, oldValue, scope ) {
+		if( newValue != oldValue ){
+			$scope.customer.notify_driver = true;
+		}
+	});
+
+	$scope.save = function(){
+
+		if( $scope.isSaving ){
+			return;
+		}
+
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			$scope.isSaving = false;
+			return;
+		}
+
+		$scope.isSaving = true;
+		CustomerService.post( $scope.customer, function( json ){
+			if( json.success ){
+				App.alert( 'Customer saved!' );
+				load();
+				$scope.isSaving = false;
+			} else {
+				App.alert( 'Customer not saved: ' + json.error , 'error' );
+				$scope.isSaving = false;
+			}
+		} );
+	}
+
+	load();
+
 });
 
 NGApp.controller('CustomerCtrl', function ($scope, $routeParams, $interval, CustomerService, OrderService, CreditService, BlockedService, $rootScope) {
