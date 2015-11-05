@@ -7,7 +7,7 @@
 				<li class="li-input" ng-class="{'error':formRefund.amount.$invalid}">
 					<div class="label">Amount to refund card:</div>
 					<div class="input">
-						<div class="input"><input step="any" type="number" name="amount" ng-model="refund.amount" min="0.01" max="{{amount_max}}" required ignore-mouse-wheel placeholder=""></div>
+						<div class="input"><input step="any" type="number" name="amount" ng-model="refund.amount" min="0.01" max="{{amount_max}}" ng-disabled="order.campus_cash" required ignore-mouse-wheel placeholder=""></div>
 					</div>
 					<div class="box-error">
 						<small ng-show="formRefund.amount.$error.required">Required.</small>
