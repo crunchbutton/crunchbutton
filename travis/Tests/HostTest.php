@@ -125,4 +125,17 @@ class HostTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(c::isCockpit());
 		$this->assertEquals('live', c::app()->envByHost(false));
 	}
+
+	public function testOldCockpit() {
+		$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'] = 'dev.cockpit1.crunchr.co';
+
+		$this->assertTrue(c::isCockpit());
+		$this->assertEquals('beta', c::app()->envByHost(false));
+
+
+		$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'] = 'live.cockpit1.crunchr.co';
+
+		$this->assertTrue(c::isCockpit());
+		$this->assertEquals('live', c::app()->envByHost(false));
+	}
 }
