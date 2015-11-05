@@ -3483,7 +3483,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 								break;
 
 							case Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID:
-								$notification->sendPushAndroid( $this, $message );
+								// $notification->sendPushAndroid( $this, $message );
 								break;
 						}
 					}
