@@ -1,0 +1,155 @@
+
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="title box-title"><i class="fa fa-smile-o"></i><span>Edit {{customer.name}}</h1>
+
+	<div class="bar-loader bar-loader-search bar-loader-boxes-top" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<form name="form" novalidate>
+
+		<div class="support-box-wrap box-content2">
+
+			<div class="support-box-wrap-header">
+				<h1>Basic</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+					<li class="li-input" ng-class="{'error':form.name.$invalid}">
+						<div class="label">Name:</div>
+						<div class="input">
+							<input type="text" name="name" required ng-model="customer.name">
+						</div>
+						<div class="box-error">
+							<small ng-show="form.name.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':form.phone.$invalid}">
+						<div class="label">Phone:</div>
+						<div class="input">
+							<input type="text" name="phone" required ng-model="customer.phone">
+						</div>
+						<div class="box-error">
+							<small ng-show="form.phone.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':form.email.$invalid}">
+						<div class="label">Email:</div>
+						<div class="input">
+							<input type="text" name="email" required ng-model="customer.email">
+						</div>
+						<div class="box-error">
+							<small ng-show="form.email.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':form.address.$invalid}">
+						<div class="label">Address:</div>
+						<div class="input">
+							<textarea name="address" required ng-model="customer.address"></textarea>
+						</div>
+						<div class="box-error">
+							<small ng-show="form.address.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input">
+						<div class="label">Active:</div>
+						<div class="input">
+							<label class="switch-wrap">
+								<input type="checkbox" class="switch" ng-model="customer.active"/><div></div>
+							</label>
+						</div>
+					</li>
+
+					<li class="li-input" ng-if="customer.card_type">
+						<div class="label">Inactive Credit Card:</div>
+						<div class="input">
+							<label class="switch-wrap">
+								<input type="checkbox" class="switch" ng-model="customer.remove_credit_card"/><div></div>
+							</label>
+						</div>
+					</li>
+
+					<li class="li-input" ng-show="orders.length">
+						<div class="label">Notify Driver about the change:</div>
+						<div class="input">
+							<label class="switch-wrap">
+								<input type="checkbox" class="switch" ng-model="customer.notify_driver"/><div></div>
+							</label>
+						</div>
+					</li>
+
+					<li class="li-input" ng-show="!isSaving">
+						<button class="button save" ng-click="save();">Save</button>
+					</li>
+					<li class="li-input" ng-show="isSaving">
+						<i class="fa fa-circle-o-notch fa-spin"></i>
+					</li>
+
+				</ul>
+
+			</div>
+		</div>
+
+		<div class="support-box-wrap box-content2" ng-if="customer.card_type">
+
+			<div class="support-box-wrap-header">
+				<h1>Credit Card</h1>
+				<div class="divider"></div>
+			</div>
+			<div class="field-container">
+
+				<div class="field-row">
+					<div class="field-key">Type</div>
+					<div class="field-value">
+						{{customer.card_type}}
+					</div>
+				</div>
+
+				<div class="field-row">
+					<div class="field-key">Card</div>
+					<div class="field-value">
+						{{customer.card}}
+					</div>
+				</div>
+
+				<div class="field-row">
+					<div class="field-key">Month</div>
+					<div class="field-value">
+						{{customer.card_exp_month}}
+					</div>
+				</div>
+
+				<div class="field-row">
+					<div class="field-key">Year</div>
+					<div class="field-value">
+						{{customer.card_exp_year}}
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class="support-box-wrap box-content2" ng-if="orders.length">
+			<div class="support-box-wrap-header">
+				<h1>Accepted or Picked Up Orders</h1>
+				<div class="divider"></div>
+			</div>
+			<div class="no-box-content-color">
+				<ng-include src="'assets/view/listview-orders.html'"></ng-include>
+			</div>
+		</div>
+
+	</form>
+
+
+</div>

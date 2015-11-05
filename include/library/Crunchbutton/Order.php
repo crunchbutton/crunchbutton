@@ -3444,6 +3444,55 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return false;
 	}
 
+	public function notifyDriverAboutCustomerChanges( $changes ){
+
+		if( count( $changes ) ){
+
+			$message = 'The order #' . $this->id_order . ' was updated:';
+			if( $changes[ 'name' ] ){
+				$message .= "\nName was changed to: " . $this->name;
+			}
+			if( $changes[ 'phone' ] ){
+				$message .= "\nPhone was changed to: " . $this->phone;
+			}
+			if( $changes[ 'address' ] ){
+				$message .= "\nAddress was changed to: " . $this->address;
+			}
+
+			$status = $this->status()->last();
+
+			if( $status && $status[ 'driver' ] ){
+				$driver = Admin::o( $status[ 'driver' ] );
+
+				$notifications = $driver->getNotifications();
+
+				$message = $driver->firstName() .': ' . $message;
+
+				foreach( $notifications as $notification ){
+
+					if( $notification->active ){
+						switch ( $notification->type ) {
+							case Crunchbutton_Admin_Notification::TYPE_SMS:
+							case Crunchbutton_Admin_Notification::TYPE_PHONE:
+							case Crunchbutton_Admin_Notification::TYPE_DUMB_SMS:
+								$notification->sendSms( $this, $message );
+								break;
+
+							case Crunchbutton_Admin_Notification::TYPE_PUSH_IOS:
+								$notification->sendPushIos( $this, $message );
+								break;
+
+							case Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID:
+								$notification->sendPushAndroid( $this, $message );
+								break;
+						}
+					}
+				}
+			}
+
+		}
+	}
+
 	public function save($new = false) {
 
 		$new = $this->id_order ? false : true;
