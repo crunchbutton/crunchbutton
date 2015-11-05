@@ -30,11 +30,9 @@
 			</tr>
 			<tr ng-repeat="restaurant in restaurants">
 				<td class="tb-image-row">
-					<div class="customer-image-crop">
-						<img ng-if="restaurant.image" class="customer-image" src="https://i.crunchbutton.com/66x66/{{restaurant.image}}"></img>
-						<div ng-if="!restaurant.image" class="customer-image restaurant-image-null"></div>
-					</div>
-				</td>
+				<a href="/restaurant/{{restaurant.permalink}}">
+					<div class="customer-image-crop" img-list-view-src="restaurant.images.thumb" img-null="restaurant-image-null"></div>
+				</a></td>
 				<td>
 					<span class="listview-bold">{{restaurant.name}}</span>
 				</td>
