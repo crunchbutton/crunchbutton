@@ -108,7 +108,7 @@ class Controller_api_customer extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _active_orders( $json = true ){
-		$orders = Order::q( 'SELECT * FROM `order` o
+		$orders = Order::q( 'SELECT DISTINCT(o.id_order), o.* FROM `order` o
 													INNER JOIN order_action oa ON o.id_order = oa.id_order AND ( oa.type = ? || oa.type = ? )
 													WHERE o.id_user = ? AND o.refunded = 0
 													ORDER BY o.id_order ASC',
