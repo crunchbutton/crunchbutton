@@ -400,7 +400,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 }]);
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, AccountService, MainNavigationService, AccountSignOut, CartService, ReferralService, LocationService, PhoneGapService, PushService) {
+NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, AccountService, MainNavigationService, AccountSignOut, CartService, ReferralService, LocationService, PhoneGapService, PushService, RestaurantService, RestaurantsService) {
 	// define external pointers
 	App.rootScope = $rootScope;
 	App.location = $location;
@@ -415,6 +415,19 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	var textUsFormatted = '4441-387 )646('.split('').reverse().join('');
 	$scope.textUsFormatted = textUsFormatted;
 	$rootScope.config = App.config.site;
+
+	var trackWithCommunity = function(action){
+		if(action=='restaurants' && RestaurantsService && RestaurantsService.community && RestaurantsService.community.id_community ){
+			App.track('page', action, undefined, RestaurantsService.community.id_community);
+		} else if (action=='restaurant' && RestaurantService && RestaurantService.id_community){
+			App.track('page', action, undefined, RestaurantService.id_community);
+		} else if (action=='order' && RestaurantService && RestaurantService.id_community){
+			App.track('page', action, undefined, RestaurantService.id_community);
+		}
+		else {
+			App.track('page', action);
+		}
+	}
 
 	// hack to fix the phonegap bug at android with soft keyboard #2908
 	$rootScope.softKeyboard = function( e ){
@@ -626,12 +639,53 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	});
 	*/
 
-	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
+	$scope.$on('$routeChangeSuccess', function ($event, $currentRoute, $previousRoute) {
 		// Store the actual page
 		MainNavigationService.page = $route.current.action;
 		App.page = MainNavigationService.page;
 		App.rootScope.current = MainNavigationService.page;
-		App.track('page', $route.current.action);
+		if ( $route.current.action === 'restaurants' ) {
+			if (!RestaurantsService || !RestaurantsService.community) {
+				setTimeout(function(){trackWithCommunity($route.current.action);}, 1500);
+			} else{
+				trackWithCommunity($route.current.action);
+			}
+			if (RestaurantsService && RestaurantsService.community) {
+				App._trackingCommunity = RestaurantsService.community.id_community;
+			}
+		} else if ($route.current.action === 'restaurant') {
+			if (!RestaurantService || !RestaurantService.id_community) {
+				setTimeout(function(){trackWithCommunity($route.current.action);}, 1500);
+			} else{
+				trackWithCommunity($route.current.action);
+			}
+			if (RestaurantService && RestaurantService.id_community) {
+				App._trackingCommunity = RestaurantService.id_community;
+			}
+		} else if ($route.current.action === 'order') {
+			if ($routeParams.action && $routeParams.action === 'confirm') {
+				var isNotRefresh = true;
+				if (!$previousRoute || $previousRoute.params.action === 'confirm'){
+					isNotRefresh = false;
+				}
+				if (isNotRefresh) {
+					if (!RestaurantService || !RestaurantService.id_community) {
+						setTimeout(function () {
+							trackWithCommunity($route.current.action);
+						}, 1500);
+					} else {
+						trackWithCommunity($route.current.action);
+					}
+					if (RestaurantService && RestaurantService.id_community) {
+						App._trackingCommunity = RestaurantService.id_community;
+					}
+				}
+			} else {
+				trackWithCommunity("orderCheck");
+			}
+		} else {
+			App.track('page', $route.current.action, undefined);
+		}
 		if ($route.current.$$route && $route.current.$$route.originalPath) {
 			MainNavigationService.navStack.push($route.current.$$route.originalPath);
 		}
@@ -798,8 +852,10 @@ App.track = function() {
 	} else {
 		data = arguments[1];
 	}
+	var trackingCommunity = undefined;
 	if(App._trackingCommunity) {
 		event_uri = event_uri + '&community=' + App._trackingCommunity;
+		trackingCommunity = App._trackingCommunity;
 	}
 	if(data) {
 		future = $.post(event_uri, data)
@@ -808,7 +864,6 @@ App.track = function() {
 	}
 	future.done(function (resp) { console.log('stored event', resp)})
 		  .fail(function (jqXHR, textStatus, errorThrown) { console.log('ERROR STORING EVENT', errorThrown, textStatus)});
-
 	if (arguments[0] == 'Ordered') {
 		/*
 		if (window._fbq) {
@@ -826,9 +881,7 @@ App.track = function() {
 				id: arguments[1].id,
 				affiliation: 'Crunchbutton',
 				revenue: arguments[1].total,
-				subtotal: arguments[1].subtotal,
-				tax: arguments[1].tax,
-				tip: arguments[1].tip
+				tax: arguments[1].tax
 			};
 			ga('ecommerce:addTransaction', trans);
 
@@ -839,7 +892,6 @@ App.track = function() {
 					name: arguments[1].cart[x].details.name,
 					sku: arguments[1].cart[x].id,
 					category: arguments[1].restaurant,
-					restaurant: arguments[1].id_restaurant,
 					price: App.cached['Dish'][arguments[1].cart[x].id].price,
 					quantity: '1'
 				};
@@ -855,12 +907,25 @@ App.track = function() {
 		return;
 	}
 
-
 	if (typeof( ga ) == 'function') {
-		if(typeof arguments[1] == 'string') {
-			ga('send', 'event', 'app', arguments[0], arguments[1]);
-		} else{
-			ga('send', 'event', 'app', arguments[0], JSON.stringify(arguments[1]));
+		if (typeof arguments[1] == 'String' && (typeof arguments[3] == 'Number' || typeof arguments[3] == 'String')) {
+			ga('send', 'event', 'app', arguments[0], arguments[1], String(arguments[3]));
+		} else if (typeof arguments[1] != 'string' && typeof arguments[3] == 'String' &&
+			(typeof arguments[4] == 'Number' || typeof arguments[4] == 'String')) {
+			ga('send', 'event', 'app', arguments[0], arguments[3], String(arguments[4]));
+		}
+		else if (typeof arguments[1] == 'string' ) {
+			if (trackingCommunity) {
+				ga('send', 'event', 'app', arguments[0], arguments[1], trackingCommunity);
+			} else{
+				ga('send', 'event', 'app', arguments[0], arguments[1]);
+			}
+		} else {
+			if (trackingCommunity) {
+				ga('send', 'event', 'app', arguments[0], undefined, trackingCommunity);
+			} else{
+				ga('send', 'event', 'app', arguments[0]);
+			}
 		}
 	}
 };
