@@ -338,7 +338,7 @@ NGApp.factory( 'CommunityService', function( $http ){
 //RestaurantService Service
 NGApp.factory( 'RestaurantService', function ($http, $routeParams, $rootScope, CommunityService ) {
 
-	var service = { basicInfo : null, loadedList: {}, initied : {} };
+	var service = { basicInfo : null, loadedList: {}, initied : {}, id_community: null };
 
 	service.alreadyLoaded = function(){
 		return ( service.loadedList[ $routeParams.id ] ? true : false );
@@ -353,6 +353,7 @@ NGApp.factory( 'RestaurantService', function ($http, $routeParams, $rootScope, C
 			service.initied[ $routeParams.id ] = false;
 			var restaurant = this;
 			service.loadedList[ $routeParams.id ] = true;
+			service.id_community = restaurant.id_community;
 			var community = CommunityService.getById( restaurant.id_community );
 			$rootScope.$broadcast( 'restaurantLoaded',  { restaurant : restaurant, community : community } );
 
