@@ -577,6 +577,9 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		if (order.pay_type == 'campus_cash' && !service.form.campusCash ) {
 			errors['campus_cash'] = 'Please enter the ' + service.campus_cash.name + '.';
 		}
+		if (order.pay_type == 'campus_cash' && !service.form.address_campus ) {
+			errors['address_campus'] = 'You must certify that the address listed for delivery is located on campus.';
+		}
 		if (!service.cart.hasItems()) {
 			errors['noorder'] = 'Please add something to your order.';
 		}

@@ -2229,6 +2229,14 @@ select.form-input {
 	vertical-align: top;
 	display: table-cell;
 }
+.form-field-checkbox-label{
+	font-size:1.3em;
+	line-height:1.2em;
+}
+	.form-field-checkbox-label{
+		color:#f88f68;
+		cursor:pointer;
+	}
 .form-field.fa {
 	padding-top: .4em;
 }
