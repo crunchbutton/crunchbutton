@@ -841,22 +841,28 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 								if (orderCached) {
 									return;
 								}
-
+								var id_user;
+								var user = service.account.user;
+								if (user) {
+									id_user = user.id_user;
+								} else{
+									id_user = "Unknown";
+								}
 								orderCached = true;
 								App.track('Ordered', {
 									'id': json.uuid,
-									'total': this.final_price,
-									'subtotal': this.price,
-									'tip': this.tip,
+									'total': service.info.total,
+									'subtotal': service.info.subtotal,
+									'tip': service.info.tip,
 									'tax': service.info.taxes,
 									'restaurant': service.restaurant.name,
 									'id_restaurant': service.restaurant.id_restaurant,
-									'paytype': this.pay_type,
-									'ordertype': this.order_type,
-									'user': this.user,
+									'paytype': service.form.pay_type,
+									'ordertype': service.form.delivery_type,
+									'user': id_user,
 									'items': service.cart.totalItems(),
 									'cart': service.cart.getItems()
-								});
+								}, undefined, undefined);
 
 								if( fbq ){ // #7077
 									fbq('track', 'Purchase', {value: service.info.total, currency: 'USD'});
