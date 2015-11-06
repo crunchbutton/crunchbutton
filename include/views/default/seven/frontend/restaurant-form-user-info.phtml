@@ -96,6 +96,15 @@
 					</p>
 				</div>
 
+				<div class="payment-form-group form-group " ng-if="order.form.pay_type=='campus_cash'">
+					<input custom-checkbox type="checkbox" ng-model="order.form.address_campus">
+					<span class="form-field form-field-checkbox-label" ng-click="order.form.address_campus = !order.form.address_campus;">
+					I certify that the address listed above for delivery is located on campus.</span>
+					<div class="divider"></div>
+				</div>
+
+				<div class="divider spacer-two-two" ng-if="order.form.pay_type=='campus_cash'"></div>
+
 				<div class="payment-form-group form-group" ng-if="order.form.pay_type=='campus_cash'">
 					<i class="fa fa-credit-card payment-form-icon form-icon form-field"></i>
 					<input ng-class="{'form-input-invalid':!form.campusCash.$valid}" ng-focus="softKeyboard($event);" type="text" name="campusCash" mask="{{restaurant.campus_cash_mask}}" tabindex="6" ng-model="order.form.campusCash" class="payment-form-input form-input form-field" id="campusCash">
