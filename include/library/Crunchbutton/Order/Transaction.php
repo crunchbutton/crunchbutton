@@ -87,7 +87,7 @@ class Crunchbutton_Order_Transaction extends Cana_Table {
 
 	public function date() {
 		if (!isset($this->_date)) {
-			$this->_date = new DateTime($this->timestamp, new DateTimeZone(c::config()->timezone));
+			$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
 		}
 		return $this->_date;
 	}
