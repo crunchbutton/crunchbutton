@@ -1,0 +1,8 @@
+<div class="maps-dialog-container zoom-anim-dialog mfp-hide dialog" ng-controller="MapsDialogCtrl">
+	<h1 class="dialog-title">Open Map Using</h1>
+	<div ng-repeat="map in maps">
+		<a href="{{map.url}}{{link}}" class="number-action" target="_system">
+			<button class="button green">{{map.title}}</button>
+		</a><br><br>
+	</div>
+</div>

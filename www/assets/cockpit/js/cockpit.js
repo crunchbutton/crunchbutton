@@ -538,7 +538,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 }]);
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService, CallService, DriverOrdersViewService, errorInterceptor, TwilioService) {
+NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService, CallService, DriverOrdersViewService, errorInterceptor, TwilioService, AppAvailabilityService) {
 
 	if (App.isPhoneGap) {
 		$http.defaults.headers.common['app-version'] = App.version;
@@ -604,20 +604,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	}
 
 	$rootScope.openMap = function( type, address1, address2 ){
-		if( App.iOS() ){
-			setTimeout( function(){
-				switch( type ){
-					case 'route':
-						var url = 'maps://?daddr=' + address1 + '&saddr=' + address2;
-					break;
-					case 'query':
-						var url = 'maps://?q=' + address1 ;
-					break;
-				}
-				parent.window.open( url, '_system', 'location=yes' );
-			} );
-		}
-
+		$rootScope.$broadcast( 'openMapsDialog', { type: type, address1: address1, address2: address2 } );
 	}
 
 	$rootScope.walkTo = function( selector, adjust ){

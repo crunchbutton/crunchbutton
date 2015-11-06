@@ -2,7 +2,7 @@
  * maps, and map queries should be directly linkable when the query params change. just like google maps.
  * this way we can link to the from other pages
  */
- 
+
 
 
 NGApp.config(['$routeProvider', function($routeProvider) {
@@ -32,7 +32,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			controller: 'MapsOrderCtrl',
 			templateUrl: 'assets/view/maps-order.html'
 		});
-		
+
 }]);
 
 NGApp.controller('MapsCtrl', function ($scope, $routeParams) {
@@ -51,7 +51,7 @@ NGApp.controller('MapsDriverCtrl', function ($scope, $routeParams, StaffService,
 			for (var x in d) {
 				var lat = parseFloat(d[x].lat);
 				var lon = parseFloat(d[x].lon);
-				
+
 				if (current && lat == current.lat && lon == current.lon) {
 					continue;
 				} else if (current) {
@@ -88,8 +88,8 @@ NGApp.controller('MapsDriverCtrl', function ($scope, $routeParams, StaffService,
 	StaffService.get($routeParams.id, function(d) {
 		$scope.driver = d;
 	});
-	
-	
+
+
 	var update = function() {
 		StaffService.locations($routeParams.id, function(d) {
 			$scope.locations = d;
@@ -105,5 +105,41 @@ NGApp.controller('MapsOrdersCtrl', function ($scope, $routeParams) {
 });
 
 NGApp.controller('MapsOrderCtrl', function ($scope, $routeParams) {
+
+});
+
+
+NGApp.controller('MapsDialogCtrl', function ( $scope, $rootScope, AppAvailabilityService ) {
+
+	$rootScope.$on( 'openMapsDialog', function( e, data ) {
+
+		var type = data.type;
+		var address1 = data.address1;
+		var address2 = data.address2;
+
+		switch( type ){
+			case 'route':
+				$scope.link = '?daddr=' + address1 + '&saddr=' + address2;
+			break;
+			case 'query':
+				$scope.link = '?q=' + address1 ;
+			break;
+		}
+
+		$scope.maps = [];
+
+		for ( map in AppAvailabilityService.maps ) {
+  		$scope.maps.push( AppAvailabilityService.maps[ map ] );
+		}
+
+		if( $scope.maps.lenght ){
+			App.dialog.show( '.maps-dialog-container' );
+		} else {
+			setTimeout( function(){
+				parent.window.open( $scope.link, '_system', 'location=yes' );
+			} );
+		}
+
+	});
 
 });
