@@ -29,7 +29,7 @@
 
 					<div ng-if="ticket.pexcard" ng-controller="SideSupportPexCardCtrl">
 
-							<div class="link no-underline" ng-click="ticket.pexcard.show_info = !ticket.pexcard.show_info"><i class="fa fa-credit-card"></i> Card Last Four: {{ticket.pexcard.last_four}}</div>
+							<div class="link no-underline" ng-click="ticket.pexcard.show_info = !ticket.pexcard.show_info"><i class="fa fa-credit-card"></i> Last Four: {{ticket.pexcard.last_four}} / Serial: {{ticket.pexcard.card_serial}}</div>
 
 							<div ng-show="ticket.pexcard.show_info">
 
