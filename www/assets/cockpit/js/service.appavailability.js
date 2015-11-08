@@ -39,11 +39,12 @@ NGApp.factory( 'AppAvailabilityService', function() {
 		url: 'maps://'
 	}
 
+
 	var checkAvailability = function( scheme, success, error ){
-		if( window && window.appAvailability ){
+		if( parent.window && parent.window.appAvailability ){
 			if( scheme === true ){ success(); }
 			if( !scheme ){ error(); }
-			appAvailability.check(
+			parent.window.appAvailability.check(
 				scheme,
 				function() { if( success ){ success(); } },
 				function() { if( error ){ error(); } } );
@@ -51,22 +52,24 @@ NGApp.factory( 'AppAvailabilityService', function() {
 		if( error ){ error(); }
 	};
 
-	// check all apps
-	angular.forEach( schemes, function( kind, name ) {
-		angular.forEach( kind, function( app, key ) {
-			var key = key;
-			var success = function(){
-				if( !service[ name ] ){
-					service[ name ] = {};
+	var start = function(){
+		// check all apps
+		angular.forEach( schemes, function( kind, name ) {
+			angular.forEach( kind, function( app, key ) {
+				var key = key;
+				var success = function(){
+					if( !service[ name ] ){
+						service[ name ] = {};
+					}
+					service[ name ][ key ] = { url: app.url, title: app.title };
 				}
-				service[ name ][ key ] = { url: app.url, title: app.title };
-			}
-			var error = function(){};
-			checkAvailability( app.scheme(), success, error );
+				var error = function(){};
+				checkAvailability( app.scheme(), success, error );
+			} );
 		} );
-	} );
+	}
 
-	console.log('service',service);
+	setTimeout( function(){ start() }, 3000 );
 
 	return service;
 });

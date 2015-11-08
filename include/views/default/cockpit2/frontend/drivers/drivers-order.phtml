@@ -27,6 +27,7 @@
 			</div>
 		</div>
 		<br>
+
 		<div ng-click="openMap( 'route', oc.order.address, oc.order._restaurant_address );" ng-if="iOS">
 			<div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?size=400x100&markers=color:green%7Clabel:A%7C{{oc.order.address | clearAddress}}&markers=color:red%7Clabel:B%7C{{oc.order._restaurant_lat}},{{oc.order._restaurant_lon}}&sensor=false&visual_refresh=true&scale=2');"></div>
 		</div>

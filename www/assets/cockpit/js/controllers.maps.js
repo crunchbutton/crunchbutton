@@ -132,7 +132,7 @@ NGApp.controller('MapsDialogCtrl', function ( $scope, $rootScope, AppAvailabilit
   		$scope.maps.push( AppAvailabilityService.maps[ map ] );
 		}
 
-		if( $scope.maps.lenght ){
+		if( $scope.maps.length ){
 			App.dialog.show( '.maps-dialog-container' );
 		} else {
 			setTimeout( function(){
@@ -141,5 +141,9 @@ NGApp.controller('MapsDialogCtrl', function ( $scope, $rootScope, AppAvailabilit
 		}
 
 	});
+
+	$scope.openMap = function( url ){
+		parent.window.open( url, '_system', 'location=yes' );
+	}
 
 });
