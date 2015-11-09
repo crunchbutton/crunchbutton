@@ -56,6 +56,9 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			// change driver restaurant name when auto shutting down community #4514
 			if( $id_community ){
 				$community = Community::o( $id_community );
+				if( !$community->active ){
+					echo json_encode( [] );exit;
+				}
 				$driverRestaurant = $community->driverRestaurant();
 				if( $community->is_auto_closed ){
 					if( $driverRestaurant->id_restaurant ){
