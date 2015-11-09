@@ -2233,7 +2233,7 @@ public function byDayPerRestaurant( $render = false ){
 		return $data;
 	}
 
-	public function totalOrdersByRestaurant( $id_restaurant ){
+	public static function totalOrdersByRestaurant( $id_restaurant ){
 		$query = "SELECT
 										 COUNT(*) AS Total
 							FROM `order` o
