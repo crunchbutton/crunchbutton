@@ -19,6 +19,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			$community_closed_message = [];
 			$_all_closed = true;
 			$id_community = 0;
+
 			foreach ($restaurants as $restaurant) {
 
 				$restaurant->byrange = true;
@@ -70,6 +71,9 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 				if( $driverRestaurant->id_restaurant ){
 					for( $i = 0; $i < count( $config['restaurants'] ); $i++ ){
 						if( $config['restaurants'][ $i ][ 'id_restaurant' ] == $driverRestaurant->id_restaurant ){
+							if( !$_all_closed ){
+								$config['restaurants'][ $i ][ '_weight' ] = -100;
+							}
 							$config['restaurants'][ $i ][ 'driver_restaurant' ] = true;
 
 							if( $community->automatic_driver_restaurant_name && $community->driver_restaurant_name ){
