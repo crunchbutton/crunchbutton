@@ -164,16 +164,19 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 	private function _requested(){
 		if ($this->method() == 'post') {
 			$status = ( $this->request()['permitted'] ) ? Cockpit_Admin_Location_Requested::STATUS_PERMITTED : Cockpit_Admin_Location_Requested::STATUS_DENIED;
-			(new Cockpit_Admin_Location_Requested([
-				'id_admin' => c::user()->id_admin,
-				'date' => date('Y-m-d H:i:s'),
-				'status' => $status
-			]))->save();
 
-			if( $status == Cockpit_Admin_Location_Requested::STATUS_PERMITTED ){
-				Cockpit_Driver_Log::enabledLocation();
+			$lastStatus = Cockpit_Admin_Location_Requested::lastStatus( c::user()->id_admin );
+			if( !$lastStatus || $lastStatus->status != $status ){
+				(new Cockpit_Admin_Location_Requested([
+					'id_admin' => c::user()->id_admin,
+					'date' => date('Y-m-d H:i:s'),
+					'status' => $status
+				]))->save();
+
+				if( $status == Cockpit_Admin_Location_Requested::STATUS_PERMITTED ){
+					Cockpit_Driver_Log::enabledLocation();
+				}
 			}
-
 		}
 		echo json_encode( ['success' => true] );
 		exit;

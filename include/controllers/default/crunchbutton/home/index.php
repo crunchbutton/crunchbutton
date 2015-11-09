@@ -2,10 +2,11 @@
 
 class Controller_home extends Cana_Controller {
 	public function init() {
+
 		if (c::getPagePiece(0)) {
 			if (c::getPagePiece(0) != 'food-delivery') {
 				$c = Community::permalink(c::getPagePiece(0));
-				
+
 				if ($c->id_community) {
 					c::view()->community = $c;
 				}
