@@ -12,7 +12,7 @@
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
-				<td colspan="2" width="100%">
+				<td colspan="4" width="100%">
 					<i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1">
 				</td>
 				<td>
@@ -29,6 +29,16 @@
 						</ui-select-choices>
 					</ui-select>
 					<a ng-show="query.admin" ng-click="query.admin=null" href=""><button class="button button-small button-empty button-green"><i class="fa fa-trash-o"></i></button></a>
+				</td>
+				<th>Added by</th>
+				<td>
+					<ui-select ng-model="query.added_by" theme="select2" close-on-select="true" style="width: 300px;" title="Select an admin">
+						<ui-select-match placeholder="Select a admin">{{$select.selected.name}}</ui-select-match>
+						<ui-select-choices repeat="admin.id_admin as admin in staff | propsFilter: {name: $select.search}">
+							{{admin.name}}
+						</ui-select-choices>
+					</ui-select>
+					<a ng-show="query.added_by" ng-click="query.added_by=null" href=""><button class="button button-small button-empty button-green"><i class="fa fa-trash-o"></i></button></a>
 				</td>
 				<td></td>
 			</tr>
