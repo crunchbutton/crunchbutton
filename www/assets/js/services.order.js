@@ -883,7 +883,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 									OrderViewService.newOrder = true;
 
 									if( service.campus_cash ){
-										OrderViewService._campus_cash[ uuid ] = service.form.campusCash;
+										OrderViewService._campus_cash[ uuid ] = service.form.campusCash.substr( -4 );
 									}
 
 									$rootScope.navigation.link('/order/' + uuid + '/confirm', 'push');
