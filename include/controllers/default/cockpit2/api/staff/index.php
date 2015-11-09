@@ -132,6 +132,8 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$params[ 'From' ] = $staff->phone;
 		$support = Crunchbutton_Support::createNewChat( $params );
 		if( $support->id_support ){
+			 $support->status = Crunchbutton_Support::STATUS_OPEN;
+			 $support->save();
 				echo json_encode( [ 'id_support' => $support->id_support ] );
 		} else {
 			echo json_encode( [ 'error' => 'Error creating new chat' ] );
