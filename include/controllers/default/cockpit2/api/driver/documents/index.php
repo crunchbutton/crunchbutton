@@ -231,12 +231,12 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 				$id_admin = false;
 
 				if( c::getPagePiece( 4 ) ){
-					$admin = Cockpit_Admin::o( c::getPagePiece( 4 ) );
-					if( $admin->id_admin ){
-						$id_admin = $admin->id_admin;
+					$driver = Cockpit_Admin::o( c::getPagePiece( 4 ) );
+					if( $driver->id_admin ){
+						$id_admin = $driver->id_admin;
 					}
 				}
-				if( !$admin->id_admin ){
+				if( !$driver->id_admin ){
 					$this->_error();
 				}
 
@@ -244,18 +244,18 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 				$user = c::user();
 				$hasPermission = ( c::user()->permission()->check( [ 'global', 'drivers-all' ] ) || ( $id_admin == $user->id_admin ) );
 
-				$payment_type = $admin->payment_type();
+				$payment_type = $driver->payment_type();
 
 				// shows the regular list
 				$list = [];
 				$docs = Cockpit_Driver_Document::marketing_rep();
 				foreach( $docs as $doc ){
 
-					if( $admin && $admin->isCampusManager() && $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_BRAND_REP ){
+					if( $driver && $driver->isCampusManager() && $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_BRAND_REP ){
 						continue;
 					}
 
-					if( $admin && !$admin->isCampusManager() &&
+					if( $driver && !$driver->isCampusManager() &&
 						( $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_COMMUNITY_MANAGER ||
 						$doc->id_driver_document == Cockpit_Driver_Document::ID_COMMUNITY_MANAGER_W9 ) ){
 						continue;
@@ -265,10 +265,10 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 					if( $id_admin && $hasPermission ){
 						$docStatus = Cockpit_Driver_Document_Status::document( $id_admin, $doc->id_driver_document );
 						if( $docStatus->id_driver_document_status ){
-							$admin = $docStatus->admin_approved();
+							$approved = $docStatus->admin_approved();
 							$out[ 'status' ] = $docStatus->exports();
-							if( $admin->id_admin ){
-								$out[ 'status' ][ 'approved' ] = $admin->name;
+							if( $driver->id_admin ){
+								$out[ 'status' ][ 'approved' ] = $approved->name;
 							} else {
 								$out[ 'status' ][ 'approved' ] = false;
 							}
