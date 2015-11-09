@@ -12,7 +12,7 @@
 		<ul ng-class="{'submitted':formStaffAddNoteSubmitted}" class="box-content2">
 
 			<li class="li-input  divider-line" ng-class="{'error':formStaffAddNote.admin.$invalid}" ng-if="staff">
-				<div class="label">Admin:</div>
+				<div class="label">Staff:</div>
 				<div class="input">
 					<ui-select ng-model="note.id_admin" theme="select2" name="admin" required close-on-select="true" style="width: 300px;" title="Select an admin">
 						<ui-select-match placeholder="Select a admin">{{$select.selected.name}}</ui-select-match>

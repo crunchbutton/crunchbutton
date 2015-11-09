@@ -12,7 +12,11 @@ class Controller_api_staff_notes extends Crunchbutton_Controller_RestAccount {
 		$search = $this->request()['search'] ? $this->request()['search'] : '';
 		$page = $this->request()['page'] ? $this->request()['page'] : 1;
 		$admin = $this->request()['admin'] ? $this->request()['admin'] : null;
+		$added_by = $this->request()['added_by'] ? $this->request()['added_by'] : null;
 		if( $admin == 'all' ){
+			$admin = null;
+		}
+		if( $added_by == 'all' ){
 			$admin = null;
 		}
 		$keys = [];
@@ -35,13 +39,19 @@ class Controller_api_staff_notes extends Crunchbutton_Controller_RestAccount {
 				an.id_admin IS NOT NULL
 		';
 
-
 		if ($admin) {
 			$q .= '
 				AND ( an.id_admin = ? OR a.login = ? )
 			';
 			$keys[] = $admin;
 			$keys[] = $admin;
+		}
+
+		if ($added_by) {
+			$q .= '
+				AND an.id_admin_added = ?
+			';
+			$keys[] = $added_by;
 		}
 
 		if ($search) {

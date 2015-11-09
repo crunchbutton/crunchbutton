@@ -884,6 +884,7 @@ NGApp.controller('StaffNotesCtrl', function ($scope, $rootScope, ViewListService
 		watch: {
 			search: '',
 			admin: '',
+			added_by: '',
 			fullcount: false
 		},
 		update: update
