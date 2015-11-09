@@ -336,7 +336,7 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 		$scope.sms.phone = num;
 	} );
 
-	if (!$rootScope.account.isLoggedIn()) {
+	if ($rootScope.account.isLoggedIn()) {
 		$scope.reset();
 	}
 
