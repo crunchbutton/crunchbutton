@@ -24,6 +24,7 @@ NGApp.factory( 'CommunityAliasService', function( PositionsService ){
 		var restaurant = false;
 		if( App && App.aliases ){
 			for( x in parts ){
+
 						if( parts[ x ] != '' ){
 							if( App.aliases[parts[x]] ){
 								alias = App.aliases[parts[x]];
@@ -41,7 +42,7 @@ NGApp.factory( 'CommunityAliasService', function( PositionsService ){
 		if (alias) {
 			// Get the location of the alias
 			var loc = App.locations[ alias.id_community ];
-			if ( loc.loc_lat && loc.loc_lon ) {
+			if ( loc && loc.loc_lat && loc.loc_lon ) {
 				var res = new Location({
 					lat: loc.loc_lat,
 					lon: loc.loc_lon,

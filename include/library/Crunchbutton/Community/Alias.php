@@ -55,7 +55,9 @@ class Crunchbutton_Community_Alias extends Cana_Table {
 					ca.alias, c.permalink, c.id_community, ca.prep, ca.name_alt, c.loc_lat, c.loc_lon, c.image
 				FROM
 					community_alias ca
-				INNER JOIN community c ON c.id_community = ca.id_community ');
+				INNER JOIN community c ON c.id_community = ca.id_community
+				UNION
+				SELECT c.permalink as alias, c.permalink, c.id_community, c.prep,  c.name, c.loc_lat, c.loc_lon, c.image  FROM community c WHERE c.active = 1 AND c.permalink IS NOT NULL');
 		$aliases = array();
 		while ($row = $res->fetch()) {
 			$alias = array();
