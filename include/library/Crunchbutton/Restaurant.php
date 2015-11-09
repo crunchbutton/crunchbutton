@@ -1855,7 +1855,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function totalOrders(){
-		return Crunchbutton_Chart_Order::totalOrdersByRestaurant( $this->id_restaurant );
+	$query = "SELECT
+							 COUNT(*) AS Total
+						FROM `order` o
+						WHERE id_restaurant = {$this->id_restaurant}";
+		$result = c::db()->get( $query );
+		return $result->_items[0]->Total;
 	}
 
 	/*
