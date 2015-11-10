@@ -1033,6 +1033,12 @@ input {
 	color: #fff;
 }
 
+.notifications .notification.notification-mute {
+	background: $buttonBlue;
+	border-color: $buttonBlue;
+	color: #fff;
+}
+
 .notifications .notification:last-child {
 	margin-right: 1px;
 }

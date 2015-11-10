@@ -1,7 +1,7 @@
 
 NGApp.factory('TwilioService', function($resource, $rootScope, AccountService) {
 
-	var service = {};
+	var service = { connection: null };
 	var resource = $resource(App.service + 'twilio/client');
 
 	service.init = function() {
@@ -14,13 +14,21 @@ NGApp.factory('TwilioService', function($resource, $rootScope, AccountService) {
 
 	service.call = function(phone) {
 		$rootScope.$broadcast('twilio-client-call-start');
-		Twilio.Device.connect({
+		service.connection = Twilio.Device.connect({
 			'PhoneNumber': phone
 		});
 	};
 
 	service.hangup = function() {
 		Twilio.Device.disconnectAll();
+		service.connection = null;
+	};
+
+	service.mute = function() {
+		if( service.connection ){
+			$rootScope.isMute = ( $rootScope.isMute ) ? false : true;
+			service.connection.mute( $rootScope.isMute );
+		}
 	};
 
 	Twilio.Device.ready(function (device) {
