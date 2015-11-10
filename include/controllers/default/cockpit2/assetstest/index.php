@@ -2,6 +2,8 @@
 
 class Controller_assetstest extends Crunchbutton_Controller_AssetBundle {
 	public function init() {
+		echo 'x';
+
 		$pages = c::pages();
 
 		echo "==============================================================\n";
@@ -44,7 +46,7 @@ class Controller_assetstest extends Crunchbutton_Controller_AssetBundle {
 
 		if (preg_match('/\.scss$/i',$_SERVER['REDIRECT_URL'])) {
 			$path = c::config()->dirs->www.'assets/'.$path.'/';
-			Scss::serve($path.$file);
+			Crunchbutton_Scss::serve($path.$file);
 		}
 
 		echo "==============================================================\n";
