@@ -4,7 +4,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		if( !c::admin()->permission()->check( ['global', 'permission-users'] ) ){
+		if( !c::admin()->permission()->check( ['global', 'permission-users'] ) && !c::admin()->isCampusManager() ){
 			$this->error( 401 );
 		}
 
