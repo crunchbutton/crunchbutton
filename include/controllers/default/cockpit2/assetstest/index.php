@@ -21,6 +21,7 @@ class Controller_assetstest extends Crunchbutton_Controller_AssetBundle {
 			c::displayPage('assets/js/bundle.js');
 			exit;
 		}
+		phpinfo();
 echo '<pre>a:';var_dump( $_SERVER['REDIRECT_URL'], preg_match('/\.scss$/i',$_SERVER['REDIRECT_URL']) );
 		if (preg_match('/\.scss$/i',$_SERVER['REDIRECT_URL'])) {
 			$path = c::config()->dirs->www.'assets/'.$path.'/';
