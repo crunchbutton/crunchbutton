@@ -18,7 +18,7 @@ class Controller_Support_Phone_Connect extends Crunchbutton_Controller_Account {
 		}
 
 		$num = c::admin()->phone;
-		$host = 'beta.crunchr.co';
+		$host = 'live.ci.crunchbutton.crunchr.co';
 		//c::config()->host_callback
 
 		$twilio = new Services_Twilio(c::config()->twilio->live->sid, c::config()->twilio->live->token);
