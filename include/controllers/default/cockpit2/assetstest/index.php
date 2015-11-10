@@ -25,6 +25,9 @@ echo '<pre>';var_dump( $_SERVER );exit();
 		echo '<pre>';var_dump( preg_match('/\.scss$/i',$_SERVER['REDIRECT_URL']) );
 		echo '<pre>';var_dump( preg_match('/\.scss$/i',$_SERVER['REQUEST_URI']) );
 
+		echo '<pre>';var_dump( preg_match('/\.scss$/i',$_SERVER['REDIRECT_URL']) );
+		echo '<pre>';var_dump( preg_match('/\.scss$/i',$_SERVER['REQUEST_URI']) );
+
 		if( preg_match('/\.scss$/i',$_SERVER['REDIRECT_URL']) || preg_match('/\.scss$/i',$_SERVER['REQUEST_URI']) ){
 			$path = c::config()->dirs->www.'assets/'.$path.'/';
 			Crunchbutton_Scss::serve($path.$file);
