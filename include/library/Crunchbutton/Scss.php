@@ -3,6 +3,14 @@
 class Crunchbutton_Scss extends Cana_Model {
 	public static function compile($file) {
 
+		echo "==============================================================\n";
+		echo "==============================================================\n";
+		echo "==============================================================\n";
+		echo "==============================================================\n";
+		echo "\n\n\nfile_exists::\n";
+		echo '<pre>' . file_exists($file);
+		echo "\n";
+
 		if (!file_exists($file)) {
 			return false;
 		}
@@ -14,10 +22,10 @@ class Crunchbutton_Scss extends Cana_Model {
 		$scss->setImportPaths($path);
 		$scss->setFormatter('scss_formatter_compressed');
 		$data = $scss->compile(file_get_contents($path.$file));
-		
+
 		return $data;
 	}
-	
+
 	public static function serve($file) {
 
 		$data = self::compile($file);
