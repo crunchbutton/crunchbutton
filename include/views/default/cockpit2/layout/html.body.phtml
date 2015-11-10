@@ -512,6 +512,10 @@
 							<div class="clickable hide-mobile notification notification-call" ng-class="{'blink' : callStatus == 'connecting'}" ng-click="twilio.hangup()" ng-if="callStatus == 'connecting' || callStatus == 'connected'">
 								<i class="fa fa-phone"></i>
 							</div>
+							<div class="clickable hide-mobile notification notification-mute" ng-click="twilio.mute()" ng-if="callStatus == 'connected'">
+								<i ng-if="!isMute" class="fa fa-microphone"></i>
+								<i ng-if="isMute" class="fa fa-microphone-slash"></i>
+							</div>
 							<div ng-if="account.isDriver" class="clickable notification notification-orders" ng-click="navigation.link('/drivers/orders', 'instant')">
 								<div class="badge" ng-show="newDriverOrders.count">{{newDriverOrders.count}}</div>
 								<i class="fa fa-truck"></i>
