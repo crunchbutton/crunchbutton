@@ -122,7 +122,7 @@ class Controller_api_call extends Crunchbutton_Controller_RestAccount {
 			}
 
 			$num = c::admin()->phone;
-			$host = 'beta.crunchr.co';
+			$host = 'live.ci.crunchbutton.crunchr.co';
 
 			$twilio = new Services_Twilio(c::config()->twilio->live->sid, c::config()->twilio->live->token);
 			$call = $twilio->account->calls->create(
