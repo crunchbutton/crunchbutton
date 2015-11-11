@@ -138,6 +138,20 @@
 		<div class="divider"></div>
 	</div>
 
+	<div class="divider spacer-two-two"></div><br><br>
 
-	<button class="button lightorange button-logout" ng-click="signout()" ng-if="account.user.id_user">Log Out</button>
+	<div class="user-account-credit col-box">
+		<div class="two-col">
+			<div class="col-box">
+				<div class="two-col">
+					<button class="button lightorange button-logout" ng-click="signout()" ng-if="account.user.id_user">Log Out</button>
+				</div>
+				<div class="two-col">
+					<button class="button green button-logout" ng-click="profile()" ng-if="account.user.id_user">Your profile</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	</div>
 </div>

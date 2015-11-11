@@ -205,6 +205,10 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			service.showForm = true;
 		}
 
+		if( service.form.pay_type == 'card' && !service.account.user.card ){
+			service.showForm = true;
+		}
+
 		// Load the order
 		if (service.cart.hasItems()) {
 			service.reloadOrder();

@@ -123,6 +123,40 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 	}
 
 
+	service.removePaymentMethod = function( callback ){
+		var url = App.service + 'user/remove-payment-method';
+		$http( {
+			method: 'POST',
+			url: url,
+			data: {},
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			} ).success( function( data ) {
+				if( !data.error ){
+					service.user = data;
+					service.updateInfo();
+				}
+				callback( data );
+			}	);
+	}
+
+	service.update = function( account, callback ){
+
+		var url = App.service + 'user/update';
+
+		$http( {
+			method: 'POST',
+			url: url,
+			data: $.param( account ),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			} ).success( function( data ) {
+				if( !data.error ){
+					service.user = data;
+					service.updateInfo();
+				}
+				callback( data );
+			}	);
+	}
+
 	service.signin = function(){
 		service.errorReset();
 		if( !service.isValidEmailPhone() ){

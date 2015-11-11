@@ -2256,6 +2256,10 @@ select.form-input {
 	color: #afc6c2;
 }
 
+.form-field-disabled{
+	background:#fffef8;
+}
+
 .bottom-spacer {
 	height: 70px;
 }
@@ -4419,7 +4423,6 @@ textarea {
 }
 
 .button-logout{
-	width:50%;
 	margin-top:3em;
 }
 
