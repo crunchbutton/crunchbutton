@@ -1581,7 +1581,7 @@ NGApp.controller('ProfileCtrl', function ($scope, $filter, AccountService ) {
 			if( json.error ){
 				displayErrors( json.error );
 			} else {
-				App.alert('Profile info saved!', 'Saved!', null, null, true );
+				App.alert('', 'Profile info saved!', null, null, true );
 				updateInfo();
 			}
 		} )
@@ -1590,13 +1590,15 @@ NGApp.controller('ProfileCtrl', function ($scope, $filter, AccountService ) {
 
 	$scope.removePaymentMethod = function(){
 		var remove = function(){
+			$scope.removingPaymentMethod = true;
 			AccountService.removePaymentMethod( function( json ){
 				if( json.error ){
 					displayErrors( json.error );
 				} else {
-					App.alert('Credit card removed!', 'Removed!', null, null, true );
+					App.alert('', 'Credit card removed!', null, null, true );
 					updateInfo();
 				}
+				$scope.removingPaymentMethod = false;
 			} );
 		}
 
