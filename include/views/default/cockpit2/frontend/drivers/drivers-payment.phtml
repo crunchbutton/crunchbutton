@@ -55,9 +55,9 @@
 						<td><i>Worked hours</i></td>
 						<td><div class="summary-calc-values">${{result.shifts_hours_amount | formatPrice}}</div></td>
 					</tr>
-result.driver_payment_type::{{result.driver_payment_type}}
+
 					<tr ng-if="result.driver_payment_type == 'making_whole'" class="transparent"><td></td><td></td></tr>
-result.hourly::{{result.hourly}}
+
 					<tr ng-if="( !result.hourly || result.driver_payment_type == 'making_whole' ) && result.calcs.delivery_fee && pay_type_payment">
 						<td>Delivery Commission</td>
 						<td><div class="summary-calc-values">${{result.calcs.amount_per_order | formatPrice}}</div></td>
