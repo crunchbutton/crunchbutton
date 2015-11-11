@@ -1,0 +1,60 @@
+<div class="top-pad"></div>
+<div class="content-padding">
+
+	<div class="divider"></div>
+
+	<p><span class="account-your-orders">Profile</span><br><br></p>
+
+	<div class="personal-info field-container">
+
+		<div class="payment-form-group form-group">
+			<i class="fa fa-user payment-form-icon form-icon form-field"></i>
+			<input focus="softKeyboard($event);" ng-blur="softKeyboardExit()" type="text" name="account-name" tabindex="2" ng-model="account.name" class="payment-form-input form-input form-field" placeholder="name" autocomplete="name" x-autocompletetype="full-name">
+		</div>
+
+		<div class="payment-form-group form-group">
+			<i class="fa fa-envelope-o payment-form-icon form-icon form-field"></i>
+			<input ng-focus="softKeyboard($event);" ng-blur="softKeyboardExit()" type="email" name="account-email" tabindex="3" ng-model="account.email" class="payment-form-input form-input form-field" placeholder="email" autocomplete="email" x-autocompletetype="email">
+		</div>
+
+		<div class="payment-form-group form-group">
+			<i class="fa fa-phone payment-form-icon form-icon form-field"></i>
+			<input ng-focus="softKeyboard($event);" ng-blur="softKeyboardExit()" type="tel" name="account-phone" tabindex="4" ng-format-phone ng-model="account.phone" class="payment-form-input form-input form-field" placeholder="phone number" autocomplete="tel" x-autocompletetype="phone-full">
+		</div>
+
+		<div class="payment-form-group form-group">
+			<i class="fa fa-map-marker payment-form-icon form-icon form-field"></i>
+			<textarea ng-focus="softKeyboard($event);" ng-blur="softKeyboardExit()" ng-autosize class="payment-form-input form-input form-field" ng-model="account.address" name="account-address" id="account-address" tabindex="5" placeholder="address" autocomplete="street-sddress" x-autocompletetype="street-address"></textarea>
+		</div>
+
+		<div class="payment-form-group form-group">
+			<div class="payment-form-icon form-icon form-field"></div>
+			<button ng-click="save();" class="button green">
+				<span ng-show="updatingProfile"><i class="fa fa-spinner fa-pulse"></i> Updating profile</span>
+				<span ng-show="!updatingProfile">Update profile</span>
+			</button>
+		</div>
+
+	</div>
+
+	<div ng-if="account.card">
+
+		<div class="divider spacer-two-two"></div>
+
+		<p><span class="account-your-orders">Payment method</span><br><br></p>
+
+		<div class="payment-form-group form-group">
+			<i class="fa fa-credit-card payment-form-icon form-icon form-field"></i>
+			<input ng-focus="softKeyboard($event);" type="tel" name="pay-card-number" ng-model="account.card" class="payment-form-input form-input form-field-disabled" disabled="">
+		</div>
+			<div class="payment-form-group form-group">
+				<div class="payment-form-icon form-icon form-field"></div>
+				<button ng-click="removePaymentMethod();" class="button orange">
+					<span ng-show="updatingProfile"><i class="fa fa-spinner fa-pulse"></i> Removing credit Card</span>
+					<span ng-show="!updatingProfile">Remove credit Card</span>
+				</button>
+			</div>
+
+	</div>
+
+</div>

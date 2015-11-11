@@ -1534,13 +1534,108 @@ NGApp.controller('OrderCtrl', function ($interval, $rootScope, $scope, $http, $l
 
 });
 
+NGApp.controller('ProfileCtrl', function ($scope, $filter, AccountService ) {
+	if( !AccountService.isLogged() ){
+		$location.path( '/' );
+		return;
+	}
+
+	$scope.account = AccountService.user;
+
+	$scope.account.phone = $filter( 'formatPhone' )( $scope.account.phone );
+
+	$scope.updatingProfile = false;
+
+	$scope.save = function(){
+
+		if( $scope.updatingProfile ){
+			return;
+		}
+
+		$scope.updatingProfile = true;
+
+		var errors = {};
+
+		if (!$scope.account.name) {
+			errors['name'] = 'Please enter your name.';
+		}
+
+		if (!App.phone.validate($scope.account.phone)) {
+			errors['phone'] = 'Please enter a valid phone #.';
+		}
+		console.log('$scope.account.email',$scope.account.email);
+		if ( $scope.account.email && !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( $scope.account.email ) ){
+			errors['email'] = 'Please enter a valid email.';
+		}
+		if ( !$scope.account.address ) {
+			errors['address'] = 'Please enter an address.';
+		}
+		var er = displayErrors(errors);
+		if (er) {
+			$scope.updatingProfile = false;
+			return;
+		}
+
+		AccountService.update( $scope.account, function( json ){
+			$scope.updatingProfile = false;
+			if( json.error ){
+				displayErrors( json.error );
+			} else {
+				App.alert('Profile info saved!', 'Saved!', null, null, true );
+				updateInfo();
+			}
+		} )
+
+	}
+
+	$scope.removePaymentMethod = function(){
+		var remove = function(){
+			AccountService.removePaymentMethod( function( json ){
+				if( json.error ){
+					displayErrors( json.error );
+				} else {
+					App.alert('Credit card removed!', 'Removed!', null, null, true );
+					updateInfo();
+				}
+			} );
+		}
+
+		if (App.useNativeConfirm && App.isPhoneGap) {
+			App.confirm( 'Confirm remove credit card?',' Confirm?', remove );
+		} else {
+			if( App.confirm( 'Confirm remove credit card?' ) ){
+				remove();
+			}
+		}
+	}
+
+	var displayErrors = function(errors) {
+		if (!$.isEmptyObject(errors)) {
+				var error = '';
+				for (var x in errors) {
+					error += '<li><i class="icon-li icon-warning-sign"></i>' + errors[x] + '</li>';
+				}
+				App.alert('<ul class="icons-ul">' + error + '</ul>');
+			return true;
+		}
+		return false;
+	}
+
+	var updateInfo = function(){
+		$scope.account = AccountService.user;
+	}
+
+	updateInfo();
+
+});
+
 
 /**
  * Orders page. only avaiable after a user has placed an order or signed up.
  * @todo: change to account page
  */
 
-NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, AccountService, AccountSignOut, OrdersService, AccountModalService, ReferralService, FacebookService, CreditService ) {
+NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, AccountService, AccountSignOut, OrdersService, MainNavigationService, AccountModalService, ReferralService, FacebookService, CreditService ) {
 
 	if( !AccountService.isLogged() ){
 		$location.path( '/' );
@@ -1555,6 +1650,9 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 
 	// Alias to method AccountSignOut.do()
 	$scope.signout = AccountSignOut.signout;
+	$scope.profile = function(){
+		MainNavigationService.link( '/profile' );
+	}
 	$scope.facebook = AccountModalService.facebookOpen;
 	$scope.modal = AccountModalService;
 	$scope.orders = [];
@@ -1824,7 +1922,7 @@ NGApp.controller( 'SideMenuCtrl', function () {
 });
 
 NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
-	$rootScope.$on('notificationAlert', function(e, title, message, fn) {
+	$rootScope.$on('notificationAlert', function(e, title, message, fn, good_news) {
 		var complete = function() {
 			$rootScope.closePopup();
 
@@ -1837,6 +1935,12 @@ NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
 			scope.title = title;
 			scope.message = message;
 			scope.complete = complete;
+			if( good_news ){
+				scope.icon = 'happy';
+			} else {
+				scope.icon = 'sad';
+			}
+
 			App.dialog.show('.notification-alert-container');
 		});
 	});

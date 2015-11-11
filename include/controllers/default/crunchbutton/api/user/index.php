@@ -61,6 +61,14 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						break;
 				}
 
+			case 'update':
+				$this->_update();
+				break;
+
+			case 'remove-payment-method':
+				$this->_removePaymentMethod();
+				break;
+
 			case 'enter':
 
 				$params = array();
@@ -375,4 +383,70 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 				break;
 		}
 	}
+
+	public function _removePaymentMethod(){
+		$user = c::user();
+		if( !$user->id_user ){
+			echo json_encode( [ 'error' => 'You must log in!' ] );exit;
+		}
+		$paymentMethod = $user->payment_type();
+		$paymentMethod->active = false;
+		$paymentMethod->save();
+		echo c::user()->json(['auth' => true]);
+	}
+
+	public function _update(){
+
+		$user = c::user();
+		if( !$user->id_user ){
+			echo json_encode( [ 'error' => 'You must log in!' ] );exit;
+		}
+
+		$name = $this->request()[ 'name' ];
+		$email = $this->request()[ 'email' ];
+		$address = $this->request()[ 'address' ];
+		$phone = $this->request()[ 'phone' ];
+
+		$errors = [];
+
+		if (!$name) {
+			$errors['name'] = 'Please enter a name.';
+		}
+		if (!$phone) {
+			$errors['phone'] = 'Please enter a phone #.';
+		}
+
+		if($phone){
+			$phone = Crunchbutton_Phone::clean( $phone );
+			if( !$phone ){
+				$errors['phone'] = 'Please enter a valid phone #.';
+			}
+		}
+
+		if (!$address) {
+			$errors['address'] = 'Please enter an address.';
+		}
+		if ($email) {
+			$email = filter_var( $email, FILTER_VALIDATE_EMAIL );
+			if( !$email ){
+				$errors['email'] = 'Please enter a valid email.';
+			}
+		}
+
+		if( count( $errors ) ){
+			echo json_encode( [ 'errors' => $errors ] );exit;
+		}
+
+		$phone = Crunchbutton_Phone::byPhone( $phone );
+
+		$user->name = $name;
+		$user->email = $email;
+		$user->phone = $phone->phone;
+		$user->address = $address;
+		$user->id_phone = $phone->id_phone;
+		$user->save();
+
+		echo c::user()->json(['auth' => true]);
+	}
+
 }

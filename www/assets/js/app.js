@@ -316,6 +316,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'OwnersCtrl',
 			templateUrl: 'assets/view/owners.html'
 		})
+		.when('/profile', {
+			action: 'profile',
+			controller: 'ProfileCtrl',
+			templateUrl: 'assets/view/profile.html'
+		})
 		.when('/orders', {
 			action: 'orders',
 			controller: 'OrdersCtrl',
@@ -756,14 +761,14 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 });
 
-App.alert = function(txt, title, useNativeAlert, fn) {
+App.alert = function(txt, title, useNativeAlert, fn, good_news) {
 	setTimeout(function() {
 		if (useNativeAlert && App.isPhoneGap) {
 			navigator.notification.alert(txt, null, title || 'Crunchbutton');
 		} else if ( useNativeAlert ) {
 			alert( txt );
 		} else {
-			App.rootScope.$broadcast('notificationAlert', title || 'Woops!', txt, fn);
+			App.rootScope.$broadcast('notificationAlert', title || 'Woops!', txt, fn, good_news);
 		}
 	});
 };
