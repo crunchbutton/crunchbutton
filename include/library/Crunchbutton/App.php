@@ -250,6 +250,7 @@ class Crunchbutton_App extends Cana_App {
 		c::stripe();
 		c::s3();
 
+		header('Server: '.$this->config()->powered);
 		header('X-Powered-By: '.$this->config()->powered);
 		header('X-Footprint: '.gethostname().'-'.$_SERVER['SERVER_NAME'].'-'.$db);
 
