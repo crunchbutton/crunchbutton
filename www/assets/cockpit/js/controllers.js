@@ -122,7 +122,13 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 		l.start();
 		AccountService.login( $scope.username, $scope.password, function( status ) {
 			if( status ){
-				MainNavigationService.link( '/' );
+				var redirect_to = $.totalStorage( 'redirect_to' );
+				if( redirect_to ){
+					$.totalStorage( 'redirect_to', null );
+					MainNavigationService.link( redirect_to );
+				} else {
+					MainNavigationService.link( '/' );
+				}
 			} else {
 				$scope.error = true;
 				if (!App.isPhoneGap) {

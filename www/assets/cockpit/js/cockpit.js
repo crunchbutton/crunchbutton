@@ -801,7 +801,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		if (errorInterceptor.isInteruptable($location.url())) {
 			errorInterceptor.cancelAll();
 		}
-		console.debug('>> route change start');
 
 		var run = function(){
 			if( $rootScope.configLoaded ){
@@ -816,11 +815,14 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 						isAllowed = false;
 					}
 					if( !isAllowed  ) {
+						$.totalStorage( 'redirect_to', $location.url() );
 						// Force login page
 						if( App.isPhoneGap ){
 							MainNavigationService.link( '/login' );
 						} else {
+							window.stop();
 							window.location.href = '/login';
+							return false;
 						}
 					}
 				} else {
