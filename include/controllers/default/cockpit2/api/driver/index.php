@@ -96,7 +96,11 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 				if( $community->id_community ){
 					$drivers = $community->getDriversOfCommunity();
 					foreach( $drivers as $driver ){
-						$out[] = [ 'id_admin' => intval( $driver->id_admin ), 'name' => $driver->name ];
+						$note = $driver->lastNote();
+						if( $note ){
+							$note = $note->exports()['text'];
+						}
+						$out[] = [ 'id_admin' => intval( $driver->id_admin ), 'name' => $driver->name, 'note' => $note, 'phone' => $driver->phone ];
 					}
 				}
 				echo json_encode( $out );

@@ -109,7 +109,28 @@
 						</div>
 					</li>
 
-					<li class="li-input" ng-show="!isSavingOpenClose">
+					<li class="li-input" ng-show="community.close_all_restaurants || community.close_3rd_party_delivery_restaurants && drivers.length > 0">
+						<strong>Before closing it, please consider contact one of the drivers bellow..</strong>
+						<ul class="drivers-list">
+							<li ng-repeat="driver in drivers">
+								<strong>{{driver.name}}</strong>: {{driver.phone}}
+								<div ng-if="driver.note">{{driver.note}}</div>
+							</li>
+						</ul>
+					</li>
+
+					<li class="li-input divider-line" ng-show="community.close_all_restaurants || community.close_3rd_party_delivery_restaurants">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="reallyWantToClose"/><div></div>
+						</label>
+						<div class="label">I really want to close!</div>
+					</li>
+
+					<li class="li-input" ng-show="(
+					( !community.close_all_restaurants || ( community.close_all_restaurants && reallyWantToClose ) ) &&
+					( !community.close_3rd_party_delivery_restaurants || ( community.close_3rd_party_delivery_restaurants && reallyWantToClose ) )
+					)
+					&& !isSavingOpenClose">
 						<button class="button button-empty button-border button-green button-full" ng-click="formOpenCloseSave();"><span class="fa fa-save"></span>&nbsp;&nbsp;Save and Double Check It Looks OK</button>
 					</li>
 					<li class="li-input" ng-show="isSavingOpenClose">

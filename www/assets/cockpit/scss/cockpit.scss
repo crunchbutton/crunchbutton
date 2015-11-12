@@ -4432,3 +4432,12 @@ h1.title.box-title {
 	-o-user-select: none;
 	user-select: none;
 }
+.drivers-list{
+	height:80px;
+	overflow-y:scroll;
+}
+	.drivers-list li{
+		border-bottom:1px dashed #CCC;
+		display:block;
+		padding:.4em 0;
+	}

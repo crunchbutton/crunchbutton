@@ -167,7 +167,7 @@ class Crunchbutton_Admin_Payment_Type extends Crunchbutton_Admin_Payment_Type_Tr
 		Log::debug( [ 'request' => $request, 'type' => 'claim-account' ] );
 	}
 
-	public function amountPerOrder( $id_community = null, $force ){
+	public function amountPerOrder( $id_community = null, $force = false ){
 		if( $force || ( $this->payment_type == self::PAYMENT_TYPE_ORDERS || $this->payment_type == self::PAYMENT_TYPE_MAKING_WHOLE ) ){
 			if( $this->amount_per_order ){
 				return floatval( $this->amount_per_order );
