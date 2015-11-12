@@ -950,6 +950,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		$this->removeCouponCodesInTheNotes();
 
+		Crunchbutton_Order_Data::register( $this );
+
 		return true;
 	}
 
