@@ -30,6 +30,7 @@ class Crunchbutton_Email_Order extends Crunchbutton_Email {
 
 		$params['messageHtml'] = $this->view()->render('order/index',['display' => true, 'set' => [
 			'order' => $params['order'],
+			'signature' => $params['signature'],
 			'user' => $params['user'],
 			'cockpit' => $params['cockpit'],
 			'show_credit_card_tips' => $params['show_credit_card_tips'],

@@ -50,7 +50,6 @@
 			<db>crunchbutton</db>
 			<host>96.126.99.119</host>
 			<port>3307</port>
-			<!-- <host>96.126.99.119</host> -->
 			<prefix></prefix>
 			<encrypted>true</encrypted>
 		</crondb>

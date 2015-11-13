@@ -276,6 +276,12 @@
 						</div>
 					</li>
 
+					<li class="li-input" ng-class="{'error':form.signature.$invalid}">
+						<div class="label">Require signature on receipt?</div>
+						<div class="input">
+							<select name="signature" required ng-model="community.signature" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
 
 
 				</ul>

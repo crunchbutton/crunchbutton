@@ -1,0 +1,1 @@
+ALTER TABLE `community` ADD COLUMN `signature` tinyint(1) unsigned NOT NULL DEFAULT 0;

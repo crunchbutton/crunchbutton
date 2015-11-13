@@ -75,6 +75,16 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 								$res['status'] = $order->setStatus(Crunchbutton_Order_Action::DELIVERY_REJECTED);
 								break;
 
+						case 'signature':
+								$signature = $this->request()[ 'signature' ];
+								$success = Cockpit_Order_Signature::store( [ 'signature' => $signature, 'id_order' => $order->id_order ] );
+								if( $success ){
+									echo json_encode( [ 'success' => true ] ); exit();
+								} else {
+									echo json_encode( [ 'error' => true ] ); exit();
+								}
+								break;
+
 							case 'undo':
 								$res['status'] = $order->undoStatus();
 								break;

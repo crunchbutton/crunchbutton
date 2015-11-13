@@ -25,8 +25,6 @@ if( $isDriverCockpit ){
 	}
 }
 ?>
-
-
 <div class="xhatch separator-big"></div>
 
 <table width="100%" cellpadding="0" cellspacing="0">
@@ -188,7 +186,7 @@ if( $this->cockpit_url ){
 
 ;?>
 <br /><br />
-<?php if (!$order->_print) { ?>
+<?php if (!$signature && !$order->_print) { ?>
 	<table cellpadding="0" cellspacing="0" style="width: 100%; margin-top: 20px;">
 		<tr>
 			<td style="text-align: left;" class="text-size-small"><?php  if ($order->pay_type == 'card') { ?>Card on file. Signature not required.<?php } ?></td>
@@ -207,6 +205,10 @@ if( $this->cockpit_url ) { ?>
 		</tr>
 	</table>
 <?php } ?>
+
+<?php if( $signature ) {
+	echo $this->display('order/signature',[ 'set' => ['order' => $order ] ]);
+}?>
 
 <?php
 /* Crunchbutton's info */
