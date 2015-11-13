@@ -17,6 +17,8 @@ class Crunchbutton_Referral extends Cana_Table{
 	const KEY_IS_REFERRAL_ENABLE = 'referral-is-enable';
 	const DEFAULT_IS_REFERRAL_ENABLE = false;
 
+	const DEFAULT_REFERRAL_AMOUNT = 5;
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
