@@ -245,7 +245,9 @@
 
 					<li class="li-input" ng-show="community.campus_cash" ng-class="{'error':form.campusCashReceiptInfo.$invalid}">
 						<div class="label">Campus Cash Receipt Info:</div>
-						<div class="input"><input type="text" name="campusCashReceiptInfo" ng-model="community.campus_cash_receipt_info" required placeholder="Footer receipt info" ng-required="community.campus_cash" ng-minlength="2" ng-maxlength="250" ></div>
+						<div class="input">
+						<textarea name="campusCashReceiptInfo" ng-model="community.campus_cash_receipt_info" required placeholder="Footer receipt info" ng-required="community.campus_cash" ng-minlength="2" ng-maxlength="250"></textarea>
+						<div class="notes">Limit 250 Chars</div>
 						<div class="box-error">
 							<small ng-show="form.communityName.$error.required">Required.</small>
 						</div>
@@ -268,6 +270,7 @@
 					<li class="li-input" ng-show="community.campus_cash" ng-class="{'error':form.campusCashMask.$invalid}">
 						<div class="label">Campus Cash Mask:</div>
 						<div class="input"><input type="text" name="campusCashMask" ng-model="community.campus_cash_mask" ng-maxlength="255" ></div>
+						<div class="notes"><a href="https://github.com/candreoliveira/ngMask/#available-patterns" target="_blank">Patterns</a></div>
 						<div class="box-error">
 							<small ng-show="form.communityName.$error.required">Required.</small>
 						</div>
