@@ -48,7 +48,8 @@
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton</db>
-			<host>192.168.190.21</host>
+			<host>96.126.99.119</host>
+			<port>3307</port>
 			<!-- <host>96.126.99.119</host> -->
 			<prefix></prefix>
 			<encrypted>true</encrypted>
