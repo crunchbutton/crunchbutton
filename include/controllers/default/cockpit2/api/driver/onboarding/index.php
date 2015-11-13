@@ -38,8 +38,8 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 					break;
 				case 'defaults':
 					$out = [];
-					// See #5173
-					$out[ 'referral_admin_credit' ] = 7;
+					// See #7122
+					$out[ 'referral_admin_credit' ] = 5;
 					$out[ 'referral_customer_credit' ] = 0;
 					echo json_encode( $out );exit();
 					break;
