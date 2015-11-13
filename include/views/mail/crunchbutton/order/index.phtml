@@ -213,7 +213,7 @@ if( $this->cockpit_url ) { ?>
 if( $order->campus_cash ) { ?>
 	<table cellpadding="0" cellspacing="0" style="width: 100%; margin-top: 20px;">
 		<tr>
-			<td style="text-align: left; font-weight:bold;" class="text-size-small"><?php echo $order->campusCashReceiptInfo(); ?></td>
+			<td style="text-align: left; font-weight:bold;" class="text-size-small"><?php echo nl2br( $order->campusCashReceiptInfo() ); ?></td>
 		</tr>
 	</table>
 <?php } ?>
