@@ -652,12 +652,13 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 				if( $this->campus_cash && $this->_campus_cash_sha1 ){
 
+					$last_digits = substr( $this->campusCash, -4 );
 
 					// create a new payment type
 					$payment_type = new User_Payment_Type([
 						'id_user' => $user->id_user,
 						'active' => 1,
-						'card' => null,
+						'card' => $last_digits,
 						'card_type' => Crunchbutton_User_Payment_Type::CARD_TYPE_CAMPUS_CASH,
 						'stripe_id' => $this->_campus_cash_sha1,
 						'stripe_customer' => $this->_customer,

@@ -1,0 +1,76 @@
+<?php
+$signature = $order->signature();
+if( $signature ){
+	echo "<img style='width:250px;margin-top:-100px;' src='{$signature}'/>";
+}
+
+if( !$signature ){ ?>
+<style type="text/css">
+	.button {
+		border: 0;
+		padding: .5em;
+		border-radius: 5px;
+		cursor: pointer;
+		color: #fff;
+		text-transform: uppercase;
+		font-size: 1.3em;
+	}
+	.buttons-container{
+		margin-left: 150px;
+	}
+	.clear{
+
+	}
+	.save{
+		background: #00bea0;
+		font-weight: bold;
+	}
+</style>
+<div id="signature" style="width:100%;margin-top:-150px;"></div>
+<div class="buttons-container">
+	<button class="button save" id="save">Save</button>
+	<button class="button clear" id="clear">Clear</button>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="/assets/cockpit/js/signature/jSignature.min.js"></script>
+<script>
+App = { service: '/api' };
+if (App.isPhoneGap) {
+	App.service = 'https://cockpit.la/api/';
+}
+$(document).ready(function(){
+	var signature = $( '#signature' ).jSignature()
+
+	$( '#clear' ).click( function(){
+		signature.jSignature( 'reset' );
+	} );
+
+	$( '#save' ).click( function(){
+
+		var has = signature.jSignature( 'getData', 'native');
+		if( has.length == 0 ){
+			alert( 'Please provide a signature!' );
+			return;
+		}
+
+		if( !confirm( 'Confirm save signature?' ) ){
+			return;
+		}
+
+		var data = { 'id_order': "<?php echo $order->id_order; ?>" };
+		var datapair = signature.jSignature( 'getData', 'svgbase64' );
+		data.signature = 'data:' + datapair[0] + ',' + datapair[1];
+		var url = App.service + '/driver/orders/<?php echo $order->id_order; ?>/signature';
+		$.post( url, data )
+  	.done(function( data ) {
+    	if( data.success ){
+    		window.location.reload();
+    	} else {
+    		alert( 'Problem saving the signature!' );
+    	}
+  	});
+	} );
+
+});
+</script>
+<?php } ?>

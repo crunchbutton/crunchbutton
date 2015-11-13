@@ -91,6 +91,5 @@ class Crunchbutton_Stripe_Campus_Cash extends Crunchbutton_Charge {
 			'customer' => $this->_customer,
 			'campus_cash_sha1' => $campus_cash_sha1
 		];
-
 	}
 }

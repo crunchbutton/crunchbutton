@@ -493,6 +493,10 @@ class Cockpit_Order extends Crunchbutton_Order {
 		return $ip;
 	}
 
+	public function signature(){
+		return Cockpit_Order_Signature::retrieve( $this->id_order );
+	}
+
 	public function minutesToDelivery(){
 			$ordered_at = $this->date();
 			$ordered_at->setTimeZone( new DateTimeZone( c::config()->timezone ) );

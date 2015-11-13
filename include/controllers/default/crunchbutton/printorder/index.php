@@ -11,8 +11,16 @@ class Controller_printorder extends Cana_Controller {
 		$order = $order->get(0);
 		$order->_print = true;
 
+
+		$signature = ( $_GET[ 'signature' ] && c::user()->id_admin ) ? true : false;
+
+		if( $signature ){
+			$order->_print = false;
+		}
+
 		$mail = new Email_Order([
 			'order' => $order,
+			'signature' => $signature,
 			'user' => true
 		]);
 		echo $mail->message();
