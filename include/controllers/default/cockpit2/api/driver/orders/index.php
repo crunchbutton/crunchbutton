@@ -89,7 +89,16 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 								$signature = $this->request()[ 'signature' ];
 								$success = Crunchbutton_Order_Signature::store( [ 'signature' => $signature, 'id_order' => $order->id_order ] );
 								if( $success ){
+									// update status to delivered
 									$order->setStatus(Crunchbutton_Order_Action::DELIVERY_DELIVERED);
+
+									if( $email ){
+										$q = Queue::create([
+											'type' => Crunchbutton_Queue::TYPE_ORDER_RECEIPT_SIGNATURE,
+											'id_order' => $order->id_order
+										]);
+									}
+
 									echo json_encode( [ 'success' => true ] ); exit();
 								} else {
 									echo json_encode( [ 'error' => true ] ); exit();
