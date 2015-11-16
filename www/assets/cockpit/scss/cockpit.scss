@@ -4447,3 +4447,41 @@ h1.title.box-title {
 		display:block;
 		padding:.4em 0;
 	}
+
+table.receipt{
+	width:100%;
+}
+	table.receipt .crunchbutton{
+    font-size: 1.5em;
+	}
+	table.receipt .info{
+		text-align:right;
+	}
+	table.receipt .icon{
+		width:30px;
+	}
+		table.receipt .icon img{
+			width:30px;
+		}
+	table.receipt td{
+  	font-size: .9em;
+    font-family: Museo Slab, Courier New, Courier, monospace;
+		vertical-align: middle;
+		font-weight: normal !important;
+		line-height:1.4em;
+	}
+	table.receipt .order-id{
+		font-weight: bold;
+	}
+		table.receipt .footer{
+			font-weight:6em;
+		}
+.receipt-separator {
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAI0lEQVQIW2NkwAT/GdHE/gP5jMiCYAGQIpggXAAmiCIAEgQAAE4FBbECyZcAAAAASUVORK5CYII=);
+	color: #000;
+	font-weight: bold;
+	text-align: center;
+	font-size: 14px;
+  height: 14px;
+  margin: 5px 0 5px 0;
+}

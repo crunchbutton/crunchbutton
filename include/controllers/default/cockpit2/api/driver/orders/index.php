@@ -203,22 +203,8 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 
 	private function _receipt( $order ){
 		if( $order->id_order ) {
-
-			header( 'Content-Type: text/html' );
-			header( 'Expires: 0' );
-			header( 'Cache-Control: must-revalidate' );
-			header( 'Pragma: public' );
-
-			$order->_print = false;
-
-			$mail = new Email_Order([
-				'order' => $order,
-				'signature' => true,
-				'user' => true
-			]);
-			echo $mail->message();
-		} else {
-			echo json_encode(['error' => 'invalid object']);
+			$order->signature_data = true;
+			echo $order->json();
 		}
 	}
 

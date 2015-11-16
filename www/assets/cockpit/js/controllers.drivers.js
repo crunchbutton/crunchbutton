@@ -131,7 +131,14 @@ NGApp.controller( 'DriversOrderSignatureCtrl', function ( $scope, $rootScope, $r
 
 		$scope.show_form = false;
 		DriverOrdersService.getReceipt( $routeParams.id, function( data ){
-			$scope.receipt = data;
+			$scope.order = data;
+
+			if( $scope.order.require_signature && !$scope.order.has_signature ){
+				setTimeout( function(){
+					var signature = $( '#signature' ).jSignature( { backgroundColor: "rgb(229, 229, 229)" });
+				}, 2000 );
+			}
+
 			$scope.ready = true;
 			DriverOrdersService.hasSignature( $routeParams.id, function( data ){
 				if( !data.signature ){
@@ -276,7 +283,6 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 	};
 
 	$scope.signature = function( id_order ) {
-		console.log('>>', '/drivers/order/signature/' + id_order);
 		$scope.link( '/drivers/order/signature/' + id_order );
 	}
 

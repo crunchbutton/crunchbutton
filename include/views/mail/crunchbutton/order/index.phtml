@@ -71,7 +71,7 @@ if( $isDriverCockpit ){
 					Prepaid by&nbsp;
 					<?php if( $paymentType->card_type == Crunchbutton_User_Payment_Type::CARD_TYPE_CAMPUS_CASH ) {
 						echo $order->campusCashName();
-						if( $order->signature() ){
+						if( $order->requireSignature() ){
 							echo '<br>Card: ' . $order->campusCashLastDigits();
 						}
 					 } else {
