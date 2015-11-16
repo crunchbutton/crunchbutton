@@ -33,6 +33,7 @@
 				<div class="box-content item order-item-wrap" ng-repeat="order in driverorders | filter:filterOrders" ng-class="order.status.status">
 					<div ng-class="{'notMyOrder': order.status.driver.id_admin !== account.user.id_admin, 'myOrder': order.status.driver.id_admin == account.user.id_admin}">
 						<h6 class="row-status" ng-if="order.status.status == 'canceled' || ( order.status.driver.id_admin !== account.user.id_admin && order.status.status !== 'new' )">
+
 							<span ng-switch="order.status.status">
 								<span ng-switch-when="delivered">Delivered</span>
 								<span ng-switch-when="pickedup">Picked up</span>
@@ -45,9 +46,13 @@
 						<div class="order-item-content">
 							<!-- action -->
 							<div class="column-action">
+
 								<button class="button orange-on-orange button-pushable" ng-click="accept(order.id_order)" ng-if="order.status.status == 'new' || !order.status.status" > Accept </button>
 								<button class="button green-on-green button-pushable" ng-click="pickedup(order.id_order)" ng-if="order.status.driver.id_admin == account.user.id_admin && order.status.status == 'accepted'"> Picked up </button>
-								<button class="button dgray-on-dgray button-pushable" ng-click="delivered(order.id_order)" ng-if="order.status.driver.id_admin == account.user.id_admin && order.status.status == 'pickedup' "> Delivered </button>
+								<button class="button dgray-on-dgray button-pushable" ng-click="delivered(order.id_order)" ng-if="order.status.driver.id_admin == account.user.id_admin && order.status.status == 'pickedup' && !order.require_signature "> Delivered </button>
+								<a href="/drivers/order/signature/{{order.id_order}}" ng-if="order.status.driver.id_admin == account.user.id_admin && order.status.status == 'pickedup' && order.require_signature">
+									<button class="button light-blue button-pushable"> Customer Signature </button>
+								</a>
 								<button class="button lgray-on-lgray button-pushable" ng-click="showOrder(order.id_order)" ng-if="order.status.driver.id_admin == account.user.id_admin && order.status.status == 'delivered' "> View </button>
 							</div>
 

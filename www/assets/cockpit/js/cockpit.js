@@ -321,6 +321,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			templateUrl: 'assets/view/drivers-orders.html',
 			back: false
 		})
+		.when('/drivers/order/signature/:id', {
+			action: 'drivers-order',
+			controller: 'DriversOrderSignatureCtrl',
+			templateUrl: 'assets/view/drivers-order-signature.html'
+		})
 		.when('/drivers/order/:id', {
 			action: 'drivers-order',
 			controller: 'DriversOrderCtrl',
@@ -840,7 +845,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	});
 
 });
-
 
 App.alert = function(txt, title, useNativeAlert, fn, unselectable ) {
 	setTimeout(function() {

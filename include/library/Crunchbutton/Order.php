@@ -991,6 +991,18 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return $this->restaurant()->campusCashFee();
 	}
 
+	public function requireSignature(){
+		$community = $this->community();
+		if( $community->id_community && $community->requireSignature() ){
+			$signature = ( $this->signature() ? true : false );
+			if( $signature ){
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
 	public function calcFinalPriceMinusUsersCredit(){
 		$final_price = $this->final_price_plus_delivery_markup;
 		if( $this->pay_type == 'card' ){

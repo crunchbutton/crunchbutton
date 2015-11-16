@@ -1,12 +1,13 @@
 
 
-NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routeParams ) {
+NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $http, $routeParams ) {
 
 	var service = {};
 
 	// Create a private resource 'orders'
 	var orders = $resource( App.service + 'driver/orders/:id_order/:action', { id_order: '@id_order', action: '@action' }, {
 				// actions
+				'hasSignature' : { 'method': 'GET', params : { 'action' : 'has-signature' } },
 				'get' : { 'method': 'GET', params : { 'action' : 'order' } },
 				'outstanding_Order' : {'method': 'GET', params : {'action' : 'undelivered' } },
 				'revenue' : {'method': 'GET', params : {'action' : 'revenue' } },
@@ -14,6 +15,7 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 				'avg_time_last' : {'method': 'GET', params : {'action' : 'times' } },
 				'avg_time_current' : {'method': 'GET', params : {'action' : 'times' } },
 				'accept' : { 'method': 'POST', params : { 'action' : 'delivery-accept' } },
+				'signature' : { 'method': 'POST', params : { 'action' : 'signature' } },
 				'text_customer_5_min_away' : { 'method': 'POST', params : { 'action' : 'text-customer-5-min-away' } },
 				'reject' : { 'method': 'POST', params : { 'action' : 'delivery-reject' } },
 				'pickedup' : { 'method': 'POST', params : { 'action' : 'delivery-pickedup' } },
@@ -123,10 +125,32 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 			callback( order );
 		} );
 	}
+
+	service.signature = function( params, callback ){
+		orders.signature( params, function( data ){
+			callback( data );
+		} );
+	}
+
+	service.hasSignature = function( id_order, callback ){
+		orders.hasSignature( { 'id_order': id_order }, function( data ){
+			callback( data );
+		} );
+	}
+
+	service.getReceipt = function( id_order, callback ){
+		var url = App.service + 'driver/orders/' + id_order + '/receipt';
+		$http( { method: 'GET', url: url } ).
+			success( function( data, status, headers, config ) {
+				callback( data );
+			}).
+			error( function(data, status, headers, config ) {
+				callback( false );
+			} );
+	}
+
 	return service;
 } );
-
-
 
 
 NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $routeParams, DriverOrdersService, MainNavigationService) {
@@ -153,7 +177,9 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 			$rootScope.driverTake = { total: totalTake };
 
 			if( callback ){
-				callback();
+				if ( typeof callback === 'function' ) {
+					callback();
+				}
 			}
 			$rootScope.unBusy();
 		});

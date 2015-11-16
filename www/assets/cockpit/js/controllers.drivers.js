@@ -117,6 +117,77 @@ NGApp.controller('DriversOrderNavCtrl', function ( $scope, $rootScope, DriverOrd
 	});
 });
 
+NGApp.controller( 'DriversOrderSignatureCtrl', function ( $scope, $rootScope, $routeParams, DriverOrdersService ) {
+
+	$scope.ready = false;
+
+	if( $rootScope.menuToggled ){
+		$rootScope.menuToggle();
+	}
+
+	var load = function(){
+
+		$scope.email = { send: false, email: null };
+
+		$scope.show_form = false;
+		DriverOrdersService.getReceipt( $routeParams.id, function( data ){
+			$scope.receipt = data;
+			$scope.ready = true;
+			DriverOrdersService.hasSignature( $routeParams.id, function( data ){
+				if( !data.signature ){
+					$scope.show_form = true;
+				}
+				if( data.email ){
+					$scope.email.email = data.email;
+				}
+			} );
+		} );
+	}
+
+	$scope.clear = function(){
+		$( '#signature' ).jSignature( 'reset' );
+	}
+
+	$scope.save = function(){
+
+		var has = $( '#signature' ).jSignature( 'getData', 'native');
+		if( has.length == 0 ){
+			App.alert( 'Please provide a signature!' );
+			return;
+		}
+
+		if( $scope.email.send && !$scope.email.email ){
+			App.alert( 'Please enter your email!' );
+			return;
+		}
+
+		if( $scope.email.send && $scope.email.email ){
+			if ( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( $scope.email.email ) ){
+				App.alert( 'Please enter a valid email!' );
+				return;
+			}
+		}
+
+		var success = function(){
+
+			var data = {};
+			var datapair = $( '#signature' ).jSignature( 'getData', 'svgbase64' );
+			data.signature = 'data:' + datapair[0] + ',' + datapair[1];
+			data.id_order = $routeParams.id;
+			data.sent_email = $scope.email.send;
+			data.email = $scope.email.email;
+			DriverOrdersService.signature( data, function( result ){
+				load();
+			} );
+
+		}
+		App.confirm( 'Save signature?', 'Confirm?', success, function(){ App.dialog.close(); } , 'Ok,Cancel', true);
+	}
+
+	load();
+
+});
+
 NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $routeParams, DriverOrdersService, DriverOrdersViewService, AccountService) {
 	$rootScope.navTitle = '#' + $routeParams.id;
 	$scope.ready = false;
@@ -157,6 +228,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 	$scope.showOrders = true;
 
 	var showAll = $.totalStorage('driver-orders-show');
+
 	if (!showAll) {
 		showAll = false;
 	} else {
@@ -202,6 +274,11 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 			$scope.ready = true;
 		});
 	};
+
+	$scope.signature = function( id_order ) {
+		console.log('>>', '/drivers/order/signature/' + id_order);
+		$scope.link( '/drivers/order/signature/' + id_order );
+	}
 
 	$scope.accept = function( id_order ) {
 		$scope.makeBusy();

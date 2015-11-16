@@ -1366,6 +1366,13 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return false;
 	}
 
+	public function requireSignature(){
+		if( $this->campusCash() && $this->signature ){
+			return true;
+		}
+		return false;
+	}
+
 	// Smart population of "our most popular locations" on UI2 #6056
 	public static function smartSortPopulation(){
 		$query = Crunchbutton_Custom_Query::mostPopularLocationQuery();
