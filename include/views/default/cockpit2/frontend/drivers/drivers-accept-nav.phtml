@@ -34,7 +34,7 @@
 			<div class="divider"></div>
 		</div>
 	</div>
-	<div ng-if="oc.order.status.status == 'pickedup' && oc.order.status.driver.id_admin == account.user.id_admin">
+	<div ng-if="oc.order.status.status == 'pickedup' && oc.order.status.driver.id_admin == account.user.id_admin && !oc.order.require_signature">
 		<div class="box-content-nav-box box-content-pickedup box-order-status">
 			<div class="message">
 				<div class="">You picked up this order</div>
@@ -44,6 +44,21 @@
 			<div class="buttons" ng-click="oc.delivered()">
 				<button class="button dgray-on-dgray">Delivered</button>
 			</div>
+			<div class="divider"></div>
+		</div>
+	</div>
+	<div ng-if="oc.order.status.status == 'pickedup' && oc.order.status.driver.id_admin == account.user.id_admin && oc.order.require_signature">
+		<div class="box-content-nav-box box-content-signature box-order-status">
+			<div class="message">
+				<div class="">You picked up this order</div>
+				<div class="dialog-subtext">@ {{oc.order.status.date_timestamp | tsToHour}}</div>
+				<a class="order-action-undo" ng-click="oc.undo()">undo</a>
+			</div>
+			<a href="/drivers/order/signature/{{oc.order.id_order}}">
+				<div class="buttons signature">
+					<button class="button light-blue">Customer Signature</button>
+				</div>
+			</a>
 			<div class="divider"></div>
 		</div>
 	</div>

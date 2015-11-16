@@ -76,9 +76,20 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 								break;
 
 						case 'signature':
+
+								if( $this->request[ 'sent_email' ] ){
+									$email = filter_var( $this->request[ 'email' ], FILTER_VALIDATE_EMAIL );
+									if( $email ){
+										$user = $order->user();
+										$user->email = $email;
+										$user->save();
+									}
+								}
+
 								$signature = $this->request()[ 'signature' ];
 								$success = Cockpit_Order_Signature::store( [ 'signature' => $signature, 'id_order' => $order->id_order ] );
 								if( $success ){
+									$order->setStatus(Crunchbutton_Order_Action::DELIVERY_DELIVERED);
 									echo json_encode( [ 'success' => true ] ); exit();
 								} else {
 									echo json_encode( [ 'error' => true ] ); exit();
@@ -116,11 +127,28 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 
 					} else {
 
-						if( $order->id_order ) {
-							echo $order->json();
-						} else {
-							echo json_encode(['error' => 'invalid object']);
+
+						switch ( c::getPagePiece( 4 ) ) {
+							case 'receipt':
+								$this->_receipt( $order );
+								break;
+
+							case 'has-signature':
+								$signature = ( $order->signature() ? true : false );
+								$email = $order->user()->email;
+								echo json_encode( [ 'signature' => $signature, 'email' => $email ] );
+								exit;
+								break;
+
+							default:
+								if( $order->id_order ) {
+									echo $order->json();
+								} else {
+									echo json_encode(['error' => 'invalid object']);
+								}
+								break;
 						}
+
 					}
 					break;
 			}
@@ -134,8 +162,10 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 
 			foreach ( $orders as $order ) {
 				$restaurant = $order->restaurant();
+				$signature = ( $order->requireSignature() ? 1 : 0 );
 				$timestamp = Crunchbutton_Util::dateToUnixTimestamp( $order->date() );
 				$status = $order->status()->last();
+
 				$exports[] = Model::toModel( [
 					'id_order' => $order->id_order,
 					'status' => $status,
@@ -147,6 +177,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 					'date_hour' => $order->date()->format( 'g:i A'),
 					'restaurant' => $restaurant->name,
 					'restaurant_address' => $restaurant->address,
+					'require_signature' => $signature
 				] );
 			}
 
@@ -160,4 +191,26 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 			echo json_encode($exports);
 		}
 	}
+
+	private function _receipt( $order ){
+		if( $order->id_order ) {
+
+			header( 'Content-Type: text/html' );
+			header( 'Expires: 0' );
+			header( 'Cache-Control: must-revalidate' );
+			header( 'Pragma: public' );
+
+			$order->_print = false;
+
+			$mail = new Email_Order([
+				'order' => $order,
+				'signature' => true,
+				'user' => true
+			]);
+			echo $mail->message();
+		} else {
+			echo json_encode(['error' => 'invalid object']);
+		}
+	}
+
 }

@@ -19,7 +19,7 @@
 	text-transform: uppercase;
 	font-size: 1.3em;
 	width: 100%;
-	
+
 	@include box-border-radius();
 	/*@include gpu();*/
 	@include transition(all linear 0.10s);
@@ -67,6 +67,10 @@
 }
 .button.dgray-on-dgray{
 	background: #353b44;
+	font-weight: bold;
+}
+.button.light-blue{
+	background: #5192aa;
 	font-weight: bold;
 }
 .button.light-gray{

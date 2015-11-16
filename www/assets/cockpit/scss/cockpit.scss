@@ -2818,6 +2818,9 @@ canvas.chart {
 .box-content-pickedup {
 	background-color: rgba(68, 76, 87, .97);
 }
+.box-content-signature {
+	background-color: rgba(98, 171, 199, .97);
+}
 .box-content-delivered {
 	background-color: rgba(214, 217, 220, .97);
 	color: #48494C;
@@ -2854,6 +2857,9 @@ canvas.chart {
 .control .buttons {
 	float: right;
 	width: 80px;
+}
+.buttons.signature{
+	width: 130px;
 }
 
 .control .wrap {
