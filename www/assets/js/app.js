@@ -550,10 +550,12 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 		});
 
-		setTimeout( function(){
-			ReferralService.newReferredUsersByUser();
-		}, 4000 );
 	});
+
+	setTimeout( function(){
+		ReferralService.getStatus();
+		ReferralService.newReferredUsersByUser();
+	}, 4000 );
 
 	$rootScope.focus = function( selector ){
 		setTimeout(function(){
@@ -755,7 +757,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	ReferralService.check();
 
 	if( App.config.user.id_user ){
-		ReferralService.newReferredUsersByUser();
 		ReferralService.getStatus();
 	}
 
