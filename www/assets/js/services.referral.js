@@ -13,16 +13,10 @@ NGApp.factory( 'ReferralService', function( $http, $rootScope, $location, Accoun
 	}
 
 	service.newReferredUsersByUser = function(){
-		var url = App.service + 'user/referral';
-		$http( {
-				url: url,
-				headers: {'Content-Type': 'application/x-www-form-urlencoded' }
-			} ).success( function( data ) {
-				if( data && data.users ){
-					service.invitedUsers = data.users;
-					$rootScope.$broadcast( 'ReferralInvitedUsers', true );
-				}
-			}	);
+		if( App.config.new_referral_users ){
+			service.invitedUsers = App.config.new_referral_users;
+			$rootScope.$broadcast( 'ReferralInvitedUsers', true );
+		}
 	}
 
 	service.getInviteCode = function(){
@@ -65,23 +59,32 @@ NGApp.factory( 'ReferralService', function( $http, $rootScope, $location, Accoun
 	}
 
 	service.getStatus = function(){
-
-		var url = App.service + 'referral/status';
-		$http( {
-				url: url,
-				method : 'POST',
-				headers: {'Content-Type': 'application/x-www-form-urlencoded' }
-			} ).success( function( data ) {
-				service.enabled = data.enabled;
-				service.invites = data.invites;
-				service.value = data.value;
-				service.limit = data.limit;
-				service.invite_code = data.invite_code;
-				service.invite_url = data.invite_url;
-				$rootScope.$broadcast( 'referralStatusLoaded', true );
-			}	).error(function( data, status ) {
-				console.log( { error : data } );
-			} );
+		if( App.config.referral ){
+			service.enabled = App.config.referral.enabled;
+			service.invites = App.config.referral.invites;
+			service.value = App.config.referral.value;
+			service.limit = App.config.referral.limit;
+			service.invite_code = App.config.referral.invite_code;
+			service.invite_url = App.config.referral.invite_url;
+			$rootScope.$broadcast( 'referralStatusLoaded', true );
+		} else {
+			var url = App.service + 'referral/status';
+			$http( {
+					url: url,
+					method : 'POST',
+					headers: {'Content-Type': 'application/x-www-form-urlencoded' }
+				} ).success( function( data ) {
+					service.enabled = data.enabled;
+					service.invites = data.invites;
+					service.value = data.value;
+					service.limit = data.limit;
+					service.invite_code = data.invite_code;
+					service.invite_url = data.invite_url;
+					$rootScope.$broadcast( 'referralStatusLoaded', true );
+				}	).error(function( data, status ) {
+					console.log( { error : data } );
+				} );
+		}
 	}
 
 

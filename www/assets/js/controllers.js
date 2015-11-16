@@ -1805,8 +1805,11 @@ NGApp.controller( 'AccountResetCtrl', function ( $scope, $http, $location, Accou
 NGApp.controller( 'RewardCtrl', function ( $scope, $http, $rootScope, ReferralService, AccountService, FacebookService ) {
 
 	$rootScope.$on( 'ReferralInvitedUsers', function(e, data) {
-		$scope.invitedUsers = ReferralService.invitedUsers;
-		App.dialog.show( '.referral-container' );
+		$rootScope.$apply(function(scope) {
+			scope.invitedUsers = ReferralService.invitedUsers;
+			App.dialog.show( '.referral-container' );
+
+		});
 	});
 
 	$scope.referral = {}
@@ -1815,15 +1818,22 @@ NGApp.controller( 'RewardCtrl', function ( $scope, $http, $rootScope, ReferralSe
 		ReferralService.getInviteCode();
 	}
 
-	$scope.$on( 'referralStatusLoaded', function(e, data) {
-		$scope.referral.invites = ReferralService.invites;
-		$scope.referral.limit = ReferralService.limit;
-		$scope.referral.invite_url = ReferralService.invite_url;
-		$scope.referral.value = ReferralService.value;
-		$scope.referral.enabled = ReferralService.enabled;
-		$scope.referral.invite_code = ReferralService.invite_code;
-		$scope.referral.sms = ReferralService.sms();
-		$scope.referral.url = ReferralService.cleaned_url();
+	$rootScope.$on( 'referralStatusLoaded', function(e, data) {
+
+		$rootScope.$apply(function(scope) {
+			$scope.referral = {};
+			$scope.referral.invites = ReferralService.invites;
+			$scope.referral.limit = ReferralService.limit;
+			$scope.referral.invite_url = ReferralService.invite_url;
+			$scope.referral.value = ReferralService.value;
+			$scope.referral.enabled = ReferralService.enabled;
+			$scope.referral.invite_code = ReferralService.invite_code;
+			$scope.referral.sms = ReferralService.sms();
+			$scope.referral.url = ReferralService.cleaned_url();
+
+		});
+
+
 	});
 
 	$scope.referral.facebook = function(){
