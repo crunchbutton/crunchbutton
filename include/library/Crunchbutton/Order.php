@@ -991,6 +991,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return $this->restaurant()->campusCashFee();
 	}
 
+	public function signature(){
+		return Crunchbutton_Order_Signature::retrieve( $this->id_order );
+	}
+
 	public function requireSignature(){
 		$community = $this->community();
 		if( $community->id_community && $community->requireSignature() ){

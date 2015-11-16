@@ -1,6 +1,6 @@
 <?php
 
-class Cockpit_Order_Signature extends Cana_Table {
+class Crunchbutton_Order_Signature extends Cana_Table {
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
@@ -35,7 +35,7 @@ class Cockpit_Order_Signature extends Cana_Table {
 	public static function store( $params ){
 		self::desactiveOlderSignatures( $params[ 'id_order' ] );
 		$content = c::crypt()->encrypt( $params[ 'signature' ] );
-		$signature = new Cockpit_Order_Signature();
+		$signature = new Crunchbutton_Order_Signature();
 		$signature->id_order = $params[ 'id_order' ];
 		$signature->id_admin = c::user()->id_admin;
 		$signature->content = $content;

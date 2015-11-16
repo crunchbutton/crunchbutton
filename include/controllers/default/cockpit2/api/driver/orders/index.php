@@ -87,7 +87,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 								}
 
 								$signature = $this->request()[ 'signature' ];
-								$success = Cockpit_Order_Signature::store( [ 'signature' => $signature, 'id_order' => $order->id_order ] );
+								$success = Crunchbutton_Order_Signature::store( [ 'signature' => $signature, 'id_order' => $order->id_order ] );
 								if( $success ){
 									$order->setStatus(Crunchbutton_Order_Action::DELIVERY_DELIVERED);
 									echo json_encode( [ 'success' => true ] ); exit();
