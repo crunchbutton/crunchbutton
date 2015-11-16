@@ -605,6 +605,8 @@ class Crunchbutton_App extends Cana_App {
 		return $this->_stripe;
 	}
 
+
+
 	public function lob($d = true) {
 		if (!$this->_lob) {
 			if (c::env() == 'live') {
@@ -614,9 +616,8 @@ class Crunchbutton_App extends Cana_App {
 			} else {
 				$env = c::env();
 			}
-			$env = 'live';
+
 			$this->_lob = $lob = new \Lob\Lob(c::config()->lob->{$env}->key, c::config()->lob->{$env}->account);
-			// $this->_lob = $lob = new \Lob\Lob(c::config()->lob->{$env}->key, c::config()->lob->{$env}->account);
 		}
 		return $this->_lob;
 	}
