@@ -10,10 +10,13 @@ class Crunchbutton_Order_Logistics extends Cana_Model
     const LOGISTICS_COMPLEX = 2;
     const LOGISTICS_SIMPLE_ALGO_VERSION = 1;
     // Start numbering from 10K because we're using the same field for now
-    const LOGISTICS_COMPLEX_ALGO_VERSION = 10000;
+    const LOGISTICS_COMPLEX_ALGO_VERSION = 10001;
 
     const MAX_BUNDLE_TRAVEL_TIME = 10; // minutes
     const LS_MAX_UNIQUE_RESTAURANT = 3;
+
+    const LC_MAX_MISSED_PRIORITY_ORDERS = 2;
+    const LC_MAX_MISSED_PRIORITY_ORDERS_WINDOW = 180; // minutes
 
     const LC_MAX_NUM_ORDERS_DELTA = 4;
     const LC_MAX_NUM_UNIQUE_RESTAURANTS_DELTA = 3;
@@ -469,6 +472,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 
         $numGoodOptimizations = 0;
         $numSelectedDrivers = 0; // Number of drivers to get priority.  Should be 1, but there could be ties.
+        $numSelectedInactiveDrivers = 0;
 
         if (is_null($communityCenter)) {
             $skipFlag = true;
@@ -482,8 +486,12 @@ class Crunchbutton_Order_Logistics extends Cana_Model
             }
         }
 
-        $bestScoreChange = 10000;
+        // More negative score changes are better because score change = new total time - old total time (more or less)
+        $bestScoreChangeOverall = 10000;
+        $bestScoreChangeActiveDrivers = 10000;
         $numDriversWithGoodTimes = 0;  // Number of drivers who don't have orders that are late by more than n minutes.
+        $numProbablyActiveDrivers = 0;
+        $numProbablyInactiveDrivers = 0;
 
         if (!$skipFlag) {
             $new_id_order = $newOrder->id_order;
@@ -493,6 +501,11 @@ class Crunchbutton_Order_Logistics extends Cana_Model
             $curCommunityDt = new DateTime('now', new DateTimeZone($curCommunityTz));
             $curCommunityTime = $curCommunityDt->format('H:i:s');
             $dow = $curCommunityDt->format('w');
+
+            $missedMinTime = new DateTime('now', new DateTimeZone(c::config()->timezone));
+            $missedMinTime->modify('- ' . self::LC_MAX_MISSED_PRIORITY_ORDERS_WINDOW . ' minutes');
+            $missedMinTimeString = $missedMinTime->format('Y-m-d H:i:s');
+
             // Load community-specific model parameters
             $cs = $curCommunity->communityspeed($curCommunityTime, $dow);
             $orderAheadTime = $this->getRestaurantOrderTime($newOrder, $curCommunityTime, $dow);
@@ -508,16 +521,27 @@ class Crunchbutton_Order_Logistics extends Cana_Model
             $driverCount = $this->drivers()->count();
             $driversWithNoOrdersCount = 0;
             $ordersUnfiltered = Order::deliveryOrdersByCommunity(2, $curCommunity->id_community);
+            $maxMissedIndex = self::LC_MAX_MISSED_PRIORITY_ORDERS - 1;
             foreach ($this->drivers() as $driver) {
 //                print "Processing driver $driver->name\n";
 
-                $driverOrderCount = 0;
+                $driverOrderCount = 0;  // This counts the new order and also unexpired priority orders that haven't been accepted.
                 $qualifyingOrderCount = 0;
                 $nonQualifyingOrderFlag = false;
                 $pickedUpFlag = false;
                 $tooEarlyFlag = false;
                 $earliestBundleMinutes = null;
+                $numAcceptedUndeliveredOrders = 0;  // This only counts accepted but undelivered orders
+                $isProbablyInactive = false;
                 if (!$skipFlag) {
+                    $spos = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($missedMinTimeString, $driver->id_admin, self::LC_MAX_MISSED_PRIORITY_ORDERS);
+                    if ($spos->count() == self::LC_MAX_MISSED_PRIORITY_ORDERS) {
+                        $sposNthMostRecentExpiration = $spos->get($maxMissedIndex)->priority_expiration;
+                        $sposActionsSinceCount = Crunchbutton_Order_Priority::getNumDriverOrderActionsSince($sposNthMostRecentExpiration, $driver->id_admin);
+                        if ($sposActionsSinceCount == 0) {
+                            $isProbablyInactive = true;
+                        }
+                    }
                     $driver->__driverLocation = new Crunchbutton_Order_Logistics_DriverLocation($communityCenter);
                     $driver->__opt_status = self::DRIVER_OPT_FAILED;
                     // Get orders in the last two hours for this driver
@@ -593,17 +617,22 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                                 }
 
                                 // We care if either an undelivered order belongs to the driver, or is a priority order
+                                // TODO: potential issue here if an order is canceled by CS because then
+                                // the last status admin is not the driver
+                                // We probably want a separate check for refunded orders
                                 if ($lastStatusAdmin && $lastStatusAdmin == $driver->id_admin) {
                                     if ($lastStatus == 'pickedup' && (!$isRefunded || !$doNotReimburseDriver)) {
 //                                        print "Found picked-up order\n";
                                         $isPickedUpOrder = true;
                                         $addOrder = true;
+                                        $numAcceptedUndeliveredOrders++;
                                         $driver->__driverLocation->addPickedUpOrder($lastStatusTimestamp, $server_dt->getTimestamp(), $this->getRestaurantGeo($order),
                                             $order->lat, $order->lon);
                                         $pickedUpFlag = true;
                                     } else if ($lastStatus == 'accepted' && (!$isRefunded || !$doNotReimburseDriver)) {
 //                                        print "Found accepted order\n";
                                         $addOrder = true;
+                                        $numAcceptedUndeliveredOrders++;
                                         $driver->__driverLocation->addAcceptedOrder($lastStatusTimestamp, $server_dt->getTimestamp(),
                                             $this->getRestaurantGeo($order));
                                         $orderBundle = $this->getRestaurantCluster($order, $curCommunityTime, $dow);
@@ -696,6 +725,13 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 $driver->__tooEarlyFlag = $tooEarlyFlag;
                 $driver->__nonQualifyingOrderFlag = $nonQualifyingOrderFlag;
                 $driver->__earliestBundleMinutes = $earliestBundleMinutes;
+                $driver->__numAcceptedUndeliveredOrders = $numAcceptedUndeliveredOrders;
+                $driver->__isProbablyInactive = $isProbablyInactive;
+                if ($isProbablyInactive) {
+                    $numProbablyInactiveDrivers++;
+                } else{
+                    $numProbablyActiveDrivers++;
+                }
             }
 
             if (!$skipFlag) {
@@ -796,8 +832,13 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                                 $scoreChange = $resultNew->score - ($resultOld->score + $useScoreCorrection);
 //                            print "The score change is $scoreChange\n";
                                 $driver->__scoreChange = $scoreChange;
-                                if ($scoreChange < $bestScoreChange) {
-                                    $bestScoreChange = $scoreChange;
+                                if ($scoreChange < $bestScoreChangeOverall) {
+                                    $bestScoreChangeOverall = $scoreChange;
+                                }
+                                if (!$driver->__isProbablyInactive) {
+                                    if ($scoreChange < $bestScoreChangeActiveDrivers) {
+                                        $bestScoreChangeActiveDrivers = $scoreChange;
+                                    }
                                 }
                                 if ($resultNew->numBadTimes == 0 || $hasFakeOrder) {
                                     $numDriversWithGoodTimes += 1;
@@ -817,14 +858,14 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     } else {
                         $skipFlag = true;
                         $skipId = $driver->id_admin;
-                        if (is_null($dlist)) {
-                            $skipReason = 5;
-                        } else{
-                            $skipReason = 50;
-                        }
-                        Log::debug(['id_order' => $newOrder->id_order, 'time' => $serverDate, 'stage' => 'skipReason',
-                            'numOldNodes' => $dNumOldNodes,
-                            'numNewNodes' => $dNumNewNodes, 'adminId' => $skipId, 'type' => 'complexLogistics']);
+//                        if (is_null($dlist)) {
+//                            $skipReason = 5;
+//                        } else{
+//                            $skipReason = 50;
+//                        }
+//                        Log::debug(['id_order' => $newOrder->id_order, 'time' => $serverDate, 'stage' => 'skipReason',
+//                            'numOldNodes' => $dNumOldNodes,
+//                            'numNewNodes' => $dNumNewNodes, 'adminId' => $skipId, 'type' => 'complexLogistics']);
                     }
                 }
                 if ($skipFlag) {
@@ -843,16 +884,35 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 $this->_status = self::STATUS_ALL_OPTS_FAILED;
             } else if (!$skipFlag) {
                 // Look for the best driver
+//                print("Best Score change overall: $bestScoreChangeOverall\n");
+//                print("Best Score change active drivers: $bestScoreChangeActiveDrivers\n");
                 foreach ($this->drivers() as $driver) {
                     $driver->__priority = false;
                     if ($driver->__opt_status = self::DRIVER_OPT_SUCCESS) {
                         // Get the score
-                        if ($driver->__scoreChange == $bestScoreChange) {
-                            $driver->__priority = true;
-                            $numSelectedDrivers += 1;
+                        if ($driver->__isProbablyInactive) {
+                            if ($driver->__scoreChange == $bestScoreChangeOverall) {
+                                $driver->__priority = true;
+                                $numSelectedDrivers += 1;
+                                $numSelectedInactiveDrivers += 1;
+                            }
+                        } else if ($numProbablyInactiveDrivers > 0){
+                            // Probably active driver, get the second place driver(s) and add to the priority list
+                            if ($driver->__scoreChange == $bestScoreChangeActiveDrivers) {
+                                $driver->__priority = true;
+                                $numSelectedDrivers += 1;
+                            }
+                        } else {
+                            // No inactive drivers, proceed as normal
+                            if ($driver->__scoreChange == $bestScoreChangeOverall) {
+                                $driver->__priority = true;
+                                $numSelectedDrivers += 1;
+                            }
                         }
-                    };
+                    }
                 }
+//                print("Num selected Drivers: $numSelectedDrivers\n");
+//                print("Num selected Inactive Drivers: $numSelectedInactiveDrivers\n");
             }
 
         }
@@ -879,12 +939,18 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         // IMPORTANT: The code in Crunchbutton_Order::deliveryOrdersForAdminOnly assumes that the priority
         //  expiration for a particular order is the same for drivers.
         $this->numDriversWithPriority = $numSelectedDrivers;
-        Log::debug(['id_order' => $newOrder->id_order, 'time' => $nowDate, 'stage' => 'before_op_create',
-            'type' => 'complexLogistics']);
-        if ($skipFlag) {
-            Log::debug(['id_order' => $newOrder->id_order, 'time' => $nowDate, 'stage' => 'skipFlag',
-                'skipReason' => $skipReason, 'skipId' => $skipId, 'type' => 'complexLogistics']);
+        $this->numInactiveDriversWithPriority = $numSelectedInactiveDrivers;
+//        Log::debug(['id_order' => $newOrder->id_order, 'time' => $nowDate, 'stage' => 'before_op_create',
+//            'type' => 'complexLogistics']);
+        if ($skipFlag || $numSelectedDrivers == 0) {
+            $num_drivers_with_priority = 0;
+//            Log::debug(['id_order' => $newOrder->id_order, 'time' => $nowDate, 'stage' => 'skipFlag',
+//                'skipReason' => $skipReason, 'skipId' => $skipId, 'type' => 'complexLogistics']);
+
+        } else{
+            $num_drivers_with_priority = $numSelectedDrivers;
         }
+
         foreach ($this->drivers() as $driver) {
             if ($skipFlag) {
                 $driver->__seconds = 0;
@@ -892,6 +958,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 $priority_given = Crunchbutton_Order_Priority::PRIORITY_NO_ONE;
                 $seconds_delay = 0;
                 $priority_expiration = $nowDate2;
+                $num_undelivered_orders = -1;
             } else {
 //            print "Cur order:".$cur_id_order."\n";
                 if ($numSelectedDrivers > 0) {
@@ -913,6 +980,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     $seconds_delay = 0;
                     $priority_expiration = $nowDate2;
                 }
+                $num_undelivered_orders = $driver->__numAcceptedUndeliveredOrders;
 
             }
             $priority = new Crunchbutton_Order_Priority([
@@ -922,7 +990,10 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 'priority_time' => $nowDate,
                 'priority_algo_version' => self::LOGISTICS_COMPLEX_ALGO_VERSION,
                 'priority_given' => $priority_given,
+                'num_undelivered_orders' => $num_undelivered_orders,
+                'num_drivers_with_priority' => $num_drivers_with_priority,
                 'seconds_delay' => $seconds_delay,
+                'is_probably_inactive' => $driver->__isProbablyInactive,
                 'priority_expiration' => $priority_expiration
             ]);
             $priority->save();
