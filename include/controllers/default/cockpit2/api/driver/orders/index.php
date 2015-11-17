@@ -89,7 +89,16 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 								$signature = $this->request()[ 'signature' ];
 								$success = Crunchbutton_Order_Signature::store( [ 'signature' => $signature, 'id_order' => $order->id_order ] );
 								if( $success ){
+									// update status to delivered
 									$order->setStatus(Crunchbutton_Order_Action::DELIVERY_DELIVERED);
+
+									if( $email ){
+										$q = Queue::create([
+											'type' => Crunchbutton_Queue::TYPE_ORDER_RECEIPT_SIGNATURE,
+											'id_order' => $order->id_order
+										]);
+									}
+
 									echo json_encode( [ 'success' => true ] ); exit();
 								} else {
 									echo json_encode( [ 'error' => true ] ); exit();
@@ -194,22 +203,8 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 
 	private function _receipt( $order ){
 		if( $order->id_order ) {
-
-			header( 'Content-Type: text/html' );
-			header( 'Expires: 0' );
-			header( 'Cache-Control: must-revalidate' );
-			header( 'Pragma: public' );
-
-			$order->_print = false;
-
-			$mail = new Email_Order([
-				'order' => $order,
-				'signature' => true,
-				'user' => true
-			]);
-			echo $mail->message();
-		} else {
-			echo json_encode(['error' => 'invalid object']);
+			$order->signature_data = true;
+			echo $order->json();
 		}
 	}
 

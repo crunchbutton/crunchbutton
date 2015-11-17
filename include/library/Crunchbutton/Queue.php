@@ -4,6 +4,7 @@ class Crunchbutton_Queue extends Cana_Table {
 
 	const TYPE_CLASS_ORDER							= 'Crunchbutton_Queue_Order';
 	const TYPE_CLASS_ORDER_RECEIPT					= 'Crunchbutton_Queue_Order_Receipt';
+	const TYPE_CLASS_ORDER_RECEIPT_SIGNATURE					= 'Crunchbutton_Queue_Order_ReceiptSignature';
 	const TYPE_CLASS_ORDER_CONFIRM					= 'Crunchbutton_Queue_Order_Confirm';
 	const TYPE_CLASS_ORDER_PEXCARD_FUNDS			= 'Crunchbutton_Queue_Order_PexCard_Funds';
 	const TYPE_CLASS_NOTIFICATION_DRIVER			= 'Crunchbutton_Queue_Notification_Driver';
@@ -15,6 +16,7 @@ class Crunchbutton_Queue extends Cana_Table {
 
 	const TYPE_ORDER						= 'order';
 	const TYPE_ORDER_RECEIPT				= 'order-receipt';
+	const TYPE_ORDER_RECEIPT_SIGNATURE				= 'order-receipt-signature';
 	const TYPE_ORDER_CONFIRM				= 'order-confirm';
 	const TYPE_ORDER_PEXCARD_FUNDS			= 'order-pexcard-funds';
 	const TYPE_NOTIFICATION_DRIVER			= 'notification-driver';

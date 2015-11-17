@@ -287,6 +287,15 @@ class Cockpit_Order extends Crunchbutton_Order {
 			$out[ 'campus_cash_name' ] = $this->campusCashName();
 			$out[ 'require_signature' ] = $this->requireSignature();
 
+			if( $this->signature_data ){
+				$out[ 'last_digits' ] = $this->campusCashLastDigits();
+				$out[ 'has_signature' ] = ( $this->signature() ? true : false );
+				$out[ 'receipt_info' ] = nl2br( $this->campusCashReceiptInfo() );
+				if( $this->signature() ){
+					$out[ 'signature' ] = $this->signature();
+				}
+			}
+
 		}
 
 		if( $out[ 'refunded' ] ){

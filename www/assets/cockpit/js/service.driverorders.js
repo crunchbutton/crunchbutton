@@ -8,6 +8,7 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $http, $r
 	var orders = $resource( App.service + 'driver/orders/:id_order/:action', { id_order: '@id_order', action: '@action' }, {
 				// actions
 				'hasSignature' : { 'method': 'GET', params : { 'action' : 'has-signature' } },
+				'receipt' : { 'method': 'GET', params : { 'action' : 'receipt' } },
 				'get' : { 'method': 'GET', params : { 'action' : 'order' } },
 				'outstanding_Order' : {'method': 'GET', params : {'action' : 'undelivered' } },
 				'revenue' : {'method': 'GET', params : {'action' : 'revenue' } },
@@ -139,14 +140,9 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $http, $r
 	}
 
 	service.getReceipt = function( id_order, callback ){
-		var url = App.service + 'driver/orders/' + id_order + '/receipt';
-		$http( { method: 'GET', url: url } ).
-			success( function( data, status, headers, config ) {
-				callback( data );
-			}).
-			error( function(data, status, headers, config ) {
-				callback( false );
-			} );
+		orders.receipt( { 'id_order': id_order }, function( data ){
+			callback( data );
+		} );
 	}
 
 	return service;
