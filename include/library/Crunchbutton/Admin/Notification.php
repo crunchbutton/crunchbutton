@@ -57,7 +57,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
                 $ppid = "NA";
             }
             foreach ($driver->activeNotifications() as $adminNotification) {
-                print "Check here";
+//                print "Check here";
                 $adminNotification->send($order, $numAttempts);
                 $message = '#' . $order->id_order . ' attempts: ' . $numAttempts . ' sending driver notification to ' . $driver->name . ' #' . $adminNotification->value;
                 Log::debug(['order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver2',
