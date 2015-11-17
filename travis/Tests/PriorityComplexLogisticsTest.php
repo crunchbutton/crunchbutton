@@ -1612,6 +1612,1069 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($count, 3);
     }
 
+    public function testNumDriverOrderActionsSinceSameAdminZeroActions()
+    {
+
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $numActions = Crunchbutton_Order_Priority::getNumDriverOrderActionsSince($minDtString, $this->driver1->id_admin);
+        $this->assertEquals($numActions, 0);
+    }
+
+    public function testNumDriverOrderActionsSinceSameAdminOneActionOutside()
+    {
+
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $minutes = 240;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+
+        $numActions = Crunchbutton_Order_Priority::getNumDriverOrderActionsSince($minDtString, $this->driver1->id_admin);
+        $oa1->delete();
+        $o1->delete();
+        $this->assertEquals($numActions, 0);
+    }
+
+    public function testNumDriverOrderActionsSinceSameAdminOneActionInside()
+    {
+
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $minutes = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+
+        $numActions = Crunchbutton_Order_Priority::getNumDriverOrderActionsSince($minDtString, $this->driver1->id_admin);
+        $oa1->delete();
+        $o1->delete();
+        $this->assertEquals($numActions, 1);
+    }
+
+    public function testNumDriverOrderActionsSinceDiffAdminOneActionInside()
+    {
+
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $minutes = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+
+        $numActions = Crunchbutton_Order_Priority::getNumDriverOrderActionsSince($minDtString, $this->driver1->id_admin);
+        $oa1->delete();
+        $o1->delete();
+        $this->assertEquals($numActions, 0);
+    }
+
+    public function testNumDriverOrderActionsSinceDiffAdminTwoActionsInside()
+    {
+
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $minutes = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $minutes = 240;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate2, $this->community);
+        $o1->save();
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate2,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+
+        $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o2->save();
+
+        $oa2 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2->save();
+
+        $o3 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o3->save();
+
+        $oa3 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-delivered',
+            'note' => ''
+        ]);
+        $oa3->save();
+
+        $numActions = Crunchbutton_Order_Priority::getNumDriverOrderActionsSince($minDtString, $this->driver1->id_admin);
+        $oa1->delete();
+        $o1->delete();
+        $oa2->delete();
+        $o2->delete();
+        $oa3->delete();
+        $o3->delete();
+        $this->assertEquals($numActions, 2);
+    }
+
+    public function testNumDriverOrderActionsSinceDiffAdminThreeActionsInside()
+    {
+
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $minutes = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+
+        $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o2->save();
+
+        $oa2 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-pickedup',
+            'note' => ''
+        ]);
+        $oa2->save();
+
+        $o3 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o3->save();
+
+        $oa3 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-delivered',
+            'note' => ''
+        ]);
+        $oa3->save();
+
+        $numActions = Crunchbutton_Order_Priority::getNumDriverOrderActionsSince($minDtString, $this->driver1->id_admin);
+        $oa1->delete();
+        $o1->delete();
+        $oa2->delete();
+        $o2->delete();
+        $oa3->delete();
+        $o3->delete();
+        $this->assertEquals($numActions, 3);
+    }
+
+    public function testNumDriverOrderActionsSinceDiffAdminThreeActionsInsideTwoUnqualifying1()
+    {
+
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $minutes = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-rejected',
+            'note' => ''
+        ]);
+        $oa1->save();
+
+        $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o2->save();
+
+        $oa2 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-transfered',
+            'note' => ''
+        ]);
+        $oa2->save();
+
+        $o3 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o3->save();
+
+        $oa3 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-delivered',
+            'note' => ''
+        ]);
+        $oa3->save();
+
+        $numActions = Crunchbutton_Order_Priority::getNumDriverOrderActionsSince($minDtString, $this->driver1->id_admin);
+        $oa1->delete();
+        $o1->delete();
+        $oa2->delete();
+        $o2->delete();
+        $oa3->delete();
+        $o3->delete();
+        $this->assertEquals($numActions, 1);
+    }
+
+    public function testNumDriverOrderActionsSinceDiffAdminThreeActionsInsideTwoUnqualifying2()
+    {
+
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $minutes = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-canceled',
+            'note' => ''
+        ]);
+        $oa1->save();
+
+        $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o2->save();
+
+        $oa2 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-text-5min',
+            'note' => ''
+        ]);
+        $oa2->save();
+
+        $o3 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o3->save();
+
+        $oa3 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate1,
+            'type' => 'delivery-delivered',
+            'note' => ''
+        ]);
+        $oa3->save();
+
+        $numActions = Crunchbutton_Order_Priority::getNumDriverOrderActionsSince($minDtString, $this->driver1->id_admin);
+        $oa1->delete();
+        $o1->delete();
+        $oa2->delete();
+        $o2->delete();
+        $oa3->delete();
+        $o3->delete();
+        $this->assertEquals($numActions, 1);
+    }
+
+    public function testLastZeroPriorityWithZeroSavedSameAdmin()
+    {
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 0);
+        $opsCount = $ops->count();
+        $this->assertEquals($opsCount, 0);
+    }
+
+    public function testLastTwoPriorityWithZeroSavedSameAdmin()
+    {
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 2);
+        $opsCount = $ops->count();
+        $this->assertEquals($opsCount, 0);
+    }
+
+    public function testLastZeroPriorityWithOneSavedSameAdmin()
+    {
+
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('+ ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+        $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
+        $op1->save();
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 0);
+        $opsCount = $ops->count();
+        $op1->delete();
+        $o1->delete();
+        $this->assertEquals($opsCount, 0);
+    }
+
+    public function testLastTwoPriorityWithOneUnexpiredUnacceptedSavedSameAdmin()
+    {
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('+ ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+        $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
+        $op1->save();
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 2);
+        $opsCount = $ops->count();
+        $op1->delete();
+        $o1->delete();
+        $this->assertEquals($opsCount, 0);
+    }
+
+
+    public function testLastTwoPriorityWithOneUnexpiredAcceptedSavedSameAdmin()
+    {
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('+ ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate2,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+
+        $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
+        $op1->save();
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 2);
+        $opsCount = $ops->count();
+        $op1->delete();
+        $oa1->delete();
+        $o1->delete();
+        $this->assertEquals($opsCount, 0);
+    }
+
+    public function testLastTwoPriorityWithOneExpiredUnacceptedSavedSameAdmin()
+    {
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+        $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
+        $op1->save();
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 2);
+        $opsCount = $ops->count();
+        $op1->delete();
+        $o1->delete();
+        $this->assertEquals($opsCount, 1);
+    }
+
+    public function testLastTwoPriorityWithOneExpiredAcceptedSavedSameAdmin()
+    {
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver1->id_admin,
+            'timestamp' => $useDate2,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+
+        $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
+        $op1->save();
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 2);
+        $opsCount = $ops->count();
+        $op1->delete();
+        $oa1->delete();
+        $o1->delete();
+        $this->assertEquals($opsCount, 0);
+    }
+
+    public function testLastTwoPriorityWithOneExpiredAccepted2SavedSameAdmin()
+    {
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+
+        $oa1 = new Order_Action([
+            'id_order' => $o1->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $useDate2,
+            'type' => 'delivery-accepted',
+            'note' => ''
+        ]);
+        $oa1->save();
+
+        $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
+        $op1->save();
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 2);
+        $opsCount = $ops->count();
+        $op1->delete();
+        $oa1->delete();
+        $o1->delete();
+        $this->assertEquals($opsCount, 1);
+    }
+
+
+    public function testLastTwoPriorityWithOneExpiredSavedSameAdminSpecial()
+    {
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+        $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
+        $op1->save();
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 2);
+        $opsCount = $ops->count();
+        $op1->delete();
+        $o1->delete();
+        $this->assertEquals($opsCount, 1);
+    }
+
+    public function testLastTwoPriorityWithOneExpiredSavedSameAdminNotSpecial1()
+    {
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+        $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_LOW, 0, $useDate2, 0, 1);
+        $op1->save();
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 2);
+        $opsCount = $ops->count();
+        $op1->delete();
+        $o1->delete();
+        $this->assertEquals($opsCount, 0);
+    }
+
+    public function testLastTwoPriorityWithOneExpiredSavedSameAdminNotSpecial2()
+    {
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+        $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 2);
+        $op1->save();
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 2);
+        $opsCount = $ops->count();
+        $op1->delete();
+        $o1->delete();
+        $this->assertEquals($opsCount, 0);
+    }
+
+    public function testLastTwoPriorityWithOneExpiredSavedSameAdminNotSpecial3()
+    {
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+        $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 1, 1);
+        $op1->save();
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 2);
+        $opsCount = $ops->count();
+        $op1->delete();
+        $o1->delete();
+        $this->assertEquals($opsCount, 0);
+    }
+
+    public function testLastTwoPriorityWithOneExpiredSavedSameAdminNotSpecial4()
+    {
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+        $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1, Crunchbutton_Order_Logistics::LOGISTICS_SIMPLE_ALGO_VERSION);
+        $op1->save();
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 2);
+        $opsCount = $ops->count();
+        $op1->delete();
+        $o1->delete();
+        $this->assertEquals($opsCount, 0);
+    }
+
+
+    public function testLastZeroPriorityWithTwoSavedSameAdmin()
+    {
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('+ ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+        $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
+        $op1->save();
+        $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o2->save();
+        $op2 = $this->defaultOrderPriority($o2, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
+        $op2->save();
+
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 0);
+        $opsCount = $ops->count();
+        $op1->delete();
+        $op2->delete();
+        $o1->delete();
+        $o2->delete();
+        $this->assertEquals($opsCount, 0);
+    }
+
+    public function testLastTwoPriorityWithTwoUnexpiredSavedSameAdmin()
+    {
+
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('+ ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('+ ' . $seconds . ' seconds');
+        $useDate3 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+        $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
+        $op1->save();
+        $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o2->save();
+        $op2 = $this->defaultOrderPriority($o2, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
+        $op2->save();
+
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 2);
+        $opsCount = $ops->count();
+        $op1->delete();
+        $op2->delete();
+        $o1->delete();
+        $o2->delete();
+        $this->assertEquals($opsCount, 0);
+    }
+
+    public function testLastTwoPriorityWithTwoExpiredSavedSameAdmin1()
+    {
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $seconds = 240;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate3 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+        $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
+        $op1->save();
+        $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o2->save();
+        $op2 = $this->defaultOrderPriority($o2, $this->restaurant1, $this->driver1,
+            $useDate2, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate3, 0, 1);
+        $op2->save();
+
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 2);
+        $opsCount = $ops->count();
+        $op1->delete();
+        $op2->delete();
+        $o1->delete();
+        $o2->delete();
+        $this->assertEquals($opsCount, 2);
+        $this->assertEquals($op1->id_order_priority, $ops->get(1)->id_order_priority);
+        $this->assertEquals($op2->id_order_priority, $ops->get(0)->id_order_priority);
+    }
+
+
+    public function testLastTwoPriorityWithTwoExpiredSavedSameAdmin2()
+    {
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $seconds = 240;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate3 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+        $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate2, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate3, 0, 1);
+        $op1->save();
+        $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o2->save();
+        $op2 = $this->defaultOrderPriority($o2, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
+        $op2->save();
+
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 2);
+        $opsCount = $ops->count();
+        $op1->delete();
+        $op2->delete();
+        $o1->delete();
+        $o2->delete();
+        $this->assertEquals($opsCount, 2);
+        $this->assertEquals($op1->id_order_priority, $ops->get(0)->id_order_priority);
+        $this->assertEquals($op2->id_order_priority, $ops->get(1)->id_order_priority);
+    }
+
+
+    public function testLastOnePriorityWithThreeExpiredSavedSameAdmin2()
+    {
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $seconds = 240;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 30;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate3 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate4 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+        $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate2, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate3, 0, 1);
+        $op1->save();
+        $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o2->save();
+        $op2 = $this->defaultOrderPriority($o2, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
+        $op2->save();
+        $o3 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o3->save();
+        $op3 = $this->defaultOrderPriority($o3, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate4, 0, 1);
+        $op3->save();
+
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 1);
+        $opsCount = $ops->count();
+        $op1->delete();
+        $op2->delete();
+        $op3->delete();
+        $o1->delete();
+        $o2->delete();
+        $o3->delete();
+        $this->assertEquals($opsCount, 1);
+        $this->assertEquals($op1->id_order_priority, $ops->get(0)->id_order_priority);
+    }
+
+
+    public function testLastTwoPriorityWithThreeExpiredSavedSameAdmin2()
+    {
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $seconds = 240;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 30;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate3 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate4 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+        $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
+            $useDate2, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate3, 0, 1);
+        $op1->save();
+        $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o2->save();
+        $op2 = $this->defaultOrderPriority($o2, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
+        $op2->save();
+        $o3 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o3->save();
+        $op3 = $this->defaultOrderPriority($o3, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate4, 0, 1);
+        $op3->save();
+
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 2);
+        $opsCount = $ops->count();
+        $op1->delete();
+        $op2->delete();
+        $op3->delete();
+        $o1->delete();
+        $o2->delete();
+        $o3->delete();
+        $this->assertEquals($opsCount, 2);
+        $this->assertEquals($op1->id_order_priority, $ops->get(0)->id_order_priority);
+        $this->assertEquals($op3->id_order_priority, $ops->get(1)->id_order_priority);
+    }
+
+
+
+    public function testLastTwoPriorityWithTwoSavedDiffAdmin1()
+    {
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $seconds = 240;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+        $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver2,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
+        $op1->save();
+        $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o2->save();
+        $op2 = $this->defaultOrderPriority($o2, $this->restaurant1, $this->driver1,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
+        $op2->save();
+
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 2);
+        $opsCount = $ops->count();
+        $op1->delete();
+        $op2->delete();
+        $o1->delete();
+        $o2->delete();
+        $this->assertEquals($opsCount, 1);
+    }
+
+    public function testLastTwoPriorityWithTwoSavedDiffAdmin2()
+    {
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $minDtString = $now->format('Y-m-d H:i:s');
+
+        $seconds = 240;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate1 = $now->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $seconds . ' seconds');
+        $useDate2 = $now->format('Y-m-d H:i:s');
+
+        $o1 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o1->save();
+        $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver2,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
+        $op1->save();
+        $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
+        $o2->save();
+        $op2 = $this->defaultOrderPriority($o2, $this->restaurant1, $this->driver2,
+            $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
+        $op2->save();
+
+        $ops = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($minDtString, $this->driver1->id_admin, 2);
+        $opsCount = $ops->count();
+        $op1->delete();
+        $op2->delete();
+        $o1->delete();
+        $o2->delete();
+        $this->assertEquals($opsCount, 0);
+    }
 
     public function testOptimizerAPI1()
     {
@@ -1839,8 +2902,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($ops->count(), 2);
         foreach ($ops as $op) {
             $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 2);
         }
         $this->assertEquals($ol->numDriversWithPriority, 2);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -1921,8 +2987,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($ops->count(), 2);
         foreach ($ops as $op) {
             $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 2);
         }
         $this->assertEquals($ol->numDriversWithPriority, 2);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -2018,8 +3087,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($ops->count(), 2);
         foreach ($ops as $op) {
             $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 2);
         }
         $this->assertEquals($ol->numDriversWithPriority, 2);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -2102,8 +3174,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($ops->count(), 2);
         foreach ($ops as $op) {
             $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 2);
         }
         $this->assertEquals($ol->numDriversWithPriority, 2);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -2201,8 +3276,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             } else {
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -2301,8 +3379,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             } else {
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -2400,8 +3481,12 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             } else {
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 1);
+
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -2499,8 +3584,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             } else {
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -2599,8 +3687,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             } else {
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -2698,8 +3789,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             } else {
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -2788,8 +3882,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($ops->count(), 2);
         foreach ($ops as $op) {
             $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 2);
         }
         $this->assertEquals($ol->numDriversWithPriority, 2);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -2888,8 +3985,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             } else {
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -2979,8 +4079,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($ops->count(), 2);
         foreach ($ops as $op) {
             $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 2);
         }
         $this->assertEquals($ol->numDriversWithPriority, 2);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -3070,8 +4173,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($ops->count(), 2);
         foreach ($ops as $op) {
             $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 2);
         }
         $this->assertEquals($ol->numDriversWithPriority, 2);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -3164,8 +4270,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             } else {
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -3272,12 +4381,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -3384,11 +4497,15 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+                $this->assertEquals($op->num_undelivered_orders, 1);
             } else {
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
+                $this->assertEquals($op->num_undelivered_orders, 0);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -3496,12 +4613,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -3607,12 +4728,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -3718,12 +4843,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -3830,12 +4959,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -3941,12 +5074,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -4053,12 +5190,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -4164,12 +5305,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -4275,12 +5420,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -4386,12 +5535,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -4498,12 +5651,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -4609,12 +5766,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -4721,12 +5882,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -4832,12 +5997,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -4943,12 +6112,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -5054,12 +6227,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -5166,12 +6343,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -5277,12 +6458,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -5389,12 +6574,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -5491,12 +6680,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -5593,12 +6786,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -5696,12 +6893,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -5798,12 +6999,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -5900,12 +7105,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -6003,12 +7212,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -6105,12 +7318,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -6208,12 +7425,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -6337,12 +7558,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 2);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 7);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -6467,12 +7692,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 2);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 7);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -6588,12 +7817,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 2);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 7);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -6709,12 +7942,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 2);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 7);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -6831,12 +8068,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 2);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 7);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -6953,12 +8194,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 2);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 7);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -7100,12 +8345,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 3);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 9);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -7218,12 +8467,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -7339,12 +8592,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -7457,12 +8714,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -7568,17 +8829,21 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
 
-    // Two drivers - driver 1 has an accepted order from Chipotle from within the time window(with no waiting time).
+    // Two drivers - driver 1 has two accepted orders from Chipotle from within the time window(with no waiting time).
     //  Both drivers are at the same location
     //  New Chipotle order comes in - driver 1 should get priority
     public function testLogisticsThirdOrderSameLocationNoWaitA2a()
@@ -7701,12 +8966,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 2);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 7);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -7819,12 +9088,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -7935,12 +9208,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -8046,12 +9323,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -8185,12 +9466,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 5);
     }
@@ -8324,12 +9609,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 5);
     }
@@ -8463,12 +9752,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 5);
     }
@@ -8601,12 +9894,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 5);
     }
@@ -8739,12 +10036,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 5);
     }
@@ -8878,12 +10179,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 5);
     }
@@ -9033,12 +10338,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 5);
     }
@@ -9189,12 +10498,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 5);
     }
@@ -9318,12 +10631,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -9462,12 +10779,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 2);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 7);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -9570,8 +10891,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 2);
         }
         $this->assertEquals($ol->numDriversWithPriority, 2);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -9679,12 +11003,16 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops as $op) {
             if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->num_undelivered_orders, 1);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
             } else {
+                $this->assertEquals($op->num_undelivered_orders, 0);
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -9731,7 +11059,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 70,
             $this->community, $chipotle_lat, $chipotle_lon,
             [$this->driver1, $this->driver2],
-            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW]);
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW], [0, 0]);
         $orders[] = $og['o'];
         $allops = array_merge($allops, $og['ops']);
 
@@ -9818,8 +11146,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             } else {
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
 
@@ -9868,7 +11199,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 70,
             $this->community, $customer_lat, $customer_lon,
             [$this->driver1, $this->driver2],
-            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW]);
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW], [0, 0]);
         $orders[] = $og['o'];
         $allops = array_merge($allops, $og['ops']);
 
@@ -9970,8 +11301,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             } else {
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
 
@@ -10017,7 +11351,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 70,
             $this->community, $customer_lat, $customer_lon,
             [$this->driver1, $this->driver2],
-            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW]);
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW], [0, 0]);
         $orders[] = $og['o'];
         $allops = array_merge($allops, $og['ops']);
 
@@ -10113,8 +11447,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             } else {
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
 
@@ -10162,7 +11499,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 70,
             $this->community, $chipotle_lat, $chipotle_lon,
             [$this->driver1, $this->driver2],
-            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW]);
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW], [0, 0]);
         $orders[] = $og['o'];
         $og['o']->refunded = 1;
         $og['o']->do_not_reimburse_driver = 1;
@@ -10234,8 +11571,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops2 as $op) {
             $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 2);
         }
         $this->assertEquals($ol->numDriversWithPriority, 2);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -10282,7 +11622,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 70,
             $this->community, $chipotle_lat, $chipotle_lon,
             [$this->driver1, $this->driver2],
-            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW]);
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW], [0, 0]);
         $orders[] = $og['o'];
         $og['o']->refunded = 1;
         $og['o']->do_not_reimburse_driver = false;
@@ -10363,8 +11703,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             } else {
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -10410,7 +11753,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 200,
             $this->community, $chipotle_lat, $chipotle_lon,
             [$this->driver1, $this->driver2],
-            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW]);
+            [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW], [0, 0]);
         $orders[] = $og['o'];
         $allops = array_merge($allops, $og['ops']);
 
@@ -10479,8 +11822,11 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         foreach ($ops2 as $op) {
             $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 2);
         }
         $this->assertEquals($ol->numDriversWithPriority, 2);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
     }
@@ -10492,6 +11838,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     public function testLogisticsThreeDriversNoOrdersNoWait()
     {
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $dow = $now->format('w');
 
         $seconds = 50;
         $earlier50 = clone $now;
@@ -10503,7 +11850,6 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $earlier120->modify('- ' . $seconds . ' seconds');
         $earlier120String = $earlier120->format('Y-m-d H:i:s');
 
-        $dow = $now->format('w');
 
         $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
         $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
@@ -10594,12 +11940,1476 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             } else {
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 3);
         $this->assertEquals($olr2->count(), 3);
         $this->assertEquals($olr3->count(), 3);
     }
+
+    //  Three drivers, none with orders
+    //  All three drivers are at the same location
+    //  New Chipotle order comes in - all drivers get the priority
+    public function testLogisticsThreeDriversSameLocationNoOrdersNoWait()
+    {
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $dow = $now->format('w');
+
+        $seconds = 50;
+        $earlier50 = clone $now;
+        $earlier50->modify('- ' . $seconds . ' seconds');
+        $earlier50String = $earlier50->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $earlier120 = clone $now;
+        $earlier120->modify('- ' . $seconds . ' seconds');
+        $earlier120String = $earlier120->format('Y-m-d H:i:s');
+
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
+
+        $laterM50PlusMax = clone $now;
+        $laterM50PlusMax->modify('+ ' . $seconds . ' seconds');
+        $laterM50PlusMaxString = $laterM50PlusMax->format('Y-m-d H:i:s');
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0, -118.273, $earlier120, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0, -118.273, $earlier120, 10);
+        $driverLocs3 = $this->createAndSaveAdminLocations($this->driver3->id_admin, 34.0, -118.273, $earlier120, 10);
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        // Chipotle
+        $o2 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $earlier50String, $this->community);
+        $o2->lat = $chipotle_lat;
+        $o2->lon = $chipotle_lon;
+        $o2->save();
+        $orders[] = $o2;
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o2);
+        $ol->process();
+
+        $drivers = $ol->drivers();
+
+        $ops2 = Crunchbutton_Order_Priority::q('SELECT * FROM order_priority WHERE id_order = ?', [$o2->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver2->id_admin]);
+        $olr3 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver3->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+        $olr3->delete();
+
+        foreach ($orders as $o) {
+            $o->delete();
+        }
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs3 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $olc->delete();
+
+
+        foreach ($ol->drivers() as $driver) {
+            $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, true);
+
+        }
+        $this->assertEquals($ops2->count(), 3);
+
+        foreach ($ops2 as $op) {
+            $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 3);
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 3);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
+        $this->assertEquals($olr1->count(), 3);
+        $this->assertEquals($olr2->count(), 3);
+        $this->assertEquals($olr3->count(), 3);
+    }
+
+    //  Three drivers, none with orders
+    //  All three drivers are at the same location
+    //  New Chipotle order comes in - all drivers get the priority
+    public function testLogisticsThreeDriversSameLocationNoOrdersNoWaitOneNotYetInactive()
+    {
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $dow = $now->format('w');
+
+        $seconds = 50;
+        $earlier50 = clone $now;
+        $earlier50->modify('- ' . $seconds . ' seconds');
+        $earlier50String = $earlier50->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $earlier120 = clone $now;
+        $earlier120->modify('- ' . $seconds . ' seconds');
+        $earlier120String = $earlier120->format('Y-m-d H:i:s');
+
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $earlier120MinString = $now->format('Y-m-d H:i:s');
+
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
+
+        $laterM50PlusMax = clone $now;
+        $laterM50PlusMax->modify('+ ' . $seconds . ' seconds');
+        $laterM50PlusMaxString = $laterM50PlusMax->format('Y-m-d H:i:s');
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0, -118.273, $earlier120, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0, -118.273, $earlier120, 10);
+        $driverLocs3 = $this->createAndSaveAdminLocations($this->driver3->id_admin, 34.0, -118.273, $earlier120, 10);
+
+
+        $o10 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o10->save();
+
+        $op10 = $this->defaultOrderPriority($o10, $this->restaurant1, $this->driver1,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op10->save();
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+
+        // Chipotle
+        $o2 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $earlier50String, $this->community);
+        $o2->lat = $chipotle_lat;
+        $o2->lon = $chipotle_lon;
+        $o2->save();
+        $orders[] = $o2;
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o2);
+        $ol->process();
+
+        $drivers = $ol->drivers();
+
+        $ops2 = Crunchbutton_Order_Priority::q('SELECT * FROM order_priority WHERE id_order = ?', [$o2->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver2->id_admin]);
+        $olr3 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver3->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+        $olr3->delete();
+
+        $op10->delete();
+        $o10->delete();
+        foreach ($orders as $o) {
+            $o->delete();
+        }
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs3 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $olc->delete();
+
+
+        foreach ($ol->drivers() as $driver) {
+            $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, true);
+
+        }
+        $this->assertEquals($ops2->count(), 3);
+
+        foreach ($ops2 as $op) {
+            $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 3);
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 3);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
+        $this->assertEquals($olr1->count(), 3);
+        $this->assertEquals($olr2->count(), 3);
+        $this->assertEquals($olr3->count(), 3);
+    }
+
+    //  Three drivers, none with orders
+    //  All three drivers are at the same location
+    //  New Chipotle order comes in - all drivers get the priority
+    public function testLogisticsThreeDriversSameLocationNoOrdersNoWaitOneInactive()
+    {
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $dow = $now->format('w');
+
+        $seconds = 50;
+        $earlier50 = clone $now;
+        $earlier50->modify('- ' . $seconds . ' seconds');
+        $earlier50String = $earlier50->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $earlier120 = clone $now;
+        $earlier120->modify('- ' . $seconds . ' seconds');
+        $earlier120String = $earlier120->format('Y-m-d H:i:s');
+
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $earlier120MinString = $now->format('Y-m-d H:i:s');
+
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
+
+        $laterM50PlusMax = clone $now;
+        $laterM50PlusMax->modify('+ ' . $seconds . ' seconds');
+        $laterM50PlusMaxString = $laterM50PlusMax->format('Y-m-d H:i:s');
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0, -118.273, $earlier120, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0, -118.273, $earlier120, 10);
+        $driverLocs3 = $this->createAndSaveAdminLocations($this->driver3->id_admin, 34.0, -118.273, $earlier120, 10);
+
+        $o10 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o10->save();
+
+        $op10 = $this->defaultOrderPriority($o10, $this->restaurant1, $this->driver1,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op10->save();
+
+        $o11 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o11->save();
+
+        $op11 = $this->defaultOrderPriority($o11, $this->restaurant1, $this->driver1,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op11->save();
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+
+        // Chipotle
+        $o2 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $earlier50String, $this->community);
+        $o2->lat = $chipotle_lat;
+        $o2->lon = $chipotle_lon;
+        $o2->save();
+        $orders[] = $o2;
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o2);
+        $ol->process();
+
+        $drivers = $ol->drivers();
+
+        $ops2 = Crunchbutton_Order_Priority::q('SELECT * FROM order_priority WHERE id_order = ?', [$o2->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver2->id_admin]);
+        $olr3 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver3->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+        $olr3->delete();
+
+        $op10->delete();
+        $o10->delete();
+        $op11->delete();
+        $o11->delete();
+        foreach ($orders as $o) {
+            $o->delete();
+        }
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs3 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $olc->delete();
+
+
+        foreach ($ol->drivers() as $driver) {
+            $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, true);
+
+        }
+        $this->assertEquals($ops2->count(), 3);
+
+        foreach ($ops2 as $op) {
+            $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 3);
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 3);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 1);
+        $this->assertEquals($olr1->count(), 3);
+        $this->assertEquals($olr2->count(), 3);
+        $this->assertEquals($olr3->count(), 3);
+    }
+
+    //  Three drivers, none with orders
+    //  All three drivers are at different locations
+    //  New Chipotle order comes in - closest driver (who is active) gets the priority
+    public function testLogisticsThreeDriversNoOrdersNoWaitOneInactive1()
+    {
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $dow = $now->format('w');
+
+        $seconds = 50;
+        $earlier50 = clone $now;
+        $earlier50->modify('- ' . $seconds . ' seconds');
+        $earlier50String = $earlier50->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $earlier120 = clone $now;
+        $earlier120->modify('- ' . $seconds . ' seconds');
+        $earlier120String = $earlier120->format('Y-m-d H:i:s');
+
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $earlier120MinString = $now->format('Y-m-d H:i:s');
+
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
+
+        $laterM50PlusMax = clone $now;
+        $laterM50PlusMax->modify('+ ' . $seconds . ' seconds');
+        $laterM50PlusMaxString = $laterM50PlusMax->format('Y-m-d H:i:s');
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $earlier120, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.018, -118.281, $earlier120, 10);
+        $driverLocs3 = $this->createAndSaveAdminLocations($this->driver3->id_admin, 34.0, -118.27, $earlier120, 10);
+
+        $o10 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o10->save();
+
+        $op10 = $this->defaultOrderPriority($o10, $this->restaurant1, $this->driver1,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op10->save();
+
+        $o11 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o11->save();
+
+        $op11 = $this->defaultOrderPriority($o11, $this->restaurant1, $this->driver1,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op11->save();
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        // Chipotle
+        $o2 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $earlier50String, $this->community);
+        $o2->lat = $chipotle_lat;
+        $o2->lon = $chipotle_lon;
+        $o2->save();
+        $orders[] = $o2;
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o2);
+        $ol->process();
+
+        $drivers = $ol->drivers();
+
+        $ops2 = Crunchbutton_Order_Priority::q('SELECT * FROM order_priority WHERE id_order = ?', [$o2->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver2->id_admin]);
+        $olr3 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver3->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+        $olr3->delete();
+
+        $op10->delete();
+        $o10->delete();
+        $op11->delete();
+        $o11->delete();
+
+        foreach ($orders as $o) {
+            $o->delete();
+        }
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs3 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $olc->delete();
+
+
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
+        }
+        $this->assertEquals($ops2->count(), 3);
+
+        foreach ($ops2 as $op) {
+            if ($op->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            } else {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
+            }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 1);
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
+        $this->assertEquals($olr1->count(), 3);
+        $this->assertEquals($olr2->count(), 3);
+        $this->assertEquals($olr3->count(), 3);
+    }
+
+    //  Three drivers, none with orders
+    //  All three drivers are at different locations
+    //  New Chipotle order comes in - closest driver is inactive and gets the priority along with another driver
+    public function testLogisticsThreeDriversNoOrdersNoWaitOneInactive2()
+    {
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $dow = $now->format('w');
+
+        $seconds = 50;
+        $earlier50 = clone $now;
+        $earlier50->modify('- ' . $seconds . ' seconds');
+        $earlier50String = $earlier50->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $earlier120 = clone $now;
+        $earlier120->modify('- ' . $seconds . ' seconds');
+        $earlier120String = $earlier120->format('Y-m-d H:i:s');
+
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $earlier120MinString = $now->format('Y-m-d H:i:s');
+
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
+
+        $laterM50PlusMax = clone $now;
+        $laterM50PlusMax->modify('+ ' . $seconds . ' seconds');
+        $laterM50PlusMaxString = $laterM50PlusMax->format('Y-m-d H:i:s');
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $earlier120, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.018, -118.281, $earlier120, 10);
+        $driverLocs3 = $this->createAndSaveAdminLocations($this->driver3->id_admin, 34.0, -118.27, $earlier120, 10);
+
+        $o10 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o10->save();
+
+        $op10 = $this->defaultOrderPriority($o10, $this->restaurant1, $this->driver2,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op10->save();
+
+        $o11 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o11->save();
+
+        $op11 = $this->defaultOrderPriority($o11, $this->restaurant1, $this->driver2,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op11->save();
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        // Chipotle
+        $o2 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $earlier50String, $this->community);
+        $o2->lat = $chipotle_lat;
+        $o2->lon = $chipotle_lon;
+        $o2->save();
+        $orders[] = $o2;
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o2);
+        $ol->process();
+
+        $drivers = $ol->drivers();
+
+        $ops2 = Crunchbutton_Order_Priority::q('SELECT * FROM order_priority WHERE id_order = ?', [$o2->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver2->id_admin]);
+        $olr3 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver3->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+        $olr3->delete();
+
+        $op10->delete();
+        $o10->delete();
+        $op11->delete();
+        $o11->delete();
+
+        foreach ($orders as $o) {
+            $o->delete();
+        }
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs3 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $olc->delete();
+
+
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin != $this->driver3->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
+        }
+        $this->assertEquals($ops2->count(), 3);
+
+        foreach ($ops2 as $op) {
+            if ($op->id_admin != $this->driver3->id_admin) {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            } else {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
+            }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 2);
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 2);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 1);
+        $this->assertEquals($olr1->count(), 3);
+        $this->assertEquals($olr2->count(), 3);
+        $this->assertEquals($olr3->count(), 3);
+    }
+
+    //  Three drivers, none with orders
+    //  All three drivers are at different locations
+    //  New Chipotle order comes in - two closest drivers are active and get the priority
+    public function testLogisticsThreeDriversNoOrdersNoWaitOneInactive3()
+    {
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $dow = $now->format('w');
+
+        $seconds = 50;
+        $earlier50 = clone $now;
+        $earlier50->modify('- ' . $seconds . ' seconds');
+        $earlier50String = $earlier50->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $earlier120 = clone $now;
+        $earlier120->modify('- ' . $seconds . ' seconds');
+        $earlier120String = $earlier120->format('Y-m-d H:i:s');
+
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $earlier120MinString = $now->format('Y-m-d H:i:s');
+
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
+
+        $laterM50PlusMax = clone $now;
+        $laterM50PlusMax->modify('+ ' . $seconds . ' seconds');
+        $laterM50PlusMaxString = $laterM50PlusMax->format('Y-m-d H:i:s');
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $earlier120, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.018, -118.281, $earlier120, 10);
+        $driverLocs3 = $this->createAndSaveAdminLocations($this->driver3->id_admin, 34.018, -118.281, $earlier120, 10);
+
+        $o10 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o10->save();
+
+        $op10 = $this->defaultOrderPriority($o10, $this->restaurant1, $this->driver1,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op10->save();
+
+        $o11 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o11->save();
+
+        $op11 = $this->defaultOrderPriority($o11, $this->restaurant1, $this->driver1,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op11->save();
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        // Chipotle
+        $o2 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $earlier50String, $this->community);
+        $o2->lat = $chipotle_lat;
+        $o2->lon = $chipotle_lon;
+        $o2->save();
+        $orders[] = $o2;
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o2);
+        $ol->process();
+
+        $drivers = $ol->drivers();
+
+        $ops2 = Crunchbutton_Order_Priority::q('SELECT * FROM order_priority WHERE id_order = ?', [$o2->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver2->id_admin]);
+        $olr3 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver3->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+        $olr3->delete();
+
+        $op10->delete();
+        $o10->delete();
+        $op11->delete();
+        $o11->delete();
+
+        foreach ($orders as $o) {
+            $o->delete();
+        }
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs3 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $olc->delete();
+
+
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin != $this->driver1->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
+        }
+        $this->assertEquals($ops2->count(), 3);
+
+        foreach ($ops2 as $op) {
+            if ($op->id_admin != $this->driver1->id_admin) {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            } else {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
+            }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 2);
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 2);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
+        $this->assertEquals($olr1->count(), 3);
+        $this->assertEquals($olr2->count(), 3);
+        $this->assertEquals($olr3->count(), 3);
+    }
+
+    //  Three drivers, none with orders
+    //  All three drivers are at different locations
+    //  New Chipotle order comes in - two closest drivers are inactive and get the priority along with another driver
+    public function testLogisticsThreeDriversNoOrdersNoWaitTwoInactive1()
+    {
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $dow = $now->format('w');
+
+        $seconds = 50;
+        $earlier50 = clone $now;
+        $earlier50->modify('- ' . $seconds . ' seconds');
+        $earlier50String = $earlier50->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $earlier120 = clone $now;
+        $earlier120->modify('- ' . $seconds . ' seconds');
+        $earlier120String = $earlier120->format('Y-m-d H:i:s');
+
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $earlier120MinString = $now->format('Y-m-d H:i:s');
+
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
+
+        $laterM50PlusMax = clone $now;
+        $laterM50PlusMax->modify('+ ' . $seconds . ' seconds');
+        $laterM50PlusMaxString = $laterM50PlusMax->format('Y-m-d H:i:s');
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $earlier120, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.018, -118.281, $earlier120, 10);
+        $driverLocs3 = $this->createAndSaveAdminLocations($this->driver3->id_admin, 34.018, -118.281, $earlier120, 10);
+
+        $o10 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o10->save();
+
+        $op10 = $this->defaultOrderPriority($o10, $this->restaurant1, $this->driver2,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op10->save();
+
+        $o11 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o11->save();
+
+        $op11 = $this->defaultOrderPriority($o11, $this->restaurant1, $this->driver2,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op11->save();
+
+        $o12 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o12->save();
+
+        $op12 = $this->defaultOrderPriority($o12, $this->restaurant1, $this->driver3,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op12->save();
+
+        $o13 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o13->save();
+
+        $op13 = $this->defaultOrderPriority($o13, $this->restaurant1, $this->driver3,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op13->save();
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        // Chipotle
+        $o2 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $earlier50String, $this->community);
+        $o2->lat = $chipotle_lat;
+        $o2->lon = $chipotle_lon;
+        $o2->save();
+        $orders[] = $o2;
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o2);
+        $ol->process();
+
+        $drivers = $ol->drivers();
+
+        $ops2 = Crunchbutton_Order_Priority::q('SELECT * FROM order_priority WHERE id_order = ?', [$o2->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver2->id_admin]);
+        $olr3 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver3->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+        $olr3->delete();
+
+        $op10->delete();
+        $o10->delete();
+        $op11->delete();
+        $o11->delete();
+        $op12->delete();
+        $o12->delete();
+        $op13->delete();
+        $o13->delete();
+
+        foreach ($orders as $o) {
+            $o->delete();
+        }
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs3 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $olc->delete();
+
+
+        foreach ($ol->drivers() as $driver) {
+            $this->assertEquals($driver->__seconds, 0);
+            $this->assertEquals($driver->__priority, true);
+        }
+        $this->assertEquals($ops2->count(), 3);
+
+        foreach ($ops2 as $op) {
+            $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 3);
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 3);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 2);
+        $this->assertEquals($olr1->count(), 3);
+        $this->assertEquals($olr2->count(), 3);
+        $this->assertEquals($olr3->count(), 3);
+    }
+
+    //  Three drivers, none with orders
+    //  All three drivers are at different locations, two are inactive
+    //  New Chipotle order comes in - closest drivers is inactive and get the priority along with another driver
+    public function testLogisticsThreeDriversNoOrdersNoWaitTwoInactive2()
+    {
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $dow = $now->format('w');
+
+        $seconds = 50;
+        $earlier50 = clone $now;
+        $earlier50->modify('- ' . $seconds . ' seconds');
+        $earlier50String = $earlier50->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $earlier120 = clone $now;
+        $earlier120->modify('- ' . $seconds . ' seconds');
+        $earlier120String = $earlier120->format('Y-m-d H:i:s');
+
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $earlier120MinString = $now->format('Y-m-d H:i:s');
+
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
+
+        $laterM50PlusMax = clone $now;
+        $laterM50PlusMax->modify('+ ' . $seconds . ' seconds');
+        $laterM50PlusMaxString = $laterM50PlusMax->format('Y-m-d H:i:s');
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.2, -118.6, $earlier120, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.018, -118.281, $earlier120, 10);
+        $driverLocs3 = $this->createAndSaveAdminLocations($this->driver3->id_admin, 34.0, -118.27, $earlier120, 10);
+
+        $o10 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o10->save();
+
+        $op10 = $this->defaultOrderPriority($o10, $this->restaurant1, $this->driver2,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op10->save();
+
+        $o11 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o11->save();
+
+        $op11 = $this->defaultOrderPriority($o11, $this->restaurant1, $this->driver2,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op11->save();
+
+        $o12 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o12->save();
+
+        $op12 = $this->defaultOrderPriority($o12, $this->restaurant1, $this->driver3,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op12->save();
+
+        $o13 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o13->save();
+
+        $op13 = $this->defaultOrderPriority($o13, $this->restaurant1, $this->driver3,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op13->save();
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        // Chipotle
+        $o2 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $earlier50String, $this->community);
+        $o2->lat = $chipotle_lat;
+        $o2->lon = $chipotle_lon;
+        $o2->save();
+        $orders[] = $o2;
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o2);
+        $ol->process();
+
+        $drivers = $ol->drivers();
+
+        $ops2 = Crunchbutton_Order_Priority::q('SELECT * FROM order_priority WHERE id_order = ?', [$o2->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver2->id_admin]);
+        $olr3 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver3->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+        $olr3->delete();
+
+        $op10->delete();
+        $o10->delete();
+        $op11->delete();
+        $o11->delete();
+        $op12->delete();
+        $o12->delete();
+        $op13->delete();
+        $o13->delete();
+
+        foreach ($orders as $o) {
+            $o->delete();
+        }
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs3 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $olc->delete();
+
+
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin != $this->driver3->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
+        }
+        $this->assertEquals($ops2->count(), 3);
+
+        foreach ($ops2 as $op) {
+            if ($op->id_admin != $this->driver3->id_admin) {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            } else {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
+            }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 2);
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 2);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 1);
+        $this->assertEquals($olr1->count(), 3);
+        $this->assertEquals($olr2->count(), 3);
+        $this->assertEquals($olr3->count(), 3);
+    }
+
+
+    //  Three drivers, none with orders
+    //  All three drivers are at different locations, one is inactive, one seems inactive
+    //  New Chipotle order comes in - closest driver seems inactive but has delivered an order since
+    //  and he is closest so he gets priority
+    public function testLogisticsThreeDriversNoOrdersNoWaitTwoInactive3()
+    {
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $dow = $now->format('w');
+
+        $seconds = 50;
+        $earlier50 = clone $now;
+        $earlier50->modify('- ' . $seconds . ' seconds');
+        $earlier50String = $earlier50->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $earlier120 = clone $now;
+        $earlier120->modify('- ' . $seconds . ' seconds');
+        $earlier120String = $earlier120->format('Y-m-d H:i:s');
+
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $earlier120MinString = $now->format('Y-m-d H:i:s');
+
+        $minutes = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $earlier60MinString = $now->format('Y-m-d H:i:s');
+
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
+
+        $laterM50PlusMax = clone $now;
+        $laterM50PlusMax->modify('+ ' . $seconds . ' seconds');
+        $laterM50PlusMaxString = $laterM50PlusMax->format('Y-m-d H:i:s');
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.0302, -118.273, $earlier120, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.018, -118.281, $earlier120, 10);
+        $driverLocs3 = $this->createAndSaveAdminLocations($this->driver3->id_admin, 34.0, -118.27, $earlier120, 10);
+
+        $o10 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o10->save();
+
+        $op10 = $this->defaultOrderPriority($o10, $this->restaurant1, $this->driver2,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op10->save();
+
+        $o11 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o11->save();
+
+        $op11 = $this->defaultOrderPriority($o11, $this->restaurant1, $this->driver2,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op11->save();
+
+        $o12 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o12->save();
+
+        $op12 = $this->defaultOrderPriority($o12, $this->restaurant1, $this->driver3,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op12->save();
+
+        $o13 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o13->save();
+
+        $op13 = $this->defaultOrderPriority($o13, $this->restaurant1, $this->driver3,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op13->save();
+
+        $o20 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o20->save();
+
+        $oa20 = new Order_Action([
+            'id_order' => $o20->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $earlier60MinString,
+            'type' => 'delivery-delivered',
+            'note' => ''
+        ]);
+        $oa20->save();
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        // Chipotle
+        $o2 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $earlier50String, $this->community);
+        $o2->lat = $chipotle_lat;
+        $o2->lon = $chipotle_lon;
+        $o2->save();
+        $orders[] = $o2;
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o2);
+        $ol->process();
+
+        $drivers = $ol->drivers();
+
+        $ops2 = Crunchbutton_Order_Priority::q('SELECT * FROM order_priority WHERE id_order = ?', [$o2->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver2->id_admin]);
+        $olr3 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver3->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+        $olr3->delete();
+
+        $op10->delete();
+        $o10->delete();
+        $op11->delete();
+        $o11->delete();
+        $op12->delete();
+        $o12->delete();
+        $op13->delete();
+        $o13->delete();
+
+        $o20->delete();
+        $oa20->delete();
+
+        foreach ($orders as $o) {
+            $o->delete();
+        }
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs3 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $olc->delete();
+
+
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
+        }
+        $this->assertEquals($ops2->count(), 3);
+
+        foreach ($ops2 as $op) {
+            if ($op->id_admin == $this->driver2->id_admin) {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            } else {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
+            }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 1);
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
+        $this->assertEquals($olr1->count(), 3);
+        $this->assertEquals($olr2->count(), 3);
+        $this->assertEquals($olr3->count(), 3);
+    }
+
+    //  Three drivers, none with orders
+    //  All three drivers are at different locations, one is inactive, one seems inactive
+    //  New Chipotle order comes in - closest driver seems inactive but has delivered an order since
+    //  and so only free driver gets the priority
+    public function testLogisticsThreeDriversNoOrdersNoWaitTwoInactive4()
+    {
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $dow = $now->format('w');
+
+        $seconds = 50;
+        $earlier50 = clone $now;
+        $earlier50->modify('- ' . $seconds . ' seconds');
+        $earlier50String = $earlier50->format('Y-m-d H:i:s');
+
+        $seconds = 120;
+        $earlier120 = clone $now;
+        $earlier120->modify('- ' . $seconds . ' seconds');
+        $earlier120String = $earlier120->format('Y-m-d H:i:s');
+
+        $minutes = 120;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $earlier120MinString = $now->format('Y-m-d H:i:s');
+
+        $minutes = 60;
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now->modify('- ' . $minutes . ' minutes');
+        $earlier60MinString = $now->format('Y-m-d H:i:s');
+
+        $this->assertGreaterThan(50, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+        $seconds = Crunchbutton_Order_Logistics::TIME_MAX_DELAY - 50;
+
+        $laterM50PlusMax = clone $now;
+        $laterM50PlusMax->modify('+ ' . $seconds . ' seconds');
+        $laterM50PlusMaxString = $laterM50PlusMax->format('Y-m-d H:i:s');
+
+        $driverLocs1 = $this->createAndSaveAdminLocations($this->driver1->id_admin, 34.018, -118.281, $earlier120, 10);
+        $driverLocs2 = $this->createAndSaveAdminLocations($this->driver2->id_admin, 34.0302, -118.273, $earlier120, 10);
+        $driverLocs3 = $this->createAndSaveAdminLocations($this->driver3->id_admin, 34.0, -118.27, $earlier120, 10);
+
+        $o10 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o10->save();
+
+        $op10 = $this->defaultOrderPriority($o10, $this->restaurant1, $this->driver2,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op10->save();
+
+        $o11 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o11->save();
+
+        $op11 = $this->defaultOrderPriority($o11, $this->restaurant1, $this->driver2,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op11->save();
+
+        $o12 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o12->save();
+
+        $op12 = $this->defaultOrderPriority($o12, $this->restaurant1, $this->driver3,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op12->save();
+
+        $o13 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o13->save();
+
+        $op13 = $this->defaultOrderPriority($o13, $this->restaurant1, $this->driver3,
+            $earlier120MinString, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $earlier120MinString, 0, 1);
+        $op13->save();
+
+        $o20 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $earlier120MinString, $this->community);
+        $o20->save();
+
+        $oa20 = new Order_Action([
+            'id_order' => $o20->id_order,
+            'id_admin' => $this->driver2->id_admin,
+            'timestamp' => $earlier60MinString,
+            'type' => 'delivery-delivered',
+            'note' => ''
+        ]);
+        $oa20->save();
+
+        $chipotle_lat = 34.0284;
+        $chipotle_lon = -118.287;
+
+        // Chipotle
+        $o2 = $this->defaultOrder($this->user, $this->restaurant3->id_restaurant, $earlier50String, $this->community);
+        $o2->lat = $chipotle_lat;
+        $o2->lon = $chipotle_lon;
+        $o2->save();
+        $orders[] = $o2;
+
+        $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
+        $end = '24:00:00';
+        $olp1 = $this->defaultOLP($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $olp1->save();
+
+        $ols1 = $this->defaultOLS($this->restaurant3, $start, $end, 5, 5, 5, $dow);
+        $ols1->save();
+
+        $olot1 = $this->defaultOLOT($this->restaurant3, $start, $end, 0, 1, $dow);
+        $olot1->save();
+
+        $olcs1 = $this->defaultOLCS($this->community, $start, $end, 10, $dow);
+        $olcs1->save();
+
+        $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
+        $olc->save();
+
+        $ol = new Crunchbutton_Order_Logistics(Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX, $o2);
+        $ol->process();
+
+        $drivers = $ol->drivers();
+
+        $ops2 = Crunchbutton_Order_Priority::q('SELECT * FROM order_priority WHERE id_order = ?', [$o2->id_order]);
+
+        $olr1 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver1->id_admin]);
+        $olr2 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver2->id_admin]);
+        $olr3 = Crunchbutton_Order_Logistics_Route::q('select * from order_logistics_route where id_order = ? and id_admin = ?', [$o2->id_order, $this->driver3->id_admin]);
+
+        $olr1->delete();
+        $olr2->delete();
+        $olr3->delete();
+
+        $op10->delete();
+        $o10->delete();
+        $op11->delete();
+        $o11->delete();
+        $op12->delete();
+        $o12->delete();
+        $op13->delete();
+        $o13->delete();
+
+        $o20->delete();
+        $oa20->delete();
+
+        foreach ($orders as $o) {
+            $o->delete();
+        }
+        foreach ($driverLocs1 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs2 as $l) {
+            $l->delete();
+        }
+        foreach ($driverLocs3 as $l) {
+            $l->delete();
+        }
+        $olp1->delete();
+        $ols1->delete();
+        $olot1->delete();
+        $olcs1->delete();
+        $olc->delete();
+
+
+        foreach ($ol->drivers() as $driver) {
+            if ($driver->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($driver->__seconds, 0);
+                $this->assertEquals($driver->__priority, true);
+            } else {
+                $this->assertEquals($driver->__seconds, Crunchbutton_Order_Logistics::TIME_MAX_DELAY);
+                $this->assertEquals($driver->__priority, false);
+            }
+        }
+        $this->assertEquals($ops2->count(), 3);
+
+        foreach ($ops2 as $op) {
+            if ($op->id_admin == $this->driver1->id_admin) {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_HIGH);
+            } else {
+                $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
+            }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 1);
+        }
+        $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
+        $this->assertEquals($olr1->count(), 3);
+        $this->assertEquals($olr2->count(), 3);
+        $this->assertEquals($olr3->count(), 3);
+    }
+
     // Three drivers - driver 1 has an unaccepted, unexpired priority order from Chipotle (with no waiting time).
     //  All three drivers are at the same location
     //  New Chipotle order comes in - driver 1 gets the priority
@@ -10640,7 +13450,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             $this->community, $chipotle_lat, $chipotle_lon,
             [$this->driver1, $this->driver2, $this->driver3],
             [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW,
-                Crunchbutton_Order_Priority::PRIORITY_LOW]);
+                Crunchbutton_Order_Priority::PRIORITY_LOW], [0, 0, 0]);
         $orders[] = $og['o'];
         $allops = array_merge($allops, $og['ops']);
 
@@ -10721,12 +13531,18 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             } else {
                 $this->assertEquals($op->priority_given, Crunchbutton_Order_Priority::PRIORITY_LOW);
             }
+            $this->assertEquals($op->num_undelivered_orders, 0);
+            $this->assertEquals($op->num_drivers_with_priority, 1);
         }
         $this->assertEquals($ol->numDriversWithPriority, 1);
+        $this->assertEquals($ol->numInactiveDriversWithPriority, 0);
         $this->assertEquals($olr1->count(), 5);
         $this->assertEquals($olr2->count(), 3);
         $this->assertEquals($olr3->count(), 3);
     }
+
+
+
 
 
     public function defaultOrder($user, $restaurantId, $date, $community)
@@ -10777,24 +13593,27 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
 
     public function defaultOrderPriority($order, $restaurant, $driver,
-                                         $priorityTime, $priority, $delay, $expiration)
+                                         $priorityTime, $priority, $delay, $expiration, $numUndeliveredOrders,
+                                         $numDriversWithPriority, $algoVersion=Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX_ALGO_VERSION)
     {
         return new Crunchbutton_Order_Priority([
             'id_order' => $order->id_order,
             'id_restaurant' => $restaurant->id_restaurant,
             'id_admin' => $driver->id_admin,
             'priority_time' => $priorityTime,
-            'priority_algo_version' => Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX_ALGO_VERSION,
+            'priority_algo_version' => $algoVersion,
             'priority_given' => $priority,
             'seconds_delay' => $delay,
-            'priority_expiration' => $expiration
+            'priority_expiration' => $expiration,
+            'num_undelivered_orders' => $numUndeliveredOrders,
+            'num_drivers_with_priority' => $numDriversWithPriority
         ]);
 
     }
 
     public function createOrderGroupAndSave($user, $restaurant, $nowdt, $earlierSeconds, $community, $lat, $lon, $drivers,
-                                            $priorities, $lastActionEarlierSeconds = null,
-                                            $actionDriverId = null, $actionString = null)
+                                            $priorities, $numUndeliveredOrdersArray, $lastActionEarlierSeconds = null,
+                                            $actionDriverId = null, $actionString = null, $numDriversWithPriority=null)
     {
         $og = [];
         $ops = [];
@@ -10816,22 +13635,37 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $o = $this->defaultOrderWithLoc($user, $restaurant->id_restaurant, $useDateString, $community, $lat, $lon);
         $o->save();
         $numDrivers = count($drivers);
+        if ($numDriversWithPriority != -1) {
+            $numDriversWithPriority = 0;
+            for ($i = 0; $i < $numDrivers; $i++) {
+                $priority = $priorities[$i];
+                if (!is_null($priority)) {
+                    if ($priority == Crunchbutton_Order_Priority::PRIORITY_HIGH) {
+                        $numDriversWithPriority++;
+                    } else if ($priority == Crunchbutton_Order_Priority::PRIORITY_NO_ONE) {
+                        $numDriversWithPriority++;
+                    }
+                }
+            }
+        }
         for ($i = 0; $i < $numDrivers; $i++) {
             $driver = $drivers[$i];
             $priority = $priorities[$i];
+            $numUndeliveredOrders = $numUndeliveredOrdersArray[$i];
             if (!is_null($priority)) {
                 if ($priority == Crunchbutton_Order_Priority::PRIORITY_HIGH) {
                     $op = $this->defaultOrderPriority($o, $restaurant, $driver,
-                        $useDateString, $priority, 0, $laterDateString);
+                        $useDateString, $priority, 0, $laterDateString, $numUndeliveredOrders, $numDriversWithPriority);
                 } else if ($priority == Crunchbutton_Order_Priority::PRIORITY_LOW) {
                     $op = $this->defaultOrderPriority($o, $restaurant, $driver,
-                        $useDateString, $priority, Crunchbutton_Order_Logistics::TIME_MAX_DELAY, $laterDateString);
+                        $useDateString, $priority, Crunchbutton_Order_Logistics::TIME_MAX_DELAY, $laterDateString,
+                        $numUndeliveredOrders, $numDriversWithPriority);
                 } else if ($priority == Crunchbutton_Order_Priority::PRIORITY_NO_ONE) {
                     $op = $this->defaultOrderPriority($o, $restaurant, $driver,
-                        $useDateString, $priority, 0, $useDateString);
+                        $useDateString, $priority, 0, $useDateString, $numDriversWithPriority);
                 } else {
                     $op = $this->defaultOrderPriority($o, $restaurant, $driver,
-                        $useDateString, $priority, 0, $useDateString);
+                        $useDateString, $priority, 0, $useDateString, $numDriversWithPriority);
                 }
                 $op->save();
                 $ops[] = $op;
