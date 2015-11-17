@@ -2,15 +2,127 @@
 
 <div class="content-padding">
 	<div class="box-content2" ng-if="ready">
-		<span ng-bind-html-unsafe="receipt"></span>
+
+		<table class="receipt">
+			<tr><td colspan="4"><div class="receipt-separator"></div></td></tr>
+			<tr>
+				<td colspan="2" class="crunchbutton">Crunchbutton</td>
+				<td colspan="2" class="info">
+					<div class="order-id">#{{order.id_order}}</div>
+					<div class="order-date">{{order.date_formated}}</div>
+				</td>
+			</tr>
+			<tr><td colspan="4"><div class="receipt-separator"></div></td></tr>
+			<tr>
+				<td class="icon"><img src="/assets/images/mprinter/delivery.png"></td>
+				<td>Order for Delivery</td>
+				<td class="icon"><img src="/assets/images/mprinter/card.png"></td>
+				<td>
+					Prepaid by {{order.campus_cash_name}}
+					Card: {{order.last_digits}}
+				</td>
+			</tr>
+			<tr><td colspan="4"><div class="receipt-separator"></div></td></tr>
+			<tr>
+				<td class="icon"><img src="/assets/images/mprinter/customer.png"></td>
+				<td>
+					{{order.name}}
+					<br>
+					{{order.phone}}
+				</td>
+				<td class="icon"><img src="/assets/images/mprinter/restaurant.png"></td>
+				<td>
+					{{order._restaurant_name}}
+				</td>
+			</tr>
+			<tr>
+				<td class="icon"><img src="/assets/images/mprinter/map.png"></td>
+				<td>
+					{{order.address}}
+				</td>
+				<td></td>
+			</tr>
+			<tr><td colspan="4"><div class="receipt-separator"></div></td></tr>
+		</table>
+
+		<div>
+			<div class="order-contents">
+				<table width="100%" celpadding="0" cellspacing="0" class="detail receipt">
+					<thead>
+						<td class="topitem order-contents-item-qty">Qty</td>
+						<td class="topitem itemname">Item</td>
+						<td class="topitem itemprice">Price</td>
+					</thead>
+					<tbody>
+						<tr ng-repeat="dish in order._dishes_qty">
+							<td class="fooditem order-contents-item-qty">{{dish.quantity}}</td>
+							<td class="fooditem dish-name">
+								<b>{{dish.name}}</b>
+								<div ng-if="dish.options.select_options">{{dish.options.select_options}}</div>
+								<div ng-if="dish.options.with_option"><i class="fa fa-plus-circle"></i> {{dish.options.with_option}}</div>
+								<div ng-if="dish.options.without_default_options"><i class="fa fa-minus-circle"></i> {{dish.options.without_default_options}}</div>
+							</td>
+							<td class="fooditem dish-price">
+								${{dish.price.marked_up | formatPrice}}
+							</td>
+						</tr>
+						<tr class="class">
+							<td></td>
+							<td class="dish-price">Subtotal</td>
+							<td class="dish-price">
+								${{order.price_plus_delivery_markup | formatPrice}}
+							</td>
+						</tr>
+						<tr class="class" ng-if="order.tip">
+							<td></td>
+							<td class="dish-price">Subtotal</td>
+							<td class="dish-price">
+								${{order.tip | formatPrice}}
+							</td>
+						</tr>
+						<tr class="class" ng-if="order.delivery_fee">
+							<td></td>
+							<td class="dish-price">Delivery Fee</td>
+							<td class="dish-price">
+								${{order.delivery_fee | formatPrice}}
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td class="dish-price">Tax</td>
+							<td class="dish-price">
+								${{order._tax | formatPrice}}
+							</td>
+						</tr>
+						<tr class="order-total-row">
+							<td></td>
+							<td class="order-total-text">Total</td>
+							<td class="dish-price order-total-text">
+								${{order.final_price_plus_delivery_markup | formatPrice}}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div ng-if="!order.signature" id="signature" style=""></div>
+		<div ng-if="order.signature">
+			<img src="{{order.signature}}"/>
+		</div>
+
+		<table class="receipt">
+			<tr><td class="footer" ng-bind-html-unsafe="order.receipt_info"></td></tr>
+			<tr><td><div class="receipt-separator"></div></td></tr>
+		</table>
 	</div>
+
 	<div class="box-content2" ng-if="show_form">
 		<ul class="ul-inputs">
 			<li class="li-input">
-				<label class="switch-wrap">
-					<input type="checkbox" class="switch" ng-model="email.send"/><div></div>
+				<label>
+					<input type="checkbox" style="width:20px;" ng-model="email.send"/>Send receipt by email?
 				</label>
-				<div class="label">Send receipt by email?</div>
 			</li>
 			<li class="li-input" ng-show="email.send">
 				<div class="label">Email:</div>

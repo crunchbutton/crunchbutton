@@ -1792,6 +1792,20 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		]);
 	}
 
+	public function receiptSignature(){
+		$user = $this->user();
+		if( $user->email ){
+			$mail = new Email_Order([
+				'order' => $this,
+				'signature' => true,
+				'email' => $user->email,
+				'user' => true,
+			]);
+			$mail->send();
+			echo 'sending';
+		}
+	}
+
 	public function queConfirm() {
 
 		$order = $this;
