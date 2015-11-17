@@ -9,6 +9,7 @@ CREATE TABLE `cron_log` (
   `next_time` datetime DEFAULT NULL,
   `finished` datetime DEFAULT NULL,
   `interactions` int(11) DEFAULT '0' NOT NULL,
+  `env` enum('live','crondb','local') DEFAULT 'live',
   PRIMARY KEY (`id_cron_log`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
