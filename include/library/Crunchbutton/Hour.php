@@ -273,21 +273,19 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			} );
 
 			$w_next = [ 'mon' => 'tue', 'tue' => 'wed', 'wed' => 'thu', 'thu' => 'fri', 'fri' => 'sat', 'sat' => 'sun', 'sun' => 'mon' ];
-			foreach( $_restaurant_hours as $day => $segments ){
-				// echo $day;
-			}
-			// die('hard');
 
 			foreach( $_restaurant_hours as $day => $segments ){
 				foreach( $segments as $k1 => $segment ){
 					if( $segment[ 1 ] == '24:00' ){
 						$next_day = $_restaurant_hours[ $w_next[ $day ] ];
-						foreach( $next_day as $k2 => $next_segment ){
-							if( $next_segment[ 0 ] == '0:00' ){
-								$_day_hour = explode( ':', $segment[ 1 ] );
-								$_next_hour = explode( ':', $next_segment[ 1 ] );
-								$_restaurant_hours[ $day ][ $k1 ][ 1 ] = ( $_day_hour[ 0 ] + $_next_hour[ 0 ] ) . ':' . $_next_hour[ 1 ];;
-								unset( $_restaurant_hours[ $w_next[ $day ] ][ $k2 ] );
+						if( $next_day ){
+							foreach( $next_day as $k2 => $next_segment ){
+								if( $next_segment[ 0 ] == '0:00' ){
+									$_day_hour = explode( ':', $segment[ 1 ] );
+									$_next_hour = explode( ':', $next_segment[ 1 ] );
+									$_restaurant_hours[ $day ][ $k1 ][ 1 ] = ( $_day_hour[ 0 ] + $_next_hour[ 0 ] ) . ':' . $_next_hour[ 1 ];;
+									unset( $_restaurant_hours[ $w_next[ $day ] ][ $k2 ] );
+								}
 							}
 						}
 					}
