@@ -1234,10 +1234,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$timezone = new DateTimeZone( $this->timezone );
 		$date = new DateTime( 'now ', $timezone ) ;
 
-		// Return the offset to help the Javascript to calculate the open/close hour correctly
-		$out['_tzoffset'] = ( $date->getOffset() ) / 60 / 60;
-		$out['_tzabbr'] = $date->format('T');
-
 		$out['images'] = $this->getImages();
 		$out['img']    = $out['images']['normal'];
 
@@ -1295,26 +1291,57 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			}
 		}
 
-		if( $isCockpit ){
+		// change how we do open calculations #6902
+		if( $this->force_hours_calculation ){
 
-			$payment_type = $this->payment_type();
-			$out[ 'payment_method' ] = $payment_type->payment_method;
+			// Return the offset to help the Javascript to calculate the open/close hour correctly
+			$out['_tzoffset'] = ( $date->getOffset() ) / 60 / 60;
+			$out['_tzabbr'] = $date->format('T');
 
-			foreach ($this->hours() as $hours) {
-				$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
+			if( $isCockpit ){
+
+				$payment_type = $this->payment_type();
+				$out[ 'payment_method' ] = $payment_type->payment_method;
+
+				foreach ($this->hours() as $hours) {
+					$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
+				}
+			} else {
+				$out[ 'hours' ] = $this->hours_next_24_hours( true );
+				$next_open_time = $this->next_open_time( true );
+				if( $next_open_time ){
+					$next_open_time_restaurant_tz = $this->next_open_time();
+					$out[ 'next_open_time' ] = ( $next_open_time ) ? $next_open_time->format( 'Y-m-d H:i' ) : false;
+					$out[ 'next_open_time_message' ] = $this->next_open_time_message();
+				}
 			}
-		} else {
-			// @performance: this is slowing things down alot
-			$out[ 'hours' ] = $this->hours_next_24_hours( true );
-			$next_open_time = $this->next_open_time( true );
-			if( $next_open_time ){
-				$next_open_time_restaurant_tz = $this->next_open_time();
-				$out[ 'next_open_time' ] = ( $next_open_time ) ? $next_open_time->format( 'Y-m-d H:i' ) : false;
-				$out[ 'next_open_time_message' ] = $this->next_open_time_message();
-			}
+			$out['closed_message'] = $this->closed_message();
+
 		}
+		else {
+			$_time = Crunchbutton_Restaurant_Time::getTime( $this->id_restaurant );
+			// Return the offset to help the Javascript to calculate the open/close hour correctly
+			$out['_tzoffset'] = $_time[ 'tzoffset' ];
+			$out['_tzabbr'] = $_time[ 'tzabbr' ];
 
-		$out['closed_message'] = $this->closed_message();
+			if( $isCockpit ){
+
+				$payment_type = $this->payment_type();
+				$out[ 'payment_method' ] = $payment_type->payment_method;
+
+				foreach ($this->hours() as $hours) {
+					$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
+				}
+			} else {
+				$out[ 'hours' ] = $_time[ 'hours_next_24_hours' ];
+				if( $_time[ 'next_open_time_message_utc' ] ){
+					$out[ 'next_open_time' ] = $_time[ 'next_open_time_utc' ];
+					$out[ 'next_open_time_message' ] = $_time[ 'next_open_time_message' ];
+				}
+			}
+
+			$out['closed_message'] = $_time[ 'closed_message' ];
+		}
 
 		if (!$ignore['_preset']) {
 			if ($this->preset()->count()) {
@@ -1340,12 +1367,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				'user' => $comment->user()->get(0)->name(),
 				'fb' => $id
 			];
-		}
-
-		// get the legacy data
-		if( !$isCockpit ){
-			// @performance: slowing shit down
-			$out = array_merge( $out, $this->hours_legacy(  $isCockpit ) );
 		}
 
 		// start eta
@@ -1866,98 +1887,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	/*
 	* Hours and Open/Closed methods
 	*/
-
-	// return the hours info used at iphone native app
-	public function hours_legacy( $isCockpit ){
-		return [];
-		$data = [];
-		$data[ 'open_for_business' ] = $this->open_for_business;
-		$data[ '_open' ] = $this->open();
-
-		// force open
-		$data[ '_force_open' ] = Crunchbutton_Restaurant_Hour_Override::forceOpen( $this->id_restaurant );;
-
-		// force close
-		$forceClose = Crunchbutton_Restaurant_Hour_Override::forceClose( $this->id_restaurant );
-		if( $forceClose ){
-			$data['_force_close'] = true;
-			$data['_force_close_notes'] = $forceClose;
-		} else {
-			$data['_force_close'] = false;
-		}
-
-		// if it is open shows closesIn
-		if( $data[ '_open' ] ){
-			$closesIn = $this->closesIn();
-			$data[ '_closesIn' ] = $closesIn;
-			if( $data['_closesIn'] === 0 ){
-					$data[ '_open' ] = false;
-					$data[ '_closesIn' ] = false;
-			} else {
-				$data[ '_closesIn_formated' ] = Cana_Util::formatMinutes( $closesIn )[ 'formatted' ];
-			}
-		} else {
-			$data[ '_closesIn' ] = false;
-		}
-
-		// if it is closed shows opensIn
-		if( !$data[ '_open' ] ){
-			$opensIn = $this->opensIn();
-			$data[ '_openIn' ] = $opensIn;
-			if( $data[ '_openIn' ] ){
-				$data[ '_openIn_formated' ] = Cana_Util::formatMinutes( $opensIn )[ 'formatted' ];
-			}
-		} else {
-			$data[ '_openIn' ] = false;
-		}
-
-		// Min minutes to show the hurry message
-		$data[ '_minimumTime' ] = 15;
-
-		// tags
-		if( $data['_open'] ){
-			if( $this->delivery != 1 ){
-				$data['_tag']  = 'takeout';
-			} else {
-			if( $data['_closesIn'] <= $data['_minimumTime'] && $data['_closesIn'] !== false){
-		      $data['_tag']  = 'closing';
-				}
-			}
-		} else {
-			$data['_tag']  = 'closed';
-			if( $data[ '_force_close' ] ){
-				$data['_tag']  = 'force_close';
-			}
-		}
-
-		$data[ 'open_holidays' ] = $this->open_holidays;
-
-		// hours utc formatted
-		$hours = $this->hours( true );
-		foreach ( $hours as $hours ) {
-			$data[ '_hoursFormat' ][ $hours->day ][] = [ $hours->time_open, $hours->time_close ];
-		}
-
-		$hours = $this->hours();
-		$_hours = [];
-		foreach ( $hours as $hours ) {
-			$_hours[ $hours->day ][] = [ $hours->time_open, $hours->time_close ];
-		}
-
-		if( !$isCockpit ){
-			$data[ '_hours' ] = Hour::mergeHolidays( $_hours, $this, false );
-		}
-
-		$_hours_converted_utc = Hour::hoursStartingMondayUTC( $_hours );
-		$hours_converted_utc = [];
-		foreach( $_hours_converted_utc as $_hour_converted_utc ){
-			$hours_converted_utc[] = (object) $_hour_converted_utc;
-		}
-
-		$data[ '_hours_converted_utc' ] = $hours_converted_utc;
-
-		return $data;
-	}
 
 	// return the restaurant's hours
 	public function hours( $gmt = false ) {
