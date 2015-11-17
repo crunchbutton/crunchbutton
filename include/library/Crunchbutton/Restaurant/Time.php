@@ -71,10 +71,18 @@ class Crunchbutton_Restaurant_Time extends Cana_Table {
 				$time->next_open_time_message_utc = json_encode( $restaurant->next_open_time_message( true ) );
 			}
 
+			$hours_next_24_hours = $restaurant->hours_next_24_hours( true );
+			if( $hours_next_24_hours ){
+				$time->hours_next_24_hours = json_encode( $hours_next_24_hours );
+			}
+
 			$time->closed_message = $restaurant->closed_message();
-			$time->hours_next_24_hours = json_encode( $restaurant->hours_next_24_hours( true ) );
 
 			$time->save();
+
+			$timezone = null;
+			$date = null;
+			$restaurant = null;
 
 			return Crunchbutton_Restaurant_Time::o( $time->id_restaurant_time );
 
@@ -86,7 +94,10 @@ class Crunchbutton_Restaurant_Time extends Cana_Table {
 		$restaurants = c::db()->query( 'SELECT DISTINCT( restaurant.id_restaurant ) id_restaurant FROM restaurant INNER JOIN hour ON hour.id_restaurant = restaurant.id_restaurant WHERE restaurant.active = true AND restaurant.open_for_business = true AND restaurant.timezone = ? ', [ $timezone ] );
 
 		while ( $restaurant = $restaurants->fetch() ) {
-			self::register( $restaurant->id_restaurant );
+			$q = Queue::create([
+				'type' => Crunchbutton_Queue::TYPE_RESTAURANT_TIME,
+				'id_restaurant' => $restaurant->id_restaurant
+			]);
 		}
 	}
 

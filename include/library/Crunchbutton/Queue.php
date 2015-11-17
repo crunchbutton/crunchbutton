@@ -13,6 +13,7 @@ class Crunchbutton_Queue extends Cana_Table {
 	const TYPE_CLASS_NOTIFICATION_MINUTES_WAY		= 'Crunchbutton_Queue_Notification_Minutes_Way';
 	const TYPE_CLASS_SETTLEMENT_DRIVER		= 'Crunchbutton_Queue_Settlement_Driver';
 	const TYPE_CLASS_SETTLEMENT_RESTAURANT		= 'Crunchbutton_Queue_Settlement_Restaurant';
+	const TYPE_CLASS_RESTAURANT_TIME		= 'Crunchbutton_Queue_Restaurant_Time';
 
 	const TYPE_ORDER						= 'order';
 	const TYPE_ORDER_RECEIPT				= 'order-receipt';
@@ -25,6 +26,7 @@ class Crunchbutton_Queue extends Cana_Table {
 	const TYPE_NOTIFICATION_MINUTES_WAY		= 'notification-minutes-way';
 	const TYPE_SETTLEMENT_DRIVER		= 'settlement-driver';
 	const TYPE_SETTLEMENT_RESTAURANT		= 'settlement-restaurant';
+	const TYPE_RESTAURANT_TIME		= 'restaurant-time';
 
 	const STATUS_NEW		= 'new';
 	const STATUS_SUCCESS	= 'success';
