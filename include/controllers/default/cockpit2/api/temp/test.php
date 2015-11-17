@@ -3,7 +3,8 @@
 class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
 
 	public function init(){
-		$test = Order::o( 219755 );
-		$test->notifyDriverAboutCustomerChanges( [ 'name' => 'NAME', 'phone' =>  555, 'address' => 'Address' ] );
+		// $restaurant = Restaurant::o( 107 );
+		// echo json_encode($restaurant->timeInfo( null, 'cockpit' ));exit;
+		echo json_encode( Crunchbutton_Restaurant_Time::getTime( 107 ) );exit;
 	}
 }
