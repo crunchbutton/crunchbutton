@@ -81,9 +81,9 @@ class Crunchbutton_Restaurant_Time extends Cana_Table {
 		}
 	}
 
-	public function store(){
+	public function store( $timezone ){
 
-		$restaurants = c::db()->query( 'SELECT DISTINCT( restaurant.id_restaurant ) id_restaurant FROM restaurant INNER JOIN hour ON hour.id_restaurant = restaurant.id_restaurant WHERE restaurant.active = true AND restaurant.open_for_business = true' );
+		$restaurants = c::db()->query( 'SELECT DISTINCT( restaurant.id_restaurant ) id_restaurant FROM restaurant INNER JOIN hour ON hour.id_restaurant = restaurant.id_restaurant WHERE restaurant.active = true AND restaurant.open_for_business = true AND restaurant.timezone = ? ', [ $timezone ] );
 
 		while ( $restaurant = $restaurants->fetch() ) {
 			self::register( $restaurant->id_restaurant );
