@@ -87,8 +87,14 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		}
 
 		service.campus_cash = false;
+
+		service.form.campus_cash_delivery_on_campus_confirmation = false;
+
 		if( service.restaurant.campus_cash ){
 			service.campus_cash = { name: service.restaurant.campus_cash_name, fee: service.restaurant.campus_cash_fee };
+			if( service.restaurant.campus_cash_delivery_on_campus_confirmation ){
+				service.form.campus_cash_delivery_on_campus_confirmation = true;
+			}
 		}
 
 		if( service.campus_cash && service.account.user && service.account.user.card_type == 'campus_cash'  ){
@@ -581,7 +587,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		if (order.pay_type == 'campus_cash' && !service.form.campusCash ) {
 			errors['campus_cash'] = 'Please enter the ' + service.campus_cash.name + '.';
 		}
-		if (order.pay_type == 'campus_cash' && !service.form.address_campus ) {
+		if (order.pay_type == 'campus_cash' && service.form.campus_cash_delivery_on_campus_confirmation && !service.form.address_campus ) {
 			errors['address_campus'] = 'You must certify that the address listed for delivery is located on campus.';
 		}
 		if (!service.cart.hasItems()) {
