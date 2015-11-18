@@ -283,6 +283,12 @@
 						</div>
 					</li>
 
+					<li class="li-input" ng-class="{'error':form.campus_cash_delivery_confirmation.$invalid}">
+						<div class="label">Show checkbox: "I certify that the address listed above for delivery is located on campus"? </div>
+						<div class="input">
+							<select name="campus_cash_delivery_confirmation" required ng-model="community.campus_cash_delivery_confirmation" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
 
 				</ul>
 			</div>

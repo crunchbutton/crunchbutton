@@ -1140,6 +1140,16 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return false;
 	}
 
+	public function campusCashDeliveryLocatedOnCampus(){
+		if( $this->delivery_service ){
+			$community = $this->community()->get(0);
+			if( $community && $community->id_community && $community->campusCashDeliveryLocatedOnCampus() ){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public function campusCashName(){
 		if( $this->campusCash() ){
 			$community = $this->community()->get(0);
@@ -1402,6 +1412,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$out[ 'campus_cash_name' ] = $this->campusCashName();
 			$out[ 'campus_cash_fee' ] = $this->campusCashFee();
 			$out[ 'campus_cash_mask' ] = $this->campusCashMask();
+			$out[ 'campus_cash_delivery_on_campus_confirmation' ] = $this->campusCashDeliveryLocatedOnCampus();
 		}
 		return $out;
 	}
