@@ -275,6 +275,37 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 			$scope.isSaving = false;
 	});
 
+	$scope.updateDriversCount = function(){
+		if( $scope.drivers.length ){
+			var count = 0;
+			angular.forEach( $scope.drivers, function(staff, key) {
+				if( staff.down_to_help_out ){
+					count++;
+				}
+			} );
+			$scope.driversCount = count;
+		}
+	}
+
+	$scope.sendTextMessage = function(){
+		var phones = [];
+		angular.forEach($scope.drivers, function(staff, key) {
+			if( staff.down_to_help_out ){
+				phones.push( staff.phone );
+			}
+		} );
+		if( phones.length ){
+			$rootScope.closePopup();
+			setTimeout( function(){
+				var message = 'We could use extra drivers right now, since orders are so busy. If you can help out with some orders now, or soon, just shoot us a text back :) Thanks!';
+				$rootScope.$broadcast( 'textNumber', phones );
+				$rootScope.$broadcast( 'textMessage', message );
+			}, 500 );
+		} else {
+			App.alert( 'Select at least one driver.' );
+		}
+	}
+
 	$scope.$watch( 'community.close_3rd_party_delivery_restaurants', function( newValue, oldValue, scope ) {
 		verify_status();
 	});
@@ -484,7 +515,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 				}
 			} );
 			if( phones.length ){
-				$rootScope.$broadcast( 'textNumer', phones );
+				$rootScope.$broadcast( 'textNumber', phones );
 			} else {
 				App.alert( 'Select at least one driver.' );
 			}
