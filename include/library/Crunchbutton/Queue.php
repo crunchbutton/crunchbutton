@@ -123,6 +123,10 @@ class Crunchbutton_Queue extends Cana_Table {
 		return Admin::o($this->id_admin);
 	}
 
+	public function restaurant() {
+		return Restaurant::o($this->id_restaurant);
+	}
+
 	public static function create($params = []) {
 
 		// backwards compatable so i dont break things
