@@ -25,7 +25,7 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 		}
 
 
-		if (!$this->user()->id && $_COOKIE['token'] && !$this->session()->id) {
+		if (!$this->user()->id && $_COOKIE['token'] && !$this->session()->adapter()->id_session) {
 			$sess = Session::token($_COOKIE['token']);
 			$id = $sess->id_user ? $sess->id_user : $sess->id_admin;
 

@@ -3,12 +3,6 @@
 class Crunchbutton_Session {
 
 	public function __construct() {
-		/*
-		c::config()->session = (object)[
-			'type' => 'redis',
-			'url' => 'tcp://redis-1.crunchbutton.arzynik.cont.tutum.io:6379?4O3pdA0UEJhPXKEnUCvl9pJC1cYVsCrc'
-		];
-		*/
 		if (c::app()->cli || c::app()->ignoreSession) {
 			// if we are in cron or on a rest endpoint that doesnt need auth (twilio)
 			$this->adapter(new Crunchbutton_Session_Adapter_Cli);
