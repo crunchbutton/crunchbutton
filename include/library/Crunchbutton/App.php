@@ -62,7 +62,7 @@ class Crunchbutton_App extends Cana_App {
 		} elseif ($travis && getenv('TRAVIS')) {
 			$db = 'travis';
 		// anything local or dev
-		} elseif (preg_match('/192\.168\.0|localhost$|^(crunch|cockpit|cockpitla).dev$|^dev.(pit|la|crunch|seven)$|^pererinha.dyndns-web.com$/',$_SERVER['SERVER_NAME'])) {
+		} elseif (preg_match('/192\.168\.99|192\.168\.0|localhost$|^(crunch|cockpit|cockpitla).dev$|^dev.(pit|la|crunch|seven)$|^pererinha.dyndns-web.com$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'local';
 		// anything by heroku use its own db
 		} elseif (preg_match('/^(heroku.*)|(.*.herokuapp.com)$/',$_SERVER['SERVER_NAME'])) {

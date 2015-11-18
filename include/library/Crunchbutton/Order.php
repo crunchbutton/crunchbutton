@@ -735,15 +735,15 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 
 		if ($processType != static::PROCESS_TYPE_RESTAURANT) {
-			c::auth()->session()->id_user = $user->id_user;
+			c::auth()->session()->adapter()->id_user = $user->id_user;
 			c::auth()->session()->generateAndSaveToken();
 		}
 
 		$agent = Crunchbutton_Agent::getAgent();
 		$this->id_agent = $agent->id_agent;
 
-		if (c::auth()->session()->id_session != '') {
-			$this->id_session = c::auth()->session()->id_session;
+		if (c::auth()->session()->adapter()->id_session != '') {
+			$this->id_session = c::auth()->session()->adapter()->id_session;
 		}
 
 		$this->id_user = $this->_user->id_user;
