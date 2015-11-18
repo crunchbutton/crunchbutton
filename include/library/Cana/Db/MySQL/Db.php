@@ -13,7 +13,7 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 			$args->db = $matches[7];
 			$args->sslca = $matches[9];
 		}
-		
+
 		if (!$args->port) {
 			$args->port = '3306';
 		}
@@ -25,13 +25,13 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 		if ($args->persistent) {
 			$options[PDO::ATTR_PERSISTENT] = true;
 		}
-		
+
 		if ($args->sslca) {
 			$options[PDO::MYSQL_ATTR_SSL_CA] = $args->sslca;
 			$options[PDO::ATTR_TIMEOUT] = 4;
 			$options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 		}
-		
+
 		if (getenv('DEBUG')) {
 			error_log('>> CONNECTING TO DATABASE...');
 		}
@@ -43,14 +43,14 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 		$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 		$db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
 		$db->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_OBJ);
-		
+
 		if (getenv('DEBUG')) {
 			error_log('>> CONNECTED!!');
 		}
 
 		return $db;
 	}
-	
+
 	public function getFields($table) {
 		$res = $this->db()->query('SHOW COLUMNS FROM `'.$table.'`');
 		$columns = [];
@@ -68,11 +68,11 @@ class Cana_Db_MySQL_Db extends Cana_Db_Base {
 
 		return $columns;
 	}
-	
+
 	public function query($query, $args = [], $type = 'object') {
 		// replace bool_and
 		$query = preg_replace('/(bool_and\((.*?))\)/i','max(\\2)', $query);
-		
+
 
 		if ($args) {
 			foreach ($args as $k => $v) {
