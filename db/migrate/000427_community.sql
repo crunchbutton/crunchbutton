@@ -1,0 +1,1 @@
+ALTER TABLE `community` ADD COLUMN `last_down_to_help_out_message` DATETIME DEFAULT NULL;

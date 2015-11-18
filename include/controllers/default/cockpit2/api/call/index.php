@@ -47,7 +47,22 @@ class Controller_api_call extends Crunchbutton_Controller_RestAccount {
 
 	private function _sendSMSList(){
 		$message = $this->request()[ 'message' ];
+
 		if( trim( $message ) != '' ){
+
+			$type = $this->request()[ 'type' ];
+			switch ( $type ) {
+				case 'down_to_help_out':
+					if( $this->request()[ 'permalink' ] ){
+						$community = Crunchbutton_Community::permalink( $this->request()[ 'permalink' ] );
+						if( $community->id_community ){
+							$community->last_down_to_help_out_message = date( 'Y-m-d H:i:s' );
+							$community->save();
+						}
+					}
+					break;
+			}
+
 			$numbers = $this->request()[ 'phone' ];
 			foreach( $numbers as $number ){
 				if( trim( $number ) != '' ){

@@ -97,10 +97,11 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 					$drivers = $community->getDriversOfCommunity();
 					foreach( $drivers as $driver ){
 						$note = $driver->lastNote();
+						$info = Cockpit_Driver_Info::byAdmin( $driver->id_admin );
 						if( $note ){
 							$note = $note->exports()['text'];
 						}
-						$out[] = [ 'id_admin' => intval( $driver->id_admin ), 'name' => $driver->name, 'note' => $note, 'phone' => $driver->phone ];
+						$out[] = [ 'id_admin' => intval( $driver->id_admin ), 'name' => $driver->name, 'note' => $note, 'phone' => $driver->phone, 'down_to_help_out' => ( ( $info->down_to_help_out ) ? true : false ) ];
 					}
 				}
 				echo json_encode( $out );

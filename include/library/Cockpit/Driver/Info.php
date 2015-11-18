@@ -130,7 +130,7 @@ class Cockpit_Driver_Info extends Cana_Table_Trackchange {
 		return Cockpit_Driver_Info::PHONE_TYPE_OTHER;
 	}
 
-	public function byAdmin( $id_admin ){
+	public static function byAdmin( $id_admin ){
 		return Cockpit_Driver_Info::q( 'SELECT * FROM driver_info WHERE id_admin = ' . $id_admin );
 	}
 
