@@ -113,10 +113,16 @@
 						<strong>Before closing it, please consider contact one of the drivers bellow:</strong><br>
 						<ul class="drivers-list">
 							<li ng-repeat="driver in drivers">
-								<strong>{{driver.name}}</strong>: {{driver.phone}}
+								<label>
+									<input type="checkbox" ng-click="updateDriversCount();" ng-model="driver.down_to_help_out" style="width:20px;"><strong>{{driver.name}}</strong>: {{driver.phone}}
+								</label>
 								<div ng-if="driver.note">{{driver.note}}</div>
 							</li>
 						</ul>
+					</li>
+
+					<li class="li-input divider-line" ng-show="community.close_all_restaurants || community.close_3rd_party_delivery_restaurants && driversCount">
+						<button class="button save" ng-click="sendTextMessage();">Text Message {{driversCount}} Driver<span ng-show="driversCount > 1">s</span>	</button>
 					</li>
 
 					<li class="li-input divider-line" ng-show="community.close_all_restaurants || community.close_3rd_party_delivery_restaurants">

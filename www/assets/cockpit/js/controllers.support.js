@@ -256,6 +256,7 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 	$scope.formSMSSending = false;
 
 	$scope.reset = function(){
+
 		$scope.call.phone = '';
 		$scope.sms.phone = '';
 		$scope.sms.message = '';
@@ -331,9 +332,13 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 		$scope.call.phone = num;
 		$scope.sms.phone = num;
 	} );
-	$rootScope.$on('textNumer', function(e, num) {
-		$scope.reset();
-		$scope.sms.phone = num;
+
+	$rootScope.$on('textNumber', function(e, phones) {
+		$scope.sms.phone = phones;
+	} );
+
+	$rootScope.$on('textMessage', function(e, message) {
+		$scope.sms.message = message;
 	} );
 
 	if ($rootScope.account.isLoggedIn()) {

@@ -352,7 +352,7 @@ NGApp.controller( 'CallText', function ($scope, $rootScope) {
 		openModal( num );
 	});
 
-	$rootScope.$on('textNumer', function(e, num) {
+	$rootScope.$on('textNumber', function(e, num) {
 		openModal( num );
 		$scope.hideSMSBox = false;
 		$scope.complete = function( json ){
