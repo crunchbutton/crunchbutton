@@ -609,7 +609,7 @@ class Crunchbutton_App extends Cana_App {
 
 	public function lob($d = true) {
 		if (!$this->_lob) {
-			if (c::env() == 'live') {
+			if (c::getEnv() == 'live') {
 				$env = 'live';
 			} elseif ($d) {
 				$env = 'dev';
