@@ -377,6 +377,15 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		$rootScope.navigation.link('/location', 'instant' );
 	}
 
+	$scope.$on( 'windowVisible', function(e, data) {
+		restaurants._callback = function(){
+			$rootScope.$safeApply( function(){
+				checkOpen();
+			} );
+		}
+		$scope.restaurants = restaurants.getStatus( true );
+	});
+
 	$scope.show_suggestions = false;
 
 	$scope.restaurants = false;
@@ -655,10 +664,9 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 				}
 			);
 		setTimeout(function(){
-			// reload list each 2 hours with updated hours #6843
 			restaurants.forceLoad = true;
 			loadList();
-		}, 60 * 60 * 2 * 1000 );
+		}, 15 * 60 * 1000 );
 
 	}
 
@@ -980,11 +988,23 @@ NGApp.controller('LocationUnavailableCtrl', function ($scope, $http, $location, 
 /**
  * restaurant page
  */
-NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $rootScope, $timeout, RestaurantService, OrderService, CreditService, GiftCardService, PositionsService, MainNavigationService, CreditCardService) {
+NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $rootScope, $timeout, $window, RestaurantService, OrderService, CreditService, GiftCardService, PositionsService, MainNavigationService, CreditCardService) {
+
+	$scope.$on( 'windowVisible', function(e, data) {
+		$scope.restaurant.reloadHours( true, function(){
+			$scope.restaurant.open();
+			var open = $scope.restaurant._open;
+			if ($scope.open != open) {
+				$scope.open = open;
+			}
+			if (!$scope.$$phase){
+				$scope.$apply();
+			}
+		} );
+	});
 
 	var order = OrderService;
 	order.geomatched = 1;
-
 
 	$scope.show_suggestions = false;
 
@@ -1049,16 +1069,17 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	var updateStatus = function(){
 		updateRestaurantStatus = $timeout( function(){
 			$scope.restaurant.open();
-			$scope.restaurant.reloadHours();
-			var open = $scope.restaurant._open;
-			if ($scope.open != open) {
-				$scope.open = open;
-			}
-			if (!$scope.$$phase){
-				$scope.$apply();
-			}
+			$scope.restaurant.reloadHours( true, function(){
+				var open = $scope.restaurant._open;
+				if ($scope.open != open) {
+					$scope.open = open;
+				}
+				if (!$scope.$$phase){
+					$scope.$apply();
+				}
+			} );
 			updateStatus();
-		}, 1000 * 35 );
+		}, 1000 * 60 );
 	}
 
 	if (!App.minimalMode) {
