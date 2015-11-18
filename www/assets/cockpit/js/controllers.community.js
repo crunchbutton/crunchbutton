@@ -268,6 +268,7 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 
 			DriverService.byCommunity( $scope.community.id_community, function( data ){
 				$scope.drivers = data;
+				$scope.updateDriversCount();
 			} );
 
 			});
@@ -299,7 +300,7 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 			setTimeout( function(){
 				var message = 'We could use extra drivers right now, since orders are so busy. If you can help out with some orders now, or soon, just shoot us a text back :) Thanks!';
 				$rootScope.$broadcast( 'textNumber', phones );
-				$rootScope.$broadcast( 'textMessage', message );
+				$rootScope.$broadcast( 'textInfo', { message:message, permalink:$routeParams.id, type:'down_to_help_out' } );
 			}, 500 );
 		} else {
 			App.alert( 'Select at least one driver.' );

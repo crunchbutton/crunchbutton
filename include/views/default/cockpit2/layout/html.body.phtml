@@ -636,6 +636,15 @@
 			<span ng-if="number.length < 1">You should select at least one number</span>
 		</h1>
 
+
+		<ul class="drivers-list" ng-show="number.length">
+			<li ng-repeat="n in number track by $index">
+				<label>
+					Phone {{$index + 1}}: {{n}}
+				</label>
+			</li>
+		</ul>
+
 		<div class="hide-desktop">
 
 			<a href="sms:{{number}}" class="number-action" target="_system">

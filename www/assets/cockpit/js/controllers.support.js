@@ -337,8 +337,10 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 		$scope.sms.phone = phones;
 	} );
 
-	$rootScope.$on('textMessage', function(e, message) {
-		$scope.sms.message = message;
+	$rootScope.$on('textInfo', function(e, data) {
+		$scope.sms.message = data.message;
+		$scope.sms.permalink = data.permalink;
+		$scope.sms.type = data.type;
 	} );
 
 	if ($rootScope.account.isLoggedIn()) {
