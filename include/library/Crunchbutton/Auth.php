@@ -37,8 +37,8 @@ class Crunchbutton_Auth extends Crunchbutton_Auth_Base {
 
 	public function setUser($user) {
 		$this->_user = $user;
-		$this->session()->id_user = $user->id_user;
-		$this->session()->date_active = date('Y-m-d H:i:s');
+		$this->session()->adapter()->id_user = $user->id_user;
+		$this->session()->adapter()->date_active = date('Y-m-d H:i:s');
 		$this->session()->generateAndSaveToken();
 		setcookie('token', $this->session()->token, (new DateTime('3000-01-01'))->getTimestamp(), '/');
 		// app
@@ -52,9 +52,9 @@ class Crunchbutton_Auth extends Crunchbutton_Auth_Base {
 		$auth = Crunchbutton_User_Auth::byTypeId($type,$id);
 		if ($auth->active && $auth->user()->active) {
 			$this->_user = $auth->user();
-			$this->session()->id_user = $this->user()->id_user;
-			$this->session()->id_user_auth = $auth->id_user_auth;
-			$this->session()->save();
+			$this->session()->adapter()->id_user = $this->user()->id_user;
+			$this->session()->adapter()->id_user_auth = $auth->id_user_auth;
+			$this->session()->adapter()->save();
 			return true;
 		}
 		return false;
@@ -64,9 +64,9 @@ class Crunchbutton_Auth extends Crunchbutton_Auth_Base {
 		$auth = User_Auth::localLogin( $params['email'], $params['password'] );
 		if ( $auth->user()->active ) {
 			$this->_user = $auth->user();
-			$this->session()->id_user = $this->user()->id_user;
-			$this->session()->id_user_auth = $auth->id_user_auth;
-			$this->session()->date_active = date('Y-m-d H:i:s');
+			$this->session()->adapter()->id_user = $this->user()->id_user;
+			$this->session()->adapter()->id_user_auth = $auth->id_user_auth;
+			$this->session()->adapter()->date_active = date('Y-m-d H:i:s');
 			$this->session()->generateAndSaveToken();
 			setcookie('token', $this->session()->token, (new DateTime('3000-01-01'))->getTimestamp(), '/');
 			// app

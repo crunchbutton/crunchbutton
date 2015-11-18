@@ -1,19 +1,22 @@
 <?php
 
-class Crunchbutton_Session_Adapter extends Cana_Table {
+class Crunchbutton_Session_Adapter_Sql extends Cana_Table implements SessionHandlerInterface {
 	public function destroy($id = null) {
-		if ($this->id_session) {
-			$this->delete();
+		// $id is the new session aparantly
+		// $this->id_session doesnt seem to work
+
+		if (c::auth()->session()->adapter()->id_session) {
+			Cana::db()->query('delete from session where id_session=?',[c::auth()->session()->adapter()->id_session]);
 		}
 		return true;
 	}
-	
+
 	public function save($newItem = 0) {
 		if ($this->id_session || $newItem) {
 			parent::save($newItem);
 		}
 	}
-	
+
 	public function set($var, $value) {
 		$_SESSION[$var] = $value;
 		return $this;
@@ -21,7 +24,7 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 	public function get($var = null) {
 		return $_SESSION[$var];
 	}
-	
+
 	public function open($savePath, $sessionName) {
 		$this
 			->table('session')
@@ -52,7 +55,7 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 		$this->date_activity = date('Y-m-d H:i:s');
 		$this->data = $data;
 
-		$sess = new Session_Adapter($id);
+		$sess = new Session_Adapter_Sql($id);
 		try {
 			if ($sess->id_session) {
 				$this->save();
@@ -71,46 +74,43 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 		//Cana::db()->query('DELETE FROM session WHERE date_activity < "'.(time() - $maxlifetime).'" and token is null');
 		return true;
 	}
-	
+
 	public function generateAndSaveToken() {
 		if (($this->id_user || $this->id_admin) && !$this->token) {
 			$fields = '-=d4sh0fs4|t?&4ndM4YB350m35ymb0||0v3!!!!!!=-'.$this->id_session.$this->id_user.$this->id_admin.uniqid();
 			$this->token = strtoupper(hash('sha512', $fields));
 			$this->save();
 		}
+		return true;
 	}
-	
-	public static function token($token) {
-		if (!$token) return false;
-		$res = Cana::db()->query('select * from session where token=?', [$token]);
-		$session = $res->fetch();
-		//$session->closeCursor();
 
-		if ($session->id_session) {
-			return $session;
-		}
+	public static function token($token) {
 		return false;
 	}
-	
+
 	public static function deleteToken($token) {
 		if (!$token) return false;
-		Cana::db()->query('delete from session where token=?',[$token]);	
+		Cana::db()->query('delete from session where token=?',[$token]);
 	}
-	
+
 	public function auth() {
 		if (!isset($this->_auth)) {
 			$this->_auth = new Crunchbutton_User_Auth($this->id_user_auth);
 		}
 		return $this->_auth;
 	}
-	
+
 	public function __construct($id = null) {
 		parent::__construct();
-		if (get_class($this) == 'Crunchbutton_Session_Adapter') {
+		if (get_class($this) == 'Crunchbutton_Session_Adapter_Sql') {
 			$this
 				->table('session')
 				->idVar('id_session')
 				->load($id);
 		}
+	}
+
+	public function user() {
+		return true;
 	}
 }
