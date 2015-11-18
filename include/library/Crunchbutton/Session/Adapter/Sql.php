@@ -4,9 +4,11 @@ class Crunchbutton_Session_Adapter_Sql extends Cana_Table implements SessionHand
 	public function destroy($id = null) {
 		// $id is the new session aparantly
 		// $this->id_session doesnt seem to work
+		Cana::db()->query('delete from session where id_session=?',[$id]);
+
 
 		if (c::auth()->session()->adapter()->id_session) {
-			Cana::db()->query('delete from session where id_session=?',[c::auth()->session()->adapter()->id_session]);
+			//Cana::db()->query('delete from session where id_session=?',[c::auth()->session()->adapter()->id_session]);
 		}
 		return true;
 	}
@@ -31,6 +33,10 @@ class Crunchbutton_Session_Adapter_Sql extends Cana_Table implements SessionHand
 			->idVar('id_session')
 			->load(session_id());
 
+		if (!$this->id_session) {
+			$this->write();
+		}
+
 		return true;
 	}
 
@@ -54,6 +60,13 @@ class Crunchbutton_Session_Adapter_Sql extends Cana_Table implements SessionHand
 
 		$this->date_activity = date('Y-m-d H:i:s');
 		$this->data = $data;
+/*
+		if ($this->id_session) {
+			$this->save();
+		} elseif ($id) {
+			$this->save($id);
+		}
+*/
 
 		$sess = new Session_Adapter_Sql($id);
 		try {
@@ -66,6 +79,7 @@ class Crunchbutton_Session_Adapter_Sql extends Cana_Table implements SessionHand
 			}
 
 		} catch (Exception $e) {}
+
 		return true;
 	}
 
