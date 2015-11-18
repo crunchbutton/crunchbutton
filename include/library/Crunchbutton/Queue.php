@@ -90,58 +90,6 @@ class Crunchbutton_Queue extends Cana_Table {
 		return $queue->count();
 	}
 
-
-	public static function processQueue($id_queue) {
-
-
-		$q = self::o($id_queue);
-
-		echo 'Starting #'.$q->id_queue. '...';
-
-		register_shutdown_function(function() use ($q) {
-			$error = error_get_last();
-			if ($error['type'] == E_ERROR) {
-				$q->data = json_encode($error);
-				$q->date_end = date('Y-m-d H:i:s');
-				$q->status = self::STATUS_FAILED;
-				$q->save();
-			}
-		});
-
-		$q->status = self::STATUS_RUNNING;
-		$q->date_start = date('Y-m-d H:i:s');
-		$q->save();
-
-		$queue_type = $q->queue_type()->type;
-
-		// Legacy
-		if( !$queue_type && $q->type ){
-			$queue_type = $q->type;
-		}
-
-		$type = 'TYPE_CLASS_'.str_replace('-','_',strtoupper($queue_type));
-		$class = constant('self::'.$type);
-		if (!$class) {
-			$q->status = self::STATUS_FAILED;
-			$q->date_end = date('Y-m-d H:i:s');
-			$q->data = 'Invalid class type of: '.$queue_type;
-			continue;
-		}
-
-		$q = new $class($q->properties());
-
-		$res = $q->run();
-
-		register_shutdown_function(function(){});
-
-		if ($res !== false) {
-			// not async
-			$q->complete($res);
-		}
-
-		return $queue->count();
-	}
-
 	public function queue_type(){
 		if( !$this->_queue_type ){
 			$this->_queue_type = Crunchbutton_Queue_Type::o( $this->id_queue_type );
