@@ -10,8 +10,7 @@ class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
 		// 491019
 
 		if( $_GET[ 'id_queue' ] ){
-			$q = Crunchbutton_Queue_Restaurant_Time::q( $_GET[ 'id_queue' ] );
-			$q->run();
+			Crunchbutton_Queue::processQueue( $_GET[ 'id_queue' ] );
 			die('hard');
 		}
 
