@@ -156,7 +156,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		return restaurants;
 	}
 
-	service.getStatus = function () {
+	service.getStatus = function ( force, callback ) {
 
 		var now = dateTime.getNow();
 		var list = restaurants;
@@ -195,21 +195,32 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 			service.sort();
 		}
 		// check if it is necessary to reload the hours
-		service.reloadHours();
+		service.reloadHours( force );
+
+		if( callback ){
+			if( typeof callback === 'function' ){
+				callback( restaurants );
+			}
+		}
 		return restaurants;
 	}
 
-	service.reloadHours = function(){
+	service.reloadHours = function( force ){
 		var now = ( Math.floor( new Date().getTime() / 1000 ) );
-		var age = Math.floor( now - service.cachedAt ); // age in seconds
-		// due to the hability to open/close restaurants depends on the demand
-		// reload restaurant's hours every 30 min
-		if( age >= ( 60 * 30 ) ){
+		var age = Math.floor( now - service.cachedAt );
+		if( force || age >= 60 ){
 			service.cachedAt = now;
+			var count = 1;
 			for ( var x in restaurants ) {
-				restaurants[ x ].reloadHours( true );
+				var callback = null;
+				if( count == restaurants.length ){
+					var callback = service._callback;
+				}
+				count++;
+				restaurants[ x ].reloadHours( true, callback );
 			}
 		}
+		service._callback = null;
 	}
 
 	service.removeInactive = function( id_restaurant ){

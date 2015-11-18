@@ -319,14 +319,14 @@ var Restaurant = function(id) {
 	}
 
 	// Check the restaurant cache age and reload the hours if it is necessary
-	self.reloadHours = function( forceLoad ){
+	self.reloadHours = function( forceLoad, callback ){
 		var load = false;
 		var now = ( Math.floor( new Date().getTime() / 1000 ) );
 		if( forceLoad ){
 			load = true;
 		} else {
 			var age = Math.floor( now - self.cachedAt ); // age in seconds
-			load = ( age >= ( 60 * 30 ) );
+			load = ( age >= 60 );
 		}
 		if( load ){
 			var url = App.service + 'restaurant/hours/' + self.id_restaurant;
@@ -337,6 +337,11 @@ var Restaurant = function(id) {
 				self.hours = hours;
 				self._hours_processed = false;
 				self.processHours();
+				if( callback ){
+					if( typeof callback === 'function' ){
+						callback();
+					}
+				}
 			} );
 		}
 	}

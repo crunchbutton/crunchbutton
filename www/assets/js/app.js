@@ -1610,8 +1610,6 @@ $(function() {
 	}
 });
 
-
-
 var selScrollable = '.snap-content-inner, .snap-drawer';
 
 // Uses body because jQuery on events are called off of the element they are
@@ -1623,3 +1621,5 @@ $('body').on('touchstart', selScrollable, function(e) {
     e.currentTarget.scrollTop -= 1;
   }
 });
+
+window.addEventListener( 'focus', function(){ App.rootScope.$broadcast( 'windowVisible' ); });
