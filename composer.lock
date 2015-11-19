@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8adba2b4e33c46f17c0e45bed9e812ca",
-    "content-hash": "0e9bba17e88cfb4cd5301a12b240efd8",
+    "hash": "cdd88302a58acc9656cd7c216aaf111e",
+    "content-hash": "050a2a8ab8eac795b5f2ef7faafd3e37",
     "packages": [
         {
             "name": "arzynik/cana",
@@ -300,6 +300,64 @@
                 "stylesheet"
             ],
             "time": "2015-11-11 22:15:07"
+        },
+        {
+            "name": "lob/lob-php",
+            "version": "v1.4.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lob/lob-php.git",
+                "reference": "6e377439e7c71cbde4be765ca194eb5921adf5d6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lob/lob-php/zipball/6e377439e7c71cbde4be765ca194eb5921adf5d6",
+                "reference": "6e377439e7c71cbde4be765ca194eb5921adf5d6",
+                "shasum": ""
+            },
+            "require": {
+                "guzzle/guzzle": "~3.7",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "dompdf/dompdf": "0.6.*",
+                "phpunit/phpunit": "3.7.*",
+                "satooshi/php-coveralls": "dev-master"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Lob\\Tests": "tests/",
+                    "Lob": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lob",
+                    "email": "support@lob.com",
+                    "homepage": "https://www.lob.com"
+                }
+            ],
+            "description": "Lob.com API PHP wrapper.",
+            "homepage": "https://www.lob.com/",
+            "keywords": [
+                "api",
+                "lob",
+                "printing",
+                "rest",
+                "web service",
+                "wrapper"
+            ],
+            "time": "2015-05-11 18:25:44"
         },
         {
             "name": "mailgun/mailgun-php",
