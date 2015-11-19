@@ -4,8 +4,57 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f09fbe13cce963e9b2ed670a8f0b7003",
-    "packages": [],
+    "hash": "a9790d3bac601bf4b108137c6731bc6d",
+    "content-hash": "eb4566fd2a47729f4eab45735e91fea8",
+    "packages": [
+        {
+            "name": "arzynik/cana",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/arzynik/cana.git",
+                "reference": "efd942ec6bd1219e99fb295f08af082ac334c882"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/arzynik/cana/zipball/efd942ec6bd1219e99fb295f08af082ac334c882",
+                "reference": "efd942ec6bd1219e99fb295f08af082ac334c882",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "satooshi/php-coveralls": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Cana": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Devin Smith",
+                    "email": "devin@cana.la",
+                    "homepage": "http://devin.la",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP OO Framework",
+            "keywords": [
+                "framework",
+                "mvc",
+                "oo",
+                "php"
+            ],
+            "time": "2015-11-18 21:07:09"
+        }
+    ],
     "packages-dev": [
         {
             "name": "doctrine/instantiator",
@@ -1419,6 +1468,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "arzynik/cana": 20,
         "php": 10,
         "satooshi/php-coveralls": 20
     },

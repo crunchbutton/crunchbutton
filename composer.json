@@ -1,6 +1,7 @@
 {
 	"require": {
 		"ext-mbstring": "*",
+		"arzynik/cana": "dev-master",
 		"php": "~7.0@beta"
 	},
 	"require-dev": {
