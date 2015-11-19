@@ -28,7 +28,7 @@ class Cockpit_Auth extends Crunchbutton_Auth_Base {
 
 			$ghost = $_GET['_ghost'];
 			if (!$ghost) {
-				$ghost = $this->session()->get('_ghost');
+				$ghost = $this->session()->adapter()->get('_ghost');
 			}
 
 			if ($this->user()->permission()->check(['global','ghost'])) {
@@ -37,15 +37,15 @@ class Cockpit_Auth extends Crunchbutton_Auth_Base {
 					$u = new Admin($ghost);
 					if ($u->id_admin) {
 						$this->user($u);
-						$this->session()->set('_ghost',$u->id_admin);
+						$this->session()->adapter()->set('_ghost',$u->id_admin);
 					}
 				} elseif ($ghost == 'ME') {
-					$this->session()->set('_ghost',null);
+					$this->session()->adapter()->set('_ghost',null);
 				}
 
 			} else {
 				if ($ghost) {
-					$this->session()->set('_ghost',null);
+					$this->session()->adapter()->set('_ghost',null);
 				}
 			}
 		} else {
@@ -85,8 +85,8 @@ class Cockpit_Auth extends Crunchbutton_Auth_Base {
 		if ($auth->active) {
 			c::admin($auth);
 			$this->user($auth);
-			$this->session()->id_admin = $this->user()->id_admin;
-			$this->session()->date_active = date('Y-m-d H:i:s');
+			$this->session()->adapter()->id_admin = $this->user()->id_admin;
+			$this->session()->adapter()->date_active = date('Y-m-d H:i:s');
 			$this->session()->generateAndSaveToken();
 			if (!headers_sent()) {
 				setcookie('token', $this->session()->token, (new DateTime('3000-01-01'))->getTimestamp(), '/');

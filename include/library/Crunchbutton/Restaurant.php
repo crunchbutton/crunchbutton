@@ -1421,6 +1421,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		$out = [ 'id_restaurant' => $this->id_restaurant, 'name' => $this->name, 'permalink' => $this->permalink ];
 
+		$timezone = new DateTimeZone( $this->timezone );
+		$date = new DateTime( 'now ', $timezone ) ;
+
 		if( $this->force_hours_calculation ){
 
 			// Return the offset to help the Javascript to calculate the open/close hour correctly
