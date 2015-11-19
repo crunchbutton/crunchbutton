@@ -1267,7 +1267,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 							$price_original = $price;
 							if( $price > 0 ){
 								$price = $price + ( $price * $delivery_service_markup / 100 );
-								$price = $this->roundDeliveryMarkupPrice( $price );
+								$price = self::roundDeliveryMarkupPrice( $price );
 								$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ 'price' ] = $price;
 								$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ 'markup' ] = number_format( $price - $price_original, 2 );
 							}
@@ -1279,7 +1279,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 								// if( $price > 0 ){
 								// The markup should be applied even to subtract prices: #2434
 									$price = $price + ( $price * $delivery_service_markup / 100 );
-									$price = $this->roundDeliveryMarkupPrice( $price );
+									$price = self::roundDeliveryMarkupPrice( $price );
 									$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ][ $k ][ 'price' ] = $price;
 									$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ][ $k ][ 'markup' ] = number_format( $price - $price_original, 2 );
 								// }
@@ -1478,7 +1478,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	// See #4323
-	public function roundDeliveryMarkupPrice( $price ){
+	public static function roundDeliveryMarkupPrice( $price ){
 		$nearests = [ 29, 49, 79, 99 ];
 		$price = number_format( $price, 2 );
 		if( $price > 0 ){

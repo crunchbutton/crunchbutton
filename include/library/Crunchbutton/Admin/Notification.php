@@ -238,7 +238,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 					$hasDriversWorking = false;
 
 					$order_priorities = Crunchbutton_Order_Priority::getOrderedOrderPriorities($order->id_order);
-          $order_priorities_count = $order_priorities->count();
+//          $order_priorities_count = $order_priorities->count();
 					if ($order_priorities->count() == 0) {
 
 						$attempts = intval(Crunchbutton_Admin_Notification_Log::attemptsWithNoAdmin($order->id_order));
@@ -792,8 +792,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		if ($priorityMsgType == self::PRIORITY_MSG_NO_PRIORITY) {
 			switch ($count) {
-
-
 				default:
 				case 1:
 					switch ($type) {
@@ -842,7 +840,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 							$message = "New priority order for you";
 							$message .= Crunchbutton_Message_Sms::endGreeting($this->admin()->id_admin ? $this->admin()->firstName() : '', "!");
 							$message .= "Sent to YOU 1st. Accept ASAP before others see it!";
-							$message = '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
+							$message .= '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
 							break;
 
 					}
@@ -852,7 +850,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 						default:
 						case 'sms':
 							$message = "Hey, what's up?  You're MIA! :(";
-							$message = "We've got a new priority order for you";
+							$message .= "We've got a new priority order for you";
 							$message .= Crunchbutton_Message_Sms::endGreeting($this->admin()->id_admin ? $this->admin()->firstName() : '', ".", "");
 							$message .= "We're also going to let another driver see it though.\n";
 							$message .= "Please let us know what's up!\n";
@@ -861,7 +859,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 							break;
 						case 'push':
 							$message = "New priority order!  We're letting another driver see it too since it seems like you're MIA :(";
-							$message = '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
+							$message .= '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
 							break;
 
 					}
@@ -879,7 +877,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 							break;
 						case 'push':
 							$message = "You have a priority order.  Accept ASAP!";
-							$message = '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
+							$message .= '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
 							break;
 
 					}
