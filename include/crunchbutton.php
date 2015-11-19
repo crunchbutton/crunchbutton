@@ -99,7 +99,6 @@ spl_autoload_register(function ($className) {
 \Buzz\Bootstrap::init();
 \Github\Bootstrap::init();
 \Mailgun\Bootstrap::init();
-\Stripe\Bootstrap::init();
 \Predis\Autoloader::register();
 
 $configFile = $GLOBALS['config']['dirs']['config'].'config.demo.xml';
