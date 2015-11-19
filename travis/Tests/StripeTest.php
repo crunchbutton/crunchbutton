@@ -14,14 +14,14 @@ class StripeTest extends PHPUnit_Framework_TestCase {
 			'active' => 1
 		]);
 		self::$restaurant->save();
-	
+
 		self::$user = new User([
 			'name' => $name,
 			'active' => 1
 		]);
 		self::$user->save();
 	}
-	
+
 	public static function tearDownAfterClass() {
 		if (self::$restaurant)
 			self::$restaurant->delete();
@@ -33,7 +33,7 @@ class StripeTest extends PHPUnit_Framework_TestCase {
 
 	public function testChargeNewCard() {
 		$name = get_called_class();
-		
+
 		if (!self::$restaurant) {
 			$this->markTestSkipped('Restaurant was not created.');
 			return;
@@ -49,10 +49,10 @@ class StripeTest extends PHPUnit_Framework_TestCase {
 				'exp_year' => '2020'
 			]
 		]);
-		
+
 		self::$user->stripe_id = $customer->id;
 		self::$user->save();
-		
+
 		$cards = $customer->sources->all(['object' => 'card'])->data;
 		foreach ($cards as $card) {
 			break;
@@ -79,7 +79,7 @@ class StripeTest extends PHPUnit_Framework_TestCase {
 				'date' => date('Y-m-d H:i:s'),
 				'active' => 1
 			]))->save();
-			
+
 			self::$order = new Order([
 				'name' => self::$user->name,
 				'address' => '123 UNIT TEST',
@@ -90,7 +90,7 @@ class StripeTest extends PHPUnit_Framework_TestCase {
 			]);
 			self::$order->save();
 		}
-		
+
 		$this->assertTrue($r['status'] ? true : $r['errors'][0]);
 	}
 
@@ -99,24 +99,24 @@ class StripeTest extends PHPUnit_Framework_TestCase {
 			$this->markTestSkipped('User was not created.');
 			return;
 		}
-		
+
 		$paymentType = self::$user->payment_type();
-		
+
 		if (!self::$restaurant) {
 			$this->markTestSkipped('Restaurant was not created.');
 			return;
 		}
-		
+
 		if (!$paymentType) {
 			$this->markTestSkipped('User payment type required to refund.');
 			return;
 		}
-		
+
 		if (!$paymentType->stripe_id) {
 			$this->assertTrue('Missing stripe id');
 			return;
 		}
-		
+
 		$charge = new Charge_Stripe([
 			'card_id' => $paymentType->stripe_id,
 			'customer_id' => self::$user->stripe_id
@@ -132,8 +132,8 @@ class StripeTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertTrue($r['status'] ? true : $r['errors'][0]);
 	}
-	
-	
+
+
 	public function testRefund() {
 		if (!self::$order) {
 			$this->markTestSkipped('No order to refund.');
@@ -144,30 +144,4 @@ class StripeTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertTrue($status->status);
 	}
-	
-	/*
-	public function testCreateMerchant() {
-		$merchant = c::balanced()->createMerchant(
-			'restaurant-'.$this->id_restaurant.'@_DOMAIN_',
-			$p,
-			null,
-			null,
-			$this->name
-		);
-		$this->assertTrue($merchant->id ? true : false);
-	}
-	
-	public function testCreatebankAccount() {
-		$bank = c::balanced()->createBankAccount('UNIT TEST RESTAURANT', '9900000002', '021000021', 'checking');
-		$this->assertTrue($bank->id ? true : false);
-	}
-	
-	public function testCredit() {
-		$account = c::balanced()->createBankAccount('UNIT TEST RESTAURANT', '9900000002', '021000021', 'checking');
-		$res = $account->credits->create([
-			'amount' => 5555
-		]);
-		$this->assertTrue($res->id ? true : false);
-	}
-	*/
 }
