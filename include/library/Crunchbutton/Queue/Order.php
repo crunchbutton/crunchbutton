@@ -43,10 +43,11 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 				// TODO: Add logic here to check for current minimum ETA
                 // TODO: If ETA is too large, notify customer service
 
+				$numActiveDriversWithPriority = $l->numDriversWithPriority - $l->numInactiveDriversWithPriority;
 				if ($l->numDriversWithPriority < 0) {
 					// Something went wrong.  Just notify all drivers
 					$this->order()->notifyDrivers();
-				} else if ($l->numDriversWithPriority == 1){
+				} else if (($l->numDriversWithPriority == 1) || ($l->numActiveDriversWithPriority == 1)){
 					$retval = $this->order()->checkBeforeNotifications($drivers);
 					if (!is_null($retval)) {
 						foreach ($l->drivers() as $driver) {
@@ -59,11 +60,21 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 								if ($driver->__priority) {
 									// The seconds for the driver with priority should be 0, but I'm leaving the code for setting
 									//  seconds as is.
+									if ($driver->__isProbablyInactive) {
+										$priorityMsgType = Crunchbutton_Admin_Notification::PRIORITY_MSG_INACTIVE_DRIVER_PRIORITY;
+									} else if ($l->numInactiveDriversWithPriority >= 1){
+										// Second place, active driver
+										$priorityMsgType = Crunchbutton_Admin_Notification::PRIORITY_MSG_SECOND_PLACE_DRIVER_PRIORITY;
+									} else{
+										$priorityMsgType = Crunchbutton_Admin_Notification::PRIORITY_MSG_PRIORITY;
+									}
+
 									$q = Queue::create([
 										'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_DRIVER_PRIORITY,
 										'id_order' => $this->order()->id_order,
 										'id_admin' => $driver->id_admin,
-										'seconds' => $seconds
+										'seconds' => $seconds,
+										'info' => $priorityMsgType
 									]);
 								} else {
 									$q = Queue::create([
