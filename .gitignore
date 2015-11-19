@@ -32,7 +32,6 @@ include/config/config.xml
 /www/assets/cockpit/css/bundle.css
 /www/assets/js/bundle.js
 /www/assets/cockpit/js/bundle.js
-/build/*
 
 # huh?
 workflow*
