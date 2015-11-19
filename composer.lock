@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/arzynik/cana.git",
-                "reference": "efd942ec6bd1219e99fb295f08af082ac334c882"
+                "reference": "28c2dd2ae48264dc789aab09ebdfb6436ffb0522"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/arzynik/cana/zipball/efd942ec6bd1219e99fb295f08af082ac334c882",
-                "reference": "efd942ec6bd1219e99fb295f08af082ac334c882",
+                "url": "https://api.github.com/repos/arzynik/cana/zipball/28c2dd2ae48264dc789aab09ebdfb6436ffb0522",
+                "reference": "28c2dd2ae48264dc789aab09ebdfb6436ffb0522",
                 "shasum": ""
             },
             "require": {
@@ -52,7 +52,7 @@
                 "oo",
                 "php"
             ],
-            "time": "2015-11-18 21:07:09"
+            "time": "2015-11-19 06:37:00"
         },
         {
             "name": "duccio/apns-php",
