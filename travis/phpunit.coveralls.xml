@@ -24,7 +24,6 @@
 				<directory>../include/library/Httpful</directory>
 				<directory>../include/library/Mailgun</directory>
 				<directory>../include/library/Minify</directory>
-				<directory>../include/library/Ordrin</directory>
 				<directory>../include/library/Pear</directory>
 				<directory>../include/library/Predis</directory>
 				<directory>../include/library/QueryPath</directory>
