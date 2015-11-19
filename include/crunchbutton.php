@@ -29,7 +29,7 @@ $GLOBALS['config'] = [
 		'root'				=> dirname(__FILE__).'/../',
 		'www'				=> dirname(__FILE__).'/../www/',
 		'storage'			=> dirname(__FILE__).'/../storage/',
-	],'libraries' 			=> ['Crunchbutton','Services','RESTful','Ordrin','QueryPath','Github','ApnsPHP','Mailgun','Predis'],
+	],'libraries' 			=> ['Crunchbutton','Services','RESTful','QueryPath','Github','ApnsPHP','Mailgun','Predis'],
 	'alias'					=> []
 ];
 
@@ -95,7 +95,6 @@ spl_autoload_register(function ($className) {
 
 \Httpful\Bootstrap::init();
 \RESTful\Bootstrap::init();
-\Ordrin\Bootstrap::init();
 \QueryPath\Bootstrap::init();
 \Buzz\Bootstrap::init();
 \Github\Bootstrap::init();
