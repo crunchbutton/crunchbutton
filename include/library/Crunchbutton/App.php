@@ -660,7 +660,7 @@ class Crunchbutton_App extends Cana_App {
 	public function twilio() {
 		if (!isset($this->_twilio)) {
 			$env = c::getEnv();
-			$this->_twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+			$this->_twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		}
 		return $this->_twilio;
 	}

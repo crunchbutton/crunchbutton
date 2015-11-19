@@ -4,6 +4,7 @@
 		"arzynik/cana": "dev-master",
 		"leafo/scssphp": ">=v0.5.1",
 		"stripe/stripe-php": ">=v3.4.0",
+		"twilio/sdk": ">=4.6.1",
 		"php": "~7.0@beta"
 	},
 	"require-dev": {

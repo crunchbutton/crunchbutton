@@ -266,7 +266,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 		$env = c::getEnv();
 
-		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+		$twilio = new Services_Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
 
 		$minutes = 15;
 
