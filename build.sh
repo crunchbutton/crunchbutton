@@ -15,4 +15,4 @@
 
 cd /app
 curl -sS https://getcomposer.org/installer | php
-./composer.pahr install --no-dev --ignore-platform-reqs
+./composer.phar install --no-dev --ignore-platform-reqs
