@@ -55,6 +55,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                                 $fakeRestaurantGeo = null, $fakeCustomerGeo = null, $fakeMinAgo = null, $doCreateFakeOrders = null, $noAdjustment=false)
     {
         $this->numDriversWithPriority = -1;
+        $this->numInactiveDriversWithPriority = -1;
         $this->_order = $order;
         $this->_community = $order->community();
         if (is_null($drivers)) {

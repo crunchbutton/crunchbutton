@@ -47,7 +47,7 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 				if ($l->numDriversWithPriority < 0) {
 					// Something went wrong.  Just notify all drivers
 					$this->order()->notifyDrivers();
-				} else if (($l->numDriversWithPriority == 1) || ($l->numActiveDriversWithPriority == 1)){
+				} else if (($l->numDriversWithPriority == 1) || ($numActiveDriversWithPriority == 1)){
 					$retval = $this->order()->checkBeforeNotifications($drivers);
 					if (!is_null($retval)) {
 						foreach ($l->drivers() as $driver) {
