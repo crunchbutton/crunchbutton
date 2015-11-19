@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1bd899a1811ec06401ca291699e04a8e",
-    "content-hash": "c4417f7d85a249f68c753d91297b32aa",
+    "hash": "e9e3c538a62cb2c1c12fdaea5005b8a9",
+    "content-hash": "561b5aea5e072c982fd319a6356d7fe9",
     "packages": [
         {
             "name": "arzynik/cana",
