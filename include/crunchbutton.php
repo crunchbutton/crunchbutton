@@ -93,7 +93,6 @@ spl_autoload_register(function ($className) {
 });
 
 
-\Httpful\Bootstrap::init();
 \RESTful\Bootstrap::init();
 \QueryPath\Bootstrap::init();
 \Buzz\Bootstrap::init();
