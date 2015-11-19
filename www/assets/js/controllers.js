@@ -378,13 +378,17 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	}
 
 	$scope.$on( 'windowVisible', function(e, data) {
-		restaurants._callback = function(){
-			$rootScope.$safeApply( function(){
-				checkOpen();
-			} );
-		}
-		$scope.restaurants = restaurants.getStatus( true );
+		updateRestaurantsHours();
 	});
+
+	var updateRestaurantsHours = function(){
+		restaurants.reloadAllHours( function( data ){
+			$rootScope.$safeApply( function(){
+				$scope.restaurants = restaurants.sort();
+				console.log('$scope.restaurants',$scope.restaurants);
+			} );
+		} );
+	}
 
 	$scope.show_suggestions = false;
 
@@ -450,11 +454,10 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 
 	var updateRestaurantsStatus = null;
 
-	// Update the close/open/about_to_close status from the restaurants
 	var updateStatus = function(){
 		updateRestaurantsStatus = $timeout( function(){
 			// Update status of the restaurant's list
-			$scope.restaurants = restaurants.getStatus();
+			updateRestaurantsHours();
 			$rootScope.$safeApply();
 			updateStatus();
 			checkOpen();
@@ -478,7 +481,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	// It means the list is already loaded so we need to update the restaurant's status
 	if( RestaurantsService.forceGetStatus ){
 		setTimeout( function(){
-			$scope.restaurants = restaurants.getStatus();
+			updateRestaurantsHours();
 			updateStatus();
 			$rootScope.$safeApply();
 		}, 1 );
@@ -490,7 +493,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		var checkDateTime = function(){
 			if( dateTime && dateTime.getNow && dateTime.getNow() ){
 				if( $location.path() == '/' + RestaurantsService.permalink ){
-					$scope.restaurants = restaurants.getStatus();
+					updateRestaurantsHours();
 					$rootScope.$safeApply();
 					updateStatus();
 				}
@@ -544,7 +547,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 					// Remove the inactive restaurant from list
 					$rootScope.$safeApply( function(){
 						restaurants.removeInactive( restaurant.id_restaurant );
-						$scope.restaurants = restaurants.getStatus();
+						updateRestaurantsHours();
 					} );
 				}
 			}
@@ -612,29 +615,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 					checkOpen();
 
 					var id_community = null;
-/*
-					// testing: customer apps: show all restaurants by default #6850
 
-					var restaurantsToShow = 0;
-					for ( var x in $scope.restaurants ) {
-						if( $scope.restaurants[ x ]._maximized ){
-							restaurantsToShow++;
-						}
-					}
-
-					var maxShow = App.isMobile() ? App.restaurantsPaging.mobile : App.restaurantsPaging.desktop;
-					$scope.showSmallClosures = App.isMobile() ? true : false;
-
-					if( restaurantsToShow > maxShow ){
-						restaurantsToShow = maxShow;
-					} else if ( restaurantsToShow < maxShow ) {
-						showMoreStage = 2;
-					}
-					$scope.restaurantsToShow = restaurantsToShow;
-					if (!App.isMobile()) {
-						$scope.restaurantsToShow = 100;
-					}
-*/
 					$scope.restaurantsToShow = $scope.restaurants.length;
 
 					// Wait one minute until update the status of the restaurants
