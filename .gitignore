@@ -45,3 +45,5 @@ workflow*
 vendor/*
 
 npm-debug.log
+
+composer.phar
