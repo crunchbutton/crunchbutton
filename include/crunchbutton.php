@@ -15,8 +15,6 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__).'/library/Pear');
-set_include_path(get_include_path() . PATH_SEPARATOR . '/Users/arzynik/pear/share/pear');
-set_include_path(get_include_path() . PATH_SEPARATOR . '/Users/pererinha/pear/share/pear');
 
 $GLOBALS['config'] = [
 	'dirs' => [
