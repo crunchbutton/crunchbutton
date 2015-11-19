@@ -722,18 +722,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		User_Auth::createPhoneAuth( $user->id_user, $user->phone );
 		User_Auth::createPhoneAuthFromFacebook( $user->id_user, $user->phone );
 
-		if ($this->_customer->id) {
-			switch (Crunchbutton_User_Payment_Type::processor()) {
-				case 'balanced':
-					$this->_customer->email_address = 'uuid-'.$user->uuid.'@_DOMAIN_';
-					try {
-						$this->_customer->save();
-					} catch (Exception $e) {
-
-					}
-					break;
-			}
-		}
+		// we used to generate a $this->_customer->email_address using a uuid here for some reason
 
 		if ($processType != static::PROCESS_TYPE_RESTAURANT) {
 			c::auth()->session()->adapter()->id_user = $user->id_user;
@@ -2576,82 +2565,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 								return (object)['status' => false, 'errors' => $e->getMessage()];
 							}
 							break;
-
-						case 'balanced':
-							try {
-								// refund the debit
-								// See #5191
-								$amount = $this->charged();
-								$amount = floatval( number_format( $amount, 2 ) );
-								$amount = intval( $amount * 100 );
-								$ch = Crunchbutton_Balanced_Debit::byId( $this->txn );
-
-								Log::debug([
-										'order' => $this->id_order,
-										'action' => 'refund',
-										'status' => 'trying to refund',
-										'amount' => $amount
-									]);
-
-								$ch->refund( $amount );
-
-							} catch (Exception $e) {
-
-								// the amount is greater than the availble amount to debit
-								if ($e->response->body->errors[0]->category_code == 'invalid-amount') {
-									$amt = $this->refundedAmount($ch);
-
-									Log::debug([
-										'order' => $this->id_order,
-										'action' => 'refund',
-										'status' => 'refund amount too high',
-										'refunded' => $amt
-									]);
-
-									$total = number_format($amt/100,2);
-									if ($amt == $ch->amount && !$this->refunded) {
-										// allow it to mark refunded
-									} else {
-										return (object)['status' => false, 'errors' => 'refund amount too high. refunded: '.$total.' of '.$this->final_price_plus_delivery_markup];
-									}
-
-								} else {
-									var_dump($e);
-									return (object)['status' => false, 'errors' => null];
-								}
-							}
-
-							$res = false;
-							try {
-								// cancel the hold
-								$hold = Crunchbutton_Balanced_CardHold::byOrder($this);
-								Log::debug([
-										'order' => $this->id_order,
-										'action' => 'cancel hold',
-										'status' => 'trying to cancel hold',
-										'amount' => $amount
-									]);
-								if ($hold) {
-									$res = $hold->void();
-								}
-
-							} catch (Exception $e) {
-								// hold is already captured. no need to void
-								if ($e->response->body->errors[0]->category_code == 'hold-already-captured') {
-
-								} else {
-									var_dump($e);
-									return (object)['status' => false, 'errors' => null];
-								}
-							}
-							if (!$res) {
-								Log::debug([
-									'order' => $this->id_order,
-									'action' => 'refund',
-									'status' => 'failed to void hold'
-								]);
-							}
-							break;
 					}
 				}
 			}
@@ -3392,25 +3305,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		if( $this->refunded && !$force ){
 			return true;
 		}
-		if( $this->txn ){
-			$env = ( $this->env == 'live' ) ? 'live' : 'dev';
-			$api_key = c::config()->balanced->{$env}->secret;
-			Balanced\Settings::$api_key = $api_key;
-			$url = '/debits/' . $this->txn . '/refunds';
-			$refund = json_decode( json_encode( ( object ) Balanced\Refund::get( $url ) ) );
-			if( $refund && $refund->status && $refund->status == 'succeeded' ){
-				$this->refunded = 1;
-				$this->do_not_reimburse_driver = 1;
-				$this->do_not_pay_driver = 1;
-				$this->save();
-				return true;
-			}
-			else {
-				return false;
-			}
-		} else {
-			return false;
-		}
+		return false;
 	}
 
 	public function ticketsForNotGeomatchedOrders(){
