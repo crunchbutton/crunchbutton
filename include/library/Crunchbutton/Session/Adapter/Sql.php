@@ -48,7 +48,7 @@ class Crunchbutton_Session_Adapter_Sql extends Cana_Table implements SessionHand
 		return $this->data;
 	}
 
-	public function write($id = null, $data = null) {
+	public function write($id = null, $data = null, $token = null) {
 		if (!$this->id_session) {
 			$this->date_create = date('Y-m-d H:i:s');
 			$this->active = 1;
@@ -56,6 +56,10 @@ class Crunchbutton_Session_Adapter_Sql extends Cana_Table implements SessionHand
 			$this->idadmin = $this->get('id_admin');
 			$this->ip = c::getIp();
 			$this->id_session = $id;
+		}
+
+		if (!is_null($token)) {
+			$this->token = $token;
 		}
 
 		$this->date_activity = date('Y-m-d H:i:s');
@@ -93,7 +97,10 @@ class Crunchbutton_Session_Adapter_Sql extends Cana_Table implements SessionHand
 		if (($this->id_user || $this->id_admin) && !$this->token) {
 			$fields = '-=d4sh0fs4|t?&4ndM4YB350m35ymb0||0v3!!!!!!=-'.$this->id_session.$this->id_user.$this->id_admin.uniqid();
 			$this->token = strtoupper(hash('sha512', $fields));
-			$this->save();
+
+			if ($this->id_session) {
+				$this->save();
+			}
 		}
 		return true;
 	}
