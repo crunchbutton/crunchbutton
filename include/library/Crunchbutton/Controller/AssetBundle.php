@@ -14,20 +14,12 @@ class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
 		}
 		return $files;
 	}
-	
-
-	public function __construct() {
-		define('MINIFY_MIN_DIR', c::config()->dirs->library . 'Minify/old/lib');
-		set_include_path(MINIFY_MIN_DIR . PATH_SEPARATOR . get_include_path());
-		require_once 'Minify.php';
-	}
-	
 
 	public function cacheServe($id) {
 
 		$git = Deploy_Server::currentVersion();
 		$v = $git ? $git : $_REQUEST['v'];
-		
+
 		$headrs = apache_request_headers();
 		foreach ($headrs as $head => $er) {
 			$headers[strtolower($head)] = $er;
@@ -48,7 +40,7 @@ class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
 			*/
 			$cached = true;
 		}
-		
+
 
 		if ($cached && !$_REQUEST['nocache']) {
 			$data = c::app()->cache()->read($cacheid);
@@ -77,7 +69,7 @@ class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
 		echo $data;
 		exit;
 	}
-	
+
 	public function serve($files, $quiet = true) {
 		foreach ($files as $key => $file) {
 			if (!file_exists($file)) {
@@ -93,7 +85,7 @@ class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
 			'invalidate' => true
 		]);
     }
-    
+
     public function cacheId($id = null) {
     	if ($id) {
 	    	$this->_cacheId = $id;

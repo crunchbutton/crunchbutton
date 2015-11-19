@@ -10,7 +10,8 @@
 		"predis/predis": "~1.0.3",
 		"mailgun/mailgun-php": "~1.7.2",
 		"duccio/apns-php": "dev-master",
-		"knplabs/github-api": "~1.4"
+		"knplabs/github-api": "~1.4",
+		"mrclay/minify": "^2.2"
 	},
 	"require-dev": {
 		"satooshi/php-coveralls": "dev-master",
