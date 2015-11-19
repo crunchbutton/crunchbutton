@@ -3,6 +3,7 @@
 		"ext-mbstring": "*",
 		"arzynik/cana": "dev-master",
 		"leafo/scssphp": ">=v0.5.1",
+		"stripe/stripe-php": ">=v3.4.0",
 		"php": "~7.0@beta"
 	},
 	"require-dev": {
