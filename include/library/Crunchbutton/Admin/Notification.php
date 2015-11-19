@@ -15,8 +15,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	const TYPE_PUSH_ANDROID = 'push-android';
 	const REPS_COCKPIT = 'https://cockpit.la/';
 
-	const PRIORITY_MESSAGES_INDEX = 0;
-
 	const IS_ENABLE_KEY = 'notification-admin-is-enable';
 	const IS_ENABLE_TO_TAKEOUT_KEY = 'notification-admin-is-enable-takeout';
 
@@ -28,6 +26,12 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	const WAIT_BUFFER = 300; // seconds
 	const FIRST_DELAY = 300; //seconds
 	const SUBSEQUENT_DELAY = 180; //seconds
+
+	const PRIORITY_MESSAGES_INDEX = 0;
+	const PRIORITY_MSG_NO_PRIORITY = 0;
+	const PRIORITY_MSG_PRIORITY = 1;
+	const PRIORITY_MSG_INACTIVE_DRIVER_PRIORITY = 2;
+	const PRIORITY_MSG_SECOND_PLACE_DRIVER_PRIORITY = 3;
 
 	public static function getSecondsDelayFromAttemptCount($numAttempts){
 		if ($numAttempts == 0) {
@@ -380,20 +384,20 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 	}
 
-	public function sendPriority( Crunchbutton_Order $order ){
+	public function sendPriority( Crunchbutton_Order $order, $priorityMsgType ){
 
 		switch ( $this->type ) {
 
 			case Crunchbutton_Admin_Notification::TYPE_SMS:
-				$res = $this->sendSms( $order, $this->getSmsMessage($order, self::PRIORITY_MESSAGES_INDEX, 'sms'));
+				$res = $this->sendSms( $order, $this->getSmsMessage($order, self::PRIORITY_MESSAGES_INDEX, 'sms', $priorityMsgType));
 				break;
 
 			case Crunchbutton_Admin_Notification::TYPE_PUSH_IOS:
-				$res = $this->sendPushIos( $order, $this->getSmsMessage($order, self::PRIORITY_MESSAGES_INDEX, 'push'));
+				$res = $this->sendPushIos( $order, $this->getSmsMessage($order, self::PRIORITY_MESSAGES_INDEX, 'push', $priorityMsgType));
 				break;
 
 			case Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID:
-				$res = $this->sendPushAndroid( $order, $this->getSmsMessage($order, self::PRIORITY_MESSAGES_INDEX, 'push'));
+				$res = $this->sendPushAndroid( $order, $this->getSmsMessage($order, self::PRIORITY_MESSAGES_INDEX, 'push', $priorityMsgType));
 				break;
 		}
 	}
@@ -783,55 +787,104 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		return $r;
 	}
 
-	public function getSmsMessage($order, $count = 1, $type = 'push') {
+	public function getSmsMessage($order, $count = 1, $type = 'push', $priorityMsgType = self::PRIORITY_MSG_NO_PRIORITY) {
 
-		switch ($count) {
 
-			// priority messages
-			case self::PRIORITY_MESSAGES_INDEX:
-				switch ($type) {
-					case 'push':
-						$message = '#'.$order->id.': '.$order->user()->name.' has placed an order to '.$order->restaurant()->name.'.';
-						$message .= "Sent to YOU 1st. Accept ASAP before others see it!";
-						break;
-					case 'sms':
-						$message = Crunchbutton_Message_Sms::greeting($this->admin()->id_admin ? $this->admin()->firstName() : '');
-						$message .= self::REPS_COCKPIT . $order->id_order . "\n";
-						$message .= $order->message( 'sms-driver-priority' ) . "\n";
-						$message .= "Sent to YOU 1st. Accept ASAP before others see it!";
+		if ($priorityMsgType == self::PRIORITY_MSG_NO_PRIORITY) {
+			switch ($count) {
+
+
+				default:
+				case 1:
+					switch ($type) {
+						default:
+						case 'sms':
+							$message = Crunchbutton_Message_Sms::greeting($this->admin()->id_admin ? $this->admin()->firstName() : '');
+							$message .= self::REPS_COCKPIT . $order->id_order . "\n";
+							$message .= $order->message('sms-admin');
+							break;
+						case 'push':
+							$message = '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
+							break;
+					}
+
 					break;
-				}
-				break;
-			default:
-			case 1:
-				switch ($type) {
-					default:
-					case 'sms':
-						$message = Crunchbutton_Message_Sms::greeting($this->admin()->id_admin ? $this->admin()->firstName() : '');
-						$message .= self::REPS_COCKPIT . $order->id_order . "\n";
-						$message .= $order->message( 'sms-admin' );
-						break;
-					case 'push':
-						$message = '#'.$order->id.': '.$order->user()->name.' has placed an order to '.$order->restaurant()->name.'.';
-						break;
-				}
 
-				break;
-
-			case 2:
-				switch ($type) {
-					default:
-					case 'sms':
-						$first_name = Crunchbutton_Message_Sms::greeting($this->admin()->firstName());
-						$message = $first_name . 'Remember: plz ACCEPT this order https://cockpit.la/' . $order->id_order . '. Otherwise our customers won\'t know what\'s up and we might have to shut down the community!';
-						break;
-					case 'push':
-						$message = 'Please ACCEPT order #'.$order->id.' from '.$order->user()->name.' to '.$order->restaurant()->name.'.';
-						break;
-				}
+				case 2:
+					switch ($type) {
+						default:
+						case 'sms':
+							$first_name = Crunchbutton_Message_Sms::greeting($this->admin()->firstName());
+							$message = $first_name . 'Remember: plz ACCEPT this order https://cockpit.la/' . $order->id_order . '. Otherwise our customers won\'t know what\'s up and we might have to shut down the community!';
+							break;
+						case 'push':
+							$message = 'Please ACCEPT order #' . $order->id . ' from ' . $order->user()->name . ' to ' . $order->restaurant()->name . '.';
+							break;
+					}
 
 
-				break;
+					break;
+			}
+		} else {
+			switch ($priorityMsgType) {
+				// priority messages
+				case self::PRIORITY_MSG_PRIORITY:
+					switch ($type) {
+						default:
+						case 'sms':
+							$message = "New priority order for you";
+							$message .= Crunchbutton_Message_Sms::endGreeting($this->admin()->id_admin ? $this->admin()->firstName() : '', "!", "\n");
+							$message .= "Sent to YOU 1st. Accept ASAP before others see it!\n";
+							$message .= self::REPS_COCKPIT . $order->id_order . "\n";
+							$message .= $order->message('sms-driver-priority') . "\n";
+							break;
+						case 'push':
+							$message = "New priority order for you";
+							$message .= Crunchbutton_Message_Sms::endGreeting($this->admin()->id_admin ? $this->admin()->firstName() : '', "!");
+							$message .= "Sent to YOU 1st. Accept ASAP before others see it!";
+							$message = '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
+							break;
+
+					}
+					break;
+				case self::PRIORITY_MSG_INACTIVE_DRIVER_PRIORITY:
+					switch ($type) {
+						default:
+						case 'sms':
+							$message = "Hey, what's up?  You're MIA! :(";
+							$message = "We've got a new priority order for you";
+							$message .= Crunchbutton_Message_Sms::endGreeting($this->admin()->id_admin ? $this->admin()->firstName() : '', ".", "");
+							$message .= "We're also going to let another driver see it though.\n";
+							$message .= "Please let us know what's up!\n";
+							$message .= self::REPS_COCKPIT . $order->id_order . "\n";
+							$message .= $order->message('sms-driver-priority') . "\n";
+							break;
+						case 'push':
+							$message = "New priority order!  We're letting another driver see it too since it seems like you're MIA :(";
+							$message = '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
+							break;
+
+					}
+					break;
+
+				case self::PRIORITY_MSG_SECOND_PLACE_DRIVER_PRIORITY:
+					switch ($type) {
+						default:
+						case 'sms':
+							$message = "You have a priority order";
+							$message .= Crunchbutton_Message_Sms::endGreeting($this->admin()->id_admin ? $this->admin()->firstName() : '', "!", "\n");
+							$message .= "Accept ASAP!\n";
+							$message .= self::REPS_COCKPIT . $order->id_order . "\n";
+							$message .= $order->message('sms-driver-priority') . "\n";
+							break;
+						case 'push':
+							$message = "You have a priority order.  Accept ASAP!";
+							$message = '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
+							break;
+
+					}
+					break;
+			}
 		}
 		return $message;
 	}

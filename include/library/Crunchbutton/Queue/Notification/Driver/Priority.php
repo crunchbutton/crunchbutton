@@ -6,6 +6,13 @@ class Crunchbutton_Queue_Notification_Driver_Priority extends Crunchbutton_Queue
 
 		$driver = $this->driver();
 		$order = $this->order();
+		// Use straight text instead of json for now, for efficiency
+		$priorityMsgType = $this->info;
+		if (is_null($priorityMsgType)) {
+			$priorityMsgType = 0;
+		} else{
+			$priorityMsgType = intval($priorityMsgType);
+		}
 		if( $order->id_order && $driver->id_admin ){
 			$hostname = gethostname();
 			$pid = getmypid();
@@ -22,11 +29,11 @@ class Crunchbutton_Queue_Notification_Driver_Priority extends Crunchbutton_Queue
 			}
 			$notifications = $driver->activeNotifications();
 			foreach( $notifications as $notification ){
-				$notification->sendPriority( $order );
+				$notification->sendPriority($order, $priorityMsgType);
 				Log::debug([
 					'order' => $order->id_order,
 					'action' =>  '#'.$order->id_order.' sending ** QUEUE ** priority notification to ' . $driver->name . ' # ' . $notification->value,
-					'type' => 'delivery-driver', 'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid
+					'type' => 'delivery-driver', 'hostname' => $hostname, 'pid' => $pid, 'ppid' => $ppid, 'priorityMsgType' => $priorityMsgType
 				]);
 			}
 		}
