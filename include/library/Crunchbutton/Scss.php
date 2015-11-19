@@ -10,9 +10,9 @@ class Crunchbutton_Scss extends Cana_Model {
 		$path = dirname($file).'/';
 		$file = basename($file);
 
-		$scss = new Scss_Scss;
+		$scss = new \Leafo\ScssPhp\Compiler;
 		$scss->setImportPaths($path);
-		$scss->setFormatter('scss_formatter_compressed');
+		$scss->setFormatter('Leafo\ScssPhp\Formatter\Compressed');
 		$data = $scss->compile(file_get_contents($path.$file));
 
 		return $data;
