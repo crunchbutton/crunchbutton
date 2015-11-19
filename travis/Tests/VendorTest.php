@@ -26,6 +26,29 @@ class VendorTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(true);
 	}
 
+	public function testMailgun() {
+		new \Mailgun\Mailgun('');
+		$this->assertTrue(true);
+	}
+
+	public function testPredis() {
+		new Predis\Client;
+		$this->assertTrue(true);
+	}
+
+	public function testApnsPHP() {
+		if (class_exists('ApnsPHP_Push')) {
+			$this->assertTrue(true);
+		} else {
+			$this->assertTrue(false);
+		}
+	}
+
+	public function testGithub() {
+		new \Github\Client();
+		$this->assertTrue(true);
+	}
+
 
 }
 
