@@ -205,6 +205,38 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		return restaurants;
 	}
 
+	service.reloadAllHours = function( callback ){
+		var ids = [];
+		for ( var x in restaurants ) {
+			ids.push( restaurants[x].id_restaurant );
+		}
+		if( ids.length > 0 ){
+			var url = App.service + 'restaurants/hours/' + ids.join( ',' );
+			$http.get( url, {
+				cache: false
+			}).success(function ( hours ) {
+				var now = ( Math.floor( new Date().getTime() / 1000 ) );
+				for( var x in hours ){
+					for ( var y in restaurants ) {
+						if( hours[x].id_restaurant == restaurants[y].id_restaurant ){
+							restaurants[y].hours = hours[x].hours;
+							restaurants[y].next_open_time = hours[x].next_open_time;
+							restaurants[y].next_open_time_message = hours[x].next_open_time_message;
+							restaurants[y].closed_message = hours[x].closed_message;
+							restaurants[y].cachedAt = now;
+							restaurants[y]._hours_processed = false;
+							restaurants[y].processHours();
+							continue;
+						}
+					}
+				}
+				if( callback ){
+					callback();
+				}
+			} );
+		}
+	}
+
 	service.reloadHours = function( force ){
 		var now = ( Math.floor( new Date().getTime() / 1000 ) );
 		var age = Math.floor( now - service.cachedAt );
