@@ -385,7 +385,6 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		restaurants.reloadAllHours( function( data ){
 			$rootScope.$safeApply( function(){
 				$scope.restaurants = restaurants.sort();
-				console.log('$scope.restaurants',$scope.restaurants);
 			} );
 		} );
 	}
