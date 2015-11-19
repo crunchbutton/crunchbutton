@@ -6,7 +6,6 @@ class Crunchbutton_Session_Adapter_Sql extends Cana_Table implements SessionHand
 		// $this->id_session doesnt seem to work
 		Cana::db()->query('delete from session where id_session=?',[$id]);
 
-
 		if (c::auth()->session()->adapter()->id_session) {
 			//Cana::db()->query('delete from session where id_session=?',[c::auth()->session()->adapter()->id_session]);
 		}
