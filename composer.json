@@ -1,10 +1,19 @@
 {
 	"require": {
+		"php": "~7.0@beta",
 		"ext-mbstring": "*",
-		"php": "~7.0@beta"
+		"arzynik/cana": "dev-master",
+		"leafo/scssphp": "~0.5.1",
+		"stripe/stripe-php": "~3.4.0",
+		"twilio/sdk": "~4.6.1",
+		"nategood/httpful": "~0.2.20",
+		"predis/predis": "~1.0.3",
+		"mailgun/mailgun-php": "~1.7.2",
+		"duccio/apns-php": "dev-master",
+		"knplabs/github-api": "~1.4"
 	},
 	"require-dev": {
 		"satooshi/php-coveralls": "dev-master",
-		"phpunit/phpunit": "4.*"
+		"phpunit/phpunit": "^5.0"
 	}
 }

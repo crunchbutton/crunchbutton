@@ -8,7 +8,7 @@ php:
   - 7.0
 
 env:
-  - TRAVIS=1
+  - TRAVIS=1 GITHUB_OAUTH_TOKEN=_KEY_
 #  - TRAVIS=1 TRAVISPOSTGRES=1
 
 cache:
@@ -22,6 +22,7 @@ cache:
 # install:
 
 before_install:
+  -  git config --global github.accesstoken $GITHUB_OAUTH_TOKEN
   #- echo 'America/Los_Angeles' | sudo tee /etc/timezone
   #- sudo dpkg-reconfigure --frontend noninteractive tzdata
   - export TZ=America/Los_Angeles
@@ -32,7 +33,7 @@ before_install:
 before_script:
   #- composer self-update
   - mkdir build
-  - composer install --dev --no-interaction --ignore-platform-reqs
+  - composer install -n --ignore-platform-reqs
   - mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -uroot mysql
   - mysql -e "SET GLOBAL time_zone = 'America/Los_Angeles';" -uroot;
   - mysql -e "create database IF NOT EXISTS crunchbutton_travis;" -uroot;

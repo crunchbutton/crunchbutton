@@ -27,7 +27,7 @@ class Crunchbutton_Session_Adapter_Cli implements SessionHandlerInterface {
 	}
 
 	public function generateAndSaveToken() {
-		return false;
+		return true;
 	}
 
 	public function user() {

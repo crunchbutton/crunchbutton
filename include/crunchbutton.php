@@ -12,6 +12,8 @@
 
 // keep the directory setup in here so we can change its path later
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__).'/library/Pear');
 set_include_path(get_include_path() . PATH_SEPARATOR . '/Users/arzynik/pear/share/pear');
 set_include_path(get_include_path() . PATH_SEPARATOR . '/Users/pererinha/pear/share/pear');
@@ -27,9 +29,11 @@ $GLOBALS['config'] = [
 		'root'				=> dirname(__FILE__).'/../',
 		'www'				=> dirname(__FILE__).'/../www/',
 		'storage'			=> dirname(__FILE__).'/../storage/',
-	],'libraries' 			=> ['Crunchbutton','Cana','Services','RESTful','Ordrin','QueryPath','Github','ApnsPHP','Scss','Mailgun','Predis'],
+	],'libraries' 			=> ['Crunchbutton'],
 	'alias'					=> []
 ];
+
+//'Cana:../../vendor/arzynik/cana/src',
 
 if (getenv('DOCKER')) {
 	$GLOBALS['config']['dirs']['cache'] = '/tmp/';
@@ -44,18 +48,7 @@ $_SERVER['__HTTP_HOST'] = $_SERVER['HTTP_HOST'];
 
 spl_autoload_register(function ($className) {
 
-	foreach ($GLOBALS['config']['alias'] as $k => $v) {
-		if ($className == $k) {
-			$className = $v;
-			$setAlias = function($v, $k) {
-				class_alias($v, $k);
-			};
-			break;
-		}
-	}
-
 	if (strpos($className, '\\') !== false) {
-
 		$classes = explode('\\', $className);
 		$dir = array_shift($classes);
 		$classes = implode('\\', $classes);
@@ -73,17 +66,21 @@ spl_autoload_register(function ($className) {
 
 	if (file_exists($GLOBALS['config']['dirs']['library'] . $class . '.php')) {
 		require_once $GLOBALS['config']['dirs']['library'] . $class . '.php';
-		if ($setAlias) $setAlias($v, $k);
 		return;
 	}
 
 	foreach ($libraries as $prefix) {
-		$fileName = $GLOBALS['config']['dirs']['library'] . $prefix . '/' . $class . '.php';
+
+		$p = explode(':', $prefix);
+		$prefix = $p[0];
+		$path = $p[1] ? $p[1] : $p[0];
+
+		$fileName = $GLOBALS['config']['dirs']['library'] . $path . '/' . $class . '.php';
 
 		if (file_exists($fileName)) {
 			require_once $fileName;
-			if (!$ignoreAlias) {
-				class_alias($prefix.'_'.$className, $className);
+			if (!$ignoreAlias && strpos($className, $prefix) !== 0 && !class_exists($className)) {
+				class_alias((strpos($prefix, '/') ? '' :  $prefix.'_') . $className, $className);
 			}
 			return;
 		}
@@ -95,16 +92,6 @@ spl_autoload_register(function ($className) {
 	}
 });
 
-
-\Httpful\Bootstrap::init();
-\RESTful\Bootstrap::init();
-\Ordrin\Bootstrap::init();
-\QueryPath\Bootstrap::init();
-\Buzz\Bootstrap::init();
-\Github\Bootstrap::init();
-\Mailgun\Bootstrap::init();
-\Stripe\Bootstrap::init();
-\Predis\Autoloader::register();
 
 $configFile = $GLOBALS['config']['dirs']['config'].'config.demo.xml';
 if (file_exists($GLOBALS['config']['dirs']['config'].'config.xml')) {

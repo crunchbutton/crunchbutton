@@ -73,7 +73,7 @@
 			<user>root</user>
 			<pass>root</pass>
 			<db>crunchbutton</db>
-			<host>localhost</host>
+			<host>127.0.0.1</host>
 			<prefix></prefix>
 		</local>
 		<travis>

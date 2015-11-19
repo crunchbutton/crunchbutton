@@ -308,7 +308,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	public function alertDispatch( Crunchbutton_Order $order, $drivers=null) {
 
 		$env = c::getEnv();
-		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+		$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		$message = 'Reps failed to pickup order #' . $order->id_order . '. Restaurant ' . $order->restaurant()->name . ' / Customer ' . $order->name . ' https://cockpit.la/' . $order->id_order;
 
 		// Get drivers name
