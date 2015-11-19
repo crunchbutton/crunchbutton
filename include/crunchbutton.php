@@ -29,7 +29,7 @@ $GLOBALS['config'] = [
 		'root'				=> dirname(__FILE__).'/../',
 		'www'				=> dirname(__FILE__).'/../www/',
 		'storage'			=> dirname(__FILE__).'/../storage/',
-	],'libraries' 			=> ['Crunchbutton','Services','RESTful','Ordrin','QueryPath','Github','ApnsPHP','Scss','Mailgun','Predis'],
+	],'libraries' 			=> ['Crunchbutton','Services','RESTful','Ordrin','QueryPath','Github','ApnsPHP','Mailgun','Predis'],
 	'alias'					=> []
 ];
 

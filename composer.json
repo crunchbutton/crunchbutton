@@ -2,6 +2,7 @@
 	"require": {
 		"ext-mbstring": "*",
 		"arzynik/cana": "dev-master",
+		"leafo/scssphp": ">=v0.5.1",
 		"php": "~7.0@beta"
 	},
 	"require-dev": {
