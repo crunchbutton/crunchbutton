@@ -39,6 +39,11 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			controller: 'RestaurantCtrl',
 			templateUrl: 'assets/view/restaurants-restaurant.html'
 		})
+		.when('/restaurant/:id/edit', {
+			action: 'restaurant',
+			controller: 'RestaurantEditCtrl',
+			templateUrl: 'assets/view/restaurants-edit.html'
+		})
 		.when('/restaurant/order/new', {
 			action: 'restaurant-order-new',
 			controller: 'RestaurantOrderNew',
@@ -434,6 +439,14 @@ NGApp.controller('RestaurantNotesToDriverCtrl', function ($scope, $rootScope, Re
 	}
 });
 
+
+NGApp.controller('RestaurantEditCtrl', function ($scope, $routeParams) {
+	if (location.host.match(/^dev/)) {
+		$scope.url = 'http://dev.cockpit1.crunchr.co/restaurants/' + $routeParams.id;
+	} else {
+		$scope.url = 'http://live.cockpit1.crunchr.co/restaurants/' + $routeParams.id;
+	}
+});
 
 NGApp.controller('RestaurantCtrl', function ($scope, $routeParams, MapService, RestaurantService, OrderService, $rootScope) {
 	$scope.loading = true;
