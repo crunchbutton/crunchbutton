@@ -840,7 +840,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 							$message = "New priority order for you";
 							$message .= Crunchbutton_Message_Sms::endGreeting($this->admin()->id_admin ? $this->admin()->firstName() : '', "!");
 							$message .= "Sent to YOU 1st. Accept ASAP before others see it!";
-							$message .= '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
+//							$message .= '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
 							break;
 
 					}
@@ -849,9 +849,9 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 					switch ($type) {
 						default:
 						case 'sms':
-							$message = "Hey, what's up?  You're MIA! :(";
+							$message = "Hey, what's up?  You're MIA! :(\n";
 							$message .= "We've got a new priority order for you";
-							$message .= Crunchbutton_Message_Sms::endGreeting($this->admin()->id_admin ? $this->admin()->firstName() : '', ".", "");
+							$message .= Crunchbutton_Message_Sms::endGreeting($this->admin()->id_admin ? $this->admin()->firstName() : '', ". ", "");
 							$message .= "We're also going to let another driver see it though.\n";
 							$message .= "Please let us know what's up!\n";
 							$message .= self::REPS_COCKPIT . $order->id_order . "\n";
@@ -859,7 +859,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 							break;
 						case 'push':
 							$message = "New priority order!  We're letting another driver see it too since it seems like you're MIA :(";
-							$message .= '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
+//							$message .= '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
 							break;
 
 					}
@@ -877,7 +877,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 							break;
 						case 'push':
 							$message = "You have a priority order.  Accept ASAP!";
-							$message .= '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
+//							$message .= '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
 							break;
 
 					}
