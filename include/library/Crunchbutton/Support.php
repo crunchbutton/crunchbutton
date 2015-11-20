@@ -171,7 +171,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		if( !$twilio_session->id_session_twilio ){
 
 			// Create new session
-			$session = new Crunchbutton_Session_Adapter();
+			$session = new Crunchbutton_Session_Adapter_Sql();
 			$fakeSessionId = substr( str_replace( '.' , '', uniqid( rand(), true ) ), 0, 32 );
 			$session->write( $fakeSessionId );
 			$session->save();
