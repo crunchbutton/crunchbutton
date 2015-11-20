@@ -175,7 +175,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 				$timestamp = Crunchbutton_Util::dateToUnixTimestamp( $order->date() );
 				$status = $order->status()->last();
 
-				$exports[] = Model::toModel( [
+				$exports[] = Cana_Model::toModel( [
 					'id_order' => $order->id_order,
 					'status' => $status,
 					'name' => $order->name,

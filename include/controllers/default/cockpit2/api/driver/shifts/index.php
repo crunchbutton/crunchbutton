@@ -268,7 +268,7 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 			foreach ( $drivers as $driver ) {
 				$_drivers[] = [ 'name' => $driver->name, 'phone' => $driver->phone(), 'id' => $driver->id_admin];
 			}
-			$export[] = Model::toModel( [
+			$export[] = Cana_Model::toModel( [
 					'id_community_shift' => $shift->id_community_shift,
 					'community' => $shift->community()->name,
 					'date' => [ 'day' => $shift->dateStart()->format( 'D, M jS' ), 'start_end' => $shift->startEndToString(), 'timezone' => $shift->timezoneAbbr() ],
