@@ -212,6 +212,13 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 				}
 				$order = Order::o( $o->id_order );
 				$o->status = $order->status()->last();
+
+				if( $o->status['driver']['id_admin'] ){
+					$driver = Admin::o( $o->status['driver']['id_admin'] );
+					$o->vehicle = $driver->vehicle();
+				}
+
+
 				$o->minutes_to_delivery = $order->minutesToDelivery();
 				$restaurant = Restaurant::o( $o->id_restaurant );
 				$o->delivery_it_self = $restaurant->deliveryItSelf();

@@ -59,6 +59,12 @@
 
 					<a href="/staff/{{order.status.driver.id_admin}}">{{order.status.driver.name}}</a><br>
 					<a href ng-click="callText(order.status.driver.phone)" class="listview-smaller">{{order.status.driver.phone | formatPhone}}</a>
+					<span class="tag tag-blue" ng-if="order.pay_type == 'card' && order.campus_cash">Campus Cash<span ng-if="!order.campus_cash_charged"> - Not Charged!</span></span>
+					<div ng-if="order.vehicle">
+
+						<span class="tag tag-green" ng-if="order.vehicle=='car'">Car</span>
+						<span class="tag tag-red" ng-if="order.vehicle!='car'">{{order.vehicle}}</span>
+					</div>
 				<?php /* Driver */ ?>
 			</td>
 			<td class="tb-v-center" nowrap="">
