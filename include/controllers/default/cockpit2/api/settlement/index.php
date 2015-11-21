@@ -4,9 +4,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		$this->_driverBegin();
-		exit;
-
 		$this->resultsPerPage = 20;
 
 		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
@@ -620,9 +617,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$start = $this->request()['start'];
 		$end = $this->request()['end'];
 		$id_driver = $this->request()['id_driver'];
-
-		$start = '11/18/2015';
-		$end = '11/10/2015';
 
 		if( !$start || !$end ){
 			$this->_error();
