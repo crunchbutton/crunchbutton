@@ -102,7 +102,7 @@
 				<br /><br /><br />
 				<p>
 					<span class="popular-location" ng-repeat="alias in topCommunities">
-						<span class="fake-link" ng-click="city(alias.alias)" permalink="{{alias.alias}}">{{alias.name}}</span>
+						<a href="/{{alias.alias}}">{{alias.name}}</a>
 					</span>
 				</p>
 
