@@ -133,7 +133,15 @@
 						</div>
 					</li>
 
-					<li class="li-input">
+					<li class="li-input" ng-class="{'error':form.staffPayForNewCustomer.$invalid}">
+						<div class="label">Pay for new customers?</div>
+						<div class="input">
+							<select name="staffPayForNewCustomer" required ng-model="staff.pay_for_new_customer" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
+
+
+					<li class="li-input" ng-show="staff.pay_for_new_customer">
 						<div class="label">How much a brand representative earns from new customer referrals:</div>
 						<div class="input"><input type="number" ignore-mouse-wheel ng-model="staff.referral_admin_credit" placeholder=""></div>
 					</li>

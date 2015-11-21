@@ -92,6 +92,10 @@ class Controller_api_staff_marketing extends Crunchbutton_Controller_RestAccount
 		$staff->email = $this->request()[ 'email' ];
 		$staff->referral_admin_credit = $this->request()[ 'referral_admin_credit' ];
 		$staff->referral_customer_credit = $this->request()[ 'referral_customer_credit' ];
+		$staff->pay_for_new_customer = $this->request()[ 'pay_for_new_customer' ];
+		if( !$staff->pay_for_new_customer ){
+			$staff->referral_admin_credit = 0;
+		}
 
 		// Check unique login
 		$login = trim( $this->request()[ 'login' ] );
