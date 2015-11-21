@@ -459,6 +459,8 @@ NGApp.controller( 'StaffMarketingFormCtrl', function ( $scope, $routeParams, $fi
 
 	var start = function(){
 
+		$scope.yesNo = CommunityService.yesNo();
+
 		$scope.action = ( $routeParams.id == 'new' ) ? 'new' : 'edit';
 
 		if( $scope.action == 'edit' ){

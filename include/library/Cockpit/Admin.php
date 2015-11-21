@@ -351,6 +351,9 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 	}
 
 	public function referralAdminCredit(){
+		if( !$this->pay_for_new_customer ){
+			return 0;
+		}
 		if( !$this->referral_admin_credit ){
 			$referral = new Crunchbutton_Reward;
 			$settings = $referral->loadSettings();
@@ -366,6 +369,8 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$out['working'] = false;
 		$out['working_today'] = false;
 		$out['referral_admin_credit'] = $this->referralAdminCredit();
+		$out['pay_for_new_customer'] = $this->pay_for_new_customer ? true : false;
+
 		$out['referral_customer_credit'] = floatval( $this->referral_customer_credit );
 		$out['invite_code'] = $this->invite_code;
 		$out['dob'] = $this->dob;

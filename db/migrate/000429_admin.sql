@@ -1,0 +1,1 @@
+ALTER TABLE `admin` ADD COLUMN `pay_for_new_customer` tinyint(1) unsigned NOT NULL DEFAULT 1;
