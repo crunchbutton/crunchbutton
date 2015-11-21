@@ -20,6 +20,14 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		return $this->_stripeVerificationStatus;
 	}
 
+	public function createdAt(){
+		$created_at = Cockpit_Driver_Log::q( 'SELECT * FROM driver_log WHERE id_admin = ? AND action = ? ORDER BY id_driver_log DESC LIMIT 1', [ $this->id_admin, Cockpit_Driver_Log::ACTION_CREATED_COCKIPT ] )->get( 0 );
+		if( $created_at->id_driver_log ){
+			return $created_at->exports();
+		}
+		return null;
+	}
+
 	public function stripeAccount() {
 		if (!isset($this->_stripeAccount)) {
 			$paymentType = $this->payment_type();
@@ -490,6 +498,8 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 				'update' => $order->stati[count($order->stati)-1]['timestamp']
 			];
 		}
+
+		$out[ 'created_at' ] = $this->createdAt();
 
 		return $out;
 	}

@@ -58,6 +58,12 @@
 							</label>
 						</div>
 					</div>
+					<div class="field-row" ng-if="staff.created_at">
+						<div class="field-key">Created At</div>
+						<div class="field-value">
+							{{staff.created_at.date}}
+						</div>
+					</div>
 					<div class="field-row" ng-if="staff.date_terminated_formatted">
 						<div class="field-key">Inactive since</div>
 						<div class="field-value">{{staff.date_terminated_formatted}}</div>
