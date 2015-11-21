@@ -70,6 +70,7 @@
 							<div class="vert-divider"></div>
 							</a>
 							<!-- info -->
+
 							<div class="column-info">
 								<a href="http://maps.apple.com/?q={{order.restaurant_address}}" ng-if="iOS" target="_system">
 									<div class="restaurant-pointer">
@@ -87,21 +88,23 @@
 									{{order.name}}
 								</div>
 
-								<div class="phone-pointer">
+								<div class="phone-pointer" ng-if="order.status.status == 'new' || order.status.driver.id_admin == account.user.id_admin">
 									<a href ng-click="callText(order.phone)">{{order.phone | formatPhone}}</a>
 								</div>
 
-								<a href="http://maps.apple.com/?q={{order.address}}" ng-if="iOS" target="_system">
-									<div ng-if="order.address" class="customer-address">
-										{{order.addressFirstLine}}
-									</div>
-								</a>
+								<span ng-if="order.status.status == 'new' || order.status.driver.id_admin == account.user.id_admin">
+									<a href="http://maps.apple.com/?q={{order.address}}" ng-if="iOS" target="_system">
+										<div ng-if="order.address" class="customer-address">
+											{{order.addressFirstLine}}
+										</div>
+									</a>
 
-								<a href="http://maps.google.com/maps?q={{order.address}}" ng-if="!iOS" target="_system">
-									<div ng-if="order.address" class="customer-address">
-										{{order.addressFirstLine}}
-									</div>
-								</a>
+									<a href="http://maps.google.com/maps?q={{order.address}}" ng-if="!iOS" target="_system">
+										<div ng-if="order.address" class="customer-address">
+											{{order.addressFirstLine}}
+										</div>
+									</a>
+								</span>
 							</div>
 							<div class="divider"></div>
 						</div>
