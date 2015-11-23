@@ -140,7 +140,7 @@ class StripeTest extends PHPUnit_Framework_TestCase {
 			return;
 		}
 
-		$status = self::$order->refund();
+		$status = self::$order->refund(1.25);
 
 		$this->assertTrue($status->status);
 	}
