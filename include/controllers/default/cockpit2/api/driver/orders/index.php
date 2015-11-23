@@ -89,7 +89,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 								$signature = $this->request()[ 'signature' ];
 								$success = Crunchbutton_Order_Signature::store( [ 'signature' => $signature, 'id_order' => $order->id_order ] );
 								if( $success ){
-									// update status to delivered
+
 									$order->setStatus(Crunchbutton_Order_Action::DELIVERY_DELIVERED);
 
 									if( $email ){
@@ -166,7 +166,6 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 
 			$exports = [];
 
-			// @demo
 			$orders = Order::deliveryOrdersForAdminOnly($lastHours, c::admin());
 
 			foreach ( $orders as $order ) {
