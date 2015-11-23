@@ -69,7 +69,13 @@ class Crunchbutton_Community_Alias extends Cana_Table {
 						if( is_numeric( $value ) ){
 							$value = floatval( $value );
 						}
-						$alias[ $key ] = $value;
+						$store = true;
+						if( $key == 'image' && !$value ){
+							$store = false;
+						}
+						if( $store ){
+							$alias[ $key ] = $value;
+						}
 					}
 				}
 			}
