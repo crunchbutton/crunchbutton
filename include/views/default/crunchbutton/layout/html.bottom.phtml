@@ -16,31 +16,21 @@ if ($this->community) {
 }
 
 ?>
-
-
 <script type="text/javascript">
-var c = <?=json_encode(c::appConfig())?>;
 if (App) {
-	App.config = c;
-	c = null;
+	App.config = {};
 	App.logService = 'http<?=$_SERVER['SERVER_NAME'] == 'crunchbutton.com' ? 's' : ''?>://log.<?=$_SERVER['SERVER_NAME']?>/api/';
 } else {
 	$(function() {
 		App.logService = 'http<?=$_SERVER['SERVER_NAME'] == 'crunchbutton.com' ? 's' : ''?>://log.<?=$_SERVER['SERVER_NAME']?>/api/';
-		App.config = c;
-		c = null;
+		App.config = {};
 	});
 }
 </script>
-
 </head>
-
 <body class="bg no-init">
 <?=$this->display('layout/html.body')?>
 </body>
-
-
-
 <?
 	switch ( c::env() ) {
 		case 'local':
