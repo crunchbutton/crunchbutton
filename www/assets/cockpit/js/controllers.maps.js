@@ -126,6 +126,8 @@ NGApp.controller('MapsDialogCtrl', function ( $scope, $rootScope, AppAvailabilit
 			break;
 		}
 
+		$scope.link = $scope.link.replace(/#/g, 'apt');
+
 		$scope.maps = [];
 
 		for ( map in AppAvailabilityService.maps ) {
@@ -136,7 +138,7 @@ NGApp.controller('MapsDialogCtrl', function ( $scope, $rootScope, AppAvailabilit
 			App.dialog.show( '.maps-dialog-container' );
 		} else {
 			setTimeout( function(){
-				$scope.link = 'http://maps.apple.com/?' + $scope.link;
+				$scope.link = 'http://maps.apple.com/' + $scope.link;
 				parent.window.open( $scope.link, '_system', 'location=yes' );
 			} );
 		}
