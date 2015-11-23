@@ -503,13 +503,13 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		if (in_array('extended', $output)) {
-			$config['aliases'] = Community_Alias::all(['id_community', 'prep', 'name_alt', 'permalink', 'image']);
+			$config['aliases'] = Community_Alias::all(['id_community', 'prep', 'name_alt', 'permalink']);
 			$config['locations'] = Community::all_locations();
 			$config['facebookScope'] = c::config()->facebook->default->scope;
 
 			$config['communities'] = [];
 			foreach (Community::all(c::getPagePiece(0)) as $community) {
-				$c = $community->properties();
+				$c = $community->configExports();
 				$c['stored'] = true;
 				$config['communities'][$community->permalink] = $c;
 			}
@@ -564,8 +564,6 @@ class Crunchbutton_App extends Cana_App {
 				'line' => 'i love @crunchbutton delivery :) use my code %c in the Notes section for free delivery!'
 			]
 		];
-
-
 
 		$config['site']['ab']['share-order-text-twitter'] = [
 			[
