@@ -184,7 +184,11 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	public function configExports(){
 		$out = $this->properties();
 		$unset = [
+			'id_community',
+			'loc_lat',
+			'loc_lon',
 			'active',
+			'automatic_driver_restaurant_name',
 			'private',
 			'prep',
 			'name_alt',
@@ -222,6 +226,8 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			'last_down_to_help_out_message',
 			'campus_cash_delivery_confirmation',
 			'id',
+			'range',
+			'timezone',
 			'stored' ];
 		foreach( $unset as $rem ){
 			unset( $out[ $rem ] );
@@ -232,6 +238,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			}
 			if( is_numeric( $val ) ){
 				$out[ $key ] = floatval( $val );
+			}
+			if( $val === false ){
+				unset( $out[ $key ] );
 			}
 		}
 
