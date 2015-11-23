@@ -3161,15 +3161,46 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		];
 	}
 
+	public function driverInstructionsPaymentBGColor(){
+		// Driver feedback changing color of cash vs pex orders #7135
+		if( $this->restaurant()->formal_relationship ){
+			if( $this->pay_type == 'cash' ){
+				$driver = c::user();
+				if( $driver->id_admin && $driver->hasPexCard() ){
+					return 'green';
+				} else {
+					return 'green';
+				}
+			} else {
+				return 'red';
+			}
+		} else {
+			$driver = c::user();
+			if( $this->pay_type == 'cash' ){
+				if( $driver->id_admin && $driver->hasPexCard() ){
+					return 'green';
+				} else {
+					return 'green';
+				}
+			} else {
+				if( $driver->id_admin && $driver->hasPexCard() ){
+					return 'red';
+				} else {
+					return 'red';
+				}
+			}
+		}
+	}
+
 	public function driverInstructionsPaymentStatus(){
 		// Clarify Cash/Credit Orders #4481
 		if( $this->restaurant()->formal_relationship ){
 			if( $this->pay_type == 'cash' ){
 				$driver = c::user();
 				if( $driver->id_admin && $driver->hasPexCard() ){
-					return 'Pay restaurant with your own cash, not PEX';
+					return 'CASH order. Pay restaurant with your own cash, not PEX.';
 				} else {
-					return 'Pay the restaurant with own cash';
+					return 'CASH order. Pay restaurant with your own cash.';
 				}
 			} else {
 				return 'Do not pay the restaurant';
@@ -3178,9 +3209,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$driver = c::user();
 			if( $this->pay_type == 'cash' ){
 				if( $driver->id_admin && $driver->hasPexCard() ){
-					return 'Pay restaurant with your own cash, not PEX';
+					return 'CASH order. Pay restaurant with your own cash, not PEX.';
 				} else {
-					return 'Pay the restaurant with own cash';
+					return 'CASH order. Pay restaurant with your own cash.';
 				}
 			} else {
 				if( $driver->id_admin && $driver->hasPexCard() ){

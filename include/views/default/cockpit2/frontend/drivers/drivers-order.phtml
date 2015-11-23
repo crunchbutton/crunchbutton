@@ -124,7 +124,7 @@
 				</div>
 			</div>
 		</span>
-		<div class="order-item-block-big" ng-if="(oc.order.status.status == 'accepted') && oc.order.status.driver.id_admin == account.user.id_admin">
+		<div class="order-item-block-big background-{{oc.order._instructions_payment_bgcolor}}" ng-if="(oc.order.status.status == 'accepted') && oc.order.status.driver.id_admin == account.user.id_admin">
 			<div class="order-icon2"><i class="fa fa-money"></i></div>
 			<div class="order-info2 order-info-small">
 				{{oc.order._instructions_payment}}

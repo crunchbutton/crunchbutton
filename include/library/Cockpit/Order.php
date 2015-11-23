@@ -92,6 +92,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 			$out[ '_delivery_estimated_time_timestamp' ] = false;
 		}
 		$out[ '_instructions_payment' ] = $this->driverInstructionsPaymentStatus();
+		$out[ '_instructions_payment_bgcolor' ] = $this->driverInstructionsPaymentBGColor();
 		$out[ '_instructions_food' ] = $this->driverInstructionsFoodStatus();
 		$out[ '_stealth_notification' ] = $this->restaurant()->hasNotification( 'stealth' );
 
