@@ -132,14 +132,9 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				$cancel_order = $this->request()[ 'cancel_order' ];
 				$amount = floatval( $this->request()[ 'amount' ] );
 
-				if( !floatval( $amount ) ){
-					echo json_encode( [ 'error' => 'The refund amount should be at least $0.01.' ] );exit;
-				}
-
 				if( floatval( $amount ) > $order->charged() ){
 					echo json_encode( [ 'error' => 'The refund amount should be equal or less than $' . $order->charged() . '.' ] );exit;
 				}
-
 
 				if( $this->request()[ 'reason_other' ] && $reason == 'Other' ){
 					$reason = $this->request()[ 'reason_other' ];

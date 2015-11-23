@@ -162,6 +162,7 @@ NGApp.controller('OrderRefundCtrl', function ($scope, $rootScope, OrderService )
 	$scope.formRefundSubmitted = false;
 
 	$rootScope.$on( 'openRefundOrderOptions', function(e, data) {
+
 		id_order = data.id_order;
 		callback = data.callback;
 
@@ -183,6 +184,7 @@ NGApp.controller('OrderRefundCtrl', function ($scope, $rootScope, OrderService )
 		App.dialog.show('.refund-order-container');
 		OrderService.refund_info( id_order, function(d) {
 			$scope.order = d;
+			$scope.refund_amount = parseFloat( d.charged ) > 0 ? true : false;
 			$scope.refund = {};
 			$scope.refund.id_order = d.id_order;
 			$scope.refund.amount = parseFloat( d.charged );

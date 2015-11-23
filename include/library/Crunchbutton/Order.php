@@ -2537,7 +2537,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	}
 
-	public function refund($amt = null, $note = null, $tell_driver = false) {
+	public function refund($amt, $note = null, $tell_driver = false) {
 
 		if (!$this->refunded){
 
@@ -2557,14 +2557,16 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					switch ($this->processor) {
 						case 'stripe':
 						default:
-							try {
-								$params = $amt ? ['amount' => $amt * 100] : null;
-								$ch = \Stripe\Charge::retrieve($this->txn);
-								$re = $ch->refunds->create( $params );
+							if( floatval( $amt ) > 0 ){
+								try {
+									$params = $amt ? ['amount' => $amt * 100] : null;
+									$ch = \Stripe\Charge::retrieve($this->txn);
+									$re = $ch->refunds->create( $params );
 
-							} catch (Exception $e) {
-								echo $e->getMessage();
-								return (object)['status' => false, 'errors' => $e->getMessage()];
+								} catch (Exception $e) {
+									echo $e->getMessage();
+									return (object)['status' => false, 'errors' => $e->getMessage()];
+								}
 							}
 							break;
 					}
