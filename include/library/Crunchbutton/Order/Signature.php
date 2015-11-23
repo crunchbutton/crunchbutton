@@ -44,5 +44,4 @@ class Crunchbutton_Order_Signature extends Cana_Table {
 		$signature->save();
 		return true;
 	}
-
 }

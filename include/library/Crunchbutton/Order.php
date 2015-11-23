@@ -985,13 +985,16 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function requireSignature(){
-		$community = $this->community();
-		if( $community->id_community && $community->requireSignature() ){
-			$signature = ( $this->signature() ? true : false );
-			if( $signature ){
-				return false;
+		if( $this->campus_cash ){
+			$community = $this->community();
+			if( $community->id_community && $community->requireSignature() ){
+				$signature = ( $this->signature() ? true : false );
+				if( $signature ){
+					return false;
+				}
+				return true;
 			}
-			return true;
+			return false;
 		}
 		return false;
 	}
@@ -1791,7 +1794,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				'user' => true,
 			]);
 			$mail->send();
-			echo 'sending';
 		}
 	}
 
