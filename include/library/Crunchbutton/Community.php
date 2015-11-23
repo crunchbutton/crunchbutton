@@ -181,6 +181,63 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return $out;
 	}
 
+	public function configExports(){
+		$out = $this->properties();
+		$unset = [
+			'active',
+			'private',
+			'prep',
+			'name_alt',
+			'driver_group',
+			'close_all_restaurants',
+			'close_all_restaurants_note',
+			'close_3rd_party_delivery_restaurants',
+			'close_3rd_party_delivery_restaurants_note',
+			'close_3rd_party_delivery_restaurants_note',
+			'close_all_restaurants_id_admin',
+			'close_3rd_party_delivery_restaurants_id_admin',
+			'close_all_restaurants_date',
+			'close_3rd_party_delivery_restaurants_date',
+			'id_driver_restaurant',
+			'driver_restaurant_name',
+			'auto_close',
+			'dont_warn_till',
+			'is_auto_closed',
+			'delivery_logistics',
+			'id_driver_group',
+			'closed_message',
+			'driver_checkin',
+			'combine_restaurant_driver_hours',
+			'top',
+			'drivers_can_open',
+			'auto_close_predefined_message',
+			'amount_per_order',
+			'campus_cash',
+			'campus_cash_name',
+			'campus_cash_validation',
+			'campus_cash_fee',
+			'campus_cash_mask',
+			'campus_cash_receipt_info',
+			'signature',
+			'last_down_to_help_out_message',
+			'campus_cash_delivery_confirmation',
+			'id',
+			'stored' ];
+		foreach( $unset as $rem ){
+			unset( $out[ $rem ] );
+		}
+		foreach( $out as $key => $val ){
+			if( is_null( $val ) ){
+				unset( $out[ $key ] );
+			}
+			if( is_numeric( $val ) ){
+				$out[ $key ] = floatval( $val );
+			}
+		}
+
+		return $out;
+	}
+
 	public function lastNote(){
 		return Cockpit_Community_Note::lastNoteByCommunity( $this->id_community );
 	}
@@ -211,7 +268,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$res = Cana::db()->query( 'SELECT c.id_community, c.loc_lat, c.loc_lon, c.range FROM community c' );
 		$locations = array();
 		while ( $row = $res->fetch() ) {
-			$locations[ $row->id_community ] = array( 'loc_lat' => $row->loc_lat, 'loc_lon' => $row->loc_lon, 'range' => $row->range );
+			$locations[ $row->id_community ] = array( 'loc_lat' => floatval( $row->loc_lat ), 'loc_lon' => floatval( $row->loc_lon ), 'range' => floatval( $row->range ) );
 		}
 		return $locations;
 	}
