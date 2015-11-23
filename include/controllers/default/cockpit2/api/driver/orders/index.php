@@ -151,7 +151,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 
 							default:
 								if( $order->id_order ) {
-									echo $order->json();
+									echo json_encode( $order->exports( 'driver' ) );
 								} else {
 									echo json_encode(['error' => 'invalid object']);
 								}

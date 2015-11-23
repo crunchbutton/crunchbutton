@@ -4,7 +4,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 	const I_AM_5_MINUTES_AWAY = 'i-am-5-minutes-away';
 
-	public function exports(){
+	public function exports( $profile = 'default' ){
 
 		$out = $this->properties();
 
@@ -306,6 +306,41 @@ class Cockpit_Order extends Crunchbutton_Order {
 			$out[ 'refunded_amount' ] = $this->refundedTotal();
 		}
 
+		foreach( $out as $key => $val ){
+			if( is_numeric( $val ) ){
+				$out[ $key ] = floatval( $val );
+			}
+		}
+
+		switch ( $profile ) {
+			case 'driver':
+				$out = $this->_driverExports( $out );
+				break;
+		}
+
+		return $out;
+	}
+
+	private function _driverExports( $out ){
+		$remove = [ 'do_not_pay_restaurant', 'do_not_pay_driver', 'do_not_reimburse_driver', 'id_user', 'env', 'service_fee', 'processor', 'id_community', 'pay_if_refunded', 'tip_type', 'id_agent', 'id_session', 'fee_restaurant', 'do_not_reimburse_driver', 'id_user_payment_type', 'local_gid', 'type', 'reimburse_cash_order', 'do_not_pay_restaurant', 'do_not_pay_driver', 'lon', 'lat', 'reward_delivery_free', 'likely_test', 'geomatched', 'id_phone', '_restaurant_lat', '_restaurant_lon', 'agent', 'credit', 'id_community', '_delivery_service_markup', '_restaurant_permalink', 'actions' ];
+		foreach( $out as $key => $val ){
+			if( in_array( $key, $remove ) ){
+				unset( $out[ $key ] );
+			}
+		}
+		foreach( $out as $key => $val ){
+			if( is_null( $val ) || $val === false ){
+				unset( $out[ $key ] );
+			}
+		}
+		if( $out[ 'driver' ] ){
+			$keep = [ 'name', 'phone' ];
+			foreach( $out[ 'driver' ] as $key => $val ){
+				if( !in_array( $key, $keep ) ){
+					unset( $out[ 'driver' ][ $key ] );
+				}
+			}
+		}
 		return $out;
 	}
 
