@@ -2883,13 +2883,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 		}
 
-		(new Order_Action([
+		$action = new Order_Action([
 			'id_order' => $this->id_order,
 			'id_admin' => $admin->id_admin,
 			'timestamp' => date('Y-m-d H:i:s'),
 			'note' => $note,
 			'type' => $status
-		]))->save();
+		]);
+		$action->save();
 
 		if ($notify) {
 			// Notify customer about their driver
@@ -2912,6 +2913,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			Order_Action::ticketForRejectedOrder( $this->id_order );
 		}
 
+		if( $status == Crunchbutton_Order_Action::DELIVERY_REJECTED ){
+			$this->delivery_status = null;
+		} else {
+			$this->delivery_status = $action->id_order_action;
+		}
+		$this->save();
 
 		// mark the order to be paid by commission structure
 		if( $admin->openedCommunity() && !$this->isForcedToBeCommissioned( $admin->id_admin ) ){
