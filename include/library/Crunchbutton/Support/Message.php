@@ -183,6 +183,36 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		return $out;
 	}
 
+	public function exportsSide(){
+		$out = $this->exports();
+		$out[ 'status' ] = $this->status();
+		$remove = [ 'id_support', 'id_admin', 'id', 'id_phone', 'id_phone_log' ];
+		foreach( $out as $key => $val ){
+			if( in_array( $key, $remove ) || !$val ){
+				unset( $out[ $key ] );
+			}
+		}
+		if( $out[ 'from' ] == 'rep' && $out[ 'type' ] == 'sms' && !$out[ 'status' ] ){
+			$out[ 'status' ] = 'unknown';
+		}
+		return $out;
+	}
+
+	public function status(){
+		$log = $this->phone_log();
+		if( $log->status ){
+			return $log->status;
+		}
+		return null;
+	}
+
+	public function phone_log(){
+		if( !$this->_phone_log && $this->id_phone_log ){
+			$this->_phone_log = Crunchbutton_Phone_Log::o( $this->id_phone_log );
+		}
+		return $this->_phone_log;
+	}
+
 	public function notify_by_sms() {
 
 		$support = $this->support();
@@ -198,12 +228,17 @@ class Crunchbutton_Support_Message extends Cana_Table {
 
 		$msg = '' . ( $rep_name ? $rep_name.': ' : '' ) . $this->body;
 
-		Crunchbutton_Message_Sms::send([
-			'to' => $phone,
-			'message' => $msg,
-			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT
-		]);
+		$ret = Crunchbutton_Message_Sms::send([
+						'to' => $phone,
+						'message' => $msg,
+						'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT,
+						'log' => true // log
+					] );
 
+		if( $ret[0] && $ret[0]->id_phone_log ){
+			$this->id_phone_log = $ret[0]->id_phone_log;
+			$this->save();
+		}
 	}
 
 	public function notify_by_email() {

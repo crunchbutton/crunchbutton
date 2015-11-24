@@ -32,7 +32,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 		return Phone::dirty($num);
 	}
 
-	public static function send($from, $to = null, $message = null, $media = null) {
+	public static function send($from, $to = null, $message = null, $media = null, $log = false) {
 
 		$break = false;
 		$ret = [];
@@ -57,8 +57,11 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 				$media = $from['media'];
 			}
 
-			$from = $from['from'];
+			if( isset( $from['log'] ) && $from['log'] ){
+				$log = $from['log'];
+			}
 
+			$from = $from['from'];
 		}
 
 		// If there is no cs working text everyone
@@ -151,9 +154,18 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 						'type' => 'sms'
 					]);
 
-					$ret[] = c::twilio()->account->messages->sendMessage($tfrom, $t, $msg, $media ? $media : null);
+					$params = [];
+					if( $log && c::getEnv() == 'live' ){
+						$params = [ 'StatusCallback' => 'http://live.ci.crunchbutton.crunchr.co/api/twilio/sms/status' ];
+					}
 
-					Phone_Log::log($t, $tfrom, 'message', 'outgoing', $reason);
+					$_ret = c::twilio()->account->messages->sendMessage($tfrom, $t, $msg, $media ? $media : null, $params);
+
+					$phoneLog = Phone_Log::log($t, $tfrom, 'message', 'outgoing', $reason, $_ret->sid, $_ret->status);
+
+					$_ret->id_phone_log = $phoneLog->id_phone_log;
+
+					$ret[] = $_ret;
 
 				} catch (Exception $e) {
 
