@@ -2365,9 +2365,17 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return $num[0].' dollar'.($num[0] == 1 ? '' : 's').' and '.$num[1].' cent'.($num[1] == '1' ? '' : 's');
 	}
 
-	public function exports() {
+	public function exports( $params = [] ) {
 
 		$out = $this->properties();
+
+		$_ignore = [];
+
+		if( isset( $params[ 'ignore' ] ) ){
+			 foreach( $params[ 'ignore' ] as $key => $val ){
+			 	$_ignore[ $val ] = true;
+			 }
+		}
 
 		unset($out['id_user']);
 		unset($out['id']);
@@ -3318,7 +3326,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return $type === null ? $this->_deliveryStatus : $this->_deliveryStatus[$type];
 	}
 
-
 	public function eta($refresh = false) {
 		if (!isset($this->_eta) || $refresh) {
 			$eta = Order_Eta::q('select * from order_eta where id_order=? order by date desc limit 1', [$this->id_order])->get(0);
@@ -3330,16 +3337,26 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return $this->_eta;
 	}
 
-	public function ordersExports() {
-		$out = $this->exports();
+	public function ordersExports( $params = [] ) {
+
+		$_ignore = [];
+		if( isset( $params[ 'ignore' ] ) ){
+			 foreach( $params[ 'ignore' ] as $key => $val ){
+			 	$_ignore[ $val ] = true;
+			 }
+		}
+
+		$out = $this->exports( $params );
 		$out[ 'delivery_service' ] = intval( $out[ 'delivery_service' ] );
-		$out['user'] = $this->user()->id_user ? $this->user()->exports() : null;
-		$out['restaurant'] = $this->restaurant()->id_restaurant ? $this->restaurant()->exports() : null;
+		// $out['user'] = $this->user()->id_user ? $this->user()->exports( [ 'ignore' => [ 'presets', 'points', 'auth', 'tip' ] ] ) : null;
+		if( !$_ignore[ 'restaurant' ] ){
+			$out['restaurant'] = $this->restaurant()->id_restaurant ? $this->restaurant()->exports() : null;
+		}
+
 		$out['_community_name'] = $this->restaurant()->community()->name;
 		$out['_community_permalink'] = $this->restaurant()->community()->permalink;
 		$out['_driver_name'] = $this->status()->last()['driver']['name'];
 		$out['_driver_id'] = $this->status()->last()['driver']['id_admin'];
-
 		return $out;
 	}
 

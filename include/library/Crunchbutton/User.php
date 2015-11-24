@@ -209,16 +209,33 @@ class Crunchbutton_User extends Cana_Table {
 	}
 
 	public function exports($params = []) {
+
 		$out = $this->properties();
 		// $out[ 'last_tip_delivery' ] = Order::lastTipByDelivery( $this->id_user, 'delivery' );
 		// $out[ 'last_tip_takeout' ] = Order::lastTipByDelivery( $this->id_user, 'takeout' )
 
+		$_ignore = [];
+
+		if( isset( $params[ 'ignore' ] ) ){
+			 foreach( $params[ 'ignore' ] as $key => $val ){
+			 	$_ignore[ $val ] = true;
+			 }
+		}
+
 		if ($this->id_user) {
-			$out[ 'last_tip_type' ] = Order::lastTipType( $this->id_user );
-			$out[ 'last_tip' ] = Order::lastTip( $this->id_user );
-			$out[ 'facebook' ] = User_Auth::userHasFacebookAuth( $this->id_user );
+
+			if( is_null( $_ignore[ 'tip' ] ) ){
+				$out[ 'last_tip_type' ] = Order::lastTipType( $this->id_user );
+				$out[ 'last_tip' ] = Order::lastTip( $this->id_user );
+				$out['tipper'] = $this->tipper();
+			}
+
+			if( is_null( $_ignore[ 'auth' ] ) ){
+				$out[ 'facebook' ] = User_Auth::userHasFacebookAuth( $this->id_user );
+				$out[ 'has_auth' ] = User_Auth::userHasAuth( $this->id_user );
+			}
+
 			$out[ 'phone' ] = $this->phone();
-			$out[ 'has_auth' ] = User_Auth::userHasAuth( $this->id_user );
 			$lastOrder = Order::lastDeliveredOrder( $this->id_user );
 			if( $lastOrder->id_restaurant ){
 				$communities = [];
@@ -234,8 +251,11 @@ class Crunchbutton_User extends Cana_Table {
 			if( $lastNote ){
 				$out['last_notes'] = trim( $lastNote );
 			}
-			foreach ($this->presets() as $preset) {
-				$out['presets'][$preset->id_restaurant] = $preset->exports();
+
+			if( is_null( $_ignore[ 'presets' ] ) ){
+				foreach ($this->presets() as $preset) {
+					$out['presets'][$preset->id_restaurant] = $preset->exports();
+				}
 			}
 
 			// Get user payment type
@@ -250,16 +270,11 @@ class Crunchbutton_User extends Cana_Table {
 				}
 			}
 
-
-			$out['tipper'] = $this->tipper();
-
 			$out[ 'points' ] = Crunchbutton_Credit::exportPoints($this);
 		}
 
-
 		$out['ip'] = c::getIp();
 		$out['email'] = $this->email ? $this->email : $this->email();
-
 
 		if( $out['card'] ){
 			$out['card_ending'] = substr( $out['card'], -4, 4 );
