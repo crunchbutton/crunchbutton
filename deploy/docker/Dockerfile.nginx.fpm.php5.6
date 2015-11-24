@@ -19,7 +19,7 @@ RUN echo " \n\
 listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.conf
 #RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
-#ADD ./ /var/www/app/
-RUN ln -s /opt/www /var/www/app
+#ADD ./ /app/
+RUN ln -s /opt/www /app
 
 CMD nginx && php-fpm

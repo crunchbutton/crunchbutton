@@ -18,11 +18,11 @@ RUN echo "cgi.fix_pathinfo = 0;" >> /usr/local/etc/php/conf.d/fix_pathinfo.ini
 RUN echo "listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.conf
 
 
-ADD ./ /var/www/app
-RUN mkdir /var/www/app/logs
-RUN chmod -R 0777 /var/www/app/cache
+ADD ./ /app
+RUN mkdir /app/logs
+RUN chmod -R 0777 /app/cache
 
-#RUN ln -s /opt/www /var/www/app
+#RUN ln -s /opt/www /app
 
 
 RUN a2enmod rewrite
