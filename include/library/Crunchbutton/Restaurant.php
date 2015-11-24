@@ -1205,6 +1205,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$isCockpit = Crunchbutton_Util::isCockpit();
 
 		$out = $this->properties();
+		if( count( $ignore ) && is_array( $ignore ) ){
+			$_ignore = $ignore;
+			$ignore = [];
+			foreach ( $_ignore as $property ) {
+				$ignore[ $property ] = true;
+			}
+
+		}
 
 		// method ByRand doesnt need all the properties
 		if( $this->byrange ){
@@ -1244,8 +1252,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$timezone = new DateTimeZone( $this->timezone );
 		$date = new DateTime( 'now ', $timezone ) ;
 
-		$out['images'] = $this->getImages();
-		$out['img']    = $out['images']['normal'];
+		if (!$ignore['images']) {
+			$out['images'] = $this->getImages();
+			$out['img']    = $out['images']['normal'];
+
+		}
 
 		if (!$ignore['categories']) {
 			foreach ($this->categories() as $category) {
@@ -1302,55 +1313,57 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 
 		// change how we do open calculations #6902
-		if( $this->force_hours_calculation ){
+		if (!$ignore['hours']) {
 
-			// Return the offset to help the Javascript to calculate the open/close hour correctly
-			$out['_tzoffset'] = ( $date->getOffset() ) / 60 / 60;
-			$out['_tzabbr'] = $date->format('T');
+			if( $this->force_hours_calculation ){
 
-			if( $isCockpit ){
+				// Return the offset to help the Javascript to calculate the open/close hour correctly
+				$out['_tzoffset'] = ( $date->getOffset() ) / 60 / 60;
+				$out['_tzabbr'] = $date->format('T');
 
-				$payment_type = $this->payment_type();
-				$out[ 'payment_method' ] = $payment_type->payment_method;
+				if( $isCockpit ){
 
-				foreach ($this->hours() as $hours) {
-					$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
+					$payment_type = $this->payment_type();
+					$out[ 'payment_method' ] = $payment_type->payment_method;
+
+					foreach ($this->hours() as $hours) {
+						$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
+					}
+				} else {
+					$out[ 'hours' ] = $this->hours_next_24_hours( true );
+					$next_open_time = $this->next_open_time( true );
+					if( $next_open_time ){
+						$next_open_time_restaurant_tz = $this->next_open_time();
+						$out[ 'next_open_time' ] = ( $next_open_time ) ? $next_open_time->format( 'Y-m-d H:i' ) : false;
+						$out[ 'next_open_time_message' ] = $this->next_open_time_message();
+					}
 				}
-			} else {
-				$out[ 'hours' ] = $this->hours_next_24_hours( true );
-				$next_open_time = $this->next_open_time( true );
-				if( $next_open_time ){
-					$next_open_time_restaurant_tz = $this->next_open_time();
-					$out[ 'next_open_time' ] = ( $next_open_time ) ? $next_open_time->format( 'Y-m-d H:i' ) : false;
-					$out[ 'next_open_time_message' ] = $this->next_open_time_message();
-				}
+				$out['closed_message'] = $this->closed_message();
+
 			}
-			$out['closed_message'] = $this->closed_message();
+			else {
+				$_time = Crunchbutton_Restaurant_Time::getTime( $this->id_restaurant );
+				// Return the offset to help the Javascript to calculate the open/close hour correctly
+				$out['_tzoffset'] = $_time[ 'tzoffset' ];
+				$out['_tzabbr'] = $_time[ 'tzabbr' ];
 
-		}
-		else {
-			$_time = Crunchbutton_Restaurant_Time::getTime( $this->id_restaurant );
-			// Return the offset to help the Javascript to calculate the open/close hour correctly
-			$out['_tzoffset'] = $_time[ 'tzoffset' ];
-			$out['_tzabbr'] = $_time[ 'tzabbr' ];
+				if( $isCockpit ){
 
-			if( $isCockpit ){
+					$payment_type = $this->payment_type();
+					$out[ 'payment_method' ] = $payment_type->payment_method;
 
-				$payment_type = $this->payment_type();
-				$out[ 'payment_method' ] = $payment_type->payment_method;
-
-				foreach ($this->hours() as $hours) {
-					$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
+					foreach ($this->hours() as $hours) {
+						$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
+					}
+				} else {
+					$out[ 'hours' ] = $_time[ 'hours_next_24_hours' ];
+					if( $_time[ 'next_open_time_message_utc' ] ){
+						$out[ 'next_open_time' ] = $_time[ 'next_open_time_utc' ];
+						$out[ 'next_open_time_message' ] = $_time[ 'next_open_time_message' ];
+					}
 				}
-			} else {
-				$out[ 'hours' ] = $_time[ 'hours_next_24_hours' ];
-				if( $_time[ 'next_open_time_message_utc' ] ){
-					$out[ 'next_open_time' ] = $_time[ 'next_open_time_utc' ];
-					$out[ 'next_open_time_message' ] = $_time[ 'next_open_time_message' ];
-				}
+				$out['closed_message'] = $_time[ 'closed_message' ];
 			}
-
-			$out['closed_message'] = $_time[ 'closed_message' ];
 		}
 
 		if (!$ignore['_preset']) {
@@ -1398,7 +1411,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$out[ 'loc_long' ] = $community->loc_lon;
 		}
 
-		$out[ '_open' ] = $this->open();
+		if (!$ignore['hours']) {
+			$out[ '_open' ] = $this->open();
+		}
 
 		// Remove ignored methods
 		if( count( $ignore ) ){

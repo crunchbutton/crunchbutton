@@ -4,7 +4,21 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 	const I_AM_5_MINUTES_AWAY = 'i-am-5-minutes-away';
 
-	public function exports( $profile = 'default' ){
+	public function exports( $params = [] ){
+
+		// presets for performance reasons
+		if( isset( $params[ 'profile' ] ) ){
+			$_profile = $params[ 'profile' ];
+		} else {
+			$_profile = 'default';
+		}
+
+		$_ignore = [];
+		if( isset( $params[ 'ignore' ] ) ){
+			 foreach( $params[ 'ignore' ] as $key => $val ){
+			 	$_ignore[ $val ] = true;
+			 }
+		}
 
 		$out = $this->properties();
 
@@ -29,6 +43,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['_restaurant_delivery_estimated_time_formated'] = $this->restaurant()->calc_delivery_estimated_time( $this->date );
 		$out['_restaurant_pickup_estimated_time_formated'] = $this->restaurant()->calc_pickup_estimated_time( $this->date );
 		$out['user'] = $this->user()->uuid;
+
 		//$out['timestamp'] = Crunchbutton_Util::dateToUnixTimestamp( $date );
 
 		$out['timestamp'] = $this->date()->format('U');				// unix epoc
@@ -313,12 +328,11 @@ class Cockpit_Order extends Crunchbutton_Order {
 			}
 		}
 
-		switch ( $profile ) {
+		switch ( $_profile ) {
 			case 'driver':
 				$out = $this->_driverExports( $out );
 				break;
 		}
-
 		return $out;
 	}
 

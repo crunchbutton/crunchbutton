@@ -308,9 +308,9 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				break;
 
 			default:
-				$out = $order->ordersExports();
-				$out['user'] = $order->user()->id_user ? $order->user()->exports() : null;
-				$out['restaurant'] = $order->restaurant()->id_restaurant ? $order->restaurant()->exports() : null;
+				$out = $order->ordersExports( [ 'ignore' => [ 'user', 'restaurant' ] ] );
+				$out['user'] = $order->user()->id_user ? $order->user()->exports( [ 'ignore' => [ 'presets', 'points' ] ] ) : null;
+				$out['restaurant'] = $order->restaurant()->id_restaurant ? $order->restaurant()->exports( [ 'categories', 'notifications', 'hours', 'payment_type', 'images' ] ) : null;
 				$out[ 'do_not_reimburse_driver' ] = ( intval( $out[ 'do_not_reimburse_driver' ] ) > 0 ) ? true : false;
 				$out[ 'do_not_pay_driver' ] = ( intval( $out[ 'do_not_pay_driver' ] ) > 0 ) ? true : false;
 				$out[ 'do_not_pay_restaurant' ] = ( intval( $out[ 'do_not_pay_restaurant' ] ) > 0 ) ? true : false;
