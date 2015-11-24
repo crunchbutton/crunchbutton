@@ -119,7 +119,7 @@
 									<i class="fa fa-bolt"></i>
 								</span>
 								<span ng-if="message.from != 'system'">
-									<i class="fa fa-comment" ng-if="message.is_support"></i>
+									<i class="fa fa-comment" title="Status: {{message.status}}" ng-if="message.is_support"></i>
 									<i class="fa fa-file-text-o" ng-if="message.is_note"></i>
 									<i class="fa fa-car" ng-if="!message.is_note && !message.is_support && message.is_driver"></i>
 									<i class="fa fa-user" ng-if="!message.is_note && !message.is_support && !message.is_driver"></i>

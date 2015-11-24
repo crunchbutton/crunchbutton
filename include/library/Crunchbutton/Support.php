@@ -116,7 +116,6 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ? AND `from` = ? ORDER BY date DESC, id_support_message DESC LIMIT 1 '  , [$this->id_support, Crunchbutton_Support_Message::TYPE_FROM_CLIENT]);
 	}
 
-
 	public function addCustomerNameByPhone( $phone, $name ){
 		if( trim( $name ) != '' ){
 			$id_support = false;
@@ -998,7 +997,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		}
 		if( $messages ){
 			foreach ( $messages as $message ) {
-				$out['messages'][] = $message->exports();
+				$out['messages'][] = $message->exportsSide();
 			}
 		} else {
 			$out['messages'] = [];

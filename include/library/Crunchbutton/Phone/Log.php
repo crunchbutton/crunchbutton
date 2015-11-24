@@ -2,6 +2,13 @@
 
 class Crunchbutton_Phone_Log extends Cana_Table{
 
+	const STATUS_ACCEPTED = 'accepted';
+	const STATUS_QUEUED = 'queued';
+	const STATUS_SENDING = 'sending';
+	const STATUS_SENT = 'sent';
+	const STATUS_DELIVERED = 'delivered';
+	const STATUS_RECEIVED = 'received';
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
@@ -10,7 +17,11 @@ class Crunchbutton_Phone_Log extends Cana_Table{
 			->load($id);
 	}
 
-	public static function log($to, $from, $type = 'message', $direction = 'outgoing', $reason = '') {
+	public static function byTwilioId( $twilio_id ){
+		return Crunchbutton_Phone_Log::q( 'SELECT * FROM phone_log WHERE twilio_id = ? ORDER BY id_phone_log DESC LIMIT 1', [ $twilio_id ] )->get( 0 );
+	}
+
+	public static function log($to, $from, $type = 'message', $direction = 'outgoing', $reason = '', $twilio_id = null, $status = null) {
 		$to = Phone::byPhone($to)->id_phone;
 		$from = Phone::byPhone($from)->id_phone;
 
@@ -24,7 +35,9 @@ class Crunchbutton_Phone_Log extends Cana_Table{
 			'date' => date('Y-m-d H:i:s'),
 			'type' => $type,
 			'direction' => $direction,
-			'reason' => $reason
+			'reason' => $reason,
+			'twilio_id' => $twilio_id,
+			'status' => $status
 		]);
 		$log->save();
 
