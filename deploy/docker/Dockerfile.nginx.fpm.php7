@@ -29,13 +29,7 @@ RUN echo "cgi.fix_pathinfo = 0;" >> /usr/local/etc/php/conf.d/fix_pathinfo.ini
 #RUN echo "listen = /var/run/php5-fpm.sock" >> /usr/local/etc/php-fpm.conf
 RUN echo " \n\
 listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.conf
-#RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
-ADD ./ /var/www/app
-#RUN chown -R www-data:www-data /var/www/app
-#RUN chmod -R 0777 /var/www/app
-#RUN ln -s /opt/www /var/www/app
-
-RUN php -v
+ADD ./ /app
 
 CMD nginx && php-fpm
