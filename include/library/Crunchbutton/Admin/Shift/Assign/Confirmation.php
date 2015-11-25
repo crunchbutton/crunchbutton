@@ -192,7 +192,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 	public function host_callback(){
 		if( c::getEnv() == 'live' ){
-			return 'staging.crunchr.co';
+			return 'live.ci.crunchbutton.crunchr.co';
 		} else if( c::getEnv() == 'dev' ){
 			return 'pererinha.dyndns-web.com';
 		} else {
@@ -302,6 +302,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 							if( !$assignment->isConfirmed() ){
 								$shift = $assignment->shift();
+								if( $shift->isHidden() ){ continue; }
 								$minutesToStart = $shift->minutesToStart();
 								if( $minutesToStart > 0 ){
 									self::askDriverToConfirm( $assignment );
