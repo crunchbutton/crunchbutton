@@ -42,7 +42,7 @@ if (App) {
 		case 'live':
 		default:
 			$facebook = c::config()->facebook->{ 'crunchbutton.com' };
-			if( $_SERVER['SERVER_NAME'] == 'staging.crunchr.co' ){
+			if( $_SERVER['SERVER_NAME'] == 'live.ci.crunchbutton.crunchr.co' ){
 				$facebook = c::config()->facebook->{ 'staging.crunchr.co' };
 			}
 			break;
