@@ -12,6 +12,10 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 				$this->driver();
 				break;
 
+			case 'hide-shift':
+				$this->hideShift();
+				break;
+
 			case 'driver-schedule-sms-config':
 				$this->driverScheduleSMSConfig();
 				break;
@@ -28,6 +32,18 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 				echo json_encode( [ 'error' => 'invalid object' ] );
 				break;
 		}
+	}
+
+	public function hideShift(){
+		$id_community_shift =$this->request()[ 'id_community_shift' ];
+		$hide =$this->request()[ 'hide' ];
+		$shift = Crunchbutton_Community_Shift::o( $id_community_shift );
+		if( $shift->id_community_shift ){
+			$shift->hidden = intval( $hide );
+			$shift->save();
+			echo json_encode( [ 'success' => 'success' ] );exit();
+		}
+		echo json_encode( [ 'error' => 'invalid object' ] );exit();
 	}
 
 	public function driverScheduleSMSConfig(){

@@ -58,6 +58,13 @@
 									</div>
 								</div>
 							</div>
+							<?php if( $shift->isHidden() ){ ?>
+								<div class="row-fluid">
+									<div class="span12">
+										<strong style="color:red;">This shift is hidden from drivers!</strong>
+									</div>
+								</div>
+							<?php } ?>
 							<div class="box-content" style="border:1px solid #cdcdcd;">
 								<table width="100%" class="table table-normal">
 									<thead>

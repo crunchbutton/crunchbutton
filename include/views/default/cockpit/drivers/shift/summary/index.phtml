@@ -110,6 +110,8 @@
 
 											foreach( $segments as $segment ){
 
+												$isHidden = $segment->isHidden();
+
 												$_drivers = $segment->getDrivers();
 												$firstDayOfWeek = $segment->firstDayOfWeek()->format( 'Y-m-d' );
 												$lastDayOfWeek = $segment->lastDayOfWeek()->format( 'Y-m-d' );
@@ -150,7 +152,7 @@
 
 												?><div class="row-fluid">
 
-													<div id="container_shift_<?php echo $segment->id_community_shift; ?>" class="shift span11 <?php if( $hasDriver ){ echo 'hasDrivers'; } else { echo 'hasntDrivers'; } ?>">
+													<div id="container_shift_<?php echo $segment->id_community_shift; ?>" class="shift span11 <?php if( $isHidden ){ echo 'isHidden'; } ?> <?php if( $hasDriver ){ echo 'hasDrivers'; } else { echo 'hasntDrivers'; } ?>">
 														<a class="modal-shift-assign" href="/drivers/shift/summary/shift/<?php echo $segment->id_community_shift; ?>" title="Assign drivers">
 															<div>
 																<?php if( $segment->id_community_shift_father || $segment->recurring > 0 ){ ?>
@@ -168,7 +170,7 @@
 															<?php } ?>
 														</a>
 														<label>
-															<input type="checkbox" class="hide-shift" style="float:left;" value="<?php echo $segment->id_community_shift; ?>" name="hide_<?php echo $segment->id_community_shift; ?>">
+															<input type="checkbox" <?php if( $isHidden ){ echo 'checked="checked"'; } ?> class="hide-shift" style="float:left;" value="<?php echo $segment->id_community_shift; ?>" name="hide_<?php echo $segment->id_community_shift; ?>">
 															<div style="font-size: 11px;font-weight: bold;">&nbsp;Hide shift</div>
 															<div style="clear:both;"></div>
 														</label>

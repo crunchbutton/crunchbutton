@@ -20,6 +20,14 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return ( $this->id_driver ? true : false );
 	}
 
+	public function isVisible(){
+		return ( intval( $this->hidden ) == 0 );
+	}
+
+	public function isHidden(){
+		return !$this->isVisible();
+	}
+
 	public static function driversCouldDeliveryOrder( $id_order ){
 		if( !$id_order ){
 			return false;
