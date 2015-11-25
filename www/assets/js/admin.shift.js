@@ -357,6 +357,16 @@ shift.summary.init = function(){
 			$( '#modal-shift-body' ).html( data );
 		} );
 	} );
+	$( '.hide-shift' ).click( function(e) {
+		var checkbox = $(this);
+		var value = checkbox.attr( 'value' );
+		console.log('>>>>',$( '#container_shift_' +  value ));
+		if( checkbox.is(':checked') ){
+			$( '#container_shift_' +  value ).addClass( 'isHidden' );
+		} else {
+			$( '#container_shift_' +  value ).removeClass( 'isHidden' );
+		}
+	});
 	shift.community.toggleTimezone();
 }
 

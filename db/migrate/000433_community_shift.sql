@@ -1,0 +1,1 @@
+ALTER TABLE `community_shift` ADD COLUMN `hidden` tinyint(1) unsigned NOT NULL DEFAULT 0;
