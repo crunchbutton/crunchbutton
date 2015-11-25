@@ -205,6 +205,9 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 			foreach( $days as $day ){
 				$segments = Crunchbutton_Community_Shift::shiftByCommunityDay( $community, $day->format( 'Y-m-d' ) );
 				foreach ( $segments as $segment ) {
+					if( $segment->isHidden() ){
+						continue;
+					}
 					$export = $segment->export();
 					$data = array( 'id_community_shift' => $segment->id_community_shift, 'day' => $export[ 'period' ][ 'day_start' ] . ' - ' . $export[ 'period' ][ 'weekday' ] , 'period' => $export[ 'period' ][ 'toString' ], 'tz' => $export[ 'period' ][ 'timezone_abbr' ], 'community' => $_community->name );
 					if( $wantToWork[ $segment->id_community_shift ] ){
@@ -262,6 +265,11 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 		$export = [];
 
 		foreach ( $shifts as $shift ) {
+
+			if( $shift->isHidden() ){
+				continue;
+			}
+
 			$drivers = $shift->getDrivers();
 			$mine = 0;
 			$_drivers = [];
