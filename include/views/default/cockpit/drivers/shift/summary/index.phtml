@@ -150,7 +150,7 @@
 
 												?><div class="row-fluid">
 
-													<div class="shift span11 <?php if( $hasDriver ){ echo 'hasDrivers'; } else { echo 'hasntDrivers'; } ?>">
+													<div id="container_shift_<?php echo $segment->id_community_shift; ?>" class="shift span11 <?php if( $hasDriver ){ echo 'hasDrivers'; } else { echo 'hasntDrivers'; } ?>">
 														<a class="modal-shift-assign" href="/drivers/shift/summary/shift/<?php echo $segment->id_community_shift; ?>" title="Assign drivers">
 															<div>
 																<?php if( $segment->id_community_shift_father || $segment->recurring > 0 ){ ?>
@@ -167,6 +167,11 @@
 																<span><?php echo $drivers; ?></span>
 															<?php } ?>
 														</a>
+														<label>
+															<input type="checkbox" class="hide-shift" style="float:left;" value="<?php echo $segment->id_community_shift; ?>" name="hide_<?php echo $segment->id_community_shift; ?>">
+															<div style="font-size: 11px;font-weight: bold;">&nbsp;Hide shift</div>
+															<div style="clear:both;"></div>
+														</label>
 													</div>
 												</div><?php
 											}
@@ -218,14 +223,17 @@
 		background-color: #ebf5e6;
 		border: 1px solid #d6e9c6;
 	}
-		.shift.hasDrivers a{
+		.shift.hasDrivers a, .shift.hasDrivers div{
 			color: #468847;
 		}
 	.hasntDrivers{
 		background-color: #ceb2b4;
 		border: 1px solid #eca49f;
 	}
-		.shift.hasntDrivers a{
+		.shift.hasntDrivers a, .shift.hasntDrivers div{
+			color: #8c3533;
+		}
+		.shift.hasntDrivers a, .shift.hasntDrivers div{
 			color: #8c3533;
 		}
 	.shift span{
@@ -236,6 +244,13 @@
 		width: 900px !important;
         margin: 0 auto;
 	}
+	.isHidden{
+		background-color: #7ca3b7 !important;
+		border: 1px solid #618193 !important;
+	}
+		.shift.isHidden a, .shift.isHidden div{
+			color: #536f7f !important;
+		}
 </style>
 <script type="text/javascript" src="/assets/js/admin.shift.js"></script>
 <script type="text/javascript">
