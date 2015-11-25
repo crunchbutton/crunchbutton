@@ -732,6 +732,9 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		}
 	}
 
+	public function areSettlementDocsOk(){
+		return Cockpit_Driver_Document_Status::areSettlementDocsOk( $this->id_admin );
+	}
 
 	public function hasGroup( $id_group ){
 		$groups = $this->groups();

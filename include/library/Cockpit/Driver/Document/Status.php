@@ -14,6 +14,42 @@ class Cockpit_Driver_Document_Status extends Cana_Table {
 		return Util::uploadWWW() . 'drivers-doc/';
 	}
 
+	public static function areSettlementDocsOk( $id_admin ){
+
+		$staff = Admin::o( $id_admin );
+		$payment_type = $staff->payment_type();
+
+		if( !$payment_type ){
+			return false;
+		}
+
+		if( $staff->isDriver() ){
+
+			$docs = Cockpit_Driver_Document::driver();
+			foreach( $docs as $doc ){
+
+				if( $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_HOURLY &&
+					$payment_type->payment_type != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+					continue;
+				}
+
+				if( $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_ORDER &&
+					$payment_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+					continue;
+				}
+
+				// see: https://github.com/crunchbutton/crunchbutton/issues/3393
+				if( $doc->isRequired( false ) ){
+					$docStatus = Cockpit_Driver_Document_Status::document( $staff->id_admin, $doc->id_driver_document );
+					if( !$docStatus->id_driver_document_status ){
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
 	public function download_url(){
 		return '/api/driver/documents/download/' . $this->id_driver_document_status;
 	}
@@ -159,7 +195,7 @@ class Cockpit_Driver_Document_Status extends Cana_Table {
 
 		return $this->id_driver_document_status.'-'.$name.'.'.$ext;
 	}
-	
+
 	public function getFile() {
 		$file = tempnam(sys_get_temp_dir(), 'restaurant-image');
 		$fp = fopen($file, 'wb');
