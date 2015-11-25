@@ -1297,7 +1297,11 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 	public function isElegibleToBeOpened(){
 		if( $this->id_community && $this->drivers_can_open ){
-			if( $this->allThirdPartyDeliveryRestaurantsClosed() || $this->allRestaurantsClosed() || $this->is_auto_closed ){
+			$shift = Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
+			if( $shift->id_community_shift ){
+				return false;
+			}
+			if( $this->allThirdPartyDeliveryRestaurantsClosed() || $this->allRestaurantsClosed() || $this->is_auto_closed || !$shift ){
 				return true;
 			}
 		}
@@ -1305,7 +1309,8 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function isOpen(){
-		return ( !$this->allThirdPartyDeliveryRestaurantsClosed() && !$this->allRestaurantsClosed() && !$this->is_auto_closed );
+		$shift = Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
+		return ( !$this->allThirdPartyDeliveryRestaurantsClosed() && !$this->allRestaurantsClosed() && !$this->is_auto_closed && $shift->id_community_shift );
 	}
 
 	public function openCommunityByDriver( $id_driver, $shiftEnd ){
