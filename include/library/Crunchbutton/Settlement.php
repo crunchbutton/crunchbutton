@@ -1556,7 +1556,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 					if( !$driver->hasPaymentInfo( $schedule->processor ) ){
 						$schedule->log = 'There is no account info for this driver.';
-						$message = 'Restaurant Payment error! Driver: ' . $schedule->driver()->name;
+						$message = 'Driver Payment error! Driver: ' . $schedule->driver()->name;
 						$message .= "\n". 'id_payment_schedule: ' . $schedule->id_payment_schedule;
 						$message .= "\n". 'amount: ' . $schedule->amount;
 						$message .= "\n". $schedule->log;
@@ -1566,10 +1566,22 @@ class Crunchbutton_Settlement extends Cana_Model {
 						return false;
 					}
 
+					if( !$driver->areSettlementDocsOk() ){
+						$schedule->log = 'Driver payment could not be done because the driver haven\'t sent us their IC agreement.';
+						$message = 'Driver Payment error! Driver: ' . $schedule->driver()->name;
+						$message .= "\n". 'id_payment_schedule: ' . $schedule->id_payment_schedule;
+						$message .= "\n". 'amount: ' . $schedule->amount;
+						$message .= "\n". $schedule->log;
+						$message .= "\n". 'You should communicate clearly to them that they need to in order to get paid.';
+						$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
+						$schedule->status_date = date( 'Y-m-d H:i:s' );
+						$schedule->save();
+						Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+						return false;
+					}
+
 					if( $amount > 0 ){
-
 						try {
-
 							$processor = 	$schedule->processor;
 							if( !$processor ){
 								$processor = Payment::processor();
