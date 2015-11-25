@@ -965,7 +965,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		$adminsWithShifts = Crunchbutton_Admin::q( 'SELECT DISTINCT( asa.id_admin )
 																									FROM admin_shift_assign asa
 																									INNER JOIN community_shift cs ON asa.id_community_shift = cs.id_community_shift AND cs.id_community != "' . Crunchbutton_Community::CUSTOMER_SERVICE_ID_COMMUNITY . '"
-																									WHERE cs.date_start BETWEEN "' . $now->format( 'Y-m-d' ) . ' 00:00:00" AND "' . $now->format( 'Y-m-d' ) . ' 23:59:59" AND cs.active = true' );
+																									WHERE ( cs.hidden != 1 ) AND cs.date_start BETWEEN "' . $now->format( 'Y-m-d' ) . ' 00:00:00" AND "' . $now->format( 'Y-m-d' ) . ' 23:59:59" AND cs.active = true' );
 
 		$now_start = $now->format( 'Y-m-d' ) . ' 00:00:00';
 		$now_end = $now->format( 'Y-m-d' ) . ' 23:59:59';
@@ -995,6 +995,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				$id_community = null;
 				$timezone = null;
 				foreach( $shifts as $shift ){
+
 					$hours[] = [ 'start' => $shift->dateStart(), 'end' => $shift->dateEnd(), 'startEnd' => $shift->startEndToString() ];
 					$id_community = $shift->id_community;
 					$timezone = $shift->community()->timezone;
@@ -1122,6 +1123,11 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 					$commas = '';
 
 					foreach( $shifts as $shift ){
+
+						if( $shift->isHidden() ){
+							continue;
+						}
+
 						if( $message == '' ){
 							$message = sprintf( $template, $driver->firstName(), $shift->community()->name );
 						}
@@ -1387,6 +1393,11 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 						foreach( $assigments as $assignment ){
 
 							$shift = $assignment->shift();
+
+							if( $shift->isHidden() ){
+								continue;
+							}
+
 							$admin = $assignment->admin();
 							$minutesToStart = $shift->minutesToStart();
 
