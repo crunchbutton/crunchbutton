@@ -47,6 +47,10 @@ class Controller_api_driver_community extends Crunchbutton_Controller_RestAccoun
 		$communities = $driver->driverCommunities();
 		foreach ( $communities as $community ) {
 
+			if( !$community->drivers_can_open ){
+				continue;
+			}
+
 			$_community[ 'id_community' ] = $community->id_community;
 			$_community[ 'name' ] = $community->name;
 
