@@ -123,6 +123,7 @@
 					<td colspan="3">
 						<span class="tag tag-green" ng-if="order.status=='delivered'">delivered</span>
 						<span class="tag tag-red" ng-if="order.status!='delivered'">{{order.status}}</span>
+						<span class="tag tag-black" ng-if="order.refunded">refunded</span>
 					</td>
 				</tr>
 
