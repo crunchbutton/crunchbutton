@@ -123,6 +123,9 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 		// Create a support ticket
 		$last_time_it_started = $this->next_time();
 		$message = 'The cron task "' . $this->description . '" started running at ' . $last_time_it_started->format('M jS Y g:i:s A') . ' and didn\'t finish yet.' . "\n" . 'Please check it, it seems an error has occurred.';
+		$message .= "\n\n";
+		$message .= json_encode( $this->properties() );
+
 		Crunchbutton_Cron_Log::warning( [ 'body' => $message ] );
 
 		// change the current status to let it start
