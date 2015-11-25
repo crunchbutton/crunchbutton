@@ -357,16 +357,31 @@ shift.summary.init = function(){
 			$( '#modal-shift-body' ).html( data );
 		} );
 	} );
+
 	$( '.hide-shift' ).click( function(e) {
 		var checkbox = $(this);
-		var value = checkbox.attr( 'value' );
-		console.log('>>>>',$( '#container_shift_' +  value ));
+		var id_community_shift = checkbox.attr( 'value' );
 		if( checkbox.is(':checked') ){
-			$( '#container_shift_' +  value ).addClass( 'isHidden' );
+			$( '#container_shift_' +  id_community_shift ).addClass( 'isHidden' );
 		} else {
-			$( '#container_shift_' +  value ).removeClass( 'isHidden' );
+			$( '#container_shift_' +  id_community_shift ).removeClass( 'isHidden' );
 		}
+
+		$.ajax( {
+			url: '/api/drivers/shift/hide-shift',
+			method: 'POST',
+			data: { 'id_community_shift' : id_community_shift, 'hide': ( checkbox.is(':checked') ? 1 : 0 ) },
+			dataType: 'json',
+		} ).done( function( data ) {
+			if( data.success ){
+
+			} else {
+				alert( 'Oops, error! Please try again');
+			}
+		} );
+
 	});
+
 	shift.community.toggleTimezone();
 }
 
