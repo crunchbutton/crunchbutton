@@ -1821,20 +1821,19 @@ NGApp.controller( 'RewardCtrl', function ( $scope, $http, $rootScope, ReferralSe
 
 	$rootScope.$on( 'referralStatusLoaded', function(e, data) {
 
-		$rootScope.$apply(function(scope) {
-			$scope.referral = {};
-			$scope.referral.invites = ReferralService.invites;
-			$scope.referral.limit = ReferralService.limit;
-			$scope.referral.invite_url = ReferralService.invite_url;
-			$scope.referral.value = ReferralService.value;
-			$scope.referral.enabled = ReferralService.enabled;
-			$scope.referral.invite_code = ReferralService.invite_code;
-			$scope.referral.sms = ReferralService.sms();
-			$scope.referral.url = ReferralService.cleaned_url();
-
-		});
-
-
+		setTimeout( function(){
+			$rootScope.$apply(function(scope) {
+				$scope.referral = {};
+				$scope.referral.invites = ReferralService.invites;
+				$scope.referral.limit = ReferralService.limit;
+				$scope.referral.invite_url = ReferralService.invite_url;
+				$scope.referral.value = ReferralService.value;
+				$scope.referral.enabled = ReferralService.enabled;
+				$scope.referral.invite_code = ReferralService.invite_code;
+				$scope.referral.sms = ReferralService.sms();
+				$scope.referral.url = ReferralService.cleaned_url();
+			});
+		}, 1000 );
 	});
 
 	$scope.referral.facebook = function(){
