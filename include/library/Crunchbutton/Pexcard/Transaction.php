@@ -195,7 +195,6 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 											INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.formal_relationship = false
 											WHERE
 												apt.using_pex = true
-												AND o.refunded = false
 											AND
 												oa.type = ?
 											AND
@@ -288,10 +287,15 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 			$total_amount_orders = 0;
 			$orders = Crunchbutton_Pexcard_Transaction::getOrderExpensesByDriver( $pst_start, $pst_end, $info[ 'id_admin' ] );
 			foreach( $orders as $order ){
-
 				$get_out = true;
 				$last = $order->status()->last();
-				if( $last[ 'driver' ] && $last[ 'driver' ][ 'id_admin' ] && $last[ 'driver' ][ 'id_admin' ] == $info[ 'id_admin' ] ){
+
+				if( $last[ 'status' ] == 'delivered' && $last[ 'driver' ] && $last[ 'driver' ][ 'id_admin' ] && $last[ 'driver' ][ 'id_admin' ] == $info[ 'id_admin' ] ){
+					$get_out = false;
+				}
+
+				if( $last[ 'status' ] == 'canceled' && Crunchbutton_Order_Action::orderWasPickedUp( $order->id_order, $info[ 'id_admin' ] ) ){
+					// check if the order was picked up
 					$get_out = false;
 				}
 
@@ -313,6 +317,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 																					'restaurant' => $order->restaurant,
 																					'pay_type' => $order->pay_type,
 																					'id_order' => $order->id_order,
+																					'refunded' => $order->refunded,
 																					'status' => $last[ 'status' ],
 																					'amount' => number_format( $order->amount, 2 ) ];
 			}
