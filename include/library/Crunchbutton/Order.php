@@ -2235,7 +2235,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			case 'sms-driver':
 				$spacer = ' / ';
 				$msg = "Crunchbutton #".$this->id_order." \n\n";
-				$msg .= $this->name.' ordered '.$this->delivery_type.' paying by '.$this->pay_type.". \n".$food." \n\nphone: ".preg_replace('/[^\d.]/','',$this->phone).'.';
+				$msg .= $this->name.' ordered paying by '.$this->pay_type.". \n".$food." \n\nphone: ".preg_replace('/[^\d.]/','',$this->phone).'.';
 				if ($this->delivery_type == 'delivery') {
 					$msg .= " \naddress: ".$this->address;
 				}
@@ -2327,7 +2327,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 						$pay_type = 'CASH';
 					}
 
-					$msg = $this->name . $spacer . $pay_type . $spacer . strtoupper( $this->delivery_type ) . $spacer . preg_replace( '/[^\d.]/', '', $this->phone ) . $spacer;
+					$msg = $this->name . $spacer . $pay_type . $spacer . preg_replace( '/[^\d.]/', '', $this->phone ) . $spacer;
 
 					if( $this->delivery_type == Crunchbutton_Order::SHIPPING_DELIVERY ){
 						$msg .= $this->address . $spacer;
