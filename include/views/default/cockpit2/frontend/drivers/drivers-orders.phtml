@@ -57,26 +57,43 @@
 							</div>
 
 							<!-- date -->
-							<a ng-click="showOrder( order.id_order )">
+							<div ng-if="order.status.status != 'canceled'">
 
-							<div class="column-date" ng-click="showOrder( order.id_order )">
-								<?//<h3 class="day">{{order._date | date:'MM/dd'}}</h3> ?>
-								<div class="orderid">{{order.id_order | limitTo:-3:0}}</div>
-								<div class="order-details">details</div>
-								<div class="hour">{{order.timestamp | tsToHour}}</div>
+								<a ng-click="showOrder( order.id_order )">
+
+									<div class="column-date" ng-click="showOrder( order.id_order )">
+										<?//<h3 class="day">{{order._date | date:'MM/dd'}}</h3> ?>
+										<div class="orderid">{{order.id_order | limitTo:-3:0}}</div>
+										<div class="order-details">details</div>
+										<div class="hour">{{order.timestamp | tsToHour}}</div>
+									</div>
+
+									<!-- vertical divider -->
+									<div class="vert-divider"></div>
+								</a>
 							</div>
 
-							<!-- vertical divider -->
-							<div class="vert-divider"></div>
-							</a>
+							<div ng-if="order.status.status == 'canceled'">
+								<div class="column-date">
+									<?//<h3 class="day">{{order._date | date:'MM/dd'}}</h3> ?>
+									<div class="orderid">{{order.id_order | limitTo:-3:0}}</div>
+									<div class="order-details">details</div>
+									<div class="hour">{{order.timestamp | tsToHour}}</div>
+								</div>
+
+								<!-- vertical divider -->
+								<div class="vert-divider"></div>
+							</div>
+
 							<!-- info -->
 
 							<div class="column-info">
-								<a href="http://maps.apple.com/?q={{order.restaurant_address}}" ng-if="iOS" target="_system">
+
+								<div ng-click="openMap( 'query', order.restaurant_address );" ng-if="iOS">
 									<div class="restaurant-pointer">
 										{{order.restaurant}}
 									</div>
-								</a>
+								</div>
 
 								<a href="http://maps.google.com/maps?q={{order.restaurant_address}}" ng-if="!iOS" target="_system">
 									<div class="restaurant-pointer">
@@ -93,17 +110,21 @@
 								</div>
 
 								<span ng-if="order.status.status == 'new' || order.status.driver.id_admin == account.user.id_admin">
-									<a href="http://maps.apple.com/?q={{order.address}}" ng-if="iOS" target="_system">
-										<div ng-if="order.address" class="customer-address">
-											{{order.addressFirstLine}}
-										</div>
-									</a>
+
+									<div ng-if="iOS">
+										<span>{{oc.order._restaurant_address}}</span>
+									</div>
+
+									<div ng-click="openMap( 'query', order.address );" ng-if="iOS && order.address" class="customer-address">
+										{{order.addressFirstLine}}
+									</div>
 
 									<a href="http://maps.google.com/maps?q={{order.address}}" ng-if="!iOS" target="_system">
 										<div ng-if="order.address" class="customer-address">
 											{{order.addressFirstLine}}
 										</div>
 									</a>
+
 								</span>
 							</div>
 							<div class="divider"></div>
