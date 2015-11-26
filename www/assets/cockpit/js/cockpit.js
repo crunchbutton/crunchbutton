@@ -549,6 +549,8 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$http.defaults.headers.common['app-version'] = App.version;
 	}
 
+	$rootScope._current_bundle = _current_bundle;
+
 	var url = App.service + 'config?init=1';
 	$http.get( url, {
 		cache: false
