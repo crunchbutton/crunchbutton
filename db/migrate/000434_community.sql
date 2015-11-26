@@ -1,0 +1,1 @@
+ALTER TABLE `community` ADD COLUMN `campus_cash_default_payment` tinyint(1) unsigned NOT NULL DEFAULT 0;
