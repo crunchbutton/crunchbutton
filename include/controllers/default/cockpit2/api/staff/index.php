@@ -5,6 +5,19 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
 		if( !c::admin()->permission()->check( ['global', 'permission-users'] ) && !c::admin()->isCampusManager() ){
+
+			if( c::getPagePiece(3) == 'status' ){
+				$staff = Admin::o(c::user()->id_admin);
+				$this->_status($staff);
+				exit;
+			}
+
+			if( c::getPagePiece(3) == 'has_pexcard' ){
+				$staff = Admin::o(c::user()->id_admin);
+				$this->_has_pexcard($staff);
+				exit;
+			}
+
 			$this->error( 401 );
 		}
 
@@ -29,6 +42,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 					break;
 
 				default:
+
 					$staff = Admin::o((int)c::getPagePiece(2));
 
 					if (!$staff->id_admin) {
