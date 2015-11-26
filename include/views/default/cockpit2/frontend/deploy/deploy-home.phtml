@@ -43,7 +43,7 @@
 					</span>
 					<span ng-if="version.version && version.tag">
 						&nbsp;/&nbsp;
-					</span>				
+					</span>
 					<span ng-if="version.tag">
 						<a href="https://github.com/{{version.server.repo}}/tree/{{version.tag}}" target="_system">{{version.tag}}</a>
 					</span>
@@ -58,4 +58,8 @@
 		</table>
 	</div>
 
+	Current bundle: {{_current_bundle}}
+
 </div>
+
+
