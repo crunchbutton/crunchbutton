@@ -234,12 +234,11 @@
 						</div>
 					</li>
 
-
 					<li class="li-input" ng-show="community.campus_cash" ng-class="{'error':form.campusCashName.$invalid}">
 						<div class="label">Campus Cash Name:</div>
 						<div class="input"><input type="text" name="campusCashName" ng-model="community.campus_cash_name" required placeholder="Campus Cash Name" ng-required="community.campus_cash" ng-minlength="2" ng-maxlength="50" ></div>
 						<div class="box-error">
-							<small ng-show="form.communityName.$error.required">Required.</small>
+							<small ng-show="form.campusCashName.$error.required">Required.</small>
 						</div>
 					</li>
 
@@ -249,7 +248,7 @@
 						<textarea name="campusCashReceiptInfo" ng-model="community.campus_cash_receipt_info" required placeholder="Footer receipt info" ng-required="community.campus_cash" ng-minlength="2" ng-maxlength="250"></textarea>
 						<div class="notes">Limit 250 Chars</div>
 						<div class="box-error">
-							<small ng-show="form.communityName.$error.required">Required.</small>
+							<small ng-show="form.campusCashReceiptInfo.$error.required">Required.</small>
 						</div>
 					</li>
 
@@ -263,7 +262,7 @@
 						<div class="label">Campus Cash Validation:</div>
 						<div class="input"><input type="text" name="campusCashValidation" ng-model="community.campus_cash_validation" ng-required="community.campus_cash" placeholder="Campus Cash Validation (Regular Expression)" ng-maxlength="255" ></div>
 						<div class="box-error">
-							<small ng-show="form.communityName.$error.required">Required.</small>
+							<small ng-show="form.campusCashValidation.$error.required">Required.</small>
 						</div>
 					</li>
 
@@ -272,21 +271,34 @@
 						<div class="input"><input type="text" name="campusCashMask" ng-model="community.campus_cash_mask" ng-maxlength="255" ></div>
 						<div class="notes"><a href="https://github.com/candreoliveira/ngMask/#available-patterns" target="_blank">Patterns</a></div>
 						<div class="box-error">
-							<small ng-show="form.communityName.$error.required">Required.</small>
+							<small ng-show="form.campusCashMask.$error.required">Required.</small>
 						</div>
 					</li>
 
-					<li class="li-input" ng-class="{'error':form.signature.$invalid}">
+					<li class="li-input" ng-show="community.campus_cash" ng-class="{'error':form.campusCashDefault.$invalid}">
+						<div class="label">Make it the default payment method at restaurant's page?</div>
+						<div class="input">
+							<select name="campusCashDefault" ng-required="community.campus_cash" ng-model="community.campus_cash_default_payment" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+						<div class="box-error">
+							<small ng-show="form.campusCashMask.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-show="community.campus_cash" ng-class="{'error':form.signature.$invalid}">
 						<div class="label">Require signature on receipt?</div>
 						<div class="input">
-							<select name="signature" required ng-model="community.signature" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+							<select name="signature" ng-required="community.campus_cash" ng-model="community.signature" ng-options="opt.value as opt.label for opt in yesNo" ></select>
 						</div>
 					</li>
 
-					<li class="li-input" ng-class="{'error':form.campus_cash_delivery_confirmation.$invalid}">
+					<li class="li-input" ng-show="community.campus_cash" ng-class="{'error':form.campusCashDeliveryConfirmation.$invalid}">
 						<div class="label">Show checkbox: "I certify that the address listed above for delivery is located on campus"? </div>
 						<div class="input">
-							<select name="campus_cash_delivery_confirmation" required ng-model="community.campus_cash_delivery_confirmation" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+							<select name="campusCashDeliveryConfirmation" ng-required="community.campus_cash" ng-model="community.campus_cash_delivery_confirmation" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+						<div class="box-error">
+							<small ng-show="form.campusCashMask.$error.required">Required.</small>
 						</div>
 					</li>
 

@@ -25,6 +25,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		pay_type: 'card',
 		make_default: true
 	};
+
 	// If the user has presets this variable should be set as false
 	service.showForm = true;
 	service.loaded = false;
@@ -183,6 +184,11 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 				}
 			}
 			service.startStoreEntederInfo = true;
+		}
+
+		// check if the payment type default should be campus cash
+		if( service.restaurant.campus_cash_default_payment ){
+			service.form.pay_type = 'campus_cash';
 		}
 
 		// If the restaurant does not delivery

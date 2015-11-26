@@ -222,6 +222,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			'campus_cash_fee',
 			'campus_cash_mask',
 			'campus_cash_receipt_info',
+			'campus_cash_default_payment',
 			'signature',
 			'last_down_to_help_out_message',
 			'campus_cash_delivery_confirmation',
@@ -1403,11 +1404,18 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return null;
 	}
 
+	public function campusCashDefaultPaymentMethod(){
+		if( $this->campusCash() && $this->campus_cash_default_payment ){
+			return $this->campus_cash_default_payment;
+		}
+		return false;
+	}
+
 	public function campusCashReceiptInfo(){
 		if( $this->campusCash() && $this->campus_cash_receipt_info ){
 			return $this->campus_cash_receipt_info;
 		}
-		return null;
+		return false;
 	}
 
 
@@ -1415,7 +1423,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		if( $this->campusCash() && $this->campus_cash_delivery_confirmation ){
 			return true;
 		}
-		return null;
+		return false;
 	}
 
 
