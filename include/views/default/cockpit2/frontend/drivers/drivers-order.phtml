@@ -168,7 +168,9 @@
 					</thead>
 					<tbody>
 						<tr ng-repeat="dish in oc.order._dishes_qty">
-							<td class="fooditem order-contents-item-qty" ng-class="{'order-contents-item-qty-highlight': dish.quantity > 1 }">{{dish.quantity}}</td>
+							<td nowrap="nowrap" class="fooditem order-contents-item-qty" ng-class="{ 'order-contents-item-qty-highlight': dish.quantity > 1 }">{{dish.quantity}}
+							<span ng-if="dish.quantity > 1">x</span>
+							</td>
 							<td class="fooditem dish-name">
 								<b>{{dish.name}}</b>
 								<div ng-if="dish.options.select_options">{{dish.options.select_options}}</div>
@@ -186,7 +188,11 @@
 						</tr>
 						<tr class="class">
 							<td></td>
-							<td></td>
+							<td>
+								<span ng-show="oc.order.duplicated_items" class="order-contents-item-qty-highlight">
+									Don't forget to check qty of each item
+								</span>
+							</td>
 							<td class="dish-price">Subtotal</td>
 							<td class="dish-price">
 								${{oc.order.price | formatPrice}}

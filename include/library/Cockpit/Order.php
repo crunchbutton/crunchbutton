@@ -223,6 +223,8 @@ class Cockpit_Order extends Crunchbutton_Order {
 			$out[ '_dishes' ][] = [ 'name' => $food, 'price' => [ 'regular' => $regular_price, 'marked_up' => $price ], 'options' => [ 'without_default_options' => $withoutDefaultOptions, 'with_option' => $withOptions, 'select_options' => $selectOptions ] ];
 		}
 
+		$duplicated_items = false;
+
 		// driver suggestion: quantity column to make ordering easier #4779
 		$_dishes = [];
 		foreach( $out[ '_dishes' ] as $_dish ){
@@ -231,6 +233,9 @@ class Cockpit_Order extends Crunchbutton_Order {
 				$_dishes[ $token ] = [ 'dish' => $_dish, 'quantity' => 0 ];
 			}
 			$_dishes[ $token ][ 'quantity' ]++;
+			if( $_dishes[ $token ][ 'quantity' ] > 1 ){
+				$duplicated_items = true;
+			}
 		}
 
 		// sort
@@ -254,6 +259,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 		} );
 
 		$out[ '_dishes_qty' ] = $_dishes_qty;
+		$out[ 'duplicated_items' ] = $duplicated_items;
 
 		$status = $this->status()->last();
 		$status_date = new DateTime( $status[ 'date' ], new DateTimeZone( $this->restaurant()->timezone ) );

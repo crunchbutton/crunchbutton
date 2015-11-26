@@ -52,7 +52,6 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 						}
 					}
 
-
 					if ( $this->method() == 'post' ) {
 
 						$res = [];
