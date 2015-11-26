@@ -637,7 +637,7 @@
 		</h1>
 
 
-		<ul class="drivers-list" ng-show="number.length">
+		<ul class="drivers-list" ng-show="number.length" ng-if="staffList">
 			<li ng-repeat="n in number track by $index">
 				<label>
 					Phone {{$index + 1}}: {{n}}

@@ -264,7 +264,6 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 		StaffService.phones( function( response ){
 			$scope.staff = response;
 		} );
-
 	}
 
 	$scope.sms.send = function(){
@@ -334,6 +333,7 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 	} );
 
 	$rootScope.$on('textNumber', function(e, phones) {
+		$scope.reset();
 		$scope.sms.phone = phones;
 	} );
 
