@@ -1242,6 +1242,11 @@ App.phoneGapListener = {
  * play crunch audio sound
  */
 App.playAudio = function(audio) {
+
+	if( App.isPhoneGap && App.isAndroid() ){
+		return;
+	}
+
 	var path = (App.isPhoneGap ? 'https://cockpit.la/assets/cockpit/audio/' : '/') + 'assets/cockpit/audio/';
 	var sound = new Howl({
 		urls: [path + audio + '.mp3', path + audio + '.ogg']
