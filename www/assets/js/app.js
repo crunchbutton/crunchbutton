@@ -1361,7 +1361,9 @@ App.dialog = {
 App.playAudio = function(audio) {
 	var path = 'assets/audio/';
 	if (App.isPhoneGap) {
-		window.plugins.NativeAudio.play(audio);
+		if( !App.isAndroid() ){
+			window.plugins.NativeAudio.play(audio);
+		}
 	} else {
 		var sound = new Howl({
 			urls: ['/' + path + audio + '.mp3', path + audio + '.ogg']
@@ -1371,7 +1373,7 @@ App.playAudio = function(audio) {
 }
 
 App.vibrate = function() {
-	if (App.isPhoneGap) {
+	if (App.isPhoneGap && !App.isAndroid()) {
 		try {
 			navigator.vibrate(100);
 		} catch (e) {}
