@@ -113,22 +113,22 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 	{
 
 		$isCockpit = Crunchbutton_Util::isCockpit();
-		
+
 		if (!$isCockpit) {
 			$q .= ' and active=true';
 		}
-		
+
 		$restaurant = Restaurant::q('select * from restaurant where permalink=?'.$q, [c::getPagePiece(2)])->get(0);
 
 		if (!$restaurant->id_restaurant) {
 			$restaurant = Restaurant::q('select * from restaurant where id_restaurant=?'.$q, [c::getPagePiece(2)])->get(0);
 		}
-		
+
 		if (!$restaurant || !$restaurant->id_restaurant) {
 			$this->error(404);
 			exit;
 		}
-		
+
 
 		if ($restaurant && $restaurant->id_restaurant) {
 			$where = [];
@@ -164,7 +164,6 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 				}
 			}
 		}
-
 		echo json_encode( $json );exit;
 	}
 

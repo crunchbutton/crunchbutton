@@ -1,0 +1,103 @@
+<div ng-controller="RestaurantEditNotificationsCtrl" class="tab-content">
+
+	<form name="form" novalidate ng-show="!loading">
+
+		<div class="support-boxes">
+
+
+
+			<div class="support-box-wrap box-content2">
+				<div class="support-box-wrap-header">
+					<h1>Notifications</h1>
+					<div class="support-box-header-actions-wrap">
+						<div class="support-box-header-actions">
+							<a href="" ng-click="addNotification()"><button class="button button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Notification</button></a>
+						</div>
+					</div>
+					<div class="divider"></div>
+				</div>
+
+				<div class="no-box-content-color">
+
+					<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+						<li class="li-input" ng-class="{'error':form.restaurantSendOrderNotifications.$invalid}">
+							<div class="label">Order Notifications Sent to Restaurant?</div>
+							<div class="input">
+								<select name="restaurantSendOrderNotifications" required ng-model="restaurant.order_notifications_sent" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+							</div>
+							<div class="box-error">
+								<small ng-show="form.restaurantSendOrderNotifications.$error.required">Required.</small>
+							</div>
+						</li>
+
+					</ul>
+				</div>
+			</div>
+
+			<div ng-repeat="notification in restaurant.notifications">
+				<ng-form name="innerForm">
+					<div class="support-box-wrap box-content2">
+						<div class="support-box-wrap-header">
+							<h1>Notification
+							<span ng-if="notification.id_notification"> #{{notification.id_notification}}</span>
+							<span ng-if="!notification.id_notification"> new</span>
+
+							</h1>
+							<div class="divider"></div>
+						</div>
+
+						<div class="no-box-content-color">
+
+							<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+								<li class="li-input" ng-class="{'error':innerForm.notificationType.$invalid}" ng-show="notification.active">
+									<div class="label">Type</div>
+									<div class="input">
+										<select name="notificationType" ng-required="notification.active" ng-model="notification.type" ng-options="opt.value as opt.label for opt in notificationType" ></select>
+									</div>
+									<div class="box-error">
+										<small ng-show="innerForm.notificationType.$error.required">Required.</small>
+									</div>
+								</li>
+
+								<li class="li-input" ng-class="{'error':innerForm.notificationValue.$invalid}" ng-show="notification.active">
+									<div class="label">Value:</div>
+									<div class="input"><input type="text" name="notificationValue" ng-required="notification.active" ng-model="notification.value"></div>
+									<div class="box-error">
+										<small ng-show="innerForm.notificationValue.$error.required">Required.</small>
+									</div>
+								</li>
+
+								<li class="li-input" ng-class="{'error':innerForm.notificationActive.$invalid}">
+									<div class="label">Active</div>
+									<div class="input">
+										<select name="notificationActive" required ng-model="notification.active" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+									</div>
+									<div class="box-error">
+										<small ng-show="innerForm.notificationActive.$error.required">Required.</small>
+									</div>
+								</li>
+
+							</ul>
+						</div>
+					</ng-form>
+				</div>
+			</div>
+
+		</div>
+
+	</form>
+
+	<div class="support-box-wrap box-content2">
+		<div class="no-box-content-color">
+			<ul class="ul-inputs">
+				<li class="li-input" ng-show="!isSaving">
+					<button class="button save" ng-click="save();">Save</button>
+				</li>
+				<li class="li-input" ng-show="isSaving">
+					<i class="fa fa-circle-o-notch fa-spin"></i>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
