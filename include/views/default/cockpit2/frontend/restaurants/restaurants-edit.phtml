@@ -1,3 +1,21 @@
 <div class="top-pad"></div>
 
-<iframe src="{{url  | trustAsResourceUrl}}" class="cockpit1-wrapper"></iframe>
+<div class="content-padding">
+
+	<h1 class="title"><i class="fa fa-coffee"></i>Restaurant</h1>
+	<br><br>
+	<div class="divider"></div>
+	<div class="bar-loader bar-loader-search bar-loader-boxes-top" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<div ng-if="!loading">
+		<ui-tabs>
+			<ui-tab title="Basic Information" icon="info" default="true" id="editBasic" path="assets/view/restaurants-edit-basic.html" method="editBasic"></ui-tab>
+			<ui-tab title="Delivery / Logistics" icon="truck" id="editDelivery" path="assets/view/restaurants-edit-delivery.html" method="editDelivery"></ui-tab>
+			<ui-tab title="Hours" icon="clock-o" id="editHours" path="assets/view/restaurants-edit-hours.html" method="editHours"></ui-tab>
+			<ui-tab title="Notes" icon="sticky-note-o" id="editNotes" path="assets/view/restaurants-edit-notes.html" method="editNotes"></ui-tab>
+			<ui-tab title="Notifications" icon="volume-up" id="editNotifications" path="assets/view/restaurants-edit-notifications.html" method="editNotifications"></ui-tab>
+		</ui-tabs>
+	</div>
+
+</div>
+

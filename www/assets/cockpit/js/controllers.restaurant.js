@@ -34,15 +34,15 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			controller: 'RestaurantWeightAdjustmentCtrl',
 			templateUrl: 'assets/view/restaurants-weight-adjustment.html'
 		})
+		.when('/restaurant/edit/:id', {
+			action: 'restaurant',
+			controller: 'RestaurantEditCtrl',
+			templateUrl: 'assets/view/restaurants-edit.html'
+		})
 		.when('/restaurant/:id', {
 			action: 'restaurant',
 			controller: 'RestaurantCtrl',
 			templateUrl: 'assets/view/restaurants-restaurant.html'
-		})
-		.when('/restaurant/:id/edit', {
-			action: 'restaurant',
-			controller: 'RestaurantEditCtrl',
-			templateUrl: 'assets/view/restaurants-edit.html'
 		})
 		.when('/restaurant/order/new', {
 			action: 'restaurant-order-new',
@@ -440,13 +440,175 @@ NGApp.controller('RestaurantNotesToDriverCtrl', function ($scope, $rootScope, Re
 });
 
 
-NGApp.controller('RestaurantEditCtrl', function ($scope, $routeParams) {
-	if (location.host.match(/^dev/)) {
-		$scope.url = 'http://dev.cockpit1.crunchr.co/restaurants/' + $routeParams.id;
-	} else {
-		$scope.url = 'http://live.cockpit1.crunchr.co/restaurants/' + $routeParams.id;
+NGApp.controller('RestaurantEditCtrl', function ( $scope, $rootScope, $routeParams, RestaurantEditService) {
+
+	$scope.loading = true;
+
+	var reset = function(){
+		RestaurantEditService.permalink = $routeParams.id;
+		setTimeout( function(){
+			$scope.loading = false;
+		}, 500 );
 	}
+
+	$scope.editBasic = function(){};
+	$scope.editHours = function(){};
+	$scope.editDelivery = function(){};
+	$scope.editNotes = function(){};
+	$scope.editNotifications = function(){};
+
+	reset();
+
 });
+
+NGApp.controller('RestaurantEditNotesCtrl', function ( $scope, RestaurantEditService ) {
+
+	var load = function(){
+
+		RestaurantEditService.load.notes( RestaurantEditService.permalink, function( json ) {
+			$scope.restaurant = json;
+			$scope.loading = false;
+		} );
+	}
+
+	$scope.save = function(){
+		if( $scope.restaurant.id_restaurant ){
+
+		} else {
+			App.alert( 'Something wrong!' );
+		}
+	}
+
+	load();
+
+});
+
+NGApp.controller('RestaurantEditNotificationsCtrl', function ( $scope, RestaurantEditService ) {
+
+	$scope.yesNo = RestaurantEditService.yesNo();
+	$scope.notificationType = RestaurantEditService.notificationType();
+
+	var load = function(){
+
+		RestaurantEditService.load.notifications( RestaurantEditService.permalink, function( json ) {
+			$scope.restaurant = json;
+			$scope.loading = false;
+		} );
+	}
+
+	$scope.save = function(){
+		if( $scope.restaurant.id_restaurant ){
+
+		} else {
+			App.alert( 'Something wrong!' );
+		}
+	}
+
+	$scope.addNotification = function(){
+		if( $scope.restaurant.id_restaurant ){
+			if( !$scope.restaurant.notifications ){
+				$scope.restaurant.notifications = [];
+			}
+			$scope.restaurant.notifications.push( { type: 'sms', value: null, active: true } );
+		}
+	}
+
+	load();
+
+});
+
+
+
+NGApp.controller('RestaurantEditDeliveryCtrl', function ( $scope, RestaurantEditService ) {
+
+	$scope.yesNo = RestaurantEditService.yesNo();
+	$scope.deliveryRadiusType = RestaurantEditService.deliveryRadiusType();
+	$scope.deliveryMinAmount = RestaurantEditService.deliveryMinAmount();
+
+	var load = function(){
+
+		RestaurantEditService.load.delivery( RestaurantEditService.permalink, function( json ) {
+			$scope.restaurant = json;
+			$scope.loading = false;
+		} );
+	}
+
+
+	$scope.save = function(){
+		if( $scope.restaurant.id_restaurant ){
+
+		} else {
+			App.alert( 'Something wrong!' );
+		}
+	}
+
+	load();
+
+});
+
+NGApp.controller('RestaurantEditBasicCtrl', function ( $scope, RestaurantEditService, CommunityService) {
+
+	$scope.yesNo = RestaurantEditService.yesNo();
+	$scope.timezones = RestaurantEditService.timezones();
+	$scope.deliveryRadiusType = RestaurantEditService.deliveryRadiusType();
+
+	var load = function(){
+
+		if( !$scope.communities ){
+			CommunityService.listSimple( function( json ){
+				$scope.communities = json;
+			} );
+		}
+
+		RestaurantEditService.load.basic( RestaurantEditService.permalink, function( json ) {
+			$scope.restaurant = json;
+			$scope.loading = false;
+		} );
+	}
+
+
+	$scope.save = function(){
+		if( $scope.restaurant.id_restaurant ){
+
+			if( !$scope.restaurant.id_community ){
+				App.alert( 'Please select a community!' );
+				return;
+			}
+
+		} else {
+			App.alert( 'Something wrong!' );
+		}
+	}
+
+	load();
+
+});
+
+NGApp.controller('RestaurantEditHoursCtrl', function ( $scope, RestaurantEditService ) {
+
+	var load = function(){
+
+		RestaurantEditService.load.hours( RestaurantEditService.permalink, function( json ) {
+			$scope.restaurant = json;
+			$scope.restaurant.hours = RestaurantEditService.hours.parse( $scope.restaurant.hours );
+			console.log('$scope.restaurant.hours',$scope.restaurant.hours);
+			$scope.loading = false;
+		} );
+	}
+
+
+	$scope.save = function(){
+		if( $scope.restaurant.id_restaurant ){
+
+		} else {
+			App.alert( 'Something wrong!' );
+		}
+	}
+
+	load();
+
+});
+
 
 NGApp.controller('RestaurantCtrl', function ($scope, $routeParams, MapService, RestaurantService, OrderService, $rootScope) {
 	$scope.loading = true;

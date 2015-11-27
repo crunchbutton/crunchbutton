@@ -1,0 +1,72 @@
+<div ng-controller="RestaurantEditNotesCtrl" class="tab-content">
+
+	<form name="form" novalidate ng-show="!loading">
+
+		<div class="support-boxes">
+
+			<div class="support-box-wrap box-content2">
+				<div class="support-box-wrap-header">
+					<h1>Notes</h1>
+					<div class="divider"></div>
+				</div>
+
+				<div class="no-box-content-color">
+
+					<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+						<li class="li-input">
+							<div class="label">Restaurant Email or Owner’s Email:</div>
+							<div class="input"><input type="text" name="restaurantName" ng-model="restaurant.email"></div>
+						</li>
+
+						<li class="li-input">
+							<div class="label">General Notes</div>
+							<div class="input">
+								<textarea ng-model="restaurant.notes" required></textarea>
+							</div>
+						</li>
+
+						<li class="li-input">
+							<div class="label">Notes to Driver</div>
+							<div class="input">
+								<textarea ng-model="restaurant.notes_to_driver" required></textarea>
+							</div>
+						</li>
+
+						<li class="li-input">
+							<div class="label">TO DO List</div>
+							<div class="input">
+								<textarea ng-model="restaurant.notes_todo" required></textarea>
+							</div>
+						</li>
+
+						<li class="li-input">
+							<div class="label">Additional Notes</div>
+							<div class="input">
+								<textarea ng-model="restaurant.notes_todo" required></textarea>
+							</div>
+							<div class="notes">Owner’s name, phone number, best times to reach him and notes on his personality, attitude towards Crunchbutton</div>
+						</li>
+
+					</ul>
+				</div>
+			</div>
+
+
+		</div>
+
+	</form>
+
+	<div class="support-box-wrap box-content2">
+		<div class="no-box-content-color">
+			<ul class="ul-inputs">
+				<li class="li-input" ng-show="!isSaving">
+					<button class="button save" ng-click="save();">Save</button>
+				</li>
+				<li class="li-input" ng-show="isSaving">
+					<i class="fa fa-circle-o-notch fa-spin"></i>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>

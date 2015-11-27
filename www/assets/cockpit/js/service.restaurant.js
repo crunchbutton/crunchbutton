@@ -333,3 +333,173 @@ NGApp.factory( 'RestaurantOrderPlacementService', function( $rootScope, $resourc
 
 	return service;
 } );
+
+
+NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeParams ) {
+
+	var service = {};
+
+	var load = $resource( App.service + 'restaurant/edit/:action/:permalink', { action: '@action', permalink: '@permalink' }, {
+				'get' : { 'method': 'GET' },
+			}
+		);
+
+	service.load = {
+		basic : function( permalink, callback ){
+			load.get( { 'permalink': permalink, 'action': 'basic' }, function( data ){
+				callback( data );
+			} );
+		},
+		hours : function( permalink, callback ){
+			load.get( { 'permalink': permalink, 'action': 'hours' }, function( data ){
+				callback( data );
+			} );
+		},
+		delivery : function( permalink, callback ){
+			load.get( { 'permalink': permalink, 'action': 'delivery' }, function( data ){
+				callback( data );
+			} );
+		},
+		notes : function( permalink, callback ){
+			load.get( { 'permalink': permalink, 'action': 'notes' }, function( data ){
+				callback( data );
+			} );
+		},
+		notifications : function( permalink, callback ){
+			load.get( { 'permalink': permalink, 'action': 'notifications' }, function( data ){
+				callback( data );
+			} );
+		}
+	}
+
+	service.yesNo = function(){
+		var options = [];
+		options.push( { value: false, label: 'No' } );
+		options.push( { value: true, label: 'Yes' } );
+		return options;
+	}
+
+	service.timezones = function(){
+		var timezones = [];
+		timezones.push( { value: 'America/New_York', label: 'Eastern' } );
+		timezones.push( { value: 'America/Chicago', label: 'Central' } );
+		timezones.push( { value: 'America/Denver', label: 'Mountain' } );
+		timezones.push( { value: 'America/Phoenix', label: 'Arizona (no DST)' } );
+		timezones.push( { value: 'America/Los_Angeles', label: 'Pacific' } );
+		return timezones;
+	}
+
+	service.notificationType = function(){
+		var notificationType = [];
+		notificationType.push( { value: 'sms', label: 'SMS' } );
+		notificationType.push( { value: 'email', label: 'Email' } );
+		notificationType.push( { value: 'phone', label: 'Phone' } );
+		notificationType.push( { value: 'url', label: 'URL' } );
+		notificationType.push( { value: 'fax', label: 'Fax' } );
+		notificationType.push( { value: 'admin', label: 'Admin' } );
+		notificationType.push( { value: 'stealth', label: 'Stealth Fax' } );
+		return notificationType;
+	}
+
+	service.deliveryRadiusType = function(){
+		var deliveryRadiusType = [];
+		deliveryRadiusType.push( { value: 'restaurant', label: 'Restaurant' } );
+		deliveryRadiusType.push( { value: 'community', label: 'Community' } );
+		return deliveryRadiusType;
+	}
+
+	service.deliveryMinAmount = function(){
+		var deliveryMinAmount = [];
+		deliveryMinAmount.push( { value: 'total', label: 'Total' } );
+		deliveryMinAmount.push( { value: 'subtotal', label: 'Subtotal' } );
+		return deliveryMinAmount;
+	}
+
+
+	// Hours
+	service.hours = {
+		parse: function( hours ){
+						var _hours = {};
+						// 1. convert everything to 'hours from Monday morning midnight'
+						hfmmm = []; // pairs of [start,finish]
+						days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+						for(day in hours) {
+							dayhours = days.indexOf(day)*2400;
+							for(i in hours[day]) {
+								segment = hours[day][i];
+								m0 = /(\d+):(\d+)/.exec(segment[0]);
+								b = (dayhours + parseInt(m0[1], 10) * 100 + parseInt(m0[2], 10));
+								m1 = /(\d+):(\d+)/.exec(segment[1]);
+								e = (dayhours + parseInt(m1[1], 10) * 100 + parseInt(m1[2], 10));
+								hfmmm.push({b : b, e : e});
+							}
+						}
+						// 2. sort
+						hfmmm.sort(function(a,b) { return (a.b<b.b?-1:(a.b>b.b?1:0)); });
+						// 3. merge things that should be merged
+						for(i = 0; i < hfmmm.length-1; i++) {
+							if(hfmmm[i+1].b <= hfmmm[i].e       &&
+								 hfmmm[i+1].e - hfmmm[i].b < 3600  ) {
+								// merge these two segments
+								hfmmm[i].e = hfmmm[i+1].e;
+								hfmmm.splice(i+1,1);
+								i--;
+								continue;
+							}
+						}
+						days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+						for( x in days ) {
+							_hours[ days[ x ] ] = 'Closed';
+						}
+
+						for(i in hfmmm) {
+							segment = hfmmm[i];
+							day = days[Math.floor(segment.b/2400)];
+
+							if( _hours[day] === 'Closed') {
+								_hours[day] = '';
+							}
+							else {
+								_hours[day] = _hours[day] + ', ';
+							}
+							while(segment.b >= 2400) {
+								segment.b -= 2400;
+								segment.e -= 2400;
+							}
+							format_time = function(t) {
+								// input: a time like 234 indicating 2:34 AM
+								h = Math.floor(t/100);
+								m = t-100*h;
+								h_fmt = '';
+								m_fmt = '';
+								ampm = '';
+								shorthand = '';
+								if(h === 0) { h_fmt = '' + (h + 12); shorthand = 'midnight'; ampm = 'AM'; }
+								else if(h === 12) { shorthand = 'noon'; ampm = 'PM'; }
+								else if(h === 24) { shorthand = 'midnight'; ampm = 'AM'; h_fmt = '12'; }
+								else if(h < 12) { ampm = 'AM'; }
+								else if(h < 24) { h_fmt = '' + (h - 12); ampm = 'PM'; }
+								else { ampm = 'AM'; h_fmt = '' + (h - 24); }
+								if(m) { m_fmt = ':' + UTIL.pad_number(m, 2); }
+								fmt = '' + (h_fmt || h) + m_fmt + ' ' + ampm;
+								if(shorthand) fmt = fmt + ' (' + shorthand + ')';
+								return fmt;
+							};
+							segment.b_fmt = format_time(segment.b);
+							segment.e_fmt = format_time(segment.e);
+							segment.fmt = segment.b_fmt + ' - ' + segment.e_fmt;
+							_hours[day] = _hours[day] + segment.fmt;
+						}
+						return _hours;
+		}
+	}
+
+	return service;
+} );
+var UTIL = {
+	pad_number : function(num, pad) {
+		str = '' + num;
+		while(str.length < pad) str = '0' + str;
+		return str;
+	},
+}
