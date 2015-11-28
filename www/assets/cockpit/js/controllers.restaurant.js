@@ -456,6 +456,7 @@ NGApp.controller('RestaurantEditCtrl', function ( $scope, $rootScope, $routePara
 	$scope.editDelivery = function(){};
 	$scope.editNotes = function(){};
 	$scope.editNotifications = function(){};
+	$scope.editMenu = function(){};
 
 	reset();
 
@@ -517,6 +518,39 @@ NGApp.controller('RestaurantEditNotificationsCtrl', function ( $scope, Restauran
 
 });
 
+NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditService ) {
+
+	$scope.yesNo = RestaurantEditService.yesNo();
+	$scope.active = RestaurantEditService.active();
+
+	var load = function(){
+
+		RestaurantEditService.load.menu( RestaurantEditService.permalink, function( json ) {
+			$scope.restaurant = json;
+			$scope.loading = false;
+		} );
+	}
+
+	$scope.save = function(){
+		if( $scope.restaurant.id_restaurant ){
+
+		} else {
+			App.alert( 'Something wrong!' );
+		}
+	}
+
+	$scope.addNotification = function(){
+		if( $scope.restaurant.id_restaurant ){
+			if( !$scope.restaurant.menu ){
+				$scope.restaurant.menu = [];
+			}
+			$scope.restaurant.menu.push( { type: 'sms', value: null, active: true } );
+		}
+	}
+
+	load();
+
+});
 
 
 NGApp.controller('RestaurantEditDeliveryCtrl', function ( $scope, RestaurantEditService ) {

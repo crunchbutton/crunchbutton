@@ -1,0 +1,175 @@
+<div ng-controller="RestaurantEditMenuCtrl" class="tab-content">
+
+	<form name="form" novalidate ng-show="!loading">
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Menu</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<button ng-click="addCategory()" class="button button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Category</button>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+		</div>
+
+		<div ng-repeat="category in restaurant.categories">
+			<div class="support-box-wrap box-content2">
+				<div class="support-box-wrap-header">
+					<h1>
+						<span ng-if="category.name">{{category.name}}</span>
+						<span ng-if="!category.name"><i>New Category</i></span>
+					</h1>
+					<div class="support-box-header-actions-wrap">
+						<div class="support-box-header-actions">
+							<button ng-click="addCategory()" class="button button-small button-empty button-green"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Category</button>
+							<button ng-click="addDish()" class="button button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Dish</button>
+							<button ng-click="addCategory()" class="button button-small button-empty button-green"><i class="fa fa-arrow-up"></i></button>
+							<button ng-click="addCategory()" class="button button-small button-empty button-green"><i class="fa fa-arrow-down"></i></button>
+						</div>
+					</div>
+					<div class="divider"></div>
+				</div>
+
+				<div class="no-box-content-color" ng-repeat="dish in category._dishes">
+					<ng-form name="innerFormDish">
+						<ul ng-class="{'submitted':submitted}" class="ul-inputs inputs-group-dish divider">
+
+							<li class="li-input li-input-dish" ng-class="{'error':innerFormDish.dishName.$invalid}">
+								<div class="input"><input type="text" name="dishName" ng-model="dish.name" placeholder="Dish name"></div>
+								<div class="box-error">
+									<small ng-show="innerFormDish.dishName.$error.required">Required.</small>
+								</div>
+							</li>
+
+							<li class="li-input li-input-dish" ng-class="{'error':innerFormDish.dishPrice.$invalid}">
+								<div class="input"><input type="number" step="any" name="dishPrice" ng-model="dish.price" ignore-mouse-wheel placeholder="Dish price"></div>
+								<div class="box-error">
+									<small ng-show="innerFormDish.dishPrice.$error.required">Required.</small>
+								</div>
+							</li>
+
+							<li class="li-input li-input-dish" ng-class="{'error':innerFormDish.dishActive.$invalid}">
+								<div class="input">
+									<select name="dishActive" required ng-model="dish.active" ng-options="opt.value as opt.label for opt in active" ></select>
+								</div>
+								<div class="box-error">
+									<small ng-show="innerFormDish.dishActive.$error.required">Required.</small>
+								</div>
+							</li>
+
+							<li class="li-input li-input-dish">
+								<button title="Delete dish" class="button button-small button-empty button-green"><i class="fa fa-trash"></i></button>
+								<button title="Move this dish up" class="button button-small button-empty button-green"><i class="fa fa-arrow-up"></i></button>
+								<button title="Move this dish down" class="button button-small button-empty button-green"><i class="fa fa-arrow-down"></i></button>
+								<button ng-if="!dish.expanded" ng-click="dish.expanded = true" title="Expand details" class="button button-small button-empty button-green"><i class="fa fa-expand"></i></button>
+								<button ng-if="dish.expanded"  ng-click="dish.expanded = false" title="Collapse details" class="button button-small button-empty button-green"><i class="fa fa-compress"></i></button>
+								<button title="Copy this dish or its options" class="button button-small button-empty button-green"><i class="fa fa-gear"></i></button>
+							</li>
+						</ul>
+
+						<div ng-if="dish.expanded" class="dish-option-group">
+
+							<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+								<li class="li-input li-input-dish" ng-class="{'error':innerFormDish.dishDescription.$invalid}">
+									<div class="input"><input type="text" name="dishDescription" ng-model="dish.description" placeholder="Dish description"></div>
+									<div class="box-error">
+										<small ng-show="innerFormDish.dishDescription.$error.required">Required.</small>
+									</div>
+									<div class="notes">60 characters</div>
+								</li>
+								<li class="li-input" ng-class="{'error':innerFormDish.expandedView.$invalid}">
+									<div class="label">Expanded view when added to cart</div>
+									<div class="input">
+										<select name="expandedView" required ng-model="dish.expand_view" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+									</div>
+									<div class="box-error">
+										<small ng-show="innerFormDish.expandedView.$error.required">Required.</small>
+									</div>
+									<div class="notes">
+										For when you want the user to see options, like sizes and pizza toppings
+									</div>
+								</li>
+								<li class="li-input" ng-class="{'error':innerFormDish.showStar.$invalid}">
+									<div class="label">Show star</div>
+									<div class="input">
+										<select name="showStar" required ng-model="dish.top" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+									</div>
+									<div class="box-error">
+										<small ng-show="innerFormDish.showStar.$error.required">Required.</small>
+									</div>
+									<div class="notes">
+										Usually just for items in the first category on the menu
+									</div>
+								</li>
+							</ul>
+							<div class="divider"></div>
+
+							<div ng-repeat="option in dish._options" class="divider">
+
+								<ng-form name="innerFormOption">
+
+									<ul ng-class="{'submitted':submitted}" class="ul-inputs inputs-group-dish">
+
+										<li class="li-input li-input-dish" ng-class="{'error':innerFormOption.optionName.$invalid}">
+											<div class="input"><input type="text" name="optionName" ng-model="option.name" placeholder="Option name"></div>
+											<div class="box-error">
+												<small ng-show="innerFormOption.optionName.$error.required">Required.</small>
+											</div>
+										</li>
+
+										<li class="li-input li-input-dish" ng-class="{'error':innerFormOption.optionPrice.$invalid}">
+											<div class="input"><input type="number" step="any" name="optionPrice" ng-model="option.price" ignore-mouse-wheel placeholder="Additonal amount"></div>
+											<div class="box-error">
+												<small ng-show="innerFormOption.optionPrice.$error.required">Required.</small>
+											</div>
+										</li>
+
+										<li class="li-input li-input-dish" ng-class="{'error':innerFormOption.dishActive.$invalid}">
+											<div class="input">
+												<select name="dishActive" required ng-model="dish.active" ng-options="opt.value as opt.label for opt in active" ></select>
+											</div>
+											<div class="box-error">
+												<small ng-show="innerFormOption.dishActive.$error.required">Required.</small>
+											</div>
+										</li>
+
+										<li class="li-input li-input-dish">
+											<button ng-if="!option.default" ng-click="option.default = true" title="Default" class="button button-small button-empty button-green"><i class="fa fa-check-square"></i></button>
+											<button ng-if="option.default"  ng-click="option.default = false" title="Default" class="button button-small button-empty button-green"><i class="fa fa-square"></i></button>
+											<button title="Delete dish" class="button button-small button-empty button-green"><i class="fa fa-trash"></i></button>
+											<button title="Move this dish up" class="button button-small button-empty button-green"><i class="fa fa-arrow-up"></i></button>
+											<button title="Move this dish down" class="button button-small button-empty button-green"><i class="fa fa-arrow-down"></i></button>
+											<button title="Copy this dish or its options" class="button button-small button-empty button-green"><i class="fa fa-gear"></i></button>
+										</li>
+
+									</ul>
+								</ng-form>
+							</div>
+							<div class="divider"></div>
+						</div>
+
+
+					</ng-form>
+				</div>
+
+			</div>
+		</div>
+
+	</form>
+
+	<div class="support-box-wrap box-content2">
+		<div class="no-box-content-color">
+			<ul class="ul-inputs">
+				<li class="li-input" ng-show="!isSaving">
+					<button class="button save" ng-click="save();">Save</button>
+				</li>
+				<li class="li-input" ng-show="isSaving">
+					<i class="fa fa-circle-o-notch fa-spin"></i>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>

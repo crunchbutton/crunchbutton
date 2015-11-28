@@ -1089,6 +1089,17 @@ input {
 	color: #5d5f63;
 	margin-top: 1em;
 }
+	.inputs-group-dish .li-input-dish{
+		width:22%;
+		float:left;
+		margin-right:1em;
+	}
+
+	.dish-option-group{
+		margin-left:2em;
+		border-left: 3px solid #CCC;
+		padding-left:1em;
+	}
 
 .li-input-disabled input[type="checkbox"].switch + div {
 	background: #CCC !important;

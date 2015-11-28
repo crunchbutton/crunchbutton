@@ -369,6 +369,11 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 			load.get( { 'permalink': permalink, 'action': 'notifications' }, function( data ){
 				callback( data );
 			} );
+		},
+		menu : function( permalink, callback ){
+			load.get( { 'permalink': permalink, 'action': 'menu' }, function( data ){
+				callback( data );
+			} );
 		}
 	}
 
@@ -376,6 +381,13 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 		var options = [];
 		options.push( { value: false, label: 'No' } );
 		options.push( { value: true, label: 'Yes' } );
+		return options;
+	}
+
+	service.active = function(){
+		var options = [];
+		options.push( { value: true, label: 'Active' } );
+		options.push( { value: false, label: 'Inactive' } );
 		return options;
 	}
 

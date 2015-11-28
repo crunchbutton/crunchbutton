@@ -46,7 +46,7 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 						WHERE o.id_restaurant = ? ' . $interval . ' )';
 			$keys[] = $this->id_restaurant;
 			$keys[] = $this->id_restaurant;
-		
+
 		} else {
 			$query = 'SELECT COUNT(*) AS total
 								FROM `order` o
@@ -61,7 +61,7 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 								   ORDER BY oa.id_order_action) actions ON actions.id_order = o.id_order
 								AND actions.id_order_action = oa.id_order_action
 								WHERE o.id_restaurant = ? ' . $interval;
-			
+
 			$keys[] = $status;
 			$keys[] = $this->id_restaurant;
 		}
