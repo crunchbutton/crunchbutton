@@ -28,6 +28,9 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 			case 'notifications':
 				$this->_notifications();
 				break;
+			case 'menu':
+				$this->_menu();
+				break;
 		}
 	}
 
@@ -82,6 +85,17 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 				break;
 			case 'get':
 				$this->_notificationsExport();
+				break;
+		}
+	}
+
+	private function _menu(){
+		switch ( $this->method() ) {
+			case 'post':
+				// $this->_menuSave();
+				break;
+			case 'get':
+				$this->_menuExport();
 				break;
 		}
 	}
@@ -161,6 +175,15 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 		$out['notifications'] = [];
 		foreach ( $this->restaurant->notifications( [ 'active' => null ] ) as $notification ) {
 			$out['notifications'][] = $notification->exports();
+		}
+		$this->_return( $out );
+	}
+
+	private function _menuExport(){
+		$out = [ 'id_restaurant' => $this->restaurant->id_restaurant, 'permalink' => $this->restaurant->permalink ];
+		$out['categories'] = [];
+		foreach ( $this->restaurant->categories( ) as $category ) {
+			$out['categories'][] = $category->exports();
 		}
 		$this->_return( $out );
 	}
