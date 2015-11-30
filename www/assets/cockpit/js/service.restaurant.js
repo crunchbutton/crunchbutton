@@ -485,16 +485,18 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 			list[ new_index ] = list[ old_index ];
 			list[ old_index ] = current_item;
 		}
-		for( var i = 0; i < list.length; i++ ){
-			list[ i ].sort = ( i + 1 );
-			list[ i ].show_up = true;
-			list[ i ].show_down = true;
-			// @remove -- remove it before commit
-			// list[ i ].expanded = true;
-		}
-		if( list ){
-			list[ 0 ].show_up = false;
-			list[ list.length - 1 ].show_down = false;
+		if( list.length ){
+			for( var i = 0; i < list.length; i++ ){
+				list[ i ].sort = ( i + 1 );
+				list[ i ].show_up = true;
+				list[ i ].show_down = true;
+				// @remove -- remove it before commit
+				list[ i ].expanded = true;
+			}
+			if( list ){
+				list[ 0 ].show_up = false;
+				list[ list.length - 1 ].show_down = false;
+			}
 		}
 		return list;
 	}

@@ -17,14 +17,22 @@
 		<div ng-repeat="category in restaurant.categories">
 			<div class="support-box-wrap box-content2">
 				<div class="support-box-wrap-header">
-					<h1>
-						<span ng-if="category.name">{{category.name}}</span>
-						<span ng-if="!category.name"><i>New Category</i></span>
-					</h1>
+
+					<ng-form name="innerFormCategory">
+						<ul ng-class="{'submitted':submitted}" class="ul-inputs inputs-group-dish divider">
+							<li class="li-input li-input-dish" ng-class="{'error':innerFormCategory.categoryName.$invalid}">
+								<div class="input"><input type="text" name="categoryName" ng-model="category.name" placeholder="Category name"></div>
+								<div class="box-error">
+									<small ng-show="innerFormCategory.categoryName.$error.required">Required.</small>
+								</div>
+							</li>
+						</ul>
+					</ng-form>
+
 					<div class="support-box-header-actions-wrap">
 						<div class="support-box-header-actions">
-							<button ng-if="category.expanded" ng-click="addDish()" class="button button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Dish</button>
-							<button ng-click="addCategory()" title="Delete Category" class="button button-small button-empty button-green"><i class="fa fa-trash"></i></button>
+							<button ng-if="category.expanded" ng-click="addDish( category )" class="button button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Dish</button>
+							<button ng-click="deleteCategory(category)" title="Delete category" class="button button-small button-empty button-green"><i class="fa fa-trash"></i></button>
 							<button ng-click="sortCategoryUp(category)" class="button button-small button-empty button-green" ng-if="category.show_up"><i class="fa fa-arrow-up"></i></button>
 							<button ng-click="sortCategoryDown(category)" class="button button-small button-empty button-green" ng-if="category.show_down"><i class="fa fa-arrow-down"></i></button>
 							<button ng-click="category.expanded = ( category.expanded ? false : true )" title="Collapse / Expand category details" class="button button-small button-empty button-green">
@@ -64,10 +72,10 @@
 							</li>
 
 							<li class="li-input li-input-dish">
-								<button title="Delete dish" class="button button-small button-empty button-green"><i class="fa fa-trash"></i></button>
+								<button ng-click="deleteDish(dish, category)" title="Delete dish" class="button button-small button-empty button-green"><i class="fa fa-trash"></i></button>
 								<button title="Move this dish up" ng-click="sortDishUp(dish, category)" ng-if="dish.show_up" class="button button-small button-empty button-green"><i class="fa fa-arrow-up"></i></button>
 								<button title="Move this dish down" ng-click="sortDishDown(dish, category)" ng-if="dish.show_down" class="button button-small button-empty button-green"><i class="fa fa-arrow-down"></i></button>
-								<button  ng-click="dish.expanded = ( dish.expanded ? false : true )" title="Collapse / Expand details" class="button button-small button-empty button-green">
+								<button ng-click="dish.expanded = ( dish.expanded ? false : true )" title="Collapse / Expand details" class="button button-small button-empty button-green">
 									<i ng-if="!dish.expanded" class="fa fa-expand"></i>
 									<i ng-if="dish.expanded" class="fa fa-compress"></i>
 								</button>
@@ -114,7 +122,7 @@
 							<div class="divider"></div>
 
 							<strong><br><br>Checkbox Options:</strong>
-							<button ng-click="addCheckboxOption()" title="Add Checkbox Option" class="button button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Checkbox Option</button>
+							<button ng-click="addCheckboxOption(dish, category)" title="Add Checkbox Option" class="button button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Checkbox Option</button>
 
 							<div ng-if="dish.options.checkboxes.length">
 
@@ -143,7 +151,7 @@
 													<i class="fa fa-check-square" ng-if="option.default"></i>
 													<i class="fa fa-square" ng-if="!option.default"></i>
 												</button>
-												<button title="Delete option" class="button button-small button-empty button-green"><i class="fa fa-trash"></i></button>
+												<button ng-click="deleteCheckboxOption(option, dish, category)" title="Delete option" class="button button-small button-empty button-green"><i class="fa fa-trash"></i></button>
 												<button title="Move this dish up" ng-if="option.show_up" ng-click="sortOptionUp(option, dish.options.checkboxes, dish, category, 'checkbox')" class="button button-small button-empty button-green"><i class="fa fa-arrow-up"></i></button>
 												<button title="Move this dish down" ng-if="option.show_down" ng-click="sortOptionDown(option, dish.options.checkboxes, dish, category, 'checkbox')" class="button button-small button-empty button-green"><i class="fa fa-arrow-down"></i></button>
 											</li>
@@ -214,7 +222,7 @@
 														<li class="li-input li-input-dish">
 
 
-															<button ng-click="setOptionAsDefault( suboption, option, dish, category );" title="Default" class="button button-small button-empty button-green">
+															<button ng-click="setOptionAsDefault( suboption, option, dish, category );" title="Make it default" class="button button-small button-empty button-green">
 																<i class="fa fa-check-square" ng-if="suboption.default"></i>
 																<i class="fa fa-square" ng-if="!suboption.default"></i>
 															</button>
