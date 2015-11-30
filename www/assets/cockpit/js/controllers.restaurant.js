@@ -584,7 +584,7 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 	$scope.addCategory = function(){
 		var categories = $scope.restaurant.categories;
 		var sort = categories.length ? categories.length : 1;
-		categories.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort } );
+		categories.push( { id_restaurant: $scope.restaurant.id_restaurant, expanded: true, sort: sort, _dishes: [] } );
 		$scope.restaurant.categories = RestaurantEditService.menu.sort.category( categories );
 	}
 
@@ -605,7 +605,7 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 	$scope.addDish = function( category ){
 		var dishes = $scope.restaurant.categories[ category.sort - 1 ]._dishes;
 		var sort = dishes.length ? dishes.length : 1;
-		dishes.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, active: true } );
+		dishes.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, active: true, expanded: true, options: { selects:[], checkboxes:[] } } );
 		$scope.restaurant.categories[ category.sort - 1 ]._dishes = RestaurantEditService.menu.parse.dish( dishes );
 	}
 
@@ -626,7 +626,7 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 	$scope.addCheckboxOption = function( dish, category ){
 		var options = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.checkboxes;
 		var sort = options.length ? options.length : 1;
-		options.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, type: 'check' } );
+		options.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, expanded: true, type: 'check' } );
 		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.checkboxes = RestaurantEditService.menu.sort.option( options );
 	}
 
@@ -642,6 +642,60 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 			}
 		}
 		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.checkboxes = RestaurantEditService.menu.sort.option( options );
+	}
+
+	$scope.addSelectOption = function( dish, category ){
+		var options = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects;
+		var sort = options.length ? options.length : 1;
+		var rand = '__' + getRandomSpan();
+		options.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, type: 'select', expanded: true, id_option: rand, options: [] } );
+		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects = RestaurantEditService.menu.sort.option( options );
+	}
+
+	$scope.deleteSelectOption = function( option, dish, category ){
+		var options = [];
+		var sort = 1;
+		for( x in $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects ){
+			if( $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ x ].sort != option.sort ){
+				var _option = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ x ];
+				_option.sort = sort;
+				options.push( _option );
+				sort++;
+			}
+		}
+		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects = RestaurantEditService.menu.sort.option( options );
+	}
+
+	$scope.addSelectSubOption = function( option, dish, category ){
+		var options = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options;
+		var sort = options.length ? options.length : 1;
+		options.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, type: 'check', id_option_parent: option.id_option, default: ( sort == 1 ) } );
+		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options = RestaurantEditService.menu.sort.option( options );
+	}
+
+	$scope.deleteSelectSubOption = function( suboption, option, dish, category ){
+		var options = [];
+		var sort = 1;
+		for( x in $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options ){
+			if( $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options[ x ].sort != suboption.sort ){
+				var _option = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options[ x ];
+				_option.sort = sort;
+				options.push( _option );
+				sort++;
+			}
+		}
+		if( options.length ){
+			var hasDefault = false;
+			for( x in options ){
+				if( options[ x ].default ){
+					hasDefault = true;
+				}
+			}
+			if( !hasDefault ){
+				options[ 0 ].default = true;
+			}
+		}
+		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options = RestaurantEditService.menu.sort.option( options );
 	}
 
 	$scope.sortDishDown = function( dish, category ){
@@ -698,6 +752,10 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 	}
 	$scope.sortCategoryUp = function( category ){
 		$scope.restaurant.categories = RestaurantEditService.menu.sort.category( $scope.restaurant.categories, category, 'up' );
+	}
+
+	var getRandomSpan = function(){
+		return Math.floor((Math.random()*6)+1);
 	}
 
 	load();

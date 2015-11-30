@@ -491,7 +491,7 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 				list[ i ].show_up = true;
 				list[ i ].show_down = true;
 				// @remove -- remove it before commit
-				list[ i ].expanded = true;
+				// list[ i ].expanded = true;
 			}
 			if( list ){
 				list[ 0 ].show_up = false;

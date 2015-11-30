@@ -164,7 +164,7 @@
 
 
 						<strong><br><br>Select Options:</strong>
-							<button ng-click="addCheckboxOption()" title="Add Checkbox Option" class="button button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Select Option</button>
+							<button ng-click="addSelectOption(dish, category)" title="Add Select Option" class="button button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Select Option</button>
 
 							<div ng-if="dish.options.selects.length">
 
@@ -182,8 +182,8 @@
 											</li>
 
 											<li class="li-input li-input-dish">
-												<button ng-if="option.expanded" ng-click="addCheckboxOption()" title="Add Option" class="button button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Option</button>
-												<button title="Delete option" class="button button-small button-empty button-green"><i class="fa fa-trash"></i></button>
+												<button ng-if="option.expanded" ng-click="addSelectSubOption(option, dish, category)" title="Add Option" class="button button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Option</button>
+												<button ng-click="deleteSelectOption(option, dish, category)" title="Delete option" class="button button-small button-empty button-green"><i class="fa fa-trash"></i></button>
 												<button title="Move this dish up" ng-if="option.show_up" ng-click="sortOptionUp(option, dish.options.selects, dish, category, 'select')" class="button button-small button-empty button-green"><i class="fa fa-arrow-up"></i></button>
 												<button title="Move this dish down" ng-if="option.show_down" ng-click="sortOptionDown(option, dish.options.selects, dish, category, 'select')" class="button button-small button-empty button-green"><i class="fa fa-arrow-down"></i></button>
 												<button ng-click="option.expanded = ( option.expanded ? false : true )" title="Collapse / Expand details" class="button button-small button-empty button-green">
@@ -227,7 +227,7 @@
 																<i class="fa fa-square" ng-if="!suboption.default"></i>
 															</button>
 
-															<button title="Delete option" class="button button-small button-empty button-green"><i class="fa fa-trash"></i></button>
+															<button ng-click="deleteSelectSubOption( suboption, option, dish, category )" title="Delete option" class="button button-small button-empty button-green"><i class="fa fa-trash"></i></button>
 															<button title="Move this option up" ng-if="suboption.show_up" ng-click="sortSubOptionUp( suboption, option, dish, category )" class="button button-small button-empty button-green"><i class="fa fa-arrow-up"></i></button>
 															<button title="Move this option down" ng-if="suboption.show_down" ng-click="sortSubOptionDown( suboption, option, dish, category )" class="button button-small button-empty button-green"><i class="fa fa-arrow-down"></i></button>
 														</li>
