@@ -489,22 +489,68 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 			list[ i ].sort = ( i + 1 );
 			list[ i ].show_up = true;
 			list[ i ].show_down = true;
+			// @remove -- remove it before commit
+			list[ i ].expanded = true;
 		}
 		if( list ){
 			list[ 0 ].show_up = false;
 			list[ list.length - 1 ].show_down = false;
 		}
-
 		return list;
 	}
 
 	service.menu = {
-		sort:{
+		sort: {
 			category: function( categories, category, direction ){
 				return sort( categories, category, direction );
 			},
 			dish: function( dishes, dish, direction ){
 				return sort( dishes, dish, direction );
+			},
+			option: function( options, option, direction ){
+				return sort( options, option, direction );
+			}
+		},
+		parse: {
+			dish: function( dishes ){
+				for( x in dishes ){
+					var dish = dishes[ x ];
+					dish.options = { selects:[], checkboxes:[] };
+					var options = dish._options;
+					var checkboxes = {};
+					var selects = {};
+					if( options ){
+						for( y in options ){
+							var option = options[ y ];
+							if( option.type == 'select' ){
+								option.options = [];
+								dish.options.selects.push( option );
+							}
+							if( option.type == 'check' && !option.id_option_parent ){
+								option.options = [];
+								dish.options.checkboxes.push( option );
+							}
+						}
+						for( y in options ){
+							var option = options[ y ];
+							if( option.type == 'check' && option.id_option_parent ){
+								for( z in dish.options.selects ){
+									if( dish.options.selects[ z ].id_option == option.id_option_parent ){
+										dish.options.selects[ z ].options.push( option );
+									}
+								}
+							}
+						}
+					}
+
+					if( dish.options.checkboxes.length ){
+						dish.options.checkboxes = service.menu.sort.option( dish.options.checkboxes );
+					}
+
+
+					dishes[ x ] = dish;
+				}
+				return service.menu.sort.dish( dishes );
 			}
 		}
 	}
@@ -553,17 +599,17 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 											tomorrow = days[(days.indexOf(today)+1)%(days.length)];
 											if(!(tomorrow in _hours)) { _hours[tomorrow] = [] }
 											_hours[today].push([
-													'' + begin_h + ':' + UTIL.pad_number(begin_m,2),
+													'' + begin_h + ':' + padNumber(begin_m,2),
 													'24:00']);
 											_hours[tomorrow].push([
 													'0:00',
-													'' + (end_h-24) + ':' + UTIL.pad_number(end_m,2)]);
+													'' + (end_h-24) + ':' + padNumber(end_m,2)]);
 										}
 										else {
 											// just the one
 											_hours[days[day]].push([
-													'' + begin_h + ':' + UTIL.pad_number(begin_m,2),
-													'' + end_h + ':' + UTIL.pad_number(end_m,2)]);
+													'' + begin_h + ':' + padNumber(begin_m,2),
+													'' + end_h + ':' + padNumber(end_m,2)]);
 										}
 									};
 									segments = val.split(/(?:and|,)/);
@@ -633,7 +679,7 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 								else if(h < 12) { ampm = 'AM'; }
 								else if(h < 24) { h_fmt = '' + (h - 12); ampm = 'PM'; }
 								else { ampm = 'AM'; h_fmt = '' + (h - 24); }
-								if(m) { m_fmt = ':' + UTIL.pad_number(m, 2); }
+								if(m) { m_fmt = ':' + padNumber(m, 2); }
 								fmt = '' + (h_fmt || h) + m_fmt + ' ' + ampm;
 								if(shorthand) fmt = fmt + ' (' + shorthand + ')';
 								return fmt;
@@ -647,12 +693,11 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 		}
 	}
 
-	return service;
-} );
-var UTIL = {
-	pad_number : function(num, pad) {
+	var padNumber = function(num, pad) {
 		str = '' + num;
 		while(str.length < pad) str = '0' + str;
 		return str;
-	},
-}
+	}
+
+	return service;
+} );
