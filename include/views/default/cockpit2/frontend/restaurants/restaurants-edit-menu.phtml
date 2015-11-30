@@ -35,7 +35,7 @@
 					<div class="divider"></div>
 				</div>
 
-				<div class="no-box-content-color" ng-repeat="dish in category._dishes" ng-if="category.expanded">
+				<div class="no-box-content-color dish-option-group" ng-repeat="dish in category._dishes" ng-if="category.expanded">
 					<ng-form name="innerFormDish">
 						<ul ng-class="{'submitted':submitted}" class="ul-inputs inputs-group-dish divider">
 
@@ -47,7 +47,7 @@
 							</li>
 
 							<li class="li-input li-input-dish" ng-class="{'error':innerFormDish.dishPrice.$invalid}">
-								<div class="input"><input type="number" step="any" name="dishPrice" ng-model="dish.price" ignore-mouse-wheel placeholder="Dish price"></div>
+								<div class="input"><input type="number" class="input-price" step="any" name="dishPrice" ng-model="dish.price" ignore-mouse-wheel placeholder="Dish price"></div>
 								<div class="box-error">
 									<small ng-show="innerFormDish.dishPrice.$error.required">Required.</small>
 								</div>
@@ -55,7 +55,7 @@
 
 							<li class="li-input li-input-dish" ng-class="{'error':innerFormDish.dishActive.$invalid}">
 								<div class="input">
-									<select name="dishActive" required ng-model="dish.active" ng-options="opt.value as opt.label for opt in active" ></select>
+									<select name="dishActive" class="input-active" required ng-model="dish.active" ng-options="opt.value as opt.label for opt in active" ></select>
 								</div>
 								<div class="box-error">
 									<small ng-show="innerFormDish.dishActive.$error.required">Required.</small>
@@ -110,46 +110,53 @@
 							</ul>
 							<div class="divider"></div>
 
-							<div ng-repeat="option in dish._options" class="divider" ng-if="!option.id_option_parent && option.type != 'select'">
+							<strong><br><br>Checkbox Options:</strong>
+							<button ng-click="addCheckboxOption()" title="Add Checkbox Option" class="button button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Checkbox Option</button>
 
-								<ng-form name="innerFormOption">
+							<div ng-if="dish.options.checkboxes.length">
 
-									<ul ng-class="{'submitted':submitted}" class="ul-inputs inputs-group-dish">
+								<div ng-repeat="option in dish.options.checkboxes" class="divider">
 
-										<li class="li-input li-input-dish" ng-class="{'error':innerFormOption.optionName.$invalid}">
-											<div class="input"><input type="text" name="optionName" ng-model="option.name" placeholder="Option name"></div>
-											<div class="box-error">
-												<small ng-show="innerFormOption.optionName.$error.required">Required.</small>
-											</div>
-										</li>
+									<ng-form name="innerFormOption">
 
-										<li class="li-input li-input-dish" ng-class="{'error':innerFormOption.optionPrice.$invalid}">
-											<div class="input"><input type="number" step="any" name="optionPrice" ng-model="option.price" ignore-mouse-wheel placeholder="Additonal amount"></div>
-											<div class="box-error">
-												<small ng-show="innerFormOption.optionPrice.$error.required">Required.</small>
-											</div>
-										</li>
+										<ul ng-class="{'submitted':submitted}" class="ul-inputs inputs-group-dish">
 
-										<li class="li-input li-input-dish" ng-class="{'error':innerFormOption.dishActive.$invalid}">
-											<div class="input">
-												<select name="dishActive" required ng-model="dish.active" ng-options="opt.value as opt.label for opt in active" ></select>
-											</div>
-											<div class="box-error">
-												<small ng-show="innerFormOption.dishActive.$error.required">Required.</small>
-											</div>
-										</li>
+											<li class="li-input li-input-dish" ng-class="{'error':innerFormOption.optionName.$invalid}">
+												<div class="input"><input type="text" name="optionName" ng-model="option.name" placeholder="Option name"></div>
+												<div class="box-error">
+													<small ng-show="innerFormOption.optionName.$error.required">Required.</small>
+												</div>
+											</li>
 
-										<li class="li-input li-input-dish">
-											<button ng-if="!option.default" ng-click="option.default = true" title="Default" class="button button-small button-empty button-green"><i class="fa fa-check-square"></i></button>
-											<button ng-if="option.default"  ng-click="option.default = false" title="Default" class="button button-small button-empty button-green"><i class="fa fa-square"></i></button>
-											<button title="Delete dish" class="button button-small button-empty button-green"><i class="fa fa-trash"></i></button>
-											<button title="Move this dish up" class="button button-small button-empty button-green"><i class="fa fa-arrow-up"></i></button>
-											<button title="Move this dish down" class="button button-small button-empty button-green"><i class="fa fa-arrow-down"></i></button>
-											<button title="Copy this dish or its options" class="button button-small button-empty button-green"><i class="fa fa-gear"></i></button>
-										</li>
+											<li class="li-input li-input-dish" ng-class="{'error':innerFormOption.optionPrice.$invalid}">
+												<div class="input"><input type="number" step="any" class="input-price" name="optionPrice" ng-model="option.price" ignore-mouse-wheel placeholder="Additonal amount"></div>
+												<div class="box-error">
+													<small ng-show="innerFormOption.optionPrice.$error.required">Required.</small>
+												</div>
+											</li>
 
-									</ul>
-								</ng-form>
+											<li class="li-input li-input-dish" ng-class="{'error':innerFormOption.optionActive.$invalid}">
+												<div class="input">
+													<select name="optionActive" class="input-active" required ng-model="dish.active" ng-options="opt.value as opt.label for opt in active" ></select>
+												</div>
+												<div class="box-error">
+													<small ng-show="innerFormOption.optionActive.$error.required">Required.</small>
+												</div>
+											</li>
+
+											<li class="li-input li-input-dish">
+												<button ng-click="option.default = ( option.default ? false : true )" title="Default" class="button button-small button-empty button-green">
+													<i class="fa fa-check-square" ng-if="option.default"></i>
+													<i class="fa fa-square" ng-if="!option.default"></i>
+												</button>
+												<button title="Delete option" class="button button-small button-empty button-green"><i class="fa fa-trash"></i></button>
+												<button title="Move this dish up" ng-if="option.show_up" ng-click="sortOptionUp(option, dish.options.checkboxes, dish, category, 'checkbox')" ng-show="dish.show_down" class="button button-small button-empty button-green"><i class="fa fa-arrow-up"></i></button>
+												<button title="Move this dish down" ng-if="option.show_down" ng-click="sortOptionDown(option, dish.options.checkboxes, dish, category, 'checkbox')" ng-show="dish.show_down" class="button button-small button-empty button-green"><i class="fa fa-arrow-down"></i></button>
+											</li>
+
+										</ul>
+									</ng-form>
+								</div>
 							</div>
 							<div class="divider"></div>
 						</div>

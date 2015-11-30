@@ -1100,14 +1100,20 @@ input {
 	}
 
 	.dish-option-group{
-		margin-left:2em;
+		margin-left:1em;
 		border-left: 3px solid #CCC;
-		padding-left:1em;
+		padding-left:.5em;
 	}
 
 .li-input-disabled input[type="checkbox"].switch + div {
 	background: #CCC !important;
 }
+	.li-input .input-price{
+		width: 15em;
+	}
+	.li-input .input-active{
+		width: 10em;
+	}
 .li-input .code{
 	font-size: 1.1em;
 	color: #666;
