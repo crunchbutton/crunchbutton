@@ -20,19 +20,22 @@
 					<h1>
 						<span ng-if="category.name">{{category.name}}</span>
 						<span ng-if="!category.name"><i>New Category</i></span>
+						::{{category.sort}}
 					</h1>
 					<div class="support-box-header-actions-wrap">
 						<div class="support-box-header-actions">
 							<button ng-click="addCategory()" class="button button-small button-empty button-green"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Category</button>
 							<button ng-click="addDish()" class="button button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Dish</button>
-							<button ng-click="addCategory()" class="button button-small button-empty button-green"><i class="fa fa-arrow-up"></i></button>
-							<button ng-click="addCategory()" class="button button-small button-empty button-green"><i class="fa fa-arrow-down"></i></button>
+							<button ng-click="sortCategoryUp(category)" class="button button-small button-empty button-green" ng-show="category.show_up"><i class="fa fa-arrow-up"></i></button>
+							<button ng-click="sortCategoryDown(category)" class="button button-small button-empty button-green" ng-show="category.show_down"><i class="fa fa-arrow-down"></i></button>
+							<button ng-if="!category.expanded" ng-click="category.expanded = true" title="Expand category details" class="button button-small button-empty button-green"><i class="fa fa-expand"></i></button>
+							<button ng-if="category.expanded"  ng-click="category.expanded = false" title="Collapse category details" class="button button-small button-empty button-green"><i class="fa fa-compress"></i></button>
 						</div>
 					</div>
 					<div class="divider"></div>
 				</div>
 
-				<div class="no-box-content-color" ng-repeat="dish in category._dishes">
+				<div class="no-box-content-color" ng-repeat="dish in category._dishes" ng-if="category.expanded">
 					<ng-form name="innerFormDish">
 						<ul ng-class="{'submitted':submitted}" class="ul-inputs inputs-group-dish divider">
 
@@ -61,8 +64,8 @@
 
 							<li class="li-input li-input-dish">
 								<button title="Delete dish" class="button button-small button-empty button-green"><i class="fa fa-trash"></i></button>
-								<button title="Move this dish up" class="button button-small button-empty button-green"><i class="fa fa-arrow-up"></i></button>
-								<button title="Move this dish down" class="button button-small button-empty button-green"><i class="fa fa-arrow-down"></i></button>
+								<button title="Move this dish up" ng-click="sortDishUp(dish, category)" ng-show="dish.show_up" class="button button-small button-empty button-green"><i class="fa fa-arrow-up"></i></button>
+								<button title="Move this dish down" ng-click="sortDishDown(dish, category)" ng-show="dish.show_down" class="button button-small button-empty button-green"><i class="fa fa-arrow-down"></i></button>
 								<button ng-if="!dish.expanded" ng-click="dish.expanded = true" title="Expand details" class="button button-small button-empty button-green"><i class="fa fa-expand"></i></button>
 								<button ng-if="dish.expanded"  ng-click="dish.expanded = false" title="Collapse details" class="button button-small button-empty button-green"><i class="fa fa-compress"></i></button>
 								<button title="Copy this dish or its options" class="button button-small button-empty button-green"><i class="fa fa-gear"></i></button>
@@ -107,7 +110,7 @@
 							</ul>
 							<div class="divider"></div>
 
-							<div ng-repeat="option in dish._options" class="divider">
+							<div ng-repeat="option in dish._options" class="divider" ng-if="!option.id_option_parent && option.type != 'select'">
 
 								<ng-form name="innerFormOption">
 

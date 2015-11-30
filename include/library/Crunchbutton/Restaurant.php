@@ -839,7 +839,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		];
 		$whereSql = $this->_mergeWhere($defaultFilters, $where);
 		if (!isset($this->_notifications)) {
-			$this->_notifications = Crunchbutton_Notification::q( "SELECT * FROM notification WHERE $whereSql" );
+			$this->_notifications = Crunchbutton_Notification::q( "SELECT * FROM notification WHERE $whereSql ORDER BY active DESC, type" );
 		}
 		return $this->_notifications;
 	}
