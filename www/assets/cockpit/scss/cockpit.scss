@@ -1083,12 +1083,16 @@ input {
 .li-input{
 	padding: .6em 0;
 }
+	.li-input .input-small{
+		width: 50%;
+	}
 .li-input .notes{
 	font-size: .95em;
 	line-height:1.5em;
 	color: #5d5f63;
 	margin-top: 1em;
 }
+
 	.inputs-group-dish .li-input-dish{
 		width:22%;
 		float:left;

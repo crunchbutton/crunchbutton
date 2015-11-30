@@ -28,7 +28,7 @@ NGApp.directive('ticketMessagesScroll', function( $rootScope ) {
 				}
 			} );
 		}
-  };
+	};
 } );
 
 NGApp.directive('supportChatContents', function( $window, $rootScope ) {
@@ -49,7 +49,7 @@ NGApp.directive('supportChatContents', function( $window, $rootScope ) {
 			}
 
 		}
-  };
+	};
 } );
 
 NGApp.directive('fitHeight', function() {
@@ -389,7 +389,7 @@ NGApp.directive( 'resourceUpload', function ($rootScope, FileUploader) {
 			scope.uploader.onProgressAll = function( progress ) {
 				var progress = ( scope.uploader.progress / 100 );
 				try{ l.setProgress( progress );} catch(e){}
-  		};
+			};
 
 			scope.uploader.onErrorItem = function (fileItem, response, status, headers) {
 				$rootScope.$broadcast( 'resourceUploadError', {} );
@@ -587,7 +587,7 @@ NGApp.directive( 'spinnerActionButton', function ( $parse ) {
 			buttonTitle: '@',
 			isRunning: '@',
 			method:'&action'
-    },
+		},
 		template: '<a href ng-click="run($event)">' +
 								'<button class="button button-small button-empty" ng-class="{\'button-green\':!isRunning}" >' +
 									'<i class="fa fa-check" ng-if="!isRunning"></i><i class="fa fa-spinner fa-spin" ng-if="isRunning"></i>&nbsp;&nbsp;{{buttonTitle}}' +
@@ -620,7 +620,7 @@ NGApp.directive('imgListViewSrc', function( $parse ) {
 		restrict: 'A',
 		scope: {
 			image:'=imgListViewSrc'
-    },
+		},
 
 		link: function(scope, element, attrs) {
 
@@ -644,10 +644,10 @@ NGApp.directive('imgListViewSrc', function( $parse ) {
 					var img = new Image();
 					img.src = scope.image;
 					img.onload = function(){
-				 		success( img.src );
+						success( img.src );
 					};
 					img.onerror = function(){
-				 		error();
+						error();
 					};
 				} else {
 					error();
@@ -656,4 +656,79 @@ NGApp.directive('imgListViewSrc', function( $parse ) {
 
 		}
 }
+});
+
+
+NGApp.directive( 'permalinkValidation', function () {
+	return {
+			require: 'ngModel',
+			link: function(scope, elem, attr, ngModel) {
+				scope.$watch( attr.ngModel, function() { validate(); } );
+				var validate = function() {
+					var val = elem.val();
+					var isValid = true;
+					if(!/^[-a-z\d]+$/.exec(val)){
+						isValid = false;
+					}
+					ngModel.$setValidity( 'permalinkValidation', isValid );
+				};
+			}
+	};
+});
+
+NGApp.directive( 'restaurantHoursValidation', function () {
+	return {
+			require: 'ngModel',
+			link: function(scope, elem, attr, ngModel) {
+				scope.$watch( attr.ngModel, function() { validate(); } );
+				var validate = function() {
+					var val = elem.val();
+					var isValid = false;
+					if( /^(?: *|Closed)$/i.exec( val )){
+						isValid = true;
+					}
+					if( !isValid ){
+						isValid = true;
+						val = val.replace(/\(.*?\)/g, '');
+						segments = val.split(/(?:and|,)/);
+						for(i in segments) {
+							if(!/^ *(\d+)(?:\:(\d+))? *(am|pm) *(?:to|-) *(\d+)(?:\:(\d+))? *(am|pm) *$/i.exec(segments[i])) {
+								isValid = false;
+							}
+						}
+					};
+					ngModel.$setValidity( 'restaurantHoursValidation', isValid );
+				};
+			}
+	};
+});
+
+NGApp.directive( 'restaurantAddress', function () {
+	return {
+			restrict: 'A',
+			require: 'ngModel',
+			link: function ( scope, elem, attrs, ctrl ) {
+				elem.on( 'blur', function ( evt ) {
+
+					var address = elem.val();
+
+					g = new google.maps.Geocoder();
+					g.geocode({address:address},function(r,s) {
+						if(s === 'ZERO_RESULTS') return;
+						if(s !== 'OK') {
+							App.alert('Geocoding error.');
+							console.log(s);
+							console.log(r);
+							return;
+						}
+						if(!r || !r.length) { return; }
+						console.log('scope',scope);
+						scope.restaurant.address = r[0].formatted_address;
+						scope.restaurant.loc_lat = r[0].geometry.location.lat();
+						scope.restaurant.loc_long = r[0].geometry.location.lng();
+					});
+
+				} );
+			}
+	};
 });

@@ -345,6 +345,11 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 		);
 
 	service.load = {
+		new : function( callback ){
+			load.get( { 'action': 'new' }, function( data ){
+				callback( data );
+			} );
+		},
 		basic : function( permalink, callback ){
 			load.get( { 'permalink': permalink, 'action': 'basic' }, function( data ){
 				callback( data );
@@ -375,6 +380,44 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 				callback( data );
 			} );
 		}
+	}
+
+	var save = $resource( App.service + 'restaurant/edit/:action/:permalink', { action: '@action', permalink: '@permalink' }, {
+				'post' : { 'method': 'POST' },
+			}
+		);
+
+	service.save = {
+		basic : function( data, callback ){
+			data.action = 'basic';
+			save.post( data, function( data ){
+				callback( data );
+			} );
+		},
+		delivery : function( data, callback ){
+			data.action = 'delivery';
+			save.post( data, function( data ){
+				callback( data );
+			} );
+		},
+		notes : function( data, callback ){
+			data.action = 'notes';
+			save.post( data, function( data ){
+				callback( data );
+			} );
+		},
+		notifications : function( data, callback ){
+			data.action = 'notifications';
+			save.post( data, function( data ){
+				callback( data );
+			} );
+		},
+		hours : function( data, callback ){
+			data.action = 'hours';
+			save.post( data, function( data ){
+				callback( data );
+			} );
+		},
 	}
 
 	service.yesNo = function(){
@@ -427,9 +470,107 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 		return deliveryMinAmount;
 	}
 
+	var sort = function( list, item, direction ){
+		if( item &&  direction ){
+			var old_position = item.sort;
+			var new_position = null;
+			if( direction == 'up' ){
+				new_position = item.sort - 1;
+			} else {
+				new_position = item.sort + 1;
+			}
+			new_index = new_position - 1;
+			old_index = old_position - 1;
+			var current_item = list[ new_index ];
+			list[ new_index ] = list[ old_index ];
+			list[ old_index ] = current_item;
+		}
+		for( var i = 0; i < list.length; i++ ){
+			list[ i ].sort = ( i + 1 );
+			list[ i ].show_up = true;
+			list[ i ].show_down = true;
+		}
+		if( list ){
+			list[ 0 ].show_up = false;
+			list[ list.length - 1 ].show_down = false;
+		}
+
+		return list;
+	}
+
+	service.menu = {
+		sort:{
+			category: function( categories, category, direction ){
+				return sort( categories, category, direction );
+			},
+			dish: function( dishes, dish, direction ){
+				return sort( dishes, dish, direction );
+			}
+		}
+	}
 
 	// Hours
 	service.hours = {
+		saveIsSafe: true,
+		validate: function ( hours ){
+								_hours = {};
+								days = ['mon','tue','wed','thu','fri','sat','sun'];
+								service.hours.saveIsSafe = true;
+								for(day in days) {
+									val = hours[ days[ day ] ];
+									if(/^(?: *|closed)$/i.exec(val)) continue;
+									save_one_time_segment = function(val) {
+										val = val.replace(/\(.*?\)/g, '');
+										val = val.replace(/midnight/i, '0:00 AM');
+										val = val.replace(/noon/i, '12:00 PM');
+										m = /^ *(\d+)(?:\:(\d+))? *(am|pm) *(?:to|-) *(\d+)(?:\:(\d+))? *(am|pm) *$/i.exec(val)
+										if(!m) {
+											App.alert('Unrecognized time format.');
+											service.hours.saveIsSafe = false;
+											return;
+										}
+										begin_h = parseInt(m[1]);
+										begin_m = parseInt(m[2]) || 0;
+										begin_ampm = m[3].toLowerCase();
+										end_h = parseInt(m[4]);
+										end_m = parseInt(m[5]) || 0;
+										end_ampm = m[6].toLowerCase();
+										if(begin_ampm === 'am' && begin_h === 12) {
+											begin_h = begin_h - 12;
+											if(end_h === 12 && end_ampm === 'am' && end_m > begin_m) {
+												end_h = end_h - 12;
+											}
+										}
+										if(begin_ampm === 'pm' && begin_h < 12) { begin_h = begin_h + 12; }
+										if(end_ampm === 'am' && end_h === 12) { end_h = end_h + 12; }
+										if(end_ampm === 'pm' && end_h < 12) { end_h = end_h + 12; }
+										if(end_ampm === 'am' && end_h < begin_h) { end_h = end_h + 24; }
+
+										if(!(days[day] in _hours)) { _hours[days[day]] = [] }
+										if(end_h*100 + end_m > 2400) {
+											// split into two times
+											today = days[day];
+											tomorrow = days[(days.indexOf(today)+1)%(days.length)];
+											if(!(tomorrow in _hours)) { _hours[tomorrow] = [] }
+											_hours[today].push([
+													'' + begin_h + ':' + UTIL.pad_number(begin_m,2),
+													'24:00']);
+											_hours[tomorrow].push([
+													'0:00',
+													'' + (end_h-24) + ':' + UTIL.pad_number(end_m,2)]);
+										}
+										else {
+											// just the one
+											_hours[days[day]].push([
+													'' + begin_h + ':' + UTIL.pad_number(begin_m,2),
+													'' + end_h + ':' + UTIL.pad_number(end_m,2)]);
+										}
+									};
+									segments = val.split(/(?:and|,)/);
+									for(i in segments) save_one_time_segment(segments[i]);
+								}
+							return _hours;
+		},
 		parse: function( hours ){
 						var _hours = {};
 						// 1. convert everything to 'hours from Monday morning midnight'

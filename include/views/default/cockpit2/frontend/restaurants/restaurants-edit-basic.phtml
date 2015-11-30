@@ -25,9 +25,10 @@
 
 						<li class="li-input" ng-class="{'error':form.restaurantPermalink.$invalid}">
 							<div class="label">Permalink:</div>
-							<div class="input"><input type="text" name="restaurantPermalink" ng-model="restaurant.permalink" required placeholder="Permalink"></div>
+							<div class="input"><input type="text" permalink-validation ng-model="restaurant._permalink" name="restaurantPermalink" ng-model="restaurant._permalink" required placeholder="Permalink"></div>
 							<div class="box-error">
 								<small ng-show="form.restaurantPermalink.$error.required">Required.</small>
+								<small ng-show="form.restaurantPermalink.$error.permalinkValidation">Use lowercase letters, numbers and dashes.</small>
 							</div>
 							<div class="notes">crunchbutton.com/food-delivery/<strong>whateveryouwritehere</strong></div>
 						</li>
@@ -176,7 +177,7 @@
 						<li class="li-input" ng-class="{'error':form.restaurantAddress.$invalid}">
 							<div class="label">Address:</div>
 							<div class="input">
-								<textarea ng-model="restaurant.address" required></textarea>
+								<textarea ng-model="restaurant.address" restaurant-address required></textarea>
 							</div>
 							<div class="box-error">
 								<small ng-show="form.restaurantAddress.$error.required">Required.</small>
@@ -203,7 +204,7 @@
 							</div>
 							<div class="notes">Automagically calculated.</div>
 						</li>
-
+						<!--
 						<li class="li-input" ng-class="{'error':form.restaurantHowFarFromCommunity.$invalid}">
 							<div class="label">How far from community:</div>
 							<div class="input"><input type="text" readonly="readonly" name="restaurantHowFarFromCommunity" ng-model="restaurant.how_far"></div>
@@ -212,7 +213,7 @@
 							</div>
 							<div class="notes">Automagically calculated.</div>
 						</li>
-
+						-->
 					</ul>
 
 				</div>

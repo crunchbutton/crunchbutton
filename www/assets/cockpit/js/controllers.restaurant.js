@@ -362,10 +362,16 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 
 } );
 
-NGApp.controller('RestaurantsCtrl', function ($rootScope, $scope, RestaurantService, ViewListService, CommunityService) {
+NGApp.controller('RestaurantsCtrl', function ($rootScope, $scope, RestaurantService, ViewListService, CommunityService, RestaurantEditService) {
 	$rootScope.title = 'Restaurants';
 
 	$scope.show_more_options = false;
+
+	$scope.addRestaurant = function(){
+		RestaurantEditService.load.new( function( data ){
+			$scope.navigation.link( '/restaurant/edit/' + data.permalink );
+		} );
+	}
 
 	$scope.moreOptions = function(){
 
@@ -474,7 +480,19 @@ NGApp.controller('RestaurantEditNotesCtrl', function ( $scope, RestaurantEditSer
 
 	$scope.save = function(){
 		if( $scope.restaurant.id_restaurant ){
-
+			if( $scope.form.$invalid ){
+				$scope.submitted = true;
+				return;
+			}
+			$scope.isSaving = true;
+			RestaurantEditService.save.notes( $scope.restaurant, function( json ){
+				$scope.isSaving = false;
+				if( json.success ){
+					App.alert( 'Notes saved!' );
+				} else {
+					App.alert( 'Error: ' + json.error );
+				}
+			} )
 		} else {
 			App.alert( 'Something wrong!' );
 		}
@@ -490,7 +508,6 @@ NGApp.controller('RestaurantEditNotificationsCtrl', function ( $scope, Restauran
 	$scope.notificationType = RestaurantEditService.notificationType();
 
 	var load = function(){
-
 		RestaurantEditService.load.notifications( RestaurantEditService.permalink, function( json ) {
 			$scope.restaurant = json;
 			$scope.loading = false;
@@ -514,6 +531,27 @@ NGApp.controller('RestaurantEditNotificationsCtrl', function ( $scope, Restauran
 		}
 	}
 
+	$scope.save = function(){
+		if( $scope.restaurant.id_restaurant ){
+			if( $scope.form.$invalid ){
+				$scope.submitted = true;
+				return;
+			}
+			$scope.isSaving = true;
+			RestaurantEditService.save.notifications( $scope.restaurant, function( json ){
+				$scope.isSaving = false;
+				if( json.success ){
+					App.alert( 'Notifications saved!' );
+					load();
+				} else {
+					App.alert( 'Error: ' + json.error );
+				}
+			} )
+		} else {
+			App.alert( 'Something wrong!' );
+		}
+	}
+
 	load();
 
 });
@@ -527,6 +565,10 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 
 		RestaurantEditService.load.menu( RestaurantEditService.permalink, function( json ) {
 			$scope.restaurant = json;
+			$scope.restaurant.categories = RestaurantEditService.menu.sort.category( json.categories );
+			for( var i = 0; i < $scope.restaurant.categories.length; i++ ){
+				$scope.restaurant.categories[ i ]._dishes = RestaurantEditService.menu.sort.dish( $scope.restaurant.categories[ i ]._dishes );
+			}
 			$scope.loading = false;
 		} );
 	}
@@ -539,13 +581,21 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 		}
 	}
 
-	$scope.addNotification = function(){
-		if( $scope.restaurant.id_restaurant ){
-			if( !$scope.restaurant.menu ){
-				$scope.restaurant.menu = [];
-			}
-			$scope.restaurant.menu.push( { type: 'sms', value: null, active: true } );
-		}
+	$scope.sortDishDown = function( dish, category ){
+		category._dishes = RestaurantEditService.menu.sort.dish( category._dishes, dish, 'down' );
+		$scope.restaurant.categories[ category.sort - 1 ]._dishes = category._dishes;
+	}
+
+	$scope.sortDishUp = function( dish, category ){
+		category._dishes = RestaurantEditService.menu.sort.dish( category._dishes, dish, 'up' );
+		$scope.restaurant.categories[ category.sort - 1 ]._dishes = category._dishes;
+	}
+
+	$scope.sortCategoryDown = function( category ){
+		$scope.restaurant.categories = RestaurantEditService.menu.sort.category( $scope.restaurant.categories, category, 'down' );
+	}
+	$scope.sortCategoryUp = function( category ){
+		$scope.restaurant.categories = RestaurantEditService.menu.sort.category( $scope.restaurant.categories, category, 'up' );
 	}
 
 	load();
@@ -570,7 +620,19 @@ NGApp.controller('RestaurantEditDeliveryCtrl', function ( $scope, RestaurantEdit
 
 	$scope.save = function(){
 		if( $scope.restaurant.id_restaurant ){
-
+			if( $scope.form.$invalid ){
+				$scope.submitted = true;
+				return;
+			}
+			$scope.isSaving = true;
+			RestaurantEditService.save.delivery( $scope.restaurant, function( json ){
+				$scope.isSaving = false;
+				if( json.success ){
+					App.alert( 'Restaurant saved!' );
+				} else {
+					App.alert( 'Error: ' + json.error );
+				}
+			} )
 		} else {
 			App.alert( 'Something wrong!' );
 		}
@@ -600,15 +662,26 @@ NGApp.controller('RestaurantEditBasicCtrl', function ( $scope, RestaurantEditSer
 		} );
 	}
 
-
 	$scope.save = function(){
 		if( $scope.restaurant.id_restaurant ){
-
 			if( !$scope.restaurant.id_community ){
 				App.alert( 'Please select a community!' );
 				return;
 			}
-
+			if( $scope.form.$invalid ){
+				$scope.submitted = true;
+				return;
+			}
+			$scope.isSaving = true;
+			RestaurantEditService.save.basic( $scope.restaurant, function( json ){
+				$scope.isSaving = false;
+				if( json.success ){
+					App.alert( 'Restaurant saved!' );
+					$scope.navigation.link( '/restaurant/edit/' + $scope.restaurant._permalink );
+				} else {
+					App.alert( 'Error: ' + json.error );
+				}
+			} )
 		} else {
 			App.alert( 'Something wrong!' );
 		}
@@ -625,15 +698,30 @@ NGApp.controller('RestaurantEditHoursCtrl', function ( $scope, RestaurantEditSer
 		RestaurantEditService.load.hours( RestaurantEditService.permalink, function( json ) {
 			$scope.restaurant = json;
 			$scope.restaurant.hours = RestaurantEditService.hours.parse( $scope.restaurant.hours );
-			console.log('$scope.restaurant.hours',$scope.restaurant.hours);
 			$scope.loading = false;
 		} );
 	}
 
-
 	$scope.save = function(){
 		if( $scope.restaurant.id_restaurant ){
+			if( $scope.form.$invalid ){
+				$scope.submitted = true;
+				return;
+			}
 
+			var hours = RestaurantEditService.hours.validate( $scope.restaurant.hours );
+			if( hours && RestaurantEditService.hours.saveIsSafe ){
+				$scope.restaurant._hours = hours;
+				RestaurantEditService.save.hours( $scope.restaurant, function( json ){
+					$scope.isSaving = false;
+					if( json.success ){
+						App.alert( 'Hours saved!' );
+						load();
+					} else {
+						App.alert( 'Error: ' + json.error );
+					}
+				} );
+			}
 		} else {
 			App.alert( 'Something wrong!' );
 		}

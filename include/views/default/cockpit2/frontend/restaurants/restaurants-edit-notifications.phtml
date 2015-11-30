@@ -7,7 +7,7 @@
 			<div class="support-box-wrap box-content2">
 				<div class="support-box-wrap-header">
 					<h1>Notifications</h1>
-					<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions-wrap" ng-show="restaurant.order_notifications_sent">
 						<div class="support-box-header-actions">
 							<a href="" ng-click="addNotification()"><button class="button button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Notification</button></a>
 						</div>
@@ -31,7 +31,7 @@
 				</div>
 			</div>
 
-			<div ng-repeat="notification in restaurant.notifications">
+			<div ng-repeat="notification in restaurant.notifications" ng-if="restaurant.order_notifications_sent">
 				<ng-form name="innerForm">
 					<div class="support-box-wrap box-content2">
 						<div class="support-box-wrap-header">
