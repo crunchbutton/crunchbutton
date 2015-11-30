@@ -596,6 +596,9 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 		if( type == 'checkbox' ){
 			$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.checkboxes = _options;
 		}
+		if( type == 'select' ){
+			$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects = _options;
+		}
 	}
 
 	$scope.sortOptionDown = function( option, options, dish, category, type ){
@@ -603,6 +606,28 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 		if( type == 'checkbox' ){
 			$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.checkboxes = _options;
 		}
+		if( type == 'select' ){
+			$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects = _options;
+		}
+	}
+
+	$scope.sortSubOptionDown = function( option, select, dish, category ){
+		var _options = RestaurantEditService.menu.sort.option( select.options, option, 'down' );
+		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ select.sort - 1 ].options = _options;
+	}
+
+	$scope.sortSubOptionUp = function( option, select, dish, category ){
+		var _options = RestaurantEditService.menu.sort.option( select.options, option, 'up' );
+		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ select.sort - 1 ].options = _options;
+	}
+
+	$scope.setOptionAsDefault = function( option, select, dish, category ){
+		var _options = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ select.sort - 1 ].options;
+		for( x in _options ){
+			_options[ x ].default = false;
+		}
+		_options[ option.sort - 1 ].default = true;
+		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ select.sort - 1 ].options = _options;
 	}
 
 	$scope.sortCategoryDown = function( category ){
