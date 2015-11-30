@@ -490,7 +490,7 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 			list[ i ].show_up = true;
 			list[ i ].show_down = true;
 			// @remove -- remove it before commit
-			list[ i ].expanded = true;
+			// list[ i ].expanded = true;
 		}
 		if( list ){
 			list[ 0 ].show_up = false;
@@ -547,6 +547,14 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 						dish.options.checkboxes = service.menu.sort.option( dish.options.checkboxes );
 					}
 
+					if( dish.options.selects.length ){
+						dish.options.selects = service.menu.sort.option( dish.options.selects );
+						for( w in dish.options.selects ){
+							if( dish.options.selects[ w ].options && dish.options.selects[ w ].options.length ){
+								dish.options.selects[ w ].options = service.menu.sort.option( dish.options.selects[ w ].options );
+							}
+						}
+					}
 
 					dishes[ x ] = dish;
 				}
