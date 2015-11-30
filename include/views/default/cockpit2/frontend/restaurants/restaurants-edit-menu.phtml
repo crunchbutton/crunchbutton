@@ -7,6 +7,12 @@
 				<h1>Menu</h1>
 				<div class="support-box-header-actions-wrap">
 					<div class="support-box-header-actions">
+
+						<button ng-click="askConfirmationBeforeDeleteChange()" class="button button-small button-empty button-green">
+							<span ng-if="askConfirmationBeforeDelete"><i class="fa fa-thumbs-o-up"></i>&nbsp;&nbsp;Ask confirmation before delete items</span>
+							<span ng-if="!askConfirmationBeforeDelete"><i class="fa fa-thumbs-o-down"></i>&nbsp;&nbsp;Delete items without confirmation</span>
+						</button>
+
 						<button ng-click="addCategory()" class="button button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Category</button>
 					</div>
 				</div>
@@ -79,7 +85,7 @@
 									<i ng-if="!dish.expanded" class="fa fa-expand"></i>
 									<i ng-if="dish.expanded" class="fa fa-compress"></i>
 								</button>
-								<button title="Copy this dish or its options" class="button button-small button-empty button-green"><i class="fa fa-gear"></i></button>
+								<!-- TODO: <button title="Copy this dish or its options" class="button button-small button-empty button-green"><i class="fa fa-gear"></i></button> -->
 							</li>
 						</ul>
 
@@ -161,7 +167,6 @@
 								</div>
 							</div>
 							<div class="divider"></div>
-
 
 						<strong><br><br>Select Options:</strong>
 							<button ng-click="addSelectOption(dish, category)" title="Add Select Option" class="button button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Select Option</button>

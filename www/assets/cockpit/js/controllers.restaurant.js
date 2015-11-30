@@ -560,9 +560,13 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 
 	$scope.yesNo = RestaurantEditService.yesNo();
 	$scope.active = RestaurantEditService.active();
+	$scope.askConfirmationBeforeDelete = true;
+
+	$scope.askConfirmationBeforeDeleteChange = function(){
+		$scope.askConfirmationBeforeDelete = !$scope.askConfirmationBeforeDelete;
+	}
 
 	var load = function(){
-
 		RestaurantEditService.load.menu( RestaurantEditService.permalink, function( json ) {
 			$scope.restaurant = json;
 			$scope.restaurant.categories = RestaurantEditService.menu.sort.category( json.categories );
@@ -589,113 +593,148 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 	}
 
 	$scope.deleteCategory = function( category ){
-		var categories = [];
-		var sort = 1;
-		for( x in $scope.restaurant.categories ){
-			if( $scope.restaurant.categories[ x ].sort != category.sort ){
-				var _category = $scope.restaurant.categories[ x ];
-				_category.sort = sort;
-				categories.push( _category );
-				sort++;
+		var remove = function(){
+			var categories = [];
+			var sort = 1;
+			for( x in $scope.restaurant.categories ){
+				if( $scope.restaurant.categories[ x ].sort != category.sort ){
+					var _category = $scope.restaurant.categories[ x ];
+					_category.sort = sort;
+					categories.push( _category );
+					sort++;
+				}
 			}
+			$scope.restaurant.categories = RestaurantEditService.menu.sort.category( categories );
 		}
-		$scope.restaurant.categories = RestaurantEditService.menu.sort.category( categories );
+		if( $scope.askConfirmationBeforeDelete ){
+			App.confirm( 'Confirm remove category?', 'Confirm?', remove, function(){}, null, true );
+		} else {
+			remove();
+		}
 	}
 
 	$scope.addDish = function( category ){
 		var dishes = $scope.restaurant.categories[ category.sort - 1 ]._dishes;
 		var sort = dishes.length ? dishes.length : 1;
-		dishes.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, active: true, expanded: true, options: { selects:[], checkboxes:[] } } );
+		dishes.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, active: true, price: 0, expanded: true, expand_view: false, top: false, options: { selects:[], checkboxes:[] } } );
 		$scope.restaurant.categories[ category.sort - 1 ]._dishes = RestaurantEditService.menu.parse.dish( dishes );
 	}
 
 	$scope.deleteDish = function( dish, category ){
-		var dishes = [];
-		var sort = 1;
-		for( x in $scope.restaurant.categories[ category.sort - 1 ]._dishes ){
-			if( $scope.restaurant.categories[ category.sort - 1 ]._dishes[ x ].sort != dish.sort ){
-				var _dish = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ x ];
-				_dish.sort = sort;
-				dishes.push( _dish );
-				sort++;
+		var remove = function(){
+			var dishes = [];
+			var sort = 1;
+			for( x in $scope.restaurant.categories[ category.sort - 1 ]._dishes ){
+				if( $scope.restaurant.categories[ category.sort - 1 ]._dishes[ x ].sort != dish.sort ){
+					var _dish = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ x ];
+					_dish.sort = sort;
+					dishes.push( _dish );
+					sort++;
+				}
 			}
+			$scope.restaurant.categories[ category.sort - 1 ]._dishes = RestaurantEditService.menu.parse.dish( dishes );
 		}
-		$scope.restaurant.categories[ category.sort - 1 ]._dishes = RestaurantEditService.menu.parse.dish( dishes );
+		if( $scope.askConfirmationBeforeDelete ){
+			App.confirm( 'Confirm remove dish?', 'Confirm?', remove, function(){}, null, true );
+		} else {
+			remove();
+		}
 	}
 
 	$scope.addCheckboxOption = function( dish, category ){
 		var options = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.checkboxes;
 		var sort = options.length ? options.length : 1;
-		options.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, expanded: true, type: 'check' } );
+		options.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, expanded: true, price: 0, type: 'check' } );
 		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.checkboxes = RestaurantEditService.menu.sort.option( options );
 	}
 
 	$scope.deleteCheckboxOption = function( option, dish, category ){
-		var options = [];
-		var sort = 1;
-		for( x in $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.checkboxes ){
-			if( $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.checkboxes[ x ].sort != option.sort ){
-				var _option = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.checkboxes[ x ];
-				_option.sort = sort;
-				options.push( _option );
-				sort++;
+		var remove = function(){
+			var options = [];
+			var sort = 1;
+			for( x in $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.checkboxes ){
+				if( $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.checkboxes[ x ].sort != option.sort ){
+					var _option = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.checkboxes[ x ];
+					_option.sort = sort;
+					options.push( _option );
+					sort++;
+				}
 			}
+			$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.checkboxes = RestaurantEditService.menu.sort.option( options );
 		}
-		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.checkboxes = RestaurantEditService.menu.sort.option( options );
+		if( $scope.askConfirmationBeforeDelete ){
+			App.confirm( 'Confirm remove option?', 'Confirm?', remove, function(){}, null, true );
+		} else {
+			remove();
+		}
 	}
 
 	$scope.addSelectOption = function( dish, category ){
 		var options = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects;
 		var sort = options.length ? options.length : 1;
 		var rand = '__' + getRandomSpan();
-		options.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, type: 'select', expanded: true, id_option: rand, options: [] } );
+		options.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, type: 'select', price: 0, expanded: true, id_option: rand, options: [] } );
 		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects = RestaurantEditService.menu.sort.option( options );
 	}
 
 	$scope.deleteSelectOption = function( option, dish, category ){
-		var options = [];
-		var sort = 1;
-		for( x in $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects ){
-			if( $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ x ].sort != option.sort ){
-				var _option = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ x ];
-				_option.sort = sort;
-				options.push( _option );
-				sort++;
+		var remove = function(){
+			var options = [];
+			var sort = 1;
+			for( x in $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects ){
+				if( $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ x ].sort != option.sort ){
+					var _option = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ x ];
+					_option.sort = sort;
+					options.push( _option );
+					sort++;
+				}
 			}
+			$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects = RestaurantEditService.menu.sort.option( options );
 		}
-		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects = RestaurantEditService.menu.sort.option( options );
+		if( $scope.askConfirmationBeforeDelete ){
+			App.confirm( 'Confirm remove option?', 'Confirm?', remove, function(){}, null, true );
+		} else {
+			remove();
+		}
 	}
 
 	$scope.addSelectSubOption = function( option, dish, category ){
 		var options = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options;
 		var sort = options.length ? options.length : 1;
-		options.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, type: 'check', id_option_parent: option.id_option, default: ( sort == 1 ) } );
+		options.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, type: 'check', price: 0, id_option_parent: option.id_option, default: ( sort == 1 ) } );
 		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options = RestaurantEditService.menu.sort.option( options );
 	}
 
 	$scope.deleteSelectSubOption = function( suboption, option, dish, category ){
-		var options = [];
-		var sort = 1;
-		for( x in $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options ){
-			if( $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options[ x ].sort != suboption.sort ){
-				var _option = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options[ x ];
-				_option.sort = sort;
-				options.push( _option );
-				sort++;
-			}
-		}
-		if( options.length ){
-			var hasDefault = false;
-			for( x in options ){
-				if( options[ x ].default ){
-					hasDefault = true;
+		var remove = function(){
+			var options = [];
+			var sort = 1;
+			for( x in $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options ){
+				if( $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options[ x ].sort != suboption.sort ){
+					var _option = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options[ x ];
+					_option.sort = sort;
+					options.push( _option );
+					sort++;
 				}
 			}
-			if( !hasDefault ){
-				options[ 0 ].default = true;
+			if( options.length ){
+				var hasDefault = false;
+				for( x in options ){
+					if( options[ x ].default ){
+						hasDefault = true;
+					}
+				}
+				if( !hasDefault ){
+					options[ 0 ].default = true;
+				}
 			}
+			$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options = RestaurantEditService.menu.sort.option( options );
 		}
-		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options = RestaurantEditService.menu.sort.option( options );
+		if( $scope.askConfirmationBeforeDelete ){
+			App.confirm( 'Confirm remove option?', 'Confirm?', remove, function(){}, null, true );
+		} else {
+			remove();
+		}
 	}
 
 	$scope.sortDishDown = function( dish, category ){
