@@ -496,6 +496,7 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 				list[ i ].sort = ( i + 1 );
 				list[ i ].show_up = true;
 				list[ i ].show_down = true;
+				list[ i ].expanded = true;
 			}
 			if( list ){
 				list[ 0 ].show_up = false;
