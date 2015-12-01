@@ -52,10 +52,13 @@
 
 				<div class="no-box-content-color dish-option-group" ng-repeat="dish in category._dishes" ng-if="category.expanded">
 					<ng-form name="innerFormDish">
-						<ul ng-class="{'submitted':submitted}" class="ul-inputs inputs-group-dish divider">
 
+						<ul ng-class="{'submitted':submitted}" class="ul-inputs inputs-group-dish divider">
 							<li class="li-input li-input-dish" ng-class="{'error':innerFormDish.dishName.$invalid}">
-								<div class="input"><input type="text" name="dishName" required ng-model="dish.name" placeholder="Dish name"></div>
+								<div class="input">
+									<input type="text" name="dishName" required ng-model="dish.name" placeholder="Dish name">
+									:: {{dish.sort}}
+								</div>
 								<div class="box-error">
 									<small ng-show="innerFormDish.dishName.$error.required">Required.</small>
 								</div>
@@ -85,7 +88,7 @@
 									<i ng-if="!dish.expanded" class="fa fa-expand"></i>
 									<i ng-if="dish.expanded" class="fa fa-compress"></i>
 								</button>
-								<!-- TODO: <button title="Copy this dish or its options" class="button button-small button-empty button-green"><i class="fa fa-gear"></i></button> -->
+								<button ng-click="dishActionStart(dish, category)" title="Copy this dish or its options" class="button button-small button-empty button-green"><i class="fa fa-gear"></i></button>
 							</li>
 						</ul>
 
@@ -260,7 +263,64 @@
 
 	</form>
 
-	<div class="support-box-wrap box-content2">
+	<div class="restaurant-dish-action-dialog-container zoom-anim-dialog mfp-hide dialog">
+		<div>
+			<h1 class="title"><span>{{dishActionDish.name}}</span></h1>
+			<div class="divider"></div>
+			<ng-form name="formDishActionsMove">
+				<div class="ul-inputs">
+					<ul ng-class="{'submitted':formDishActionsMoveSubmitted}" class="ul-inputs">
+						<li class="li-input li-input-dish" ng-class="{'error':formDishActionsMove.category.$invalid}">
+							<div class="label">Move this dish to a different category</div>
+							<div class="input">
+								<select ng-model="dishActionMoveToCategory" name="category" required>
+									<option ng-repeat="category in restaurant.categories" value="{{category.sort}}" ng-disabled="category.sort == dishActionCategory.sort">{{category.name}}</option>
+								</select>
+							</div>
+							<div class="box-error">
+								<small ng-show="formDishActionsMove.category.$error.required">Required.</small>
+							</div>
+						</li>
+						<li class="li-input" ng-show="!dishActionMoveIsMoving">
+							<button class="button button-empty button-border button-green button-full" ng-click="dishActionMove();">&nbsp;&nbsp;Move</button>
+						</li>
+						<li class="li-input" ng-show="dishActionMoveIsMoving">
+							<i class="fa fa-circle-o-notch fa-spin"></i>
+						</li>
+					</ul>
+				</div>
+			</ng-form>
+			<br><br>
+			<ng-form name="formDishActionsCopyOptions">
+				<div class="ul-inputs">
+					<ul ng-class="{'submitted':formDishActionsCopyOptionsSubmitted}" class="ul-inputs">
+						<li class="li-input li-input-dish" ng-class="{'error':formDishActionsCopyOptions.category.$invalid}">
+							<div class="label">Copy the options for this dish to another dish</div>
+							<div class="input">
+								<select ng-model="dishActionCopyToDish" name="dish" required>
+									<optgroup label="{{category.name}}" ng-repeat="category in restaurant.categories">
+										<option ng-repeat="dish in category._dishes" value="{{category.sort}},{{dish.sort}}" ng-disabled="dish.sort == dishActionDish.sort && category.sort == dishActionCategory.sort">{{dish.name}}</option>
+									</optgroup>
+								</select>
+							</div>
+							<div class="notes">(option names and prices can be changed independently)</div>
+							<div class="box-error">
+								<small ng-show="formDishActionsCopyOptions.dish.$error.required">Required.</small>
+							</div>
+						</li>
+						<li class="li-input" ng-show="!dishActionIsCopying">
+							<button class="button button-empty button-border button-green button-full" ng-click="dishActionCopyOptions();">&nbsp;&nbsp;Copy</button>
+						</li>
+						<li class="li-input" ng-show="dishActionIsCopying">
+							<i class="fa fa-circle-o-notch fa-spin"></i>
+						</li>
+					</ul>
+				</div>
+			</ng-form>
+		</div>
+	</div>
+
+	<div class="support-box-wrap box-content2" ng-if="!loading">
 		<div class="no-box-content-color">
 			<ul class="ul-inputs">
 				<li class="li-input" ng-show="!isSaving">

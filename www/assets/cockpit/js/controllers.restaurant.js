@@ -566,7 +566,12 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 		$scope.askConfirmationBeforeDelete = !$scope.askConfirmationBeforeDelete;
 	}
 
+	$scope.loading = false;
+
 	var load = function(){
+
+		$scope.loading = true;
+
 		RestaurantEditService.load.menu( RestaurantEditService.permalink, function( json ) {
 			$scope.restaurant = json;
 			$scope.restaurant.categories = RestaurantEditService.menu.sort.category( json.categories );
@@ -839,6 +844,78 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 	}
 
 	load();
+
+	$scope.dishActionStart = function( dish, category ){
+		$scope.dishActionDish = null;
+		$scope.dishActionCategory = null;
+
+		$scope.dishActionDish = dish;
+		$scope.dishActionCategory = category;
+
+		$scope.dishActionMoveToCategory = null;
+		$scope.dishActionCopyToDish = null;
+
+		App.dialog.show( '.restaurant-dish-action-dialog-container' );
+	}
+
+	$scope.dishActionMove = function(){
+		if( $scope.formDishActionsMove.$invalid ){
+			$scope.formDishActionsMoveSubmitted = true;
+			return;
+		}
+
+		var dish = null;
+		var dishes = $scope.restaurant.categories[ $scope.dishActionCategory.sort - 1 ]._dishes;
+		for( x in dishes ){
+			if( dishes[ x ].sort == $scope.dishActionDish.sort ){
+				var dish = dishes[ x ];
+				dishes[ x ].remove = true;
+				continue;
+			}
+		}
+		var _dishes = [];
+		for( x in dishes ){
+			if( !dishes[ x ].remove ){
+				_dishes.push( dishes[ x ] );
+			}
+		}
+		$scope.restaurant.categories[ $scope.dishActionCategory.sort - 1 ]._dishes = RestaurantEditService.menu.parse.dish( _dishes );
+
+		var category = $scope.restaurant.categories[ $scope.dishActionMoveToCategory - 1 ];
+		var dishes = $scope.restaurant.categories[ $scope.dishActionMoveToCategory - 1 ]._dishes;
+		var sort = ( dishes.length ? dishes.length + 1 : 1 );
+		dish.sort = sort;
+		if( category.id_category ){
+			dish.id_category = category.id_category;
+		} else {
+			dish.id_category = null;
+		}
+		dishes.push( dish );
+		$scope.restaurant.categories[ $scope.dishActionMoveToCategory - 1 ]._dishes = RestaurantEditService.menu.parse.dish( dishes );
+
+		$scope.closePopup();
+
+		return;
+
+		// var dishes = $scope.restaurant.categories[ category.sort - 1 ]._dishes;
+		// var sort = dishes.length ? ( dishes.length + 1 ) : 1;
+		// dishes.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, active: true, price: 0, expanded: false, expand_view: false, top: false, options: { selects:[], checkboxes:[] } } );
+
+
+		// var categoryFrom = $scope.dishActionCategory;
+		// var categoryTo =
+
+		// $scope.dishActionMoveIsMoving = true;
+	}
+
+	$scope.dishActionCopyOptions = function(){
+		if( $scope.formDishActionsMove.$invalid ){
+			$scope.formDishActionsCopyOptionsSubmitted = true;
+			return;
+		}
+
+		$scope.dishActionIsCopying = true;
+	}
 
 });
 
