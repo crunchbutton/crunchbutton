@@ -350,6 +350,11 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 				callback( data );
 			} );
 		},
+		cover : function( permalink, callback ){
+			load.get( { 'permalink': permalink, 'action': 'cover' }, function( data ){
+				callback( data );
+			} );
+		},
 		basic : function( permalink, callback ){
 			load.get( { 'permalink': permalink, 'action': 'basic' }, function( data ){
 				callback( data );

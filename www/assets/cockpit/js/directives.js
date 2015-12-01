@@ -499,7 +499,8 @@ NGApp.directive('uiTabs', function ( $compile, $timeout ) {
 										'<div class="ui-tab-header-wrap"><ul class="ui-tab-header">' +
 											'<li ng-class="{\'ui-tab-header-active\': _current.id == tab.id}" ng-repeat="tab in _tabs">' +
 												'<span class="clickable" ng-click="setCurrent( tab );"><i class="fa fa-{{tab.icon}}" ng-hide="!tab.icon"></i>{{ tab.title }}</span>' +
-												'&nbsp;&nbsp;<span title="Reload" ng-show="_current.id == tab.id" class="clickable" ng-click="loadContent( tab );"><i ng-class="{\'fa-spin\':tab.isLoading}" class="fa fa-refresh"></i></span>' +
+												'&nbsp;&nbsp;'+
+												'<span ng-if="tab.method" ng-class="{ \'transparent\':( _current.id != tab.id ) }" class="clickable" ng-click="loadContent( tab );"><i ng-class="{\'fa-spin\':tab.isLoading}" class="fa fa-refresh"></i></span>' +
 											'</li>' +
 										'</ul></div>' +
 										'<ul class="ui-tab-content">' +

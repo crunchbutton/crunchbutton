@@ -450,21 +450,13 @@ NGApp.controller('RestaurantEditCtrl', function ( $scope, $rootScope, $routePara
 
 	$scope.loading = true;
 
-	var reset = function(){
-		RestaurantEditService.permalink = $routeParams.id;
-		setTimeout( function(){
-			$scope.loading = false;
-		}, 500 );
-	}
+	RestaurantEditService.permalink = $routeParams.id;
 
-	$scope.editBasic = function(){};
-	$scope.editHours = function(){};
-	$scope.editDelivery = function(){};
-	$scope.editNotes = function(){};
-	$scope.editNotifications = function(){};
-	$scope.editMenu = function(){};
-
-	reset();
+	RestaurantEditService.load.cover( RestaurantEditService.permalink, function( json ) {
+		$scope.id_restaurant = json.id_restaurant;
+		$scope.restaurant = json;
+		$scope.loading = false;
+	} );
 
 });
 
@@ -1020,6 +1012,8 @@ NGApp.controller('RestaurantEditBasicCtrl', function ( $scope, RestaurantEditSer
 	$scope.deliveryRadiusType = RestaurantEditService.deliveryRadiusType();
 
 	var load = function(){
+
+		$scope.loading = false;
 
 		if( !$scope.communities ){
 			CommunityService.listSimple( function( json ){
