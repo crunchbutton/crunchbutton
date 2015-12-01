@@ -571,15 +571,56 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 			$scope.restaurant = json;
 			$scope.restaurant.categories = RestaurantEditService.menu.sort.category( json.categories );
 			for( var i = 0; i < $scope.restaurant.categories.length; i++ ){
-				$scope.restaurant.categories[ i ]._dishes = RestaurantEditService.menu.parse.dish( $scope.restaurant.categories[ i ]._dishes );
+				if( $scope.restaurant.categories[ i ]._dishes && $scope.restaurant.categories[ i ]._dishes.length ){
+					$scope.restaurant.categories[ i ]._dishes = RestaurantEditService.menu.parse.dish( $scope.restaurant.categories[ i ]._dishes );
+				} else {
+					$scope.restaurant.categories[ i ]._dishes = [];
+				}
 			}
 			$scope.loading = false;
 		} );
 	}
 
+	var expandAll = function(){
+		if( $scope.restaurant.categories.length ){
+			for( x in $scope.restaurant.categories ){
+				$scope.restaurant.categories[ x ].expanded = true;
+				if( $scope.restaurant.categories[ x ]._dishes.length ){
+					for( y in $scope.restaurant.categories[ x ]._dishes ){
+						$scope.restaurant.categories[ x ]._dishes[ y ].expanded = true;
+						if( $scope.restaurant.categories[ x ]._dishes[ y ].options.selects.length ){
+							for( z in $scope.restaurant.categories[ x ]._dishes[ y ].options.selects ){
+								if( $scope.restaurant.categories[ x ]._dishes[ y ].options.selects[ z ].options.length ){
+									for( w in $scope.restaurant.categories[ x ]._dishes[ y ].options.selects[ z ].options ){
+										$scope.restaurant.categories[ x ]._dishes[ y ].options.selects[ z ].options[ w ].expanded = true;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	$scope.save = function(){
 		if( $scope.restaurant.id_restaurant ){
-
+			if( $scope.form.$invalid ){
+				expandAll();
+				$scope.submitted = true;
+				App.alert( 'Please complete all required fields!' )
+				return;
+			}
+			$scope.isSaving = true;
+			RestaurantEditService.save.menu( $scope.restaurant, function( json ){
+				$scope.isSaving = false;
+				if( json.success ){
+					App.alert( 'Menu saved!' );
+					load();
+				} else {
+					App.alert( 'Error: ' + json.error );
+				}
+			} )
 		} else {
 			App.alert( 'Something wrong!' );
 		}
@@ -672,7 +713,7 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 	$scope.addSelectOption = function( dish, category ){
 		var options = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects;
 		var sort = options.length ? options.length : 1;
-		var rand = '__' + getRandomSpan();
+		var rand = '__' + category.sort + '_' + dish.sort + '_' + getRandomSpan();
 		options.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, type: 'select', price: 0, expanded: true, id_option: rand, options: [] } );
 		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects = RestaurantEditService.menu.sort.option( options );
 	}
@@ -794,7 +835,7 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 	}
 
 	var getRandomSpan = function(){
-		return Math.floor((Math.random()*6)+1);
+		return Math.floor((Math.random()*1000)+1);
 	}
 
 	load();
