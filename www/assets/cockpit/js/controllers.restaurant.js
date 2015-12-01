@@ -659,10 +659,19 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 		}
 	}
 
-	$scope.addDish = function( category ){
+	$scope.addDish = function( category, dish ){
 		var dishes = $scope.restaurant.categories[ category.sort - 1 ]._dishes;
 		var sort = dishes.length ? ( dishes.length + 1 ) : 1;
-		dishes.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, active: true, price: 0, expanded: false, expand_view: false, top: false, options: { selects:[], checkboxes:[] } } );
+		if( !dish ){
+			var dish = { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, active: true, price: 0, expanded: false, expand_view: false, top: false, options: { selects:[], checkboxes:[] } };
+		}
+		dish.sort = sort;
+		if( category.id_category ){
+			dish.id_category = category.id_category;
+		} else {
+			dish.id_category = null;
+		}
+		dishes.push( dish );
 		$scope.restaurant.categories[ category.sort - 1 ]._dishes = RestaurantEditService.menu.parse.dish( dishes );
 	}
 
@@ -884,16 +893,7 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 		$scope.restaurant.categories[ $scope.dishActionCategory.sort - 1 ]._dishes = RestaurantEditService.menu.parse.dish( _dishes );
 
 		var category = $scope.restaurant.categories[ $scope.dishActionMoveToCategory - 1 ];
-		var dishes = $scope.restaurant.categories[ $scope.dishActionMoveToCategory - 1 ]._dishes;
-		var sort = ( dishes.length ? dishes.length + 1 : 1 );
-		dish.sort = sort;
-		if( category.id_category ){
-			dish.id_category = category.id_category;
-		} else {
-			dish.id_category = null;
-		}
-		dishes.push( dish );
-		$scope.restaurant.categories[ $scope.dishActionMoveToCategory - 1 ]._dishes = RestaurantEditService.menu.parse.dish( dishes );
+		$scope.addDish( category, dish );
 
 		$scope.closePopup();
 		$scope.dishActionMoveIsMoving = false;
