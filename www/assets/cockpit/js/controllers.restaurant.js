@@ -696,10 +696,16 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 		}
 	}
 
-	$scope.addCheckboxOption = function( dish, category ){
+	$scope.addCheckboxOption = function( dish, category, checkbox ){
 		var options = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.checkboxes;
 		var sort = options.length ? ( options.length + 1 ) : 1;
-		options.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, expanded: true, price: 0, type: 'check' } );
+		if( !checkbox ){
+			checkbox = { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, expanded: true, price: 0, type: 'check' };
+		}
+		checkbox.sort = sort;
+		checkbox.id_option = null;
+		checkbox.id_dish_option = null;
+		options.push( checkbox );
 		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.checkboxes = RestaurantEditService.menu.sort.option( options );
 	}
 
@@ -724,12 +730,20 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 		}
 	}
 
-	$scope.addSelectOption = function( dish, category ){
+	$scope.addSelectOption = function( dish, category, select ){
 		var options = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects;
 		var sort = options.length ? ( options.length + 1 ) : 1;
+		if( !select ){
+			select = { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, type: 'select', price: 0, expanded: true };
+		}
 		var rand = '__' + category.sort + '_' + dish.sort + '_' + getRandomSpan();
-		options.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, type: 'select', price: 0, expanded: true, id_option: rand, options: [] } );
+		select.sort = sort;
+		select.id_option = rand;
+		select.id_dish_option = null;
+		select.options = [];
+		options.push( select );
 		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects = RestaurantEditService.menu.sort.option( options );
+		return sort;
 	}
 
 	$scope.deleteSelectOption = function( option, dish, category ){
@@ -753,10 +767,15 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 		}
 	}
 
-	$scope.addSelectSubOption = function( option, dish, category ){
+	$scope.addSelectSubOption = function( option, dish, category, subOption ){
 		var options = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options;
 		var sort = options.length ? ( options.length + 1 ) : 1;
-		options.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, type: 'check', price: 0, id_option_parent: option.id_option, default: ( sort == 1 ) } );
+		if( !subOption ){
+			subOption = { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, type: 'check', price: 0 };
+		}
+		subOption.default = ( sort == 1 );
+		subOption.id_option_parent = option.id_option;
+		options.push( subOption );
 		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options = RestaurantEditService.menu.sort.option( options );
 	}
 
@@ -901,14 +920,52 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 	}
 
 	$scope.dishActionCopyOptions = function(){
-		if( $scope.formDishActionsMove.$invalid ){
+		if( $scope.formDishActionsCopyOptions.$invalid ){
 			$scope.formDishActionsCopyOptionsSubmitted = true;
 			return;
 		}
 		$scope.dishActionIsCopying = true;
 
-		//
+		var dish = $scope.dishActionDish;
+		var category = $scope.dishActionCategory;
 
+		var destiny = $scope.dishActionCopyToDish.split( ',' );
+
+		var categoryTo = $scope.restaurant.categories[ destiny[ 0 ] - 1 ];
+		var dishTo = categoryTo._dishes[ destiny[ 1 ] - 1 ];
+
+		// copy checkboxes
+		if( dish.options && dish.options.checkboxes && dish.options.checkboxes.length ){
+			for( x in dish.options.checkboxes ){
+				var checkbox = angular.copy( dish.options.checkboxes[ x ] );
+				checkbox.sort = null;
+				checkbox.id_option = null;
+				checkbox.id_dish_option = null;
+				$scope.addCheckboxOption( dishTo, categoryTo, checkbox );
+			}
+		}
+
+		if( dish.options && dish.options.selects && dish.options.selects.length ){
+			for( x in dish.options.selects ){
+				var select = angular.copy( dish.options.selects[ x ] );
+				select.sort = null;
+				select.id_option = null;
+				select.id_dish_option = null;
+				var options = angular.copy( select.options );
+				var sort = $scope.addSelectOption( dishTo, categoryTo, select );
+				var _select = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ sort - 1 ];
+				if( options.length ){
+					for( y in options ){
+						var subOption = options[ y ];
+						subOption.sort = null;
+						subOption.id_option = null;
+						subOption.id_option_parent = null;
+						subOption.id_dish_option = null;
+						$scope.addSelectSubOption( _select, dishTo, categoryTo, subOption );
+					}
+				}
+			}
+		}
 
 		$scope.closePopup();
 		$scope.dishActionIsCopying = false;
@@ -931,7 +988,6 @@ NGApp.controller('RestaurantEditDeliveryCtrl', function ( $scope, RestaurantEdit
 			$scope.loading = false;
 		} );
 	}
-
 
 	$scope.save = function(){
 		if( $scope.restaurant.id_restaurant ){
