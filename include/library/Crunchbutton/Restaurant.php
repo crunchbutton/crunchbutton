@@ -127,7 +127,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	public function categories() {
 		if (!isset($this->_categories)) {
 			$sql               = "SELECT * FROM category WHERE id_restaurant={$this->id_restaurant} ORDER BY sort ASC";
-			$this->_categories = Crunchbutton_Category::q($sql);
+			$this->_categories = Category::q($sql);
 		}
 		return $this->_categories;
 	}

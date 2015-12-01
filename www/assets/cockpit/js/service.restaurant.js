@@ -418,6 +418,12 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 				callback( data );
 			} );
 		},
+		menu : function( data, callback ){
+			data.action = 'menu';
+			save.post( data, function( data ){
+				callback( data );
+			} );
+		}
 	}
 
 	service.yesNo = function(){
@@ -490,8 +496,6 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 				list[ i ].sort = ( i + 1 );
 				list[ i ].show_up = true;
 				list[ i ].show_down = true;
-				// @remove -- remove it before commit
-				// list[ i ].expanded = true;
 			}
 			if( list ){
 				list[ 0 ].show_up = false;

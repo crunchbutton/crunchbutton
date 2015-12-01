@@ -27,7 +27,7 @@
 					<ng-form name="innerFormCategory">
 						<ul ng-class="{'submitted':submitted}" class="ul-inputs inputs-group-dish divider">
 							<li class="li-input li-input-dish" ng-class="{'error':innerFormCategory.categoryName.$invalid}">
-								<div class="input"><input type="text" name="categoryName" ng-model="category.name" placeholder="Category name"></div>
+								<div class="input"><input type="text" required name="categoryName" ng-model="category.name" placeholder="Category name"></div>
 								<div class="box-error">
 									<small ng-show="innerFormCategory.categoryName.$error.required">Required.</small>
 								</div>
@@ -55,14 +55,14 @@
 						<ul ng-class="{'submitted':submitted}" class="ul-inputs inputs-group-dish divider">
 
 							<li class="li-input li-input-dish" ng-class="{'error':innerFormDish.dishName.$invalid}">
-								<div class="input"><input type="text" name="dishName" ng-model="dish.name" placeholder="Dish name"></div>
+								<div class="input"><input type="text" name="dishName" required ng-model="dish.name" placeholder="Dish name"></div>
 								<div class="box-error">
 									<small ng-show="innerFormDish.dishName.$error.required">Required.</small>
 								</div>
 							</li>
 
 							<li class="li-input li-input-dish" ng-class="{'error':innerFormDish.dishPrice.$invalid}">
-								<div class="input"><input type="number" class="input-price" step="any" name="dishPrice" ng-model="dish.price" ignore-mouse-wheel placeholder="Dish price"></div>
+								<div class="input"><input type="number" class="input-price" required step="any" name="dishPrice" ng-model="dish.price" ignore-mouse-wheel placeholder="Dish price"></div>
 								<div class="box-error">
 									<small ng-show="innerFormDish.dishPrice.$error.required">Required.</small>
 								</div>
@@ -139,14 +139,14 @@
 										<ul ng-class="{'submitted':submitted}" class="ul-inputs inputs-group-dish">
 
 											<li class="li-input li-input-dish" ng-class="{'error':innerFormOption.optionName.$invalid}">
-												<div class="input"><input type="text" name="optionName" ng-model="option.name" placeholder="Option name"></div>
+												<div class="input"><input type="text" required name="optionName" ng-model="option.name" placeholder="Option name"></div>
 												<div class="box-error">
 													<small ng-show="innerFormOption.optionName.$error.required">Required.</small>
 												</div>
 											</li>
 
 											<li class="li-input li-input-dish" ng-class="{'error':innerFormOption.optionPrice.$invalid}">
-												<div class="input"><input type="number" step="any" class="input-price" name="optionPrice" ng-model="option.price" ignore-mouse-wheel placeholder="Additonal amount"></div>
+												<div class="input"><input type="number" required step="any" class="input-price" name="optionPrice" ng-model="option.price" ignore-mouse-wheel placeholder="Additonal amount"></div>
 												<div class="box-error">
 													<small ng-show="innerFormOption.optionPrice.$error.required">Required.</small>
 												</div>
@@ -180,7 +180,7 @@
 										<ul ng-class="{'submitted':submitted}" class="ul-inputs inputs-group-dish">
 
 											<li class="li-input li-input-dish" ng-class="{'error':innerFormOption.optionName.$invalid}">
-												<div class="input"><input type="text" name="optionName" ng-model="option.name" placeholder="Option name"></div>
+												<div class="input"><input type="text" required name="optionName" ng-model="option.name" placeholder="Option name"></div>
 												<div class="box-error">
 													<small ng-show="innerFormOption.optionName.$error.required">Required.</small>
 												</div>
@@ -211,14 +211,14 @@
 													<ul ng-class="{'submitted':submitted}" class="ul-inputs inputs-group-dish">
 
 														<li class="li-input li-input-dish" ng-class="{'error':innerFormOption.subOptionName.$invalid}">
-															<div class="input"><input type="text" name="subOptionName" ng-model="suboption.name" placeholder="Option name"></div>
+															<div class="input"><input type="text" required name="subOptionName" ng-model="suboption.name" placeholder="Option name"></div>
 															<div class="box-error">
 																<small ng-show="innerFormOption.subOptionName.$error.required">Required.</small>
 															</div>
 														</li>
 
 														<li class="li-input li-input-dish" ng-class="{'error':innerFormOption.subOptionPrice.$invalid}">
-															<div class="input"><input type="number" step="any" class="input-price" name="subOptionPrice" ng-model="suboption.price" ignore-mouse-wheel placeholder="Additonal amount"></div>
+															<div class="input"><input type="number" required step="any" class="input-price" name="subOptionPrice" ng-model="suboption.price" ignore-mouse-wheel placeholder="Additonal amount"></div>
 															<div class="box-error">
 																<small ng-show="innerFormOption.subOptionPrice.$error.required">Required.</small>
 															</div>
