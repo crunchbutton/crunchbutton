@@ -28,6 +28,9 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 		}
 
 		switch (c::getPagePiece(3)) {
+			case 'cover':
+				$this->_cover();
+				break;
 			case 'basic':
 				$this->_basic();
 				break;
@@ -86,6 +89,16 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 		$restaurant->save();
 
 		$out = [ 'id_restaurant' => $restaurant->id_restaurant, 'permalink' => $restaurant->permalink ];
+		$this->_return( $out );
+	}
+
+	private function _cover(){
+		$community = $this->restaurant->community()->get( 0 );
+		$out = [];
+		$out[ 'id_restaurant' ] = $this->restaurant->id_restaurant;
+		$out[ 'name' ] = $this->restaurant->name;
+		$out[ 'permalink' ] = $this->restaurant->permalink;
+		$out[ 'image' ] = $this->restaurant->getImages('name');
 		$this->_return( $out );
 	}
 
