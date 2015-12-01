@@ -864,6 +864,8 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 			return;
 		}
 
+		$scope.dishActionMoveIsMoving = true;
+
 		var dish = null;
 		var dishes = $scope.restaurant.categories[ $scope.dishActionCategory.sort - 1 ]._dishes;
 		for( x in dishes ){
@@ -894,18 +896,8 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 		$scope.restaurant.categories[ $scope.dishActionMoveToCategory - 1 ]._dishes = RestaurantEditService.menu.parse.dish( dishes );
 
 		$scope.closePopup();
-
+		$scope.dishActionMoveIsMoving = false;
 		return;
-
-		// var dishes = $scope.restaurant.categories[ category.sort - 1 ]._dishes;
-		// var sort = dishes.length ? ( dishes.length + 1 ) : 1;
-		// dishes.push( { id_restaurant: $scope.restaurant.id_restaurant, sort: sort, active: true, price: 0, expanded: false, expand_view: false, top: false, options: { selects:[], checkboxes:[] } } );
-
-
-		// var categoryFrom = $scope.dishActionCategory;
-		// var categoryTo =
-
-		// $scope.dishActionMoveIsMoving = true;
 	}
 
 	$scope.dishActionCopyOptions = function(){
@@ -913,8 +905,14 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 			$scope.formDishActionsCopyOptionsSubmitted = true;
 			return;
 		}
-
 		$scope.dishActionIsCopying = true;
+
+		//
+
+
+		$scope.closePopup();
+		$scope.dishActionIsCopying = false;
+		return;
 	}
 
 });
