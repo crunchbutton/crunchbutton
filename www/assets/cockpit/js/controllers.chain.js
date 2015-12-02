@@ -132,7 +132,7 @@ NGApp.controller('ChainCommunityFormCtrl', function ($scope, $routeParams, $root
 	$scope.$watch( 'community_chain.id_community', function( newValue, oldValue, scope ) {
 		$scope.restaurants = null;
 		if( newValue ){
-			RestaurantService.shortlistByCommunity( newValue, function( json ){
+			CommunityChainService.shortlistByCommunity( newValue, function( json ){
 				$scope.restaurants = json;
 			} );
 		}
@@ -193,7 +193,7 @@ NGApp.controller('ChainCommunityFormCtrl', function ($scope, $routeParams, $root
 			if( json.error ){
 				App.alert( 'Error saving: ' + json.error );
 			} else {
-
+				$scope.navigation.link( '/chain/communities/'  );
 			}
 		} );
 	}

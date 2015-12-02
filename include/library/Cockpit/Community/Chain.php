@@ -2,7 +2,11 @@
 
 class Cockpit_Community_Chain extends Crunchbutton_Community_Chain{
 
-	public static function byCommunityChan( $id_community, $id_chain ){
+	public static function byCommunity( $id_community ){
+		return self::q( 'SELECT * FROM community_chain cc INNER JOIN chain c ON c.id_chain = cc.id_chain WHERE cc.id_community = ? ORDER BY c.name ASC', [ $id_community ] );
+	}
+
+	public static function byCommunityChain( $id_community, $id_chain ){
 		return self::q( 'SELECT * FROM community_chain WHERE id_community = ? AND id_chain = ? ORDER BY id_community_chain DESC LIMIT 1', [ $id_community, $id_chain ] )->get( 0 );
 	}
 
