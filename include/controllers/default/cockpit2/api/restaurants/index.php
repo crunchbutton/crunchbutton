@@ -50,7 +50,14 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 				break;
 			// Simple list returns just the name and id
 			case 'list':
-				$restaurants = Crunchbutton_Restaurant::active();
+
+				if( $this->request()[ 'id_community' ] ){
+					$restaurants = Crunchbutton_Restaurant::q( 'SELECT * FROM restaurant INNER JOIN restaurant_community on restaurant_community.id_restaurant = restaurant.id_restaurant WHERE restaurant.active = true AND restaurant_community.id_community = ? ORDER BY restaurant.name ASC', [ $this->request()[ 'id_community' ] ] );
+				} else {
+					$restaurants = Crunchbutton_Restaurant::active();
+				}
+
+
 				$export = [];
 				foreach( $restaurants as $restaurant ){
 					$name = $restaurant->name;

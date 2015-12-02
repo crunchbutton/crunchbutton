@@ -12,6 +12,17 @@ class Controller_api_chain extends Crunchbutton_Controller_RestAccount {
 
 			case 'get':
 				switch ( c::getPagePiece( 2 ) ) {
+					case 'simple':
+
+					$out = [];
+
+					$chains = Chain::q( 'SELECT id_chain, name FROM chain WHERE active = 1 ORDER BY name ASC' );
+					foreach( $chains as $chain ){
+						$out[] = [ 'id_chain' => floatval( $chain->id_chain ), 'name' => $chain->name ];
+					}
+					echo json_encode( $out );exit;
+
+					break;
 					default:
 						$chain = Chain::o( c::getPagePiece(2) );
 						if (!$chain->id_chain) {
@@ -32,9 +43,9 @@ class Controller_api_chain extends Crunchbutton_Controller_RestAccount {
 						$id_chain = $this->request()[ 'id_chain' ];
 
 						if( $id_chain ){
-							$chain = Crunchbutton_Chain::o( $id_chain );
+							$chain = Chain::o( $id_chain );
 						} else {
-							$chain = new Crunchbutton_Chain;
+							$chain = new Chain;
 						}
 						$chain->name = $this->request()[ 'name' ];
 						$chain->active = $this->request()[ 'active' ];

@@ -1,0 +1,43 @@
+<div class="top-pad"></div>
+<div class="content-padding">
+	<div class="page-title-wrap">
+		<h1 class="title"><i class="fa fa-link"></i>Chains</h1>
+		<div class="page-title-nav">
+			<a href="/chain/community/"><button class="button button-green nav-button-green"><i class="fa fa-plus"></i></button></a>
+		</div>
+	</div>
+	<div class="divider"></div>
+	<div class="box-content2 box-content-table">
+		<table>
+			<tr>
+				<td colspan="4"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
+			</tr>
+			<tr>
+				<th>Chain</th>
+				<td>
+					<ui-select ng-model="query.chain" theme="select2" close-on-select="true" style="width: 200px;" title="Select a chain">
+						<ui-select-match placeholder="Select a chain">{{$select.selected.name}}</ui-select-match>
+						<ui-select-choices repeat="chain.id_chain as chain in _chains | propsFilter: {name: $select.search}">
+							{{chain.name}}
+						</ui-select-choices>
+					</ui-select>
+					<a ng-show="query.chain" ng-click="query.chain=null" href=""><button class="button button-small button-empty button-green"><i class="fa fa-trash-o"></i></button></a>
+				</td>
+				<th>Community</th>
+				<td>
+					<ui-select ng-model="query.community" theme="select2" close-on-select="true" style="width: 200px;" title="Select a community">
+						<ui-select-match placeholder="Select a community">{{$select.selected.name}}</ui-select-match>
+						<ui-select-choices repeat="community.id_community as community in communities | propsFilter: {name: $select.search}">
+							{{community.name}}
+						</ui-select-choices>
+					</ui-select>
+					<a ng-show="query.community" ng-click="query.community=null" href=""><button class="button button-small button-empty button-green"><i class="fa fa-trash-o"></i></button></a>
+				</td>
+				<td></td>
+			</tr>
+		</table>
+	</div>
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+	<ng-include src="'assets/view/listview-chains-communities.html'"></ng-include>
+	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+</div>
