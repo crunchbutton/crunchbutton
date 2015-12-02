@@ -4,18 +4,24 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/chains', {
 			action: 'chains',
 			controller: 'ChainsCtrl',
+			templateUrl: 'assets/view/chains-hub.html',
+			reloadOnSearch: false
+		})
+		.when('/chains/list', {
+			action: 'chains',
+			controller: 'ChainsCtrl',
 			templateUrl: 'assets/view/chains.html',
 			reloadOnSearch: false
 		})
 		.when('/chain/edit/:id', {
 			action: 'chain',
 			controller: 'ChainFormCtrl',
-			templateUrl: 'assets/view/chains-form.html'
+			templateUrl: 'assets/view/chain-form.html'
 		})
 		.when('/chain/new', {
 			action: 'chain',
 			controller: 'ChainFormCtrl',
-			templateUrl: 'assets/view/chains-form.html'
+			templateUrl: 'assets/view/chain-form.html'
 		});
 
 }]);
@@ -59,8 +65,7 @@ NGApp.controller('ChainFormCtrl', function ($scope, $routeParams, $rootScope, $f
 			if( json.error ){
 				App.alert( 'Error saving: ' + json.error );
 			} else {
-				chain();
-				$scope.navigation.link( '/chain/edit/' + json.id_chain );
+				$scope.navigation.link( '/chains/list' );
 			}
 		} );
 	}
@@ -74,6 +79,7 @@ NGApp.controller('ChainFormCtrl', function ($scope, $routeParams, $rootScope, $f
 		} else {
 			$scope.chain = { 'active': true };
 		}
+		$scope.ready = true;
 	}
 
 	chain();

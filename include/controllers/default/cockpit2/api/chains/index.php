@@ -67,9 +67,6 @@ class Controller_api_chains extends Crunchbutton_Controller_Rest {
 			}
 		}
 
-		$q .= '
-			ORDER BY chain.name ASC
-		';
 		if ($limit != 'none') {
 			$q .= '
 				LIMIT ?

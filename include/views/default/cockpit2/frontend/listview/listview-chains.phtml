@@ -1,0 +1,23 @@
+<div class="box-content2 box-content-table">
+	<table class="tb-zebra">
+		<tr>
+			<th>Name</th>
+			<th>Status info</th>
+			<th class="tb-small"></th>
+		</tr>
+		<tr ng-repeat="chain in chains track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/chain/{{chain.id_chain}}">
+			<td>
+				<span class="listview-bold">{{chain.name}}</span>
+			</td>
+			<td>
+				<span class="tag tag-red" ng-if="!chain.active">Inactive</span>
+				<span class="tag tag-green" ng-if="chain.active">Active</span>
+			</td>
+			<td nowrap class="tb-v-center">
+				<div>
+					<a href="/chain/edit/{{chain.id_chain}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>

@@ -1,0 +1,46 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-link"></i><span>Chain</span></h1>
+
+	<div class="divider"></div>
+
+	<form name="form" novalidate>
+
+		<div class="support-box-wrap box-content2">
+
+			<div class="no-box-content-color">
+
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+					<li class="li-input" ng-class="{'error':form.name.$invalid}">
+						<div class="label">Name:</div>
+						<div class="input"><input type="text" name="name" ng-model="chain.name" required placeholder="Name" ></div>
+						<div class="box-error">
+							<small ng-show="form.name.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':form.active.$invalid}">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="chain.active"/><div></div>
+						</label>
+						<div class="label">Active:</div>
+						<div class="box-error">
+							<small ng-show="form.active.$error.required">Required.</small>
+						</div>
+					</li>
+					<li class="li-input" ng-show="!isSaving">
+						<button class="button save" ng-click="save();">Save</button>
+
+					</li>
+					<li class="li-input" ng-show="isSaving">
+						<i class="fa fa-circle-o-notch fa-spin"></i>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</form>
+
+</div>
