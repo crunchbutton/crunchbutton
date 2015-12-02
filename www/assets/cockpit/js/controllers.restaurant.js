@@ -1005,7 +1005,7 @@ NGApp.controller('RestaurantEditDeliveryCtrl', function ( $scope, RestaurantEdit
 
 });
 
-NGApp.controller('RestaurantEditBasicCtrl', function ( $scope, RestaurantEditService, CommunityService) {
+NGApp.controller('RestaurantEditBasicCtrl', function ( $scope, RestaurantEditService, CommunityService, CommunityChainService) {
 
 	$scope.yesNo = RestaurantEditService.yesNo();
 	$scope.timezones = RestaurantEditService.timezones();
@@ -1027,8 +1027,20 @@ NGApp.controller('RestaurantEditBasicCtrl', function ( $scope, RestaurantEditSer
 		} );
 	}
 
-	$scope.save = function(){
+	$scope.$watch( 'restaurant.id_community', function( newValue, oldValue, scope ) {
+		$scope.chains = [];
+		$scope.chains.push( { id_community_chain: null, name: '' } );
+		if( newValue ){
+			CommunityChainService.shortlistByCommunity( newValue, function( json ){
+				angular.forEach( json, function(value, key) {
+  				$scope.chains.push( { id_community_chain: value.id_community_chain, name: value.name } );
+				});
+			} );
+		}
+	} );
 
+
+	$scope.save = function(){
 		if( $scope.restaurant.id_restaurant ){
 			if( !$scope.restaurant.id_community ){
 				App.alert( 'Please select a community!' );

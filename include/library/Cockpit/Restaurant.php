@@ -87,6 +87,16 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 		return $this->_payableOrders;
 	}
 
+	public function chain(){
+		if( !$this->_chain ){
+			$chain = Restaurant_Chain::q( 'SELECT * FROM restaurant_chain WHERE id_restaurant = ?', [ $this->id_restaurant ] );
+			if( $chain->id_restaurant_chain ){
+				return $chain;
+			}
+		}
+		return $this->_chain;
+	}
+
 	public function exports($ignore = [], $where = []) {
 		$out = parent::exports($ignore, $where);
 		$out['images'] = $this->getImages('name');

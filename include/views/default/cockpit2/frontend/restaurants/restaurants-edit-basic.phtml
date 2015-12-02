@@ -161,6 +161,15 @@
 							</ui-select>
 						</li>
 
+						<li class="li-input">
+							<div class="label">Chain:</div>
+							<div class="input">
+								<select name="restaurantCommunityChain" ng-model="restaurant.id_community_chain" ng-options="chain.id_community_chain as chain.name for chain in chains"></select>
+							</div>
+							<div class="notes">Only select this, if this restaurant is a chain</div>
+						</li>
+
+
 						<li class="li-input" ng-class="{'error':form.restaurantTimezone.$invalid}">
 							<div class="label">Timezone Where the Restaurant Is</div>
 							<div class="input">

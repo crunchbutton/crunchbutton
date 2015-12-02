@@ -197,7 +197,13 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 		$out[ 'fee_on_subtotal' ] = $this->restaurant->fee_on_subtotal;
 		$out[ 'fee_restaurant' ] = $this->restaurant->fee_restaurant;
 		$out[ 'fee_customer' ] = $this->restaurant->fee_customer;
+		$out[ 'id_community_chain' ] = null;
 		$out[ 'tax' ] = $this->restaurant->tax;
+
+		$chain = $this->restaurant->chain();
+		if( $chain->id_community_chain ){
+			$out[ 'id_community_chain' ] = $chain->id_community_chain;
+		}
 
 		if( $printJson ){
 			$this->_return( $out );
@@ -221,6 +227,17 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 		$this->restaurant->permalink = $this->restaurant->_permalink;
 		$this->restaurant->save();
 
+		Cockpit_Restaurant_Chain::removeChainsByIdRestaurant( $this->restaurant->id_restaurant );
+
+		if( $this->request()[ 'id_community_chain' ] ){
+
+			Cockpit_Restaurant_Chain::removeChainsByIdCommunityChain( $this->request()[ 'id_community_chain' ] );
+
+			$restaurantChain = new Restaurant_Chain;
+			$restaurantChain->id_community_chain = $this->request()[ 'id_community_chain' ];
+			$restaurantChain->id_restaurant = $this->restaurant->id_restaurant;
+			$restaurantChain->save();
+		}
 
 		if( $this->restaurant->id_restaurant ){
 			echo json_encode( [ 'success' => true ] );exit;

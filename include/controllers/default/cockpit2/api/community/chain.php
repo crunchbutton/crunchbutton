@@ -4,7 +4,7 @@ class Controller_api_community_chain extends Crunchbutton_Controller_RestAccount
 
 	public function init() {
 
-		if (!c::admin()->permission()->check(['global', 'chain-all', 'chain-view', 'chain-crud'])) {
+		if (!c::admin()->permission()->check(['global', 'community-all', 'chain-all', 'chain-view', 'chain-crud'])) {
 			$this->error(401);
 		}
 
@@ -12,6 +12,33 @@ class Controller_api_community_chain extends Crunchbutton_Controller_RestAccount
 
 			case 'get':
 				switch ( c::getPagePiece( 3 ) ) {
+
+					case 'by-community':
+						if( c::getPagePiece( 4 ) ){
+							$out = [];
+							$chains = Cockpit_Community_Chain::byCommunity( c::getPagePiece( 4 ) );
+							foreach( $chains as $chain ){
+								$_chain = [];
+								$_chain[ 'id_community_chain' ] = $chain->id_community_chain;
+								$_chain[ 'name' ] = $chain->name;
+								$restaurant = Cockpit_Restaurant_Chain::byIdCommunityChain( $chain->id_community_chain );
+								if( count( $restaurant ) ){
+									$restaurant = $restaurant->get( 0 );
+									if( $restaurant ){
+										$restaurant = $restaurant->restaurant();
+										if( $restaurant->id_restaurant ){
+											$_chain[ 'name' ] .= ' - linked to: ' . $restaurant->name;
+										}
+									}
+								}
+								$out[] = $_chain;
+							}
+							echo json_encode( $out );exit;
+						} else {
+							$this->error(404);
+						}
+					break;
+
 					default:
 
 						$chain = Community_Chain::o( c::getPagePiece( 3 ) );

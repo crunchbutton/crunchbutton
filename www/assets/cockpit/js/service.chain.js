@@ -69,6 +69,12 @@ NGApp.factory( 'CommunityChainService', function( $rootScope, $resource, $routeP
 			method: 'GET',
 			params : {}
 		},
+		'by_community' : {
+			url: App.service + 'community/chain/by-community/:id_community',
+			method: 'GET',
+			params : {},
+			isArray: true
+		},
 		'query' : {
 			method: 'GET',
 			params : {}
@@ -85,6 +91,13 @@ NGApp.factory( 'CommunityChainService', function( $rootScope, $resource, $routeP
 			callback(data);
 		});
 	}
+
+	service.shortlistByCommunity = function( id_community, callback ){
+		chain.by_community( { id_community:id_community }, function( data ){
+			callback( data );
+		} );
+	}
+
 
 	service.get = function(id_community_chain, callback) {
 		chain.load({id_community_chain: id_community_chain},  function(data) {
