@@ -108,12 +108,15 @@ NGApp.controller('DriversDashboardCtrl', function ( $scope, MainNavigationServic
 
 
 
-NGApp.controller('DriversOrderNavCtrl', function ( $scope, $rootScope, DriverOrdersViewService) {
+NGApp.controller('DriversOrderNavCtrl', function ( $scope, $rootScope, $location, $timeout, DriverOrdersViewService) {
 	$scope.oc = DriverOrdersViewService;
 
-	$rootScope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
-		//console.log('ROUTE',arguments);
-		//$scope.oc = null;
+	$rootScope.$on('$routeChangeSuccess', function (event, $currentRoute, $previousRoute) {
+		if( $location.url() == '/drivers/orders' ){
+			$timeout( function(){
+				$scope.oc.close_banner();
+			}, 3000 );
+		}
 	});
 });
 
@@ -196,6 +199,7 @@ NGApp.controller( 'DriversOrderSignatureCtrl', function ( $scope, $rootScope, $r
 });
 
 NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $routeParams, DriverOrdersService, DriverOrdersViewService, AccountService) {
+
 	$rootScope.navTitle = '#' + $routeParams.id;
 	$scope.ready = false;
 	$scope.oc = DriverOrdersViewService;
