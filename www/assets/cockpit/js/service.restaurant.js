@@ -45,6 +45,12 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 		});
 	}
 
+	service.shortlistByCommunity = function( id_community, callback ){
+		restaurants.list( { id_community:id_community }, function( data ){
+			callback( data );
+		} );
+	}
+
 	service.weight_adjustment = function( params, callback ){
 		restaurants.weight_adjustment( params,  function( data ){
 			callback( data );
@@ -130,8 +136,6 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 			callback( data );
 		} );
 	}
-
-
 
 	service.paid_list = function( callback ){
 		restaurants.paid_list( function( data ){

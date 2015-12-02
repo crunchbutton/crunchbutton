@@ -1,0 +1,81 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-link"></i><span>Chain x Community</span></h1>
+
+	<div class="divider"></div>
+
+	<form name="form" novalidate>
+
+		<div class="support-box-wrap box-content2">
+
+			<div class="no-box-content-color">
+
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+					<li class="li-input">
+						<div class="label">Chain:</div>
+						<ui-select ng-disabled="community_chain.id_community_chain" ng-model="community_chain.id_chain" theme="select2" close-on-select="true" style="width: 300px;" title="Select a chain">
+							<ui-select-match placeholder="Select a chain">{{$select.selected.name}}</ui-select-match>
+							<ui-select-choices repeat="chain.id_chain as chain in chains | propsFilter: {name: $select.search}">
+								{{chain.name}}
+							</ui-select-choices>
+						</ui-select>
+					</li>
+
+					<li class="li-input">
+						<div class="label">Community:</div>
+						<ui-select ng-disabled="community_chain.id_community_chain" ng-model="community_chain.id_community" theme="select2" close-on-select="true" style="width: 300px;" title="Select a community">
+							<ui-select-match placeholder="Select a community">{{$select.selected.name}}</ui-select-match>
+							<ui-select-choices repeat="community.id_community as community in communities | propsFilter: {name: $select.search}">
+								{{community.name}}
+							</ui-select-choices>
+						</ui-select>
+					</li>
+
+					<li class="li-input">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="community_chain.exist_at_community"/><div></div>
+						</label>
+						<div class="label">Does a chain exist?</div>
+					</li>
+
+					<li class="li-input">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="community_chain.within_range"/><div></div>
+						</label>
+						<div class="label">Close enough to campus?</div>
+					</li>
+
+
+					<li class="li-input">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="community_chain.linked_restaurant"/><div></div>
+						</label>
+						<div class="label">Linked to an existing restaurant?</div>
+					</li>
+
+					<li class="li-input" ng-if="community_chain.linked_restaurant">
+						<div class="label">Restaurant:</div>
+						<ui-select ng-model="community_chain.id_restaurant" theme="select2" close-on-select="true" style="width: 300px;" title="Select a restaurant">
+							<ui-select-match placeholder="Select a restaurant">{{$select.selected.name}}</ui-select-match>
+							<ui-select-choices repeat="restaurant.id_restaurant as restaurant in restaurants | propsFilter: {name: $select.search}">
+								{{restaurant.name}}
+							</ui-select-choices>
+						</ui-select>
+					</li>
+
+					<li class="li-input" ng-show="!isSaving">
+						<button class="button save" ng-click="save();">Save</button>
+
+					</li>
+					<li class="li-input" ng-show="isSaving">
+						<i class="fa fa-circle-o-notch fa-spin"></i>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</form>
+
+</div>

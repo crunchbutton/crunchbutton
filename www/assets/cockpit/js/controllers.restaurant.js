@@ -1028,6 +1028,7 @@ NGApp.controller('RestaurantEditBasicCtrl', function ( $scope, RestaurantEditSer
 	}
 
 	$scope.save = function(){
+
 		if( $scope.restaurant.id_restaurant ){
 			if( !$scope.restaurant.id_community ){
 				App.alert( 'Please select a community!' );
