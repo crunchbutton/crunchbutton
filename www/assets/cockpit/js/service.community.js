@@ -12,7 +12,7 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 
 	var community = ResourceFactory.createResource(App.service + 'communities/:id_community/:action', { id_community: '@id_community', action: '@action' }, {
 		'load' : {
-			url: App.service + 'community/:id_community',
+			url: App.service + 'community/:id_community/:action',
 			method: 'GET',
 			params : {}
 		},
@@ -111,6 +111,18 @@ NGApp.factory( 'CommunityService', function( $rootScope, $resource, $routeParams
 
 	service.get = function(id_community, callback) {
 		community.load({id_community: id_community},  function(data) {
+			callback(data);
+		});
+	}
+
+	service.basic = function(id_community, callback) {
+		community.load({id_community: id_community, action: 'basic'},  function(data) {
+			callback(data);
+		});
+	}
+
+	service.openCloseStatus = function(id_community, callback) {
+		community.load({id_community: id_community, action: 'open-close-status'},  function(data) {
 			callback(data);
 		});
 	}
