@@ -24,19 +24,27 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 			return q;
 		};
 
+		var timeoutPromise = null;
+
 		var watch = function() {
-			if (previous == getQuery()) {
-				return;
+			if( timeoutPromise ){
+				$timeout.cancel( timeoutPromise );
 			}
 
-			if (!previous) {
-				$location.search(scope.query).replace();
-			} else {
-				$location.search(scope.query);
-			}
+			timeoutPromise = $timeout(function(){
+													if (previous == getQuery()) {
+														return;
+													}
 
-			previous = getQuery();
-			update();
+													if (!previous) {
+														$location.search(scope.query).replace();
+													} else {
+														$location.search(scope.query);
+													}
+
+													previous = getQuery();
+													update();
+											}, 1500 );
 		};
 
 		// @todo: this breaks linking to pages
