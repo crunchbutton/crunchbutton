@@ -242,7 +242,7 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 		$scope.loading = true;
 		$scope.community = null;
 		App.dialog.show('.open-close-community-dialog-container');
-		CommunityService.get( $routeParams.id, function( d ) {
+		CommunityService.openCloseStatus( $routeParams.id, function( d ) {
 			$scope.loading = false;
 			$scope.community = d;
 			if( $scope.community.dont_warn_till ){
@@ -608,7 +608,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 
 
 	var load = function(){
-		CommunityService.get($routeParams.id, function(d) {
+		CommunityService.basic($routeParams.id, function(d) {
 			$rootScope.title = d.name + ' | Community';
 			$scope.community = d;
 			$scope.loading = false;

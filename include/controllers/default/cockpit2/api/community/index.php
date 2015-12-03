@@ -62,8 +62,57 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 								break;
 
 							default:
-								echo $community->json();
-								exit();
+
+								switch ( c::getPagePiece( 3 ) ) {
+									case 'open-close-status':
+										$out = $community->properties();
+										echo json_encode( $out );exit;
+										break;
+
+									case 'basic':
+										$out = $community->properties();
+										$out[ 'name_alt' ] = $community->name_alt();
+										$out[ 'prep' ] = $community->prep();
+										$out['type'] = $community->type();
+
+										if( $out[ 'close_all_restaurants_id_admin' ] ){
+											$admin = Admin::o( $out[ 'close_all_restaurants_id_admin' ] );
+											$out[ 'close_all_restaurants_admin' ] = $admin->name;
+											$date = new DateTime( $out[ 'close_all_restaurants_date' ], new DateTimeZone( c::config()->timezone ) );
+											$out[ 'close_all_restaurants_date' ] = $date->format( 'M jS Y g:i:s A T' );
+										}
+
+										if( $out[ 'close_3rd_party_delivery_restaurants_id_admin' ] ){
+											$admin = Admin::o( $out[ 'close_3rd_party_delivery_restaurants_id_admin' ] );
+											$out[ 'close_3rd_party_delivery_restaurants_admin' ] = $admin->name;
+											$date = new DateTime( $out[ 'close_3rd_party_delivery_restaurants_date' ], new DateTimeZone( c::config()->timezone ) );
+											$out[ 'close_3rd_party_delivery_restaurants_date' ] = $date->format( 'M jS Y g:i:s A T' );
+										}
+
+										$next_sort = Crunchbutton_Community_Alias::q( 'SELECT MAX(sort) AS sort FROM community_alias WHERE id_community = ' . $community->id_community );
+										if( $next_sort->sort ){
+											$sort = $next_sort->sort + 1;
+										} else {
+											$sort = 1;
+										}
+										$out['next_sort'] = $sort;
+
+										if( $out[ 'dont_warn_till' ] ){
+											$out[ 'dont_warn_till' ] = [ 	'y' => $community->dontWarnTill()->format( 'Y' ), 'm' => $community->dontWarnTill()->format( 'm' ), 'd' => $community->dontWarnTill()->format( 'd' ), 'h' => $community->dontWarnTill()->format( 'H' ), 'i' => $community->dontWarnTill()->format( 'i' ) ];
+											$out[ 'dont_warn_till_formated' ] = $community->dontWarnTill()->format( 'M jS Y g:i:s A T' );
+											$out[ 'dont_warn_till_enabled' ] = true;
+										} else {
+											$out[ 'dont_warn_till' ] = null;
+										}
+
+
+										echo json_encode( $out );exit;
+										break;
+
+									default:
+										echo $community->json();exit();
+										break;
+								}
 								break;
 						}
 						break;
