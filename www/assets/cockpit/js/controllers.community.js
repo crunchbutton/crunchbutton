@@ -233,10 +233,7 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 	}
 
 	community();
-
-
 });
-
 
 NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $rootScope, $filter, CommunityService, DriverService ) {
 
@@ -404,7 +401,7 @@ NGApp.controller('CommunityAddNoteCtrl', function ($scope, $routeParams, $rootSc
 
 } );
 
-NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, MapService, CommunityService, RestaurantService, OrderService, StaffService) {
+NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, MapService, CommunityService, RestaurantService, OrderService, StaffService, DriverService) {
 
 	$scope.loading = true;
 	$scope.isSaving = false;
@@ -478,31 +475,55 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		} } );
 	}
 
+	$scope.loadDriversSMS = function(){
+		$scope.loadDrivers = true;
+		DriverService.byCommunity( $scope.community.id_community, function( data ){
+			$scope.drivers = data;
+			$scope.loadDrivers = false;
+		} );
+	}
+
 	$scope.sendSms = {
 		unSelectAll: function(){
-			angular.forEach($scope.staff, function(staff, key) {
+			angular.forEach($scope.drivers, function(staff, key) {
 				staff.send = false;
 			});
 		},
 		selectAll: function(){
 			$scope.sendSms.unSelectAll();
-			angular.forEach($scope.staff, function(staff, key) {
-				if( staff.phone && staff.active ){
+			angular.forEach($scope.drivers, function(staff, key) {
+				if( staff.phone ){
 					staff.send = true;
 				}
 			});
 		},
-		selectAllWorkingToday: function(){
-			$scope.sendSms.unSelectAll();
-			angular.forEach($scope.staff, function(staff, key) {
-				if( staff.phone && staff.active && ( staff.working_today || staff.working ) ){
+		selectAllDownToHelpOut: function(){
+			angular.forEach($scope.drivers, function(staff, key) {
+				if( staff.phone && staff.down_to_help_out ){
 					staff.send = true;
 				}
+				var phones = [];
+				angular.forEach($scope.drivers, function(staff, key) {
+					if( staff.send ){
+						phones.push( staff.phone );
+					}
+				} );
+				$rootScope.closePopup();
+				if( phones.length ){
+					setTimeout( function(){
+						var message = 'We could use extra drivers right now, since orders are so busy. If you can help out with some orders now, or soon, just shoot us a text back :) Thanks!';
+						$rootScope.$broadcast( 'textNumber', phones );
+						$rootScope.$broadcast( 'textInfo', { message:message, permalink: $routeParams.id, type:'down_to_help_out' } );
+					}, 1 );
+				} else {
+					App.alert( 'Select at least one driver.' );
+				}
+
 			});
 		},
 		selectAllWorking: function(){
 			$scope.sendSms.unSelectAll();
-			angular.forEach($scope.staff, function(staff, key) {
+			angular.forEach($scope.drivers, function(staff, key) {
 				if( staff.phone && staff.active && staff.working ){
 					staff.send = true;
 				}
@@ -510,7 +531,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		},
 		send: function(){
 			var phones = [];
-			angular.forEach($scope.staff, function(staff, key) {
+			angular.forEach($scope.drivers, function(staff, key) {
 				if( staff.send ){
 					phones.push( staff.phone );
 				}

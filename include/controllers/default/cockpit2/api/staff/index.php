@@ -23,7 +23,6 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		if (c::getPagePiece(2) && c::getPagePiece(2) != 'support' ) {
 
-
 			switch ( c::getPagePiece(2) ) {
 				case 'phones':
 					$this->_phones();
@@ -416,7 +415,6 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$send_text = $this->request()['send_text'] ? $this->request()['send_text'] : null;
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
 		$keys = [];
-
 
 		if( ( !c::admin()->permission()->check(['global']) && c::admin()->isCampusManager() ) ){
 			$brandreps = $this->request()['brandreps'] ? $this->request()['brandreps'] : false;

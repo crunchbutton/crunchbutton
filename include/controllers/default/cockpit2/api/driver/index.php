@@ -101,7 +101,8 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 						if( $note ){
 							$note = $note->exports()['text'];
 						}
-						$out[] = [ 'id_admin' => intval( $driver->id_admin ), 'name' => $driver->name, 'note' => $note, 'phone' => $driver->phone, 'down_to_help_out' => ( ( $info->down_to_help_out ) ? true : false ) ];
+						$working = $driver->isWorking();
+						$out[] = [ 'id_admin' => intval( $driver->id_admin ), 'name' => $driver->name, 'note' => $note, 'phone' => $driver->phone, 'working' => $working, 'down_to_help_out' => ( ( $info->down_to_help_out ) ? true : false ) ];
 					}
 				}
 				echo json_encode( $out );

@@ -1,20 +1,18 @@
-<div ng-if="loadingStaff">
+<div ng-if="loadDrivers">
 	<br><br><br><br>
-	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loadingStaff}"></div>
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loadDrivers}"></div>
 </div>
 
-
-<div class="support-box-wrap box-content2" ng-show="!loadingStaff">
+<div class="support-box-wrap box-content2" ng-show="!loadDrivers">
 	<div class="support-box-wrap-header">
 		<h1>Select driver</h1>
 		<div class="divider"></div>
 	</div>
-
 	<div class="no-box-content-color">
 		<div class="field-container">
 			<div class="field-row">
 				<div class="field-key">
-					<a ng-click="sendSms.selectAll();">Select all active drivers</a>
+					<a ng-click="sendSms.selectAll();">Select all drivers</a>
 				</div>
 			</div>
 			<div class="field-row">
@@ -24,7 +22,12 @@
 			</div>
 			<div class="field-row">
 				<div class="field-key">
-					<a ng-click="sendSms.selectAllWorkingToday();">Select all drivers that are working today</a>
+					<a ng-click="sendSms.unSelectAll();">Unselect all drivers</a>
+				</div>
+			</div>
+			<div class="field-row">
+				<div class="field-key">
+					<button class="button orange" ng-click="sendSms.selectAllDownToHelpOut();">Text Drivers to Help Out</button>
 				</div>
 			</div>
 			<div class="field-row">
@@ -36,16 +39,18 @@
 	</div>
 </div>
 
-<div class="box-content2 box-content-table" ng-show="!loadingStaff">
+<div class="box-content2 box-content-table" ng-show="!loadDrivers">
 	<table class="tb-zebra">
 		<tr>
 			<th>Driver</th>
 			<th>Phone</th>
+			<th>Notes</th>
 			<th class="tb-small"> </th>
 		</tr>
-		<tr ng-repeat="s in staff track by $index" ng-attr-tabindex="{{$index+4}}" ng-if="s.active">
+		<tr ng-repeat="s in drivers track by $index" ng-attr-tabindex="{{$index+4}}">
 			<td><span>{{s.name}}</span></td>
 			<td><a href ng-click="callText(s.phone)" class="listview-smaller">{{s.phone | formatPhone}}</a></td>
+			<td><span>{{s.note}}</span></td>
 			<td>
 				<label class="switch-wrap" ng-if="s.phone">
 					<input type="checkbox" class="switch" ng-model="s.send"/><div></div>
