@@ -4,9 +4,6 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 
 	public function init() {
 
-		// $this->restaurant = Restaurant::o( 107 );
-		// $this->_menuSave();exit;
-
 		if( c::getPagePiece( 3 ) == 'new' ){
 			return $this->_new();
 		}
@@ -378,9 +375,17 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 	private function _menuSave(){
 
 		$categories = $this->request()[  'categories' ];
-
 		$_categories = $this->_menuExport( false );
 		$_categories = $_categories[ 'categories' ];
+
+		Log::debug( [
+					'old_items' 		=> $_categories,
+					'new_items' 		=> $categories,
+					'id_admin' 			=> c::user()->id_admin,
+					'id_restaurant'	=> $this->restaurant->id_restaurant,
+					'permalink'			=> $this->restaurant->permalink,
+					'type' 					=> 'restaurant-menu-save'
+				]);
 
 		$remove = [ 'categories' => [], 'dishes' => [], 'options' => [] ];
 
