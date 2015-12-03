@@ -868,24 +868,35 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 									id_user = "Unknown";
 								}
 								orderCached = true;
-								App.track('Ordered', {
-									'id': json.uuid,
-									'total': service.info.total,
-									'subtotal': service.info.subtotal,
-									'tip': service.info.tip,
-									'tax': service.info.taxes,
-									'restaurant': service.restaurant.name,
-									'id_restaurant': service.restaurant.id_restaurant,
-									'paytype': service.form.pay_type,
-									'ordertype': service.form.delivery_type,
-									'user': id_user,
-									'items': service.cart.totalItems(),
-									'cart': service.cart.getItems()
-								}, undefined, undefined);
 
-								if( fbq ){ // #7077
-									fbq('track', 'Purchase', {value: service.info.total, currency: 'USD'});
+								var shouldTrack = true;
+
+								if( service.restaurant.name.search(/test/i) >= 0 ||
+									service.form.name.search(/test/i) >= 0 ){
+									shouldTrack = false;
 								}
+
+								if( shouldTrack ){
+									App.track('Ordered', {
+										'id': json.uuid,
+										'total': service.info.total,
+										'subtotal': service.info.subtotal,
+										'tip': service.info.tip,
+										'tax': service.info.taxes,
+										'restaurant': service.restaurant.name,
+										'id_restaurant': service.restaurant.id_restaurant,
+										'paytype': service.form.pay_type,
+										'ordertype': service.form.delivery_type,
+										'user': id_user,
+										'items': service.cart.totalItems(),
+										'cart': service.cart.getItems()
+									}, undefined, undefined);
+
+									if( fbq ){ // #7077
+										fbq('track', 'Purchase', {value: service.info.total, currency: 'USD'});
+									}
+								}
+
 
 								// Clean the cart
 								service.cart.clean();
