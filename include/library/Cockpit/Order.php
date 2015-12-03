@@ -317,7 +317,6 @@ class Cockpit_Order extends Crunchbutton_Order {
 					$out[ 'signature' ] = $this->signature();
 				}
 			}
-
 		}
 
 		if( $out[ 'refunded' ] ){
@@ -326,12 +325,6 @@ class Cockpit_Order extends Crunchbutton_Order {
 				$out[ 'refunded_partial' ] = true;
 			}
 			$out[ 'refunded_amount' ] = $this->refundedTotal();
-		}
-
-		foreach( $out as $key => $val ){
-			if( is_numeric( $val ) ){
-				$out[ $key ] = floatval( $val );
-			}
 		}
 
 		switch ( $_profile ) {
