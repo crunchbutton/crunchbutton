@@ -3360,6 +3360,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$out['_community_name'] = $this->restaurant()->community()->name;
 		$out['_community_permalink'] = $this->restaurant()->community()->permalink;
 		$out['_driver_name'] = $this->status()->last()['driver']['name'];
+		$out['_driver_phone'] = $this->status()->last()['driver']['phone'];
 		$out['_driver_id'] = $this->status()->last()['driver']['id_admin'];
 		return $out;
 	}

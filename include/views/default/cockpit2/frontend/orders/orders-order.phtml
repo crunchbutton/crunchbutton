@@ -373,12 +373,12 @@
 		</div>
 
 		<? /* driver */ ?>
-		<div class="support-box-wrap box-content2" ng-if="order.driver.id_admin">
+		<div class="support-box-wrap box-content2" ng-if="order._driver_id">
 			<div class="support-box-wrap-header">
-				<h1>Driver #{{order.driver.id_admin}}</h1>
+				<h1>Driver #{{order._driver_id}}</h1>
 				<div class="support-box-header-actions-wrap">
 					<div class="support-box-header-actions">
-						<a href="/staff/{{order.driver.id_admin}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+						<a href="/staff/{{order._driver_id}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 					</div>
 				</div>
 				<div class="divider"></div>
@@ -388,11 +388,11 @@
 				<div class="field-container">
 					<div class="field-row">
 						<div class="field-key">Name</div>
-						<div class="field-value">{{order.driver.name}}</div>
+						<div class="field-value">{{order._driver_name}}</div>
 					</div>
 					<div class="field-row">
 						<div class="field-key">Phone</div>
-						<div class="field-value"><a href ng-click="callText(order.driver.phone)">{{order.driver.phone | formatPhone}}</a></div>
+						<div class="field-value"><a href ng-click="callText(order._driver_phone)">{{order._driver_phone | formatPhone}}</a></div>
 					</div>
 					<div class="field-row">
 						<div class="field-key">Deliveries</div>
@@ -418,7 +418,7 @@
 
 	</div>
 
-	<div class="support-box-wrap box-content2" ng-if="order.driver.id_admin">
+	<div class="support-box-wrap box-content2" ng-if="order._driver_id">
 		<div class="support-box-wrap-header">
 			<h1>Location</h1>
 			<div class="support-box-header-actions">

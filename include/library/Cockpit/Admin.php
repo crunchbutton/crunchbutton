@@ -364,8 +364,23 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 	}
 
 	public function exports( $params = [] ) {
-		$out = parent::exports( $params );
+
+		if( $params[ 'ignore' ] ){
+			$ignore = $params[ 'ignore' ];
+		} else {
+			$ignore = $params;
+		}
+
+		$_ignore = [];
+		if( isset( $params[ 'ignore' ] ) ){
+			 foreach( $params[ 'ignore' ] as $key => $val ){
+			 	$_ignore[ $val ] = true;
+			 }
+		}
+
+		$out = parent::exports( $ignore );
 		$out['shifts'] = [];
+
 		$out['working'] = false;
 		$out['working_today'] = false;
 		$out['referral_admin_credit'] = $this->referralAdminCredit();
@@ -445,7 +460,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 		if ($params['working'] !== false) {
 
-			$next = Community_Shift::nextShiftsByAdmin($this->id_admin);
+			$next = Community_Shift::nextShiftsByAdmin($this->id_admin, 3);
 
 			if ($next) {
 
@@ -483,8 +498,9 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 					} else {
 						$shift['current'] = false;
 					}
-
-					$out['shifts'][] = $shift;
+					if( !$_ignore[ 'shifts' ] ){
+						$out['shifts'][] = $shift;
+					}
 				}
 			}
 		}
