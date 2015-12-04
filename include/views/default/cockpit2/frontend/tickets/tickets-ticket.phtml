@@ -128,6 +128,32 @@
 			</div>
 		</div>
 
+
+		<div class="support-box-wrap box-content2" ng-show="!ticket.order.geomatched && ticket.order._address && !ticket.order._address.approved">
+			<div class="support-box-wrap-header">
+				<h1>Address #{{ticket.order._address.id_address}}</h1>
+				<div class="divider"></div>
+			</div>
+			<div class="divider"></div>
+			<div class="no-box-content-color">
+				<br>
+				<div class="field-row">{{ticket.order._address.address}}</div>
+				<div class="field-container">
+					<div class="field-row" ng-hide="ticket.order.campus_cash_charged && ticket.order.campus_cash_charged_info">
+						<div class="field-key">
+							Approve this address
+						</div>
+						<div class="field-value">
+							<label class="switch-wrap">
+								<input type="checkbox" ng-click="approve_address()" class="switch" ng-disabled="ticket.order._address.approved" ng-model="ticket.order._address.approved"/><div></div>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="divider"></div>
+		</div>
+
 		<div class="support-box-wrap box-content2" ng-show="ticket.order.campus_cash">
 			<div class="support-box-wrap-header">
 				<h1>Campus Cash <span ng-show="ticket.order.campus_cash_charged"> Already Charged</span></h1>

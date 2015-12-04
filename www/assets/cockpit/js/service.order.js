@@ -68,6 +68,7 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 		'do_not_pay_driver' : { url: App.service + 'order/:id_order/do_not_pay_driver', method: 'GET', params : {} },
 		'do_not_pay_restaurant' : { url: App.service + 'order/:id_order/do_not_pay_restaurant', method: 'GET', params : {} },
 		'mark_cash_card_charged' : { url: App.service + 'order/:id_order/mark_cash_card_charged', method: 'GET', params : {} },
+		'approve_address' : { url: App.service + 'order/:id_order/approve_address', method: 'GET', params : {} },
 		'campus_cash' : { url: App.service + 'order/:id_order/campus-cash', method: 'POST', params : {} }
 	});
 
@@ -132,6 +133,12 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 
 	service.mark_cash_card_charged = function( id_order, callback ){
 		order.mark_cash_card_charged( { id_order: id_order }, function( data ) {
+			callback( data );
+		});
+	}
+
+	service.approve_address = function( id_order, callback ){
+		order.approve_address( { id_order: id_order }, function( data ) {
 			callback( data );
 		});
 	}

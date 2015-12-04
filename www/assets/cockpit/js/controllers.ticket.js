@@ -265,6 +265,14 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		App.confirm('After you mark this order as charged you will not be able to see the Student ID Number anymore.', 'Confirm?', success, fail, 'Confirm,Cancel', true);
 	}
 
+	$scope.approve_address = function(){
+		OrderService.approve_address( $scope.ticket.order.id_order, function(){
+			App.alert( 'Address approved!' )
+			$scope.ticket.order._address.status = 'approved';
+		} );
+
+	}
+
 	update();
 
 });

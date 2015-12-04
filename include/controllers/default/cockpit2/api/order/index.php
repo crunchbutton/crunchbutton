@@ -181,6 +181,17 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				echo json_encode( [ 'success' => true ] );
 				break;
 
+			case 'approve_address':
+				if (!c::admin()->permission()->check(['global', 'support-all'])) {
+					$this->error(401);
+				}
+				if( $order->approve_address() ){
+					echo json_encode( [ 'success' => true ] );
+				} else {
+					echo json_encode( [ 'error' => true ] );
+				}
+				break;
+
 			case 'mark_cash_card_charged':
 				if (!c::admin()->permission()->check(['global', 'support-all'])) {
 					$this->error(401);
@@ -191,6 +202,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 					echo json_encode( [ 'error' => true ] );
 				}
 				break;
+
 
 			case 'resend_notification':
 				if ( !c::admin()->permission()->check(['global','orders-all','orders-notification'])) {
