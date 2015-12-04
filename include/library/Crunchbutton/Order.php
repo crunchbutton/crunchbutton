@@ -623,6 +623,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$user->phone = $this->phone;
 
 		$phone = Crunchbutton_Phone::byPhone( $this->phone );
+		$_address = Crunchbutton_Address::byAddress( $this->address );
+
+		$this->id_address = $_address->id_address;
+
 		$user->id_phone = $phone->id_phone;
 
 		if ($this->delivery_type == 'delivery') {
@@ -3374,16 +3378,32 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$pattern = "%s just did Place Order Anyway! Order details: Order %d in the %s community to this address %s. Please double check that this address is close enough to be delivered (if it's just slightly out of range it may be fine), and cancel the order if necessary. Thanks!";
 		foreach( $orders as $order ){
 			if( !$order->orderHasGeomatchedTicket() ){
-					$message = sprintf( $pattern, $order->name, $order->id_order, $order->community()->name, $order->address );
-					echo $message . "\n";
-					Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
-					$action = new Crunchbutton_Order_Action;
-					$action->id_order = $order->id_order;
-					$action->timestamp = date( 'Y-m-d H:i:s' );
-					$action->type = Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED;
-					$action->save();
+				$message = sprintf( $pattern, $order->name, $order->id_order, $order->community()->name, $order->address );
+				echo $message . "\n";
+				Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
+				$action = new Crunchbutton_Order_Action;
+				$action->id_order = $order->id_order;
+				$action->timestamp = date( 'Y-m-d H:i:s' );
+				$action->type = Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED;
+				$action->save();
+
+				if( !$order->id_address ){
+					$address = Address::byAddress( $order->address );
+					$order->id_address = $address->id_address;
+					$order->save();
+				}
 			}
 		}
+	}
+
+	public function approve_address(){
+		if( $this->id_address ){
+			$address = Address::o( $this->id_address );
+			$address->status = Crunchbutton_Address::STATUS_APPROVED;
+			$address->save();
+			return $address;
+		}
+		return null;
 	}
 
 	public static function ticketForCampusCashOrder(){

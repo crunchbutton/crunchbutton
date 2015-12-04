@@ -857,6 +857,13 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		$out['restaurant'] = $this->restaurant()->id_restaurant ? $this->restaurant()->exports() : null;
 		$out['order'] = $this->order()->id_order ? $this->order()->exports() : null;
 
+		if( !$out['order']['geomatched'] && $out['order']['id_address'] ){
+			$address = Crunchbutton_Address::o( $out['order']['id_address'] );
+			$_address = $address->exports();
+			$_address[ 'approved' ] = ( $_address['status'] == Address::STATUS_APPROVED );
+			$out['order']['_address'] = $_address;
+		}
+
 		// try to find the user based on the phone
 		if( !$out['user'] && $this->id_phone ){
 			$user = User::q( 'SELECT * FROM user WHERE id_phone = ? ORDER BY id_user DESC LIMIT 1', [ $this->id_phone ] )->get( 0 );

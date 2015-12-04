@@ -35,8 +35,6 @@
 							</span>
 							{{order.date | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}
 							&nbsp;(<span class="listview-bold">{{order.date | convertimeformat:account.user.timezone:'z'}}</span>)
-
-
 							<div ng-if="!order._outsideOf24h" class="listview-smaller">
 								(<span am-time-ago="order.date"></span>)
 							</div>
