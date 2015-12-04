@@ -250,6 +250,7 @@ class _Community_Metric_Container {
 	 * sorted from lowest to highest. Missing communities are also backfilled into data.
 	 **/
 	public function formatQueryResults($queryResult, $groupCol, $labelCol, $dataCol, $isInt=true, $fillValue = 0, $labels = null) {
+
 		$rows = [];
 		while($r = $queryResult->fetch()) {
 			$rows[] = (array) $r;
@@ -269,19 +270,28 @@ class _Community_Metric_Container {
 		}
 		$missingData = array_pad([], count($allLabels), $fillValue);
 		$out = [];
+		$all = [];
 		foreach($grouped as $key => $rows) {
 			$data = [];
 			$labelMap = [];
 			foreach($rows as $row) {
 				$labelMap[$row[$labelCol]] = $row;
+				// $all[  ]
 			}
+			$count = 0;
 			foreach($allLabels as $label) {
+				if( !isset( $all[ $count ] ) ){
+					$all[ $count ] = 0;
+				}
+				$count++;
 				if(isset($labelMap[$label])) {
 					$row = $labelMap[$label];
 					if($isInt) {
 						$data[]  = intval($row[$dataCol]);
+						$all[ $count ] += intval($row[$dataCol]);
 					} else {
 						$data[] = floatval($row[$dataCol]);
+						$all[ $count ] += floatval($row[$dataCol]);
 					}
 				} else {
 					$data[] = $fillValue;
@@ -289,6 +299,7 @@ class _Community_Metric_Container {
 			}
 			$out[$key] = $data;
 		}
+		$out[ -1 ] = $all;
 		// backfill data for each community
 		foreach($this->communities as $id_community) {
 			if(!isset($out[$id_community])) {
