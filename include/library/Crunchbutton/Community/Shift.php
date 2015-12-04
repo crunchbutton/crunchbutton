@@ -94,7 +94,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return Crunchbutton_Community_Shift::q( $query, [$id_admin, $now->format( 'Y-m-d' ), $limit]);
 	}
 
-	public static function nextShiftsByAdmin( $id_admin ){
+	public static function nextShiftsByAdmin( $id_admin, $limit = 20 ){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		$query = '
 			SELECT cs.*, ass.id_admin_shift_assign, ass.confirmed FROM admin_shift_assign ass
@@ -103,8 +103,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				ass.id_admin = ?
 				AND cs.date_start >= ?
 			ORDER BY cs.date_start ASC
-			LIMIT 20
-		';
+			LIMIT ' . $limit;
 		return Crunchbutton_Community_Shift::q( $query, [$id_admin, $now->format( 'Y-m-d' )]);
 	}
 

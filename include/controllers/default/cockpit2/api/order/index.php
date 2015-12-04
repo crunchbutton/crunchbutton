@@ -320,9 +320,32 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				break;
 
 			default:
-				$out = $order->ordersExports( [ 'ignore' => [ 'user', 'restaurant' ] ] );
-				$out['user'] = $order->user()->id_user ? $order->user()->exports( [ 'ignore' => [ 'presets', 'points' ] ] ) : null;
-				$out['restaurant'] = $order->restaurant()->id_restaurant ? $order->restaurant()->exports( [ 'categories', 'notifications', 'hours', 'payment_type', 'images' ] ) : null;
+
+				$out = $order->ordersExports( [ 'ignore' => [ '_dishes', 'resources', 'user', 'restaurant', 'shifts', 'groups', 'communities', 'permissions' ] ] );
+				if( $order->user()->id_user ){
+					$user = $order->user();
+					$out['user'] = [
+													'id_user' => $user->id_user,
+													'name' => $user->name,
+													'phone' => $user->phone,
+													'address' => $user->address
+													];
+				} else {
+					$out['user'] = null;
+				}
+				if( $order->restaurant()->id_restaurant ){
+					$restaurant = $order->restaurant();
+					$out['restaurant'] = [
+																	'id_restaurant' => $restaurant->id_restaurant,
+																	'name' => $restaurant->name,
+																	'phone' => $restaurant->phone,
+																	'address' => $restaurant->address,
+																	'timezone' => $restaurant->timezone,
+					 											];
+				} else {
+					$out['restaurant'] = null;
+				}
+
 				$out[ 'do_not_reimburse_driver' ] = ( intval( $out[ 'do_not_reimburse_driver' ] ) > 0 ) ? true : false;
 				$out[ 'do_not_pay_driver' ] = ( intval( $out[ 'do_not_pay_driver' ] ) > 0 ) ? true : false;
 				$out[ 'do_not_pay_restaurant' ] = ( intval( $out[ 'do_not_pay_restaurant' ] ) > 0 ) ? true : false;

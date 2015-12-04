@@ -56,12 +56,14 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$agent = $this->agent();
 		$out['agent'] = $agent->os.' '.$agent->browser;
 
-		// resources
-		$resources = Crunchbutton_Resource::byCommunity( $this->id_community, 'order_page' );
-		if( $resources ){
-			$out['resources'] = [];
-			foreach( $resources as $resource ){
-				$out['resources'][] = [ 'name' => $resource->name, 'path' => $resource->download_url() ];
+		if( !$_ignore[ 'resources' ] ){
+			// resources
+			$resources = Crunchbutton_Resource::byCommunity( $this->id_community, 'order_page' );
+			if( $resources ){
+				$out['resources'] = [];
+				foreach( $resources as $resource ){
+					$out['resources'][] = [ 'name' => $resource->name, 'path' => $resource->download_url() ];
+				}
 			}
 		}
 
@@ -258,6 +260,10 @@ class Cockpit_Order extends Crunchbutton_Order {
 			return floatval( $a_price ) < floatval( $b_price );
 		} );
 
+		if( $_ignore[ '_dishes' ] ){
+			$out[ '_dishes' ] = null;
+		}
+
 		$out[ '_dishes_qty' ] = $_dishes_qty;
 		$out[ 'duplicated_items' ] = $duplicated_items;
 
@@ -294,8 +300,9 @@ class Cockpit_Order extends Crunchbutton_Order {
 		}
 
 		if( $driver ){
-			$out['driver'] = $driver->exports();
+			$out['driver'] = $driver->exports( $params );
 		}
+
 		$out['hasCustomerBeenTexted5Minutes'] = $this->hasCustomerBeenTexted5Minutes();
 
 		// remove
