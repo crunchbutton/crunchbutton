@@ -30,7 +30,7 @@ class Crunchbutton_Phone_Log extends Cana_Table{
 					'ticket.'.$message->id_support,
 					'tickets'
 				]
-			], 'message', [ 'id_support_message' => $message->id_support_message, 'status' => $this->status, 'type' => 'update-sms-status' ] );
+			], 'sms_status', [ 'id_support_message' => $message->id_support_message, 'status' => $this->status ] );
 		}
 		Log::debug([
 					'id_support' 					=> $message->id_support,
