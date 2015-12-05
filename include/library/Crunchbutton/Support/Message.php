@@ -35,7 +35,6 @@ class Crunchbutton_Support_Message extends Cana_Table {
 
 		parent::save();
 
-
 		if ($new) {
 			Event::emit([
 				'room' => [

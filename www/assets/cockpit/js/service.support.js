@@ -212,7 +212,10 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 						});
 
-					});
+					})
+					.on( 'sms_status', function( d ){
+						updateSmsStatus( d );
+					} );
 			}
 
 		} else {
@@ -220,6 +223,15 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			//service.socket = null;
 		}
 	});
+
+	var updateSmsStatus = function( d ){
+		var id_support_message = d.id_support_message;
+		var status = d.status;
+		var element = $( '#support-message-status-' + id_support_message );
+		if( element && element.length ){
+			element.attr( 'title', 'Status: ' + status );
+		}
+	}
 
 	$rootScope.$watch('account.user.prefs["notification-desktop-support-all"]', function(e, value) {
 		if (!service.socket) {
@@ -250,7 +262,10 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		// callback
 		function(d) {
 			console.log('message added:::');
-			console.log('d',d);
+			if(!d.status){
+				d.status = 'queued';
+			}
+
 			for ( var x in service.sideInfo.data.messages ) {
 				if ( service.sideInfo.data.messages[x].guid == guid ) {
 					d.guid = guid;
@@ -266,7 +281,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		} else {
 			service.scope.$apply(function() {
 				console.log('no callback');
-				service.sideInfo.add_message( { body: message, name: AccountService.user.firstName, timestamp: new Date().getTime(), sending: true, guid: guid } );
+				service.sideInfo.add_message( { body: message, name: AccountService.user.firstName, timestamp: new Date().getTime(), sending: true, guid: guid, status: 'queued' } );
 			});
 		}
 	};

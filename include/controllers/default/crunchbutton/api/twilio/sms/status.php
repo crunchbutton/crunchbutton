@@ -7,6 +7,7 @@ class Controller_api_twilio_sms_status extends Crunchbutton_Controller_Rest {
 			if( $log->id_phone_log ){
 				$log->status = $data[ 'MessageStatus' ];
 				$log->save();
+				$log->emit();
 			}
 		}
 	}
