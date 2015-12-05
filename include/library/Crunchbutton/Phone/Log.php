@@ -24,13 +24,6 @@ class Crunchbutton_Phone_Log extends Cana_Table{
 	public function emit(){
 		$message = Support_Message::q( 'SELECT * FROM support_message WHERE id_phone_log = ? ORDER BY id_support_message DESC LIMIT 1', [ $this->id_phone_log ] )->get( 0 );
 
-		Log::debug([
-							'id_support' 					=> $message->id_support,
-							'id_support_message' 	=> $message->id_support_message,
-							'status' 							=> $this->status,
-							'type' 								=> 'sms-status-emit'
-						]);
-
 		if ($message && $message->id_support) {
 			Event::emit([
 				'room' => [
@@ -39,6 +32,12 @@ class Crunchbutton_Phone_Log extends Cana_Table{
 				]
 			], 'sms_status', [ 'id_support_message' => $message->id_support_message, 'status' => $this->status ] );
 		}
+		Log::debug([
+					'id_support' 					=> $message->id_support,
+					'id_support_message' 	=> $message->id_support_message,
+					'status' 							=> $this->status,
+					'type' 								=> 'sms-status-emit'
+				]);
 	}
 
 	public static function log($to, $from, $type = 'message', $direction = 'outgoing', $reason = '', $twilio_id = null, $status = null) {
