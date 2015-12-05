@@ -176,6 +176,12 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 				SocketService.listen('tickets', $rootScope)
 					.on('message', function(d) {
+
+						if( d.type && d.type == 'update-sms-status' ){
+							updateSmsStatus( d );
+							return;
+						}
+
 						console.debug('Recieved chat message: ', d);
 
 						if (notified.indexOf(d.id_support_message) > -1) {
