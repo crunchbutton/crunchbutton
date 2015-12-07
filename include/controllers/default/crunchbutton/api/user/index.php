@@ -439,12 +439,23 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 
 		$phone = Crunchbutton_Phone::byPhone( $phone );
 
+		$changes = [];
+		if( $user->phone != $phone->phone ){
+			$changes[ 'phone' ] = [ 'old' => $user->phone ];
+		}
+		if( $user->address != $address ){
+			$changes[ 'address' ] = [ 'old' => $user->address ];
+		}
+
+
 		$user->name = $name;
 		$user->email = $email;
 		$user->phone = $phone->phone;
 		$user->address = $address;
 		$user->id_phone = $phone->id_phone;
 		$user->save();
+
+		$user->notifyCSAboutChanges( $changes );
 
 		echo c::user()->json(['auth' => true]);
 	}
