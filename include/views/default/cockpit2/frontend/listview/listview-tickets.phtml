@@ -8,23 +8,19 @@
 			<th class="tb-small tb-center">Status</th>
 			<th class="tb-small"></th>
 		</tr>
-
 		<tr ng-repeat="ticket in lotsoftickets">
 			<td nowrap>
 				<span ng-if="ticket.type == 'WARNING'">
 					<i>System</i>
 				</span>
-
 				<span ng-if="ticket.type != 'WARNING'">
-					<a href="/staff/{{ticket.id_admin}}" ng-if="ticket.id_admin">{{ticket.name}}</a>
-					<a href="/customer/{{ticket.id_user}}" ng-if="!ticket.id_admin && ticket.id_user">{{ticket.name}}</a>
-					<span ng-if="!ticket.id_admin && !ticket.id_user">{{ticket.name}}</span>
+					<a href="/customer/{{ticket.id_user}}" ng-if="ticket.id_user">{{ticket.name}}</a>
+					<span ng-if="!ticket.id_user">{{ticket.name}}</span>
 					<br><a href ng-click="callText(ticket.phone)" class="listview-smaller">{{ticket.phone | formatPhone}}</a>
 				</span>
 			</td>
 			<td>
 				<span class="listview-smaller">
-
 					<i ng-if="ticket.timestamp_client">{{ticket.timestamp_client * 1000| date:'EEE MM/dd @ h:mm a'}}</i>
 					<i ng-if="!ticket.timestamp_client"><i>Unknown</i></i>
 					<br>
