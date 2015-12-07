@@ -61,30 +61,30 @@
 					</li>
 
 					<li class="li-input">
-						<div class="label">Active:</div>
 						<div class="input">
 							<label class="switch-wrap">
 								<input type="checkbox" class="switch" ng-model="customer.active"/><div></div>
 							</label>
 						</div>
+						<div class="label">Active:</div>
 					</li>
 
 					<li class="li-input" ng-if="customer.card_type">
-						<div class="label">Inactive Credit Card:</div>
 						<div class="input">
 							<label class="switch-wrap">
 								<input type="checkbox" class="switch" ng-model="customer.remove_credit_card"/><div></div>
 							</label>
 						</div>
+						<div class="label">Inactive Credit Card:</div>
 					</li>
 
 					<li class="li-input" ng-show="orders.length">
-						<div class="label">Notify Driver about the change:</div>
 						<div class="input">
 							<label class="switch-wrap">
 								<input type="checkbox" class="switch" ng-model="customer.notify_driver"/><div></div>
 							</label>
 						</div>
+						<div class="label">Notify Driver about the change:</div>
 					</li>
 
 					<li class="li-input" ng-show="!isSaving">

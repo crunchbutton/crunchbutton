@@ -76,6 +76,7 @@ NGApp.controller('CustomerEditCtrl', function ($scope, $routeParams, $rootScope,
 			$rootScope.title = d.name + ' | Edit';
 			$scope.customer = d;
 			$scope.loading = false;
+			$scope.customer.notify_driver = true;
 			CustomerService.active_orders( $scope.customer.id_user, function( json ){
 				$scope.orders = json;
 			} );
