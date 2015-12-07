@@ -204,9 +204,21 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 
 	$scope.restaurants = new Array();
 
+	var campus_cash = null;
+
+	$scope.$watch( 'community.campus_cash', function( newValue, oldValue, scope ) {
+		if( !campus_cash && newValue ){
+			$scope.community.campus_cash_default_payment = true;
+		}
+	});
+
+
 	var community = function(){
 		if( $routeParams.id ){
 			CommunityService.get( $routeParams.id, function( d ) {
+
+				campus_cash = d.campus_cash;
+
 				$rootScope.title = d.name + ' | Community';
 				$scope.community = d;
 				if( $scope.community.dont_warn_till ){
