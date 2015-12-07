@@ -733,3 +733,40 @@ NGApp.directive( 'restaurantAddress', function () {
 			}
 	};
 });
+
+NGApp.directive( 'stickyBottom', function ( $document ) {
+	return {
+			restrict: 'A',
+			link: function ( scope, elem, attrs, ctrl ) {
+
+				$document.bind('scroll', function () {
+					setHeight();
+        });
+
+				angular.element(elem).css( 'position', 'absolute' );
+				var el_height = attrs.stickyBottom;
+
+				if( !angular.element(elem).attr( 'wall' ) ){
+					angular.element(elem).after( '<div style="height:' + el_height + 'px;">&nbsp;</div>' );
+					angular.element(elem).attr( 'wall', true );
+				}
+
+				var setHeight = function() {
+					var scrollTop = angular.element(document).scrollTop();
+					var height = angular.element(document).innerHeight();
+					var canvas = angular.element(window).height();
+					var top = canvas + scrollTop - el_height;
+					top = top + 'px';
+					angular.element(elem).css( 'top', top );
+				};
+
+				angular.element(window).on('resize', setHeight);
+
+				scope.$on('$destroy', function() {
+					angular.element(window).off('resize', setHeight);
+				});
+
+				setHeight();
+			}
+	};
+});
