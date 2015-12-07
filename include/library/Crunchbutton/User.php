@@ -497,6 +497,43 @@ class Crunchbutton_User extends Cana_Table {
 		return $this->_notifications;
 	}
 
+	public function notifyCSAboutChanges( $changes ){
+		if( count( $changes ) ){
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$now->modify( '-2 hours' );
+			$date = $now->format( 'Y-m-d H:i:s' );
+			$lastOrder = Order::q( 'SELECT * FROM `order` WHERE id_user = ? AND date >= ? ORDER BY id_order DESC LIMIT 1', [ $this->id_user, $date ] )->get( 0 );
+
+			if( $lastOrder->id_order ){
+
+				$message = 'Customer ' . $this->name . ' just changed their';
+
+				$adress = false;
+
+				if( $changes[ 'address' ] && $changes[ 'address' ][ 'old' ] && $changes[ 'address' ][ 'old' ] != $this->address ){
+					$message .= ' address from "' . $changes[ 'address' ][ 'old' ];
+					$message .= '" to "' . $this->address . '"';
+					$adress = true;
+				}
+
+				if( $changes[ 'phone' ] && $changes[ 'phone' ][ 'old' ] && $changes[ 'phone' ][ 'old' ] != $this->phone ){
+					if( $adress ){
+						$message .= ' and their';
+					}
+					$message .= ' phone from "' . $changes[ 'phone' ][ 'old' ];
+					$message .= '" to "' . $this->phone . '"';
+				}
+
+				$message .= '. Check with the customer to see what info should be used for this current order #' . $lastOrder->id_order . ' placed at ' . $lastOrder->date()->format( 'M jS Y g:i:s A' );
+
+
+				Crunchbutton_Support::createNewWarning( [ 'id_order' => $lastOrder->id_order, 'body' => $message, 'bubble' => true ] );
+
+			}
+		}
+
+	}
+
 
 	public function setPush($id, $os = 'ios') {
 		if (!$this->id_user) {
