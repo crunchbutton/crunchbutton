@@ -241,7 +241,9 @@ NGApp.controller('SideSupportPexCardCtrl', function( $scope, StaffPayInfoService
 NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService, CallService, MainNavigationService, TwilioService, AccountService) {
 
 	$scope.call = { staff : '', to : 'customer', _to: CallService.call_to() };
-	$scope.sms = { staff : '', to : 'customer', _to: CallService.call_to() };
+	$scope.sms = { staff : '', to : 'customer', _to: CallService.call_to(), open_ticket: true };
+
+	$scope.yesNo = StaffService.yesNo();
 
 	$scope.$watch( 'call.staff', function( newValue, oldValue, scope ) {
 		$scope.call.phone = newValue.phone;
@@ -260,6 +262,7 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 		$scope.call.phone = '';
 		$scope.sms.phone = '';
 		$scope.sms.message = '';
+		$scope.sms.open_ticket = true;
 
 		StaffService.phones( function( response ){
 			$scope.staff = response;
@@ -290,7 +293,11 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 			CallService.send_sms( $scope.sms, function( json ){
 				$scope.formSMSSending = false;
 				if( json.success ){
-					MainNavigationService.link( '/ticket/' + json.success);
+					if( $scope.sms.open_ticket ){
+						MainNavigationService.link( '/ticket/' + json.success);
+					} else {
+						App.alert( 'Message sent!' );
+					}
 					if( $scope.complete ){
 						$scope.complete();
 					}

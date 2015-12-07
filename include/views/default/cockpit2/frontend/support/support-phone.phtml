@@ -115,6 +115,16 @@
 						</div>
 					</li>
 
+					<li class="li-input" ng-class="{'error':formSMS.message.$invalid}" ng-if="!isModal">
+						<div class="label">Open ticket page?</div>
+						<div class="input">
+							<select name="openTicket" ng-model="sms.open_ticket" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+						<div class="box-error">
+							<small ng-show="formSMS.message.$error.required">Required.</small>
+						</div>
+					</li>
+
 					<li class="li-input" ng-show="!formSMSSending">
 						<button class="button button-empty button-border button-green button-full" ng-click="sms.send();"><i class="fa fa-comment"></i> Send Text</button>
 					</li>
