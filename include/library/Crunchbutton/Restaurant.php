@@ -2160,16 +2160,17 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	public function duplicate(){
 
 		$self = $this;
-		$restaurant = new Crunchbutton_Restaurant;
+		$restaurant = new Restaurant;
+		$restaurant->save();
+		$id_restaurant = $restaurant->id_restaurant;
+		$restaurant = Restaurant::o( $id_restaurant );
 		foreach( $self->_properties as $property => $value ){
-			$restaurant->$property = $value;
+			if( !in_array(  $property, [ 'id_restaurant', 'id', 'permalink', 'community', 'phone', 'address', 'balanced_id', 'balanced_bank', 'tax', 'loc_lat', 'loc_long' ] ) ){
+				$restaurant->$property = $value;
+			}
 		}
-
-		foreach( [ 'id_restaurant', 'id', 'permalink', 'community', 'phone', 'address', 'balanced_id', 'balanced_bank', 'tax', 'loc_lat', 'loc_long' ] as $remove ){
-			$restaurant->$remove = null;
-		}
-
-		$restaurant->name = $restaurant->name . ' - duplicated';
+		$restaurant->permalink = 'restaurant-' . $id_restaurant;
+		$restaurant->name = $self->name . ' - duplicated';
 		$restaurant->notes_todo = 'Duplicated from ' . $self->name . ' (' . $self->id_restaurant . ')';
 		$restaurant->active = 0;
 		$restaurant->open_for_business = 0;
