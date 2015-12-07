@@ -191,6 +191,10 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			service.form.pay_type = 'campus_cash';
 		}
 
+		if( service.account.user && service.account.user.pay_type && service.account.user.card_type != 'campus_cash' ){
+			service.form.pay_type = service.account.user.pay_type;
+		}
+
 		// If the restaurant does not delivery
 		if(!service.restaurant.delivery){
 			service.form.delivery_type = 'takeout';
