@@ -850,17 +850,15 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 App.alert = function(txt, title, useNativeAlert, fn, unselectable ) {
 
-	if( txt && !title && !fn && !unselectable && txt.search( /<|\\|\//i ) == -1 ){
-		App.rootScope.flash.setMessage( txt );
-		return;
-	}
-
 	setTimeout(function() {
 		if (useNativeAlert && App.isPhoneGap && parent.window.navigator && parent.window.navigator.notification) {
 			parent.window.navigator.notification.alert(txt, null, title || 'Crunchbutton');
-		} else if ( useNativeAlert ) {
-			alert( txt );
 		} else {
+
+			if( txt && !title && !fn && !unselectable && txt.search( /<|\\|\//i ) == -1 ){
+				App.rootScope.flash.setMessage( txt );
+				return;
+			}
 			App.rootScope.$broadcast('notificationAlert', title || '', txt, fn, unselectable);
 		}
 	});
