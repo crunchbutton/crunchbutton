@@ -849,6 +849,12 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 });
 
 App.alert = function(txt, title, useNativeAlert, fn, unselectable ) {
+
+	if( txt && !title && !fn && !unselectable && txt.search( /<|\\|\//i ) == -1 ){
+		App.rootScope.flash.setMessage( txt );
+		return;
+	}
+
 	setTimeout(function() {
 		if (useNativeAlert && App.isPhoneGap && parent.window.navigator && parent.window.navigator.notification) {
 			parent.window.navigator.notification.alert(txt, null, title || 'Crunchbutton');
@@ -1170,7 +1176,7 @@ NGApp.factory( 'flash', function( $timeout ) {
 	service.setMessage = function( text, level ){
 		var level = ( level ) ? level : 'success';
 		message = { level : level, text : text };
-		$timeout( function() { clearMessage() }, 5 * 1000 );
+		$timeout( function() { clearMessage() }, 3 * 1000 );
 	}
 
 	service.hasMessage = function(){
