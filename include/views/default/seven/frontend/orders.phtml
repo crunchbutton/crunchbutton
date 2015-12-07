@@ -27,8 +27,6 @@
 				</p>
 				<br><br>
 
-
-
 			</div>
 		</div>
 			<div class="two-col">
@@ -86,8 +84,23 @@
 
 	<div class="divider"></div>
 	<br><br><br>
+	<div class="orders-oranges animated-resize"></div>
+
+	<div class="divider"></div>
+	<br><br><br>
+	<div class="user-account-credit col-box">
+		<div class="two-col">
+			<div class="col-box">
+				<div class="two-col">
+					<button class="button green button-logout" ng-click="profile()" ng-if="account.user.id_user">Your profile</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="divider"></div>
+	<br><br><br>
 	<div ng-show="orders.list">
-		<div class="orders-oranges animated-resize"></div>
 		<? /* You know, you can reorder any of your previous orders by taping on one of them, then reordering from the next page. Try it! */ ?>
 		<p><span class="account-your-orders">Your Orders</span><br><br></p>
 	</div>
@@ -145,9 +158,6 @@
 			<div class="col-box">
 				<div class="two-col">
 					<button class="button lightorange button-logout" ng-click="signout()" ng-if="account.user.id_user">Log Out</button>
-				</div>
-				<div class="two-col">
-					<button class="button green button-logout" ng-click="profile()" ng-if="account.user.id_user">Your profile</button>
 				</div>
 			</div>
 		</div>
