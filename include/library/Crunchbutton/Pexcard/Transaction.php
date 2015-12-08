@@ -170,7 +170,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		return $expenses;
 	}
 
-		public function getExpensesByPeriodByCard( $start, $end, $acctId ){
+	public function getExpensesByPeriodByCard( $start, $end, $acctId ){
 		$query = 'SELECT *
 								FROM pexcard_transaction
 									WHERE
@@ -278,7 +278,10 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		$drivers = c::db()->get( $query, [ $start, $end, $start, $end ] );
 		foreach( $drivers as $driver ){
 			$_driver = [ 'id_admin' => floatval( $driver->id_admin ), 'driver' => $driver->driver, 'login' => $driver->login, 'email' => $driver->email ];
-			$query = "SELECT * FROM pexcard_report_transaction WHERE id_admin = ? AND date_pst BETWEEN ? AND ? ORDER BY date_pst ASC";
+			$query = "SELECT * FROM pexcard_report_transaction prt
+									INNER JOIN pexcard_transaction pt ON pt.id_pexcard_transaction = prt.id_pexcard_transaction
+									WHERE prt.id_admin = ? AND prt.date_pst BETWEEN ? AND ?
+									GROUP BY pt.authTransactionId ORDER BY prt.date_pst ASC";
 			$transactions = c::db()->get( $query, [ $driver->id_admin, $start, $end ] );
 			$_driver[ 'transactions' ] = [];
 			$_driver[ 'pexcard_amount' ] = 0;
@@ -348,6 +351,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 				}
 			}
 			$_driver[ 'diff' ] = floatval( $_driver[ 'pexcard_amount' ] - $_driver[ 'should_have_spend' ] ) * -1;
+
 			$out[ 'drivers_expenses' ][] = $_driver;
 
 			$out[ 'pexcard_amount' ] += $_driver[ 'pexcard_amount' ];
