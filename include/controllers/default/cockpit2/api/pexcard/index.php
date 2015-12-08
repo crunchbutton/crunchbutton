@@ -117,7 +117,6 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 						$payment_type->using_pex_date = date( 'Y-m-d H:i:s' );
 					}
 					$payment_type->save();
-
 					echo json_encode( [ 'success' => $card ] );exit();
 				}
 			}
