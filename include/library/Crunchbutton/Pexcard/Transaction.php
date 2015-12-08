@@ -358,12 +358,12 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 
 			$out[ 'pexcard_amount' ] += $_driver[ 'pexcard_amount' ];
 			$out[ 'card_cash_amount' ] += $_driver[ 'card_cash_amount' ];
-			$out[ 'should_have_spend' ] += $_driver[ 'should_have_spend' ];
 			$out[ 'card_amount' ] += $_driver[ 'card_amount' ];
-			$out[ 'diff' ] += $_driver[ 'diff' ];
 			$out[ 'orders' ] += $_driver[ 'orders' ];
-
 		}
+
+		$out[ 'diff' ] += floatval( $out[ 'pexcard_amount' ] - $out[ 'card_amount' ] ) * -1;
+
 		return $out;
 	}
 
