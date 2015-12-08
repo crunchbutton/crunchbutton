@@ -11,7 +11,7 @@ class Crunchbutton_Cron_Job_PexPreProcessReport extends Crunchbutton_Cron_Log {
 			$lastReportDate = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		}
 		$end = $lastReportDate->format( 'm/d/Y' );
-		$lastReportDate->modify( '-3 days' );
+		$lastReportDate->modify( '-5 days' );
 		$start = $lastReportDate->format( 'm/d/Y' );
 
 		Log::debug( [ 'start'=> $start, 'end' => $end, 'type' => 'pex-report' ] );
