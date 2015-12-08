@@ -36,4 +36,4 @@ CREATE TABLE `pexcard_report_order` (
 
 INSERT INTO `cron_log` (`description`, `class`, `start_date`, `interval`, `interval_unity`, `current_status`, `next_time`, `finished`, `interactions`, `env`)
 VALUES
-	('Pre process Pex Report', 'Crunchbutton_Cron_Job_PexPreProcessReport', '2015-12-09 05:00:00', 'minute', 5, 'idle', null, null, 3885, 'crondb');
+	('Pre process Pex Report', 'Crunchbutton_Cron_Job_PexPreProcessReport', '2015-12-08 05:00:00', 'minute', 5, 'idle', null, null, 0, 'crondb');

@@ -11,12 +11,12 @@ class Crunchbutton_Cron_Job_PexPreProcessReport extends Crunchbutton_Cron_Log {
 			$lastReportDate = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		}
 		$end = $lastReportDate->format( 'm/d/Y' );
-		$lastReportDate->modify( '-2 days' );
+		$lastReportDate->modify( '-1 days' );
 		$start = $lastReportDate->format( 'm/d/Y' );
 
-		if( $lastReportDate->format( 'Ymd' ) > $limit ){
+		// if( $lastReportDate->format( 'Ymd' ) > $limit ){
 			Crunchbutton_Pexcard_Transaction::processReport( $start, $end );
-		}
+		// }
 
 		// it always must call finished method at the end
 		$this->finished();
