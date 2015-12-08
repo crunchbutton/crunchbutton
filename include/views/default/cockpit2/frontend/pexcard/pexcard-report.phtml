@@ -28,9 +28,15 @@
 				</div>
 			</li>
 
+			<li class="li-input" ng-show="dates">
+				<div class="notes">
+					Pre processed period from <strong>{{dates.min}}</strong> to <strong>{{dates.max}}</strong>.
+				</div>
+			</li>
+
 			<li class="li-input" ng-show="!isProcessing">
 				<button class="button save" ng-click="report();">Report</button>
-				<button class="button save" ng-click="import_data();">Import data and Report</button>
+				<button ng-if="!newReport" class="button save" ng-click="import_data();">Import data and Report</button>
 			</li>
 
 			<li class="li-input" ng-show="isProcessing">
@@ -43,16 +49,51 @@
 
 	<div ng-if="result">
 
+		<div ng-if="newReport">
+
+			<h2 class="title">
+				<span>Summary</span>
+			</h2>
+			<table class="tb-grid tb-zebra summary">
+				<tbody>
+					<tr>
+						<td>Pex Card Spent</td>
+						<td positive-or-negative-color="{{result.pexcard_amount}}">$ {{result.pexcard_amount | formatPrice}}</td>
+					</tr>
+					<tr>
+						<td>Should Have Spent</td>
+						<td positive-or-negative-color="{{result.should_have_spend}}">$ {{result.should_have_spend | formatPrice}}</td>
+					</tr>
+					<tr>
+						<td>Diff</td>
+						<td positive-or-negative-color="{{result.diff}}">$ {{result.diff | formatPrice}}</td>
+					</tr>
+					<tr>
+						<td>Card and Cash Orders Total Price</td>
+						<td positive-or-negative-color="{{result.card_cash_amount}}">$ {{result.card_cash_amount | formatPrice}}</td>
+					</tr>
+					<tr>
+						<td>Total Orders</td>
+						<td>{{result.orders}}</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<br><br>
+
+		</div>
+
 		<h2 class="title">
 			<span>Report</span>
 		</h2>
+
 
 		<table class="tb-grid tb-zebra">
 			<thead>
 				<tr>
 					<td>Driver Name</td>
-					<td>Serial</td>
-					<td>Last Four</td>
+					<td ng-if="!newReport">Serial</td>
+					<td ng-if="!newReport">Last Four</td>
 					<td>Email</td>
 					<td>Orders</td>
 					<td>Pex Card Spent</td>
@@ -69,8 +110,8 @@
 							<a href="/staff/{{driver.login}}">{{driver.driver}}</a>
 						</span>
 					</td>
-					<td>{{driver.card_serial}}</td>
-					<td>{{driver.last_four}}</td>
+					<td ng-if="!newReport">{{driver.card_serial}}</td>
+					<td ng-if="!newReport">{{driver.last_four}}</td>
 					<td>
 						<span ng-if="driver.login"><a target="_system" href="mailto:{{driver.email}}">{{driver.email}}</a></span>
 					</td>
@@ -121,8 +162,14 @@
 						<span class="tag tag-grey" ng-if="order.pay_type=='cash'">cash</span>
 					</td>
 					<td colspan="3">
-						<span class="tag tag-green" ng-if="order.status=='delivered'">delivered</span>
-						<span class="tag tag-red" ng-if="order.status!='delivered'">{{order.status}}</span>
+						<div ng-if="!newReport">
+							<span class="tag tag-green" ng-if="order.status=='delivered'">delivered</span>
+							<span class="tag tag-red" ng-if="order.status!='delivered'">{{order.status}}</span>
+						</div>
+						<div ng-if="newReport">
+							<span class="tag tag-green" ng-if="order.status=='delivery-delivered'">delivered</span>
+							<span class="tag tag-red" ng-if="order.status!='delivery-delivered'">{{order.status}}</span>
+						</div>
 						<span class="tag tag-black" ng-if="order.refunded">refunded</span>
 					</td>
 				</tr>
@@ -150,8 +197,14 @@
 						<span class="tag tag-grey" ng-if="order.pay_type=='cash'">cash</span>
 					</td>
 					<td colspan="3">
-						<span class="tag tag-green" ng-if="order.status=='delivered'">delivered</span>
-						<span class="tag tag-red" ng-if="order.status!='delivered'">{{order.status}}</span>
+						<div ng-if="!newReport">
+							<span class="tag tag-green" ng-if="order.status=='delivered'">delivered</span>
+							<span class="tag tag-red" ng-if="order.status!='delivered'">{{order.status}}</span>
+						</div>
+						<div ng-if="newReport">
+							<span class="tag tag-green" ng-if="order.status=='delivery-delivered'">delivered</span>
+							<span class="tag tag-red" ng-if="order.status!='delivery-delivered'">{{order.status}}</span>
+						</div>
 					</td>
 				</tr>
 
