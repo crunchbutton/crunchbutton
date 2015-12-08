@@ -288,7 +288,8 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 			foreach( $transactions as $transaction ){
 				$amount = floatval( $transaction->amount );
 				$_driver[ 'pexcard_amount' ] += $amount;
-				$_driver[ 'transactions' ][] = [ 'date' => $transaction->date_formatted, 'description' => $transaction->description, 'amount' => $amount ];
+				$description = str_replace( 'Pending...', '', $transaction->description );
+				$_driver[ 'transactions' ][] = [ 'date' => $transaction->date_formatted, 'description' => $description, 'amount' => $amount ];
 			}
 			$query = "SELECT orders.*,
 											 oa.type AS status
@@ -350,7 +351,8 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 					$_driver[ 'should_have_spend' ] += $amount;
 				}
 			}
-			$_driver[ 'diff' ] = floatval( $_driver[ 'pexcard_amount' ] - $_driver[ 'should_have_spend' ] ) * -1;
+
+			$_driver[ 'diff' ] = floatval( $_driver[ 'pexcard_amount' ] - $_driver[ 'card_amount' ] ) * -1;
 
 			$out[ 'drivers_expenses' ][] = $_driver;
 
