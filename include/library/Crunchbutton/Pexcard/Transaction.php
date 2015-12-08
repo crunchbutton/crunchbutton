@@ -236,12 +236,14 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 				}
 			}
 		}
+		return $data;
 	}
 
 	public static function processedReport( $start, $end ){
 
 		$start = explode( '/' , $start );
 		$start = new DateTime( $start[ 2 ] . '-' . $start[ 0 ] . '-' . $start[ 1 ] . ' 00:00:01', new DateTimeZone( c::config()->timezone ) );
+		$start->modify( '+4 hours' );
 		$start = $start->format( 'Y-m-d H:i:s' );
 
 		$end = explode( '/' , $end );
@@ -265,7 +267,14 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 										WHERE date BETWEEN ? AND ?) drivers) drivers
 							INNER JOIN admin a ON a.id_admin = drivers.id_admin
 							ORDER BY a.name ASC";
-		$out = [];
+		$out = [ 'drivers_expenses' => [] ];
+		$out[ 'pexcard_amount' ] = 0;
+		$out[ 'card_cash_amount' ] = 0;
+		$out[ 'should_have_spend' ] = 0;
+		$out[ 'card_amount' ] = 0;
+		$out[ 'orders' ] = 0;
+		$out[ 'diff' ] = 0;
+
 		$drivers = c::db()->get( $query, [ $start, $end, $start, $end ] );
 		foreach( $drivers as $driver ){
 			$_driver = [ 'id_admin' => floatval( $driver->id_admin ), 'driver' => $driver->driver, 'login' => $driver->login, 'email' => $driver->email ];
@@ -311,7 +320,9 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 			$_driver[ 'card_cash_amount' ] = 0;
 			$_driver[ 'should_have_spend' ] = 0;
 			$_driver[ 'card_amount' ] = 0;
+			$_driver[ 'orders' ] = 0;
 			foreach( $orders as $order ){
+				$_driver[ 'orders' ]++;
 				$amount = floatval( $order->amount );
 				$_driver[ 'delivered_orders' ][] = [ 	'id_order' => $order->id_order,
 																							'date' => $order->date_formatted,
@@ -336,9 +347,27 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 					$_driver[ 'should_have_spend' ] += $amount;
 				}
 			}
-			$out[] = $_driver;
+			$_driver[ 'diff' ] = floatval( $_driver[ 'pexcard_amount' ] - $_driver[ 'should_have_spend' ] ) * -1;
+			$out[ 'drivers_expenses' ][] = $_driver;
+
+			$out[ 'pexcard_amount' ] += $_driver[ 'pexcard_amount' ];
+			$out[ 'card_cash_amount' ] += $_driver[ 'card_cash_amount' ];
+			$out[ 'should_have_spend' ] += $_driver[ 'should_have_spend' ];
+			$out[ 'card_amount' ] += $_driver[ 'card_amount' ];
+			$out[ 'diff' ] += $_driver[ 'diff' ];
+			$out[ 'orders' ] += $_driver[ 'orders' ];
+
 		}
-		echo json_encode( $out );exit;
+		return $out;
+	}
+
+	public function reportPreProcessedDates(){
+		$query = 'SELECT max( date_pst ) AS max, min( date_pst ) AS min FROM pexcard_report_transaction';
+		$dates = c::db()->get( $query )->get( 0 );
+		$max = new DateTime( $dates->max, new DateTimeZone( c::config()->timezone ) );
+		$min = new DateTime( $dates->min, new DateTimeZone( c::config()->timezone ) );
+
+		return [ 'min' => $min->format( 'M jS Y g:i:s A T' ), 'max' => $max->format( 'M jS Y g:i:s A T' ) ];
 	}
 
 	public function processExpenses( $start, $end, $json = true ){

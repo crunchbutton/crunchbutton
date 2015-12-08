@@ -30,6 +30,14 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 				$this->_report();
 				break;
 
+			case 'report-processed-dates':
+				$this->_reportPreProcessedDates();
+				break;
+
+			case 'report-old':
+				$this->_report_old();
+				break;
+
 			case 'admin-pexcard':
 				$this->_admin_pexcard();
 				break;
@@ -124,7 +132,7 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 		$this->_error( 'Card Not Found' );
 	}
 
-	private function _report(){
+	private function _report_old(){
 		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud' ] ) ){
 			$this->error(404);
 		}
@@ -141,6 +149,26 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 		}
 
 		$report = Crunchbutton_Pexcard_Transaction::processExpenses( $start, $end );
+		echo json_encode( $report );exit;
+	}
+
+	private function _reportPreProcessedDates(){
+		echo json_encode( Crunchbutton_Pexcard_Transaction::reportPreProcessedDates() );exit;
+	}
+
+	private function _report(){
+		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud' ] ) ){
+			$this->error(404);
+		}
+		$start = $this->request()['start'];
+		$end = $this->request()['end'];
+		$import = $this->request()['import'];
+
+		if( !$start || !$end ){
+			$this->_error();
+		}
+
+		$report = Crunchbutton_Pexcard_Transaction::processedReport( $start, $end );
 		echo json_encode( $report );exit;
 	}
 

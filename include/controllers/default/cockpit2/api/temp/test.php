@@ -3,19 +3,5 @@
 class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
 
 	public function init(){
-		$lastReportDate = c::db()->get( 'SELECT date FROM pexcard_report_order ORDER BY date ASC LIMIT 1' )->get( 0 );
-		if( $lastReportDate->date ){
-			$lastReportDate = new DateTime( $lastReportDate->date, new DateTimeZone( c::config()->timezone ) );
-		} else {
-			$lastReportDate = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-		}
-		$end = $lastReportDate->format( 'm/d/Y' );
-		$lastReportDate->modify( '-1 days' );
-		$start = $lastReportDate->format( 'm/d/Y' );
-
-		if( $lastReportDate->format( 'Ymd' ) > $limit ){
-			Crunchbutton_Pexcard_Transaction::processReport( $start, $end );
-		}
-
 	}
 }
