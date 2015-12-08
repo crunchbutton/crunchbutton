@@ -275,7 +275,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$orders = Order::q($query, [$id_community, Crunchbutton_Order::SHIPPING_DELIVERY]);
 		}
 		foreach( $orders as $order ){
-			$lastStatus = $order->deliveryLastStatus();
+			$lastStatus = $order->status()->last();
 			if( $lastStatus[ 'status' ] == 'new' || $lastStatus[ 'status' ] == 'accepted' ){
 				$ordersPlacedButNotPickedUp++;
 			}
@@ -292,11 +292,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 										( 7 * $ordersPickedUpButNotDelivered ) +
 										( 8 * $additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver ) ) / $activeDrivers;
 		}
+
 		if( $eta < 40 ){
 			$eta = 40;
 		}
 
 		$eta = ceil( $eta );
+
 		if( $array ){
 			return [ 	'eta' => $eta,
 								'activeDrivers' => $activeDrivers,
