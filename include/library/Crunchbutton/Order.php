@@ -3235,6 +3235,36 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 	}
 
+	public function shouldUsePexCard(){
+		if( $this->restaurant()->formal_relationship ){
+			if( $this->pay_type == 'cash' ){
+				$driver = c::user();
+				if( $driver->id_admin && $driver->hasPexCard() ){
+					return false;
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		} else {
+			$driver = c::user();
+			if( $this->pay_type == 'cash' ){
+				if( $driver->id_admin && $driver->hasPexCard() ){
+					return false;
+				} else {
+					return false;
+				}
+			} else {
+				if( $driver->id_admin && $driver->hasPexCard() ){
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
+	}
+
 	public function driverInstructionsFoodStatus(){
 		// https://github.com/crunchbutton/crunchbutton/issues/2463#issue-28386594
 		// #emergency #6809
