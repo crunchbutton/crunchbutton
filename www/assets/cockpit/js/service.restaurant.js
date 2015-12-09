@@ -432,6 +432,12 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 			save.post( data, function( data ){
 				callback( data );
 			} );
+		},
+		duplicate : function( data, callback ){
+			data.action = 'duplicate';
+			save.post( data, function( data ){
+				callback( data );
+			} );
 		}
 	}
 

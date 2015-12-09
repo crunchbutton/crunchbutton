@@ -46,7 +46,18 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 			case 'menu':
 				$this->_menu();
 				break;
+			case 'duplicate':
+				$this->_duplicate();
+				break;
 		}
+	}
+
+	private function _duplicate(){
+		$id_restaurant = $this->restaurant->duplicate();
+		$restaurant = Restaurant::o( $id_restaurant );
+		$restaurant->permalink = 'restaurant-' . $id_restaurant;
+		$restaurant->save();
+		$this->_return( [ 'permalink' => $restaurant->permalink ] );
 	}
 
 	private function _new(){
