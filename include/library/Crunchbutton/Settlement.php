@@ -1442,21 +1442,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 						if( $amount > 0 ){
 							try{
-Log::debug( [
-									'name' => $check_name,
-									'to' => [
-										'name' => $contact_name,
-										'address_line1' => $check_address,
-										'address_city' => $check_address_city,
-										'address_state' => $check_address_state,
-										'address_zip' => $check_address_zip,
-										'address_country' => $check_address_country
-									],
-									'type' => 'check',
-									'bank_account' => c::config()->lob->{c::getEnv() == 'live' ? 'live' : 'dev'}->account,
-									'amount' => $amount,
-									'memo' => $schedule->note,
-									'message' => $schedule->note ] );
+
+								$env = ( ( c::env() == 'live' || c::env() == 'crondb' ) ? 'live' : 'dev' );
+
+								$env = 'live';
 
 								$c = c::lob()->checks()->create([
 									'name' => $check_name,
@@ -1468,7 +1457,7 @@ Log::debug( [
 										'address_zip' => $check_address_zip,
 										'address_country' => $check_address_country
 									],
-									'bank_account' => c::config()->lob->{c::getEnv() == 'live' ? 'live' : 'dev'}->account,
+									'bank_account' => c::config()->lob->{$env}->account,
 									'amount' => $amount,
 									'memo' => $schedule->note,
 									'message' => $schedule->note ] );
