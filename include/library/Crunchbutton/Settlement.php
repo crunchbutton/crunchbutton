@@ -1445,7 +1445,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 								$env = ( ( c::getEnv() == 'live' || c::getEnv() == 'crondb' ) ? 'live' : 'dev' );
 
-								$c = c::lob()->checks()->create([
+								$c = c::lob( false )->checks()->create([
 									'name' => $check_name,
 									'to' => [
 										'name' => $contact_name,
