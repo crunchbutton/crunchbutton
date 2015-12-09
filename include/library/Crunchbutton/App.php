@@ -609,13 +609,11 @@ class Crunchbutton_App extends Cana_App {
 		if (!$this->_lob) {
 			if ($d) {
 				$env = 'dev';
-			} elseif (c::env() == 'live' || c::env() == 'crondb') {
+			} elseif (c::getEnv() == 'live' || c::getEnv() == 'crondb') {
 				$env = 'live';
 			} else {
-				$env = c::env();
+				$env = c::getEnv();
 			}
-			$env = 'live';
-			// $this->_lob = new \Lob\Lob(c::config()->lob->{$env}->key, c::config()->lob->{$env}->account);
 			$this->_lob = new \Lob\Lob(c::config()->lob->{$env}->key);
 		}
 		return $this->_lob;
