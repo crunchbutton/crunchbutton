@@ -1410,17 +1410,18 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 					$contact_name = $payment_type->contact_name;
 
-					if( !$contact_name && $payment_type->legal_name_payment ){
+					if( $contact_name == '' && $payment_type->legal_name_payment ){
 						$contact_name = $payment_type->legal_name_payment;
 					}
 
 					$error = false;
 					$schedule->log = '';
-					if( !$check_address || !$check_address_city || !$check_address_state || !$check_address_zip || !$check_address_country ){
-						$schedule->log = 'Check address is incomplete. ';
+					if( $check_address == '' || $check_address_city == '' || $check_address_state == '' || $check_address_zip == '' || $check_address_country == '' ){
+						$schedule->log .= 'Check address is incomplete. ';
 						$error = true;
 					}
-					if( !$contact_name ){
+
+					if( $contact_name == '' ){
 						$schedule->log .= 'Contact name or Legal name payment is required.';
 						$error = true;
 					}
@@ -1441,6 +1442,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 						if( $amount > 0 ){
 							try{
+
 								$c = c::lob()->checks()->create([
 									'name' => $check_name,
 									'to' => [
