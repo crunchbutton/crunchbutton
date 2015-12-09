@@ -458,8 +458,6 @@ NGApp.controller('RestaurantEditCtrl', function ( $scope, $rootScope, $routePara
 		$scope.loading = false;
 	} );
 
-
-
 	$scope.duplicateRestaurant = function(){
 		var success = function(){
 			RestaurantEditService.save.duplicate( { permalink: RestaurantEditService.permalink }, function( json ) {
