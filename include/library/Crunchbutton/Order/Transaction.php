@@ -5,6 +5,7 @@ class Crunchbutton_Order_Transaction extends Cana_Table {
 	const TYPE_DEBIT = 'debit';
 	const TYPE_CREDIT = 'credit';
 
+	const TYPE_NO_PAYMENT_NEEDED_RESTAURANT = 'no-payment-needed-restaurant';
 	const TYPE_PAID_TO_RESTAURANT = 'paid-to-restaurant';
 	const TYPE_PAID_TO_DRIVER = 'paid-to-driver';
 	const TYPE_REFUNDED = 'refunded';
@@ -17,8 +18,8 @@ class Crunchbutton_Order_Transaction extends Cana_Table {
 	const SOURCE_RESTAURANT = 'restaurant';
 
 	public static function checkOrderWasPaidRestaurant( $id_order ){
-		$query = 'SELECT * FROM order_transaction ot WHERE type = ? AND id_order = ? LIMIT 1';
-		$order = Crunchbutton_Order_Transaction::q( $query, [Crunchbutton_Order_Transaction::TYPE_PAID_TO_RESTAURANT, $id_order]);
+		$query = 'SELECT * FROM order_transaction ot WHERE ( type = ? OR type = ? ) AND id_order = ? LIMIT 1';
+		$order = Crunchbutton_Order_Transaction::q( $query, [Crunchbutton_Order_Transaction::TYPE_PAID_TO_RESTAURANT, Crunchbutton_Order_Transaction::TYPE_NO_PAYMENT_NEEDED_RESTAURANT, $id_order]);
 		if( $order->id_order_transaction ){
 			return true;
 		}

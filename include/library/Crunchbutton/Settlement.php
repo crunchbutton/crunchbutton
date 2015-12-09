@@ -878,48 +878,70 @@ class Crunchbutton_Settlement extends Cana_Model {
 			// check if it has any order to be paid
 			$shouldSchedule = ( $payment_data[ 'total_due' ] > 0 ) ? true : false;
 
-			foreach ( $_restaurant->_payableOrders as $order ) {
-				$alreadyPaid = Cockpit_Payment_Schedule_Order::checkOrderWasPaidRestaurant( $order->id_order );
-				if( !$alreadyPaid ){
-					$alreadyPaid = Crunchbutton_Order_Transaction::checkOrderWasPaidRestaurant( $order->id_order );
+
+
+
+			$restaurant = Restaurant::o( $_restaurant->id_restaurant );
+			if( $restaurant->formal_relationship ){
+
+				foreach ( $_restaurant->_payableOrders as $order ) {
+					$alreadyPaid = Cockpit_Payment_Schedule_Order::checkOrderWasPaidRestaurant( $order->id_order );
+					if( !$alreadyPaid ){
+						$alreadyPaid = Crunchbutton_Order_Transaction::checkOrderWasPaidRestaurant( $order->id_order );
+					}
+					if( !$alreadyPaid ){
+						$shouldSchedule = true;
+					}
 				}
-				if( !$alreadyPaid ){
-					$shouldSchedule = true;
+
+				if( $shouldSchedule ){
+					// schedule it
+					$schedule = new Cockpit_Payment_Schedule;
+					$schedule->id_restaurant = $_restaurant->id_restaurant;
+					$schedule->date = date( 'Y-m-d H:i:s' );
+					$schedule->amount = max( $payment_data[ 'total_due' ], 0 );
+					$schedule->adjustment = $adjustment;
+					$schedule->pay_type = Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT;
+					$schedule->type = Cockpit_Payment_Schedule::TYPE_RESTAURANT;
+					$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
+					$schedule->note = $notes;
+					$schedule->processor = Crunchbutton_Payment::processor();
+					$schedule->id_admin = $id_admin;
+
+					$range = ( new DateTime( $this->filters[ 'start' ] ) )->format( 'm/d/Y' );
+					$range .= ' => ';
+					$range .= ( new DateTime( $this->filters[ 'end' ] ) )->format( 'm/d/Y' );
+
+					$schedule->range_date = $range;
+
+					$schedule->save();
+
+					$id_payment_schedule = $schedule->id_payment_schedule;
+					// save the orders
+					foreach ( $_restaurant->_payableOrders as $order ) {
+						$total_due = $this->restaurantsProcessOrders( [ $this->orderExtractVariables( $order ) ] );
+						$schedule_order = new Cockpit_Payment_Schedule_Order;
+						$schedule_order->id_payment_schedule = $id_payment_schedule;
+						$schedule_order->id_order = $order->id_order;
+						$schedule_order->amount = max( $total_due[ 'total_due' ], 0 );
+						$schedule_order->save();
+					}
+					$this->log( 'scheduleRestaurantPayment', $schedule->properties() );
 				}
 			}
-			if( $shouldSchedule ){
-				// schedule it
-				$schedule = new Cockpit_Payment_Schedule;
-				$schedule->id_restaurant = $_restaurant->id_restaurant;
-				$schedule->date = date( 'Y-m-d H:i:s' );
-				$schedule->amount = max( $payment_data[ 'total_due' ], 0 );
-				$schedule->adjustment = $adjustment;
-				$schedule->pay_type = Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT;
-				$schedule->type = Cockpit_Payment_Schedule::TYPE_RESTAURANT;
-				$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
-				$schedule->note = $notes;
-				$schedule->processor = Crunchbutton_Payment::processor();
-				$schedule->id_admin = $id_admin;
-
-				$range = ( new DateTime( $this->filters[ 'start' ] ) )->format( 'm/d/Y' );
-				$range .= ' => ';
-				$range .= ( new DateTime( $this->filters[ 'end' ] ) )->format( 'm/d/Y' );
-
-				$schedule->range_date = $range;
-
-				$schedule->save();
-
-				$id_payment_schedule = $schedule->id_payment_schedule;
-				// save the orders
+			// if the restaurant doesn't have a formal relationship
+			// doesn't schedule payment #6567
+			else {
 				foreach ( $_restaurant->_payableOrders as $order ) {
-					$total_due = $this->restaurantsProcessOrders( [ $this->orderExtractVariables( $order ) ] );
-					$schedule_order = new Cockpit_Payment_Schedule_Order;
-					$schedule_order->id_payment_schedule = $id_payment_schedule;
-					$schedule_order->id_order = $order->id_order;
-					$schedule_order->amount = max( $total_due[ 'total_due' ], 0 );
-					$schedule_order->save();
+					$order_transaction = new Crunchbutton_Order_Transaction;
+					$order_transaction->id_order = $order->id_order;
+					$order_transaction->amt = 0;
+					$order_transaction->date = date( 'Y-m-d H:i:s' );
+					$order_transaction->type = Crunchbutton_Order_Transaction::TYPE_NO_PAYMENT_NEEDED_RESTAURANT;
+					$order_transaction->source = Crunchbutton_Order_Transaction::SOURCE_CRUNCHBUTTON;
+					$order_transaction->id_admin = c::user()->id_admin;
+					$order_transaction->save();
 				}
-				$this->log( 'scheduleRestaurantPayment', $schedule->properties() );
 			}
 		}
 		return true;

@@ -1,0 +1,1 @@
+ALTER TABLE `order_transaction` CHANGE `type` `type` enum('debit','credit','paid-to-restaurant', 'no-payment-needed-restaurant', 'paid-to-driver','reimbursed-driver','refunded','campus-cash-charged') DEFAULT NULL;
