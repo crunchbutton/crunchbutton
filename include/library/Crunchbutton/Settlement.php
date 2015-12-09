@@ -1443,9 +1443,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						if( $amount > 0 ){
 							try{
 
-								$env = ( ( c::env() == 'live' || c::env() == 'crondb' ) ? 'live' : 'dev' );
-
-								$env = 'live';
+								$env = ( ( c::getEnv() == 'live' || c::getEnv() == 'crondb' ) ? 'live' : 'dev' );
 
 								$c = c::lob()->checks()->create([
 									'name' => $check_name,
@@ -1478,7 +1476,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						if( $success ){
 
 							$payment = new Crunchbutton_Payment;
-							$payment->check_id = $c->id;
+							$payment->check_id = $check_id;
 							$payment->date = date( 'Y-m-d H:i:s' );
 							$payment->id_restaurant = $schedule->id_restaurant;
 							$payment->note = $schedule->note;
