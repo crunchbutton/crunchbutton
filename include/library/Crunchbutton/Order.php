@@ -3235,6 +3235,53 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 	}
 
+	public function isAtDeliveryRadius(){
+		$distance = $this->calcDistance();
+		if( $distance ){
+			$restaurant = $this->restaurant();
+			$delivery_radius = floatval( $restaurant->delivery_radius );
+			if( $distance <= $delivery_radius ){
+				return true;
+			}
+			return false;
+		}
+		return null;
+	}
+
+	public function calcDistance(){
+
+		if( $this->lon && $this->lat ){
+			$customerLon = $this->lon;
+			$customerLat = $this->lat;
+		} else {
+			$pos = Crunchbutton_GoogleGeocode::geocode( $this->address );
+			if( $pos->lat && $pos->lon ){
+				$customerLon = $pos->lon;
+				$customerLat = $pos->lat;
+			}
+		}
+
+		if( $customerLon && $customerLat ){
+
+			$restaurant = $this->restaurant();
+			$delivery_radius = floatval( $restaurant->delivery_radius );
+
+			if( $restaurant->delivery_radius_type == 'restaurant' ){
+				$restaurantLon = $restaurant->loc_long;
+				$restaurantLat = $restaurant->loc_lat;
+			} else {
+				$community = $restaurant->community()->get( 0 );
+				$restaurantLon = $community->loc_lon;
+				$restaurantLat = $community->loc_lat;
+			}
+
+			if( $restaurantLat && $restaurantLon ){
+				return Crunchbutton_GoogleGeocode::latlonDistanceInMiles( $customerLat, $customerLon, $restaurantLat, $restaurantLon );
+			}
+		}
+		return null;
+	}
+
 	public function shouldUsePexCard(){
 		if( $this->restaurant()->formal_relationship ){
 			if( $this->pay_type == 'cash' ){
@@ -3401,6 +3448,35 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 		return false;
 	}
+
+	public function ticketsForOutOfDeliveryRadius(){
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->modify( '- 5 min' );
+		$orders = Order::q( 'SELECT * FROM `order` WHERE date > ? AND delivery_type = ?', [ $now->format( 'Y-m-d H:i:s' ), self::SHIPPING_DELIVERY ] );
+		$pattern = "%s just placed an order out of delivery radius! Distance %s. Order details: Order %d in the %s community to this address %s. Please double check that this address is close enough to be delivered (if it's just slightly out of range it may be fine), and cancel the order if necessary. Thanks!";
+		foreach( $orders as $order ){
+			if( !$order->orderHasGeomatchedTicket() ){
+				if( !$order->isAtDeliveryRadius() ){
+					$distance = number_format( $order->calcDistance(), 2 ) . ' miles';
+					$message = sprintf( $pattern, $order->name, $distance, $order->id_order, $order->community()->name, $order->address );
+					echo $message . "\n";
+					Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
+					$action = new Crunchbutton_Order_Action;
+					$action->id_order = $order->id_order;
+					$action->timestamp = date( 'Y-m-d H:i:s' );
+					$action->type = Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED;
+					$action->save();
+
+					if( !$order->id_address ){
+						$address = Address::byAddress( $order->address );
+						$order->id_address = $address->id_address;
+						$order->save();
+					}
+				}
+			}
+		}
+	}
+
 
 	public function ticketsForNotGeomatchedOrders(){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );

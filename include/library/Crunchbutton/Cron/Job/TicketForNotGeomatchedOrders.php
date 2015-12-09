@@ -5,7 +5,7 @@ class Crunchbutton_Cron_Job_TicketForNotGeomatchedOrders extends Crunchbutton_Cr
 	public function run(){
 
 		Order::ticketsForNotGeomatchedOrders();
-		Order::ticketForCampusCashOrder();
+		Order::ticketsForOutOfDeliveryRadius();
 
 		// it always must call finished method at the end
 		$this->finished();
