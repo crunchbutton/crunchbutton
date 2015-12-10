@@ -83,6 +83,12 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 		$restaurant->formal_relationship = 1;
 		$restaurant->save();
 
+		$category = new Crunchbutton_Category();
+		$category->id_restaurant = $restaurant->id_restaurant;
+		$category->name = '';
+		$category->sort = 1;
+		$category->save();
+
 		$payment_type = $restaurant->payment_type();
 		$payment_type->charge_credit_fee = 1;
 		$payment_type->max_pay_promotion = 2;
@@ -93,6 +99,7 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 		$payment_type->max_apology_credit = 5;
 		$payment_type->save();
 
+		$restaurant->name = 'Restaurant ' . $restaurant->id_restaurant;
 		$restaurant->permalink = 'restaurant-' . $restaurant->id_restaurant;
 		$restaurant->save();
 
