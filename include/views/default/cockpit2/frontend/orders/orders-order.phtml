@@ -426,11 +426,17 @@
 			</div>
 			<div class="divider"></div>
 		</div>
-
-		<map center="false" zoom="12" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
-			<traffic-layer ng-if="order.status.status != 'delivered'"></traffic-layer>
-		</map>
+		<div ng-if="!order.driver.location">
+			<br>
+			<p>Driver isn't sharing location - you should probably contact them and ask them to</p>
+		</div>
+		<div ng-if="order.driver.location">
+			<map center="false" zoom="12" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}">
+				<traffic-layer ng-if="order.status.status != 'delivered'"></traffic-layer>
+			</map>
+		</div>
 		<div class="divider"></div>
+
 
 	</div>
 

@@ -241,7 +241,6 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 		if (!$scope.map || !$scope.order) {
 			return;
 		}
-
 		MapService.trackOrder({
 			map: $scope.map,
 			order: $scope.order,
