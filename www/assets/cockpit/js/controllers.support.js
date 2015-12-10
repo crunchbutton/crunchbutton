@@ -89,6 +89,12 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 
 	TicketViewService.sideInfo.setTicket( id_support );
 
+	$scope.reloadMessages = function(){
+		TicketViewService.sideInfo.setTicket( id_support );
+		socketStuff();
+		loadData();
+	}
+
 	var loadData = function(){
 		if( TicketViewService.sideInfo.load() ){
 			$scope.isLoading = true;
