@@ -862,7 +862,8 @@ App.alert = function(txt, title, useNativeAlert, fn, unselectable ) {
 		} else {
 
 			if( txt && !title && !fn && !unselectable && txt.search( /<|\\|\//i ) == -1 ){
-				App.rootScope.flash.setMessage( txt );
+				var level = ( txt.search(/please|erro/i) >= 0 ) ? 'error' : 'success';
+				App.rootScope.flash.setMessage( txt, level );
 				return;
 			}
 			App.rootScope.$broadcast('notificationAlert', title || '', txt, fn, unselectable);
