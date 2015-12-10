@@ -1,0 +1,45 @@
+<div class="restaurant-force-close-dialog-container zoom-anim-dialog mfp-hide dialog" ng-controller="RestaurantForceCloseCtrl">
+
+	<div>
+
+		<h1 class="title"><span>Restaurant: {{restaurant.name}}</span></h1>
+
+		<div class="divider"></div>
+
+		<span ng-if="loading"><br></span>
+
+		<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+		<ng-form name="formOpenClose" ng-show="!loading">
+
+			<div class="ul-inputs">
+
+				<ul ng-class="{'submitted':formOpenCloseSubmitted}" class="ul-inputs">
+
+					<li class="li-input divider-line">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="restaurant.open_for_business"/><div></div>
+						</label>
+						<div class="label">Open for business:</div>
+					</li>
+
+					<li class="li-input" ng-show="!restaurant.open_for_business" ng-class="{'error':form.restaurantForceCloseTagline.$invalid}">
+						<div class="label">Force close tagline:</div>
+						<div class="input"><input type="text" name="restaurantForceCloseTagline" ng-model="restaurant.force_close_tagline" ng-required="!restaurant.open_for_business" placeholder="Force close tagline"></div>
+						<div class="box-error">
+							<small ng-show="form.restaurantForceCloseTagline.$error.required">Required.</small>
+						</div>
+						<div class="notes">Displayed to customers and the restaurant.</div>
+					</li>
+
+					<li class="li-input" ng-show="!isSavingOpenClose">
+						<button class="button button-empty button-border button-green button-full" ng-click="formOpenCloseSave();"><span class="fa fa-save"></span>&nbsp;&nbsp;Save</button>
+					</li>
+					<li class="li-input" ng-show="isSavingOpenClose">
+						<i class="fa fa-circle-o-notch fa-spin"></i>
+					</li>
+				</ul>
+			</div>
+		</ng-form>
+	</div>
+</div>

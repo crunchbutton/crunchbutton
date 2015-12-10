@@ -189,6 +189,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 							} else {
 								$community->close_all_restaurants_id_admin = null;
 								$community->close_all_restaurants_date =  null;
+								$community->close_all_restaurants_note = null;
 							}
 						}
 						if( $community->close_all_restaurants && $this->request()[ 'close_all_restaurants_note' ] ){
@@ -206,6 +207,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 							} else {
 								$community->close_3rd_party_delivery_restaurants_id_admin = null;
 								$community->close_3rd_party_delivery_restaurants_date = null;
+								$community->close_3rd_party_delivery_restaurants_note = null;
 							}
 
 						}

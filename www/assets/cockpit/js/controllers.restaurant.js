@@ -1433,3 +1433,43 @@ NGApp.controller( 'RestaurantOrderPlacementNew', function ( $scope, RestaurantSe
 	}
 
 } );
+
+NGApp.controller('RestaurantForceCloseCtrl', function ($scope, $routeParams, $rootScope, RestaurantService ) {
+
+	$rootScope.$on( 'restaurantForceCloseContainer', function(e, data) {
+
+		$scope.loading = true;
+		$scope.restaurant = null;
+		App.dialog.show('.restaurant-force-close-dialog-container');
+
+		var permalink = data.permalink ? data.permalink : $routeParams.id;
+
+		RestaurantService.force_close_status( permalink, function( d ) {
+			$scope.loading = false;
+			$scope.restaurant = d;
+		});
+
+		$scope.isSaving = false;
+	});
+
+
+	$scope.formOpenCloseSave = function(){
+
+		if( $scope.formOpenClose.$invalid ){
+			$scope.formOpenCloseSubmitted = true;
+			return;
+		}
+
+		$scope.isSavingOpenClose = true;
+		RestaurantService.save_force_close( $scope.restaurant, function( json ){
+			$scope.isSavingOpenClose = false;
+			if( json.error ){
+				App.alert( 'Error saving: ' + json.error );
+			} else {
+				$rootScope.closePopup();
+				$rootScope.$broadcast( 'restaurantForceCloseSaved', json );
+			}
+		} );
+	}
+
+} );
