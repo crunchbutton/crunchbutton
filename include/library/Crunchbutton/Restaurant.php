@@ -1217,7 +1217,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$out = $this->properties();
 		if( count( $ignore ) && is_array( $ignore ) ){
 			$_ignore = $ignore;
-			$ignore = [];
 			foreach ( $_ignore as $property ) {
 				$ignore[ $property ] = true;
 			}
