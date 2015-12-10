@@ -341,7 +341,7 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 	$scope.save = function(){
 
 		if( $scope.formBasic.$invalid ){
-			App.alert( 'Please fill in all required fields' );
+			App.alert( 'Please fill in all required fields! <br>' );
 			$scope.submitted = true;
 			return;
 		}
@@ -483,6 +483,7 @@ NGApp.controller('RestaurantEditNotesCtrl', function ( $scope, RestaurantEditSer
 	$scope.save = function(){
 		if( $scope.restaurant.id_restaurant ){
 			if( $scope.form.$invalid ){
+				App.alert( 'Please fill in all required fields! <br>' );
 				$scope.submitted = true;
 				return;
 			}
@@ -536,6 +537,7 @@ NGApp.controller('RestaurantEditNotificationsCtrl', function ( $scope, Restauran
 	$scope.save = function(){
 		if( $scope.restaurant.id_restaurant ){
 			if( $scope.form.$invalid ){
+				App.alert( 'Please fill in all required fields! <br>' );
 				$scope.submitted = true;
 				return;
 			}
@@ -615,7 +617,7 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 			if( $scope.form.$invalid ){
 				expandAll();
 				$scope.submitted = true;
-				App.alert( 'Please complete all required fields!' )
+				App.alert( 'Please fill in all required fields! <br>' );
 				return;
 			}
 			$scope.isSaving = true;
@@ -994,6 +996,7 @@ NGApp.controller('RestaurantEditDeliveryCtrl', function ( $scope, RestaurantEdit
 	$scope.save = function(){
 		if( $scope.restaurant.id_restaurant ){
 			if( $scope.form.$invalid ){
+				App.alert( 'Please fill in all required fields! <br>' );
 				$scope.submitted = true;
 				return;
 			}
@@ -1053,10 +1056,11 @@ NGApp.controller('RestaurantEditBasicCtrl', function ( $scope, RestaurantEditSer
 	$scope.save = function(){
 		if( $scope.restaurant.id_restaurant ){
 			if( !$scope.restaurant.id_community ){
-				App.alert( 'Please select a community!' );
+				App.alert( 'Please select a community! <br>' );
 				return;
 			}
 			if( $scope.form.$invalid ){
+				App.alert( 'Please fill in all required fields! <br>' );
 				$scope.submitted = true;
 				return;
 			}
@@ -1093,6 +1097,7 @@ NGApp.controller('RestaurantEditHoursCtrl', function ( $scope, RestaurantEditSer
 	$scope.save = function(){
 		if( $scope.restaurant.id_restaurant ){
 			if( $scope.form.$invalid ){
+				App.alert( 'Please fill in all required fields! <br>' );
 				$scope.submitted = true;
 				return;
 			}
@@ -1374,7 +1379,7 @@ NGApp.controller( 'RestaurantOrderPlacementNew', function ( $scope, RestaurantSe
 		}
 
 		if( $scope.form.$invalid ){
-			App.alert( 'Please fill in all required fields' );
+			App.alert( 'Please fill in all required fields! <br>' );
 			$scope.submitted = true;
 			return;
 		}
