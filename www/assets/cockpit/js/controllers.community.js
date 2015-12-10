@@ -50,11 +50,23 @@ NGApp.controller('CommunitiesCtrl', function ($rootScope, $scope, CommunityServi
 			fullcount: false
 		},
 		update: function() {
-			CommunityService.list($scope.query, function(d) {
-				$scope.communities = d.results;
-				$scope.complete(d);
-			});
+			update();
 		}
+	});
+
+	var update = function(){
+		CommunityService.list($scope.query, function(d) {
+			$scope.communities = d.results;
+			$scope.complete(d);
+		});
+	}
+
+	$scope.openClosingTimeContainer = function( permalink ){
+		$rootScope.$broadcast( 'openClosingTimeContainer', { permalink: permalink } );
+	}
+
+	$rootScope.$on( 'communityOpenClosedSaved', function(e, data) {
+		update();
 	});
 
 });
@@ -254,7 +266,10 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 		$scope.loading = true;
 		$scope.community = null;
 		App.dialog.show('.open-close-community-dialog-container');
-		CommunityService.openCloseStatus( $routeParams.id, function( d ) {
+
+		var permalink = data.permalink ? data.permalink : $routeParams.id;
+
+		CommunityService.openCloseStatus( permalink, function( d ) {
 			$scope.loading = false;
 			$scope.community = d;
 			if( $scope.community.dont_warn_till ){
@@ -445,6 +460,10 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		});
 	}
 
+	$rootScope.$on( 'restaurantForceCloseSaved', function(e, data) {
+		$scope.loadRestaurants();
+	});
+
 	// method to load drivers - called at ui-tab directive
 	$scope.loadDrivers = function(){
 		$scope.loadingStaff = true;
@@ -558,6 +577,10 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 
 	$scope.openClosingTimeContainer = function(){
 		$rootScope.$broadcast( 'openClosingTimeContainer' );
+	}
+
+	$scope.restaurantForceCloseContainer = function( permalink ){
+		$rootScope.$broadcast( 'restaurantForceCloseContainer', { permalink: permalink } );
 	}
 
 	$scope.openCommunityNoteContainer = function(){

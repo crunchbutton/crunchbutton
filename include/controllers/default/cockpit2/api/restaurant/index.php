@@ -17,12 +17,18 @@ class Controller_api_restaurant extends Crunchbutton_Controller_RestAccount {
 		if (!c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud', 'restaurant-'.$restaurant->id_restaurant.'-edit', 'restaurant-'.$restaurant->id_restaurant.'-all'])) {
 			$this->error(401);
 		}
-		
+
 		$this->restaurant = $restaurant;
-		
+
 		switch (c::getPagePiece(3)) {
 			case 'image':
 				$this->_image();
+				break;
+			case 'force-close-status':
+				$this->_forceCloseStatus();
+				break;
+			case 'save-force-close':
+				$this->_saveForceClose();
 				break;
 			case 's3':
 				$this->_s3();
@@ -33,10 +39,32 @@ class Controller_api_restaurant extends Crunchbutton_Controller_RestAccount {
 			default:
 				$this->_restaurant();
 				break;
-			
+
 		}
 	}
-	
+
+
+	private function _saveForceClose(){
+		$this->restaurant->open_for_business = $this->request()[ 'open_for_business' ];
+		if( $this->restaurant->open_for_business ){
+			$this->restaurant->force_close_tagline = '';
+		} else {
+			$this->restaurant->force_close_tagline = $this->request()[ 'force_close_tagline' ];
+		}
+		$this->restaurant->save();
+		echo json_encode( [ 'success' => true ] );exit;
+	}
+
+	private function _forceCloseStatus(){
+		$out = [];
+		$out[ 'id_restaurant' ] = $this->restaurant->id_restaurant;
+		$out[ 'permalink' ] = $this->restaurant->permalink;
+		$out[ 'name' ] = $this->restaurant->name;
+		$out[ 'open_for_business' ] = $this->restaurant->open_for_business;
+		$out[ 'force_close_tagline' ] = $this->restaurant->force_close_tagline;
+		echo json_encode( $out );exit;
+	}
+
 	private function _s3all() {
 		if (!c::admin()->permission()->check(['global'])) {
 			$this->error(401);
@@ -56,7 +84,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_RestAccount {
 			//}
 		}
 	}
-	
+
 	private function _s3() {
 		if (!c::admin()->permission()->check(['global'])) {
 			$this->error(401);
@@ -65,7 +93,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_RestAccount {
 		$r = $this->restaurant->updateImage();
 		var_dump($r);
 	}
-	
+
 	private function _image() {
 		// pull path of a temporary file
 
@@ -85,7 +113,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_RestAccount {
 				break;
 		}
 	}
-	
+
 	private function _restaurant() {
 		switch ($this->method()) {
 			case 'get':

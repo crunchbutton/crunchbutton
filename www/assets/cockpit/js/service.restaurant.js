@@ -16,6 +16,13 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 		}
 	);
 
+	var status = $resource( App.service + 'restaurant/:permalink/:action', { permalink: '@permalink', action: '@action' }, {
+			'force_close_status' : { 'method': 'GET', params : { 'action' : 'force-close-status' } },
+			'save_force_close' : { 'method': 'POST', params : { 'action' : 'save-force-close' } }
+		}
+	);
+
+
 	var restaurant = ResourceFactory.createResource( App.service + 'restaurants/:id_restaurant', { id_restaurant: '@id_restaurant'}, {
 		'load' : {
 			url: App.service + 'restaurant/:id_restaurant',
@@ -87,6 +94,21 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 			callback( data );
 		} );
 	}
+
+	service.force_close_status = function( permalink, callback ){
+		status.force_close_status( { permalink: permalink }, function( data ){
+			callback( data );
+		} );
+	}
+
+	service.save_force_close = function( restaurant, callback ){
+		status.save_force_close( restaurant, function( data ){
+			callback( data );
+		} );
+	}
+
+
+
 
 	service.no_payment_method = function( callback ){
 		restaurants.no_payment_method( function( data ){
