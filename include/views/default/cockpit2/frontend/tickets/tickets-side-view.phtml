@@ -9,7 +9,10 @@
 
 				<a class="support-chat-header-back" ng-click="setViewTicket(0)">&nbsp;<i class="fa fa-chevron-left"></i> Issues</a>
 
+				<span class="support-chat-header-issue">&nbsp;<a ng-if="ticket.id_support" title="Reload messages" ng-click="reloadMessages();"><i class="fa fa-refresh"></i></a></span>
+
 				<a ng-if="ticket.id_support" class="support-chat-header-issue" href="/ticket/{{ticket.id_support}}">#{{ticket.id_support}}</a>
+
 
 				<div ng-if="!ticket.id_support" class="support-chat-header-issue"><i class="fa fa-spinner fa-spin"></i></div>
 
