@@ -1119,13 +1119,14 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		order.toogleDelivery( type );
 		$scope.order._tips = order._tips();
 	}
+	$scope.order.toogleDeliveryTime = function( type ){
+		order.toogleDeliveryTime( type );
+	}
 	$scope.order.tooglePayment = function( type ){
 		return order.tooglePayment( type );
 	}
 	$scope.order._years = order._years();
-
 	$scope.order._months = order._months();
-
 	$scope.order._tips = order._tips();
 
 	$scope.showCreditPayment = function(){
@@ -1301,6 +1302,13 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		var community = data.community;
 
 		$scope.restaurant = data.restaurant;
+
+		if( data.restaurant.allow_preorder ){
+			$scope.order._preOrderDays = data.restaurant._preOrderDays;
+			$scope.order._preOrderHours = data.restaurant._preOrderHours;
+			$scope.order.form.deliveryDay = $scope.order._preOrderDays[ 0 ].value;
+			$scope.order.form.deliveryHour = $scope.order._preOrderHours[ 0 ].value;
+		}
 
 		$rootScope.$broadcast( 'updateQuote', $scope.restaurant.id_community );
 

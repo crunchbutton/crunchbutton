@@ -50,6 +50,16 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$this->name      = $params['name'];
 		$this->notes     = $params['notes'];
 		$this->local_gid = $params['local_gid'];
+		$this->id_restaurant = $params['restaurant'];
+
+		$this->preordered = ( $params['preordered'] ? 1 : 0 );
+		if( $this->preordered ){
+			$deliveryDay = $params['deliveryDay'];
+			$deliveryHour = $params['deliveryHour'];
+			$date_delivery = new DateTime( $deliveryDay . ' ' . $deliveryHour, new DateTimeZone( $this->restaurant()->timezone ) );
+			$date_delivery->setTimezone( new DateTimeZone( c::config()->timezone ) );
+			$this->date_delivery = $date_delivery->format( 'Y-m-d H:i:s' );
+		}
 
 		// Log the order - process started
 		Log::debug([
@@ -65,6 +75,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 							'delivery_type' => $params['delivery_type'],
 							'restaurant' 		=> $params['restaurant'],
 							'notes' 				=> $params['notes'],
+							'preordered' 		=> $params['preordered'],
+							'deliveryDay' 	=> $params['deliveryDay'],
+							'deliveryHour' 	=> $params['deliveryHour'],
+							'restaurant' 		=> $this->restaurant()->name,
+							'timezone' 			=> $this->restaurant()->timezone,
 							'cart' 					=> $params['cart'],
 							'campus_cash'		=> $this->campus_cash,
 							'type' 					=> 'order-log'
@@ -85,8 +100,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		if ($params['pay_type'] == self::PAY_TYPE_CREDIT_CARD) {
 			$params['pay_type'] = self::PAY_TYPE_APPLE_PAY;
 		}
-
-		$this->id_restaurant = $params['restaurant'];
 
 		if ( $params['processor'] && $params['pay_type'] == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && Crunchbutton_User_Payment_Type::processor() != $params['processor']) {
 			$errors['processor'] = 'We recently upgraded our credit card processing security. Please press "Place Order" again to automagicly use our fancy new system.';
@@ -741,7 +754,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 
 		$this->id_user = $this->_user->id_user;
-		$this->date = date('Y-m-d H:i:s');
+		if( $this->preordered ){
+			$this->preordered_date = date('Y-m-d H:i:s');
+		} else {
+			$this->date = date('Y-m-d H:i:s');
+		}
+
 		$this->delivery_service = $this->restaurant()->hasDeliveryService();
 		$this->id_community = $this->restaurant()->community()->id_community;
 
@@ -1096,8 +1114,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$this->_date = null;
 		}
 		if (!isset($this->_date)) {
-			$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
-			$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
+			if( $this->date ){
+				$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
+				$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
+			} else if( $this->preordered && $this->preordered_date ){
+				$this->_date = new DateTime($this->preordered_date, new DateTimeZone(c::config()->timezone));
+				$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
+			}
+
 		}
 		return $this->_date;
 	}
@@ -2412,6 +2436,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			unset( $out['restaurant_name'] );
 			unset( $out['restaurant_permalink'] );
 		} else {
+
 			$date = $this->date();
 			$out['date_formated'] = $date->format( 'g:i a, M dS, Y' );
 			$out['_restaurant_name'] = $this->restaurant()->name;
@@ -2452,7 +2477,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$out['campus_cash_receipt_info'] = $this->campusCashReceiptInfo();
 		}
 
-		$date = new DateTime($this->date);
+
+		if( $this->date ){
+			$date = new DateTime($this->date);
+		} else if( $this->preordered && $this->preordered_date ){
+			$date = new DateTime( $this->preordered_date );
+			$out['date'] = $this->preordered_date;
+		}
+
 		$date->setTimeZone($timezone);
 
 		$out['_date_tz'] = $date->format('Y-m-d H:i:s');

@@ -133,6 +133,46 @@
 					</p>
 				</div>
 
+
+				<div ng-if="restaurant.allow_preorder">
+					<div>
+						<div class="toggle-wrapper clearfix">
+							<button ng-click="order.toogleDeliveryTime( 'asap' )" ng-class="{'toggle-active': order.form.delivery_time_type=='asap' }" class="payment-form-toggle">Asap</button>
+							<button ng-click="order.toogleDeliveryTime( 'pre-order' )" ng-class="{'toggle-active': order.form.delivery_time_type=='pre-order' }" class="payment-form-toggle">Pre-order</button>
+						</div>
+					</div>
+
+					<div ng-if="order.form.delivery_time_type == 'asap'">
+						<p class="delivery-free restaurant-delivery-free">
+							<div ng-if="restaurant.eta && restaurant._open">Delivery estimate: {{restaurant.eta}} minutes</div><br><br>
+						</p>
+					</div>
+
+					<div ng-if="order.form.delivery_time_type == 'pre-order'">
+
+						<div class="divider spacer-two-two"></div>
+
+						<div class="payment-form-group form-group">
+							<i class="fa fa-calendar payment-form-icon form-icon form-field"></i>
+							<div class="form-input-select"><select ng-model="order.form.deliveryDay" ng-options="day.value as day.label for day in order._preOrderDays" tabindex="10" class="payment-form-select payment-form-input form-input form-field" id="preOrderDeliveryDate"></select></div>
+						</div>
+
+						<div class="divider"></div>
+
+						<div class="payment-form-group form-group">
+							<i class="fa fa-clock-o payment-form-icon form-icon form-field"></i>
+
+							<div class="form-input-select"><select ng-model="order.form.deliveryHour" ng-options="hour.value as hour.label for hour in order._preOrderHours" tabindex="11" class="payment-form-select payment-form-input form-input form-field" id="preOrderDeliveryHour"></select></div>
+
+						</div>
+
+					</div>
+
+
+
+				</div>
+
+
 			</div>
 
 			<div class="divider spacer-two-two"></div>
