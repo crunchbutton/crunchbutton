@@ -19,7 +19,7 @@ class Cockpit_Driver_Document_Status extends Cana_Table {
 		$staff = Admin::o( $id_admin );
 		$payment_type = $staff->payment_type();
 
-		if( !$payment_type ){
+		if( !$payment_type->id_admin ){
 			return false;
 		}
 
@@ -39,7 +39,9 @@ class Cockpit_Driver_Document_Status extends Cana_Table {
 				}
 
 				// see: https://github.com/crunchbutton/crunchbutton/issues/3393
-				if( $doc->isRequired( false ) ){
+				if( $doc->id_driver_document != Cockpit_Driver_Document::ID_DRIVERS_LICENCE &&
+						$doc->id_driver_document != Cockpit_Driver_Document::ID_AUTO_INSURANCE_CARD &&
+						$doc->isRequired( false ) ){
 					$docStatus = Cockpit_Driver_Document_Status::document( $staff->id_admin, $doc->id_driver_document );
 					if( !$docStatus->id_driver_document_status ){
 						return false;
