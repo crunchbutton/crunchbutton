@@ -49,6 +49,11 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['timestamp'] = $this->date()->format('U');				// unix epoc
 		$out['date'] = $this->date()->format('c');					// date in timezone that the order was placed in
 
+		$date_delivery = $this->date_delivery();
+		if( $date_delivery ){
+			$out['date_delivery'] = $date_delivery->format('c');
+		}
+
 		$out['_message'] = nl2br($this->orderMessage('web'));
 		$out['charged'] = floatval( $this->charged() );
 		$out['notes_to_driver'] = $this->restaurant()->notes_to_driver;

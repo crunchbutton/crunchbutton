@@ -872,7 +872,16 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 		}
 
-		$this->que();
+		if( !$this->preordered ){
+			$this->que();
+		} else {
+			// send customer a receipt in 30 seconds
+			$q = Queue::create([
+				'type' => Crunchbutton_Queue::TYPE_ORDER_RECEIPT,
+				'id_order' => $this->id_order,
+				'seconds' => 30
+			]);
+		}
 
 		$order = $this;
 
@@ -908,57 +917,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				}
 			}
 		}
-
-		// Referral disabled because of the new system:
-		// rewards: two way gift cards #2561: https://github.com/crunchbutton/crunchbutton/issues/2561
-		/**
-		*******************************************************************************
-		if( false && Crunchbutton_Referral::isReferralEnable() ){
-			// If the user was invited we'll give credit to the inviter user
-			$inviter_code = Crunchbutton_Referral::checkCookie();
-			if( $inviter_code ){
-				// If the code is valid it will return the inviter user
-				$_inviter = Crunchbutton_Referral::validCode( $inviter_code );
-				if( $_inviter ){
-					$totalOrdersByPhone = $this->totalOrdersByPhone( $this->phone );
-					$referral = new Crunchbutton_Referral();
-					$referral->id_user_inviter = $_inviter->id_user;
-					$referral->id_user_invited = $this->id_user;
-					$referral->id_order = $this->id_order;
-					$referral->invite_code = $inviter_code;
-					if( $totalOrdersByPhone <= 1 ){
-						$referral->new_user = 1;
-					} else {
-						$referral->new_user = 0;
-					}
-					$referral->date = date('Y-m-d H:i:s');
-					$referral->save();
-					// See #1660
-					if( $this->pay_type == 'card' ){
-						// Finally give credit to inviter
-						$referral->addCreditToInviter();
-					}
-
-					// Reward
-					$reward = new Crunchbutton_Reward;
-					$points = $reward->getRefered();
-					if( floatval( $points ) > 0 ){
-						$reward->saveReward( [ 'id_order' => $this->id_order, 'id_user' => $this->id_user, 'points' => $points, 'note' => 'points by getting referred O#' . $this->id_order . ' U#' . $_inviter->id_user ] );
-					}
-
-					$points = $reward->getReferNewUser();
-					if( floatval( $points ) > 0 ){
-						$reward->saveReward( [ 'id_order' => $this->id_order, 'id_user' => $_inviter->id_user, 'points' => $points, 'note' => 'points by reffering a new user O#' . $this->id_order . ' U#' . $this->id_user ] );
-					}
-
-					Log::debug([ 'inviter_code' => $inviter_code, 'totalOrdersByPhone' => $totalOrdersByPhone, 'type' => 'referral', 'pay_type' => $this->pay_type ]);
-
-				}
-				Crunchbutton_Referral::removeCookie();
-			}
-		}
-		*************************************************************************
-		*/
 
 		$this->removeCouponCodesInTheNotes();
 
@@ -1109,11 +1067,22 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return Crunchbutton_Order_Action::byOrder( $this->id_order );
 	}
 
+	public function date_delivery(){
+		if( $this->date_delivery ){
+			if (!isset($this->_date_delivery)) {
+				$this->_date_delivery = new DateTime($this->date_delivery, new DateTimeZone(c::config()->timezone));
+				$this->_date_delivery->setTimezone(new DateTimeZone($this->restaurant()->timezone));
+			}
+			return $this->_date_delivery;
+		}
+	}
+
 	public function date( $reset = false ) {
 		if( $reset ){
 			$this->_date = null;
 		}
-		if (!isset($this->_date)) {
+
+		if (!isset($this->_date) || !$this->_date) {
 			if( $this->date ){
 				$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
 				$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
@@ -1121,7 +1090,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				$this->_date = new DateTime($this->preordered_date, new DateTimeZone(c::config()->timezone));
 				$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
 			}
-
 		}
 		return $this->_date;
 	}
@@ -2483,6 +2451,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		} else if( $this->preordered && $this->preordered_date ){
 			$date = new DateTime( $this->preordered_date );
 			$out['date'] = $this->preordered_date;
+			$date_delivery = new DateTime( $this->date_delivery, new DateTimeZone( c::config()->timezone ) );
+			$date_delivery->setTimezone(  new DateTimeZone( $this->restaurant()->timezone )  );
+			$out['date_delivery_formatted'] = $date_delivery->format( 'D M d, H:i A - ' );
+			$date_delivery->modify( '+ 30 minutes' );
+			$out['date_delivery_formatted'] .= $date_delivery->format( 'H:i A' );
 		}
 
 		$date->setTimeZone($timezone);
