@@ -3615,7 +3615,7 @@ input[type="checkbox"].switch + div:before {
 	width: 90%;
 }
 
-.box-content-table > table > tbody > tr > td, .box-content-table > table > tbody > tr > th {
+.box-content-table > table > tbody > tr > td, .box-content-table > table > tbody > tr > th, .box-content-table > table > thead > tr > th {
 	font-size: 1.2em;
 	padding: .7em;
 	border-bottom: 1px solid #eeeeee;
@@ -3641,8 +3641,6 @@ input[type="checkbox"].switch + div:before {
 }
 
 .box-content-table > table > tbody > tr > td.tb-image-row {
-
-
 	padding-left: .7em;
 	width: 1px;
 	vertical-align: middle;
@@ -3655,7 +3653,7 @@ input[type="checkbox"].switch + div:before {
 	border-bottom: 1px solid #b3e0de;
 }
 
-.box-content-table > table > tbody > tr > th {
+.box-content-table > table > tbody > tr > th, .box-content-table > table > thead > tr > th {
 	font-weight: bold;
 	text-align: left;
 }
