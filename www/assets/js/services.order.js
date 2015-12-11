@@ -40,6 +40,12 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		creditLeft: ''
 	}
 
+	service.toogleDeliveryTime = function (type) {
+		if (type != service.form.delivery_time_type) {
+			service.form.delivery_time_type = type;
+		}
+	}
+
 	service.toogleDelivery = function (type) {
 		if (type != service.form.delivery_type) {
 			service.form.delivery_type = type;
@@ -86,6 +92,9 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		if( !service.restaurant.cash && service.form.pay_type == 'cash' ){
 			service.form.pay_type = 'card';
 		}
+
+		// asap is the default
+		service.toogleDeliveryTime( 'asap' );
 
 		service.campus_cash = false;
 
@@ -544,8 +553,15 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			lat: service.location.position.pos().lat(),
 			lon: service.location.position.pos().lon(),
 			local_gid : service.local_gid,
-			geomatched : service.geomatched
+			geomatched : service.geomatched,
 		};
+
+
+		if( service.form.delivery_time_type == 'pre-order' ){
+			order.preordered = true;
+			order.deliveryDay = service.form.deliveryDay;
+			order.deliveryHour = service.form.deliveryHour;
+		}
 
 		if (order.pay_type == 'card' || order.pay_type == 'applepay' || order.pay_type == 'campus_cash') {
 			order.tip = service.form.tip;
@@ -1110,6 +1126,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		}
 		return months;
 	}
+
 	// Tips
 	service._tips = function () {
 		var tips = [];
