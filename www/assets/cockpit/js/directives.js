@@ -770,3 +770,73 @@ NGApp.directive( 'stickyBottom', function ( $document ) {
 			}
 	};
 });
+
+NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
+	return {
+			restrict: 'A',
+
+			link: function ( scope, elem, attrs, ctrl ) {
+
+				$rootScope.$on( 'ng-repeat-finished', function(e, data) {
+					process();
+				});
+
+				var process = function(){
+
+					setTimeout( function(){
+
+						var table = angular.element(elem);
+
+						var thead = table.find( 'thead' );
+						var tbody = table.find( 'tbody' );
+
+						var tableWidth = table.width();
+
+						var tbodyLine = angular.element(tbody).find( 'tr' )[ 0 ];
+						var tbodyColumns = angular.element(tbodyLine).find( 'td' );
+
+						var theadLine = angular.element(thead).find( 'tr' )[ 0 ];
+						var theadColumns = angular.element(theadLine).find( 'th' );
+
+						var totalWidth = 0;
+
+						for( i=0; i < tbodyColumns.length; i++ ){
+							var td = angular.element( tbodyColumns[ i ] );
+							totalWidth += td.width();
+						}
+
+						var widthLeft = tableWidth - totalWidth;
+						var currentWidth = angular.element( tbodyColumns[ 1 ] ).width();
+						angular.element( tbodyColumns[ 1 ] ).width( ( currentWidth + widthLeft ) + 'px' );
+
+						for( i=0; i<tbodyColumns.length; i++ ){
+							var th = angular.element( theadColumns[ i ] );
+							var td = angular.element( tbodyColumns[ i ] );
+							th.width( td.width() );
+						}
+
+						var docHeight = angular.element(document).innerHeight();
+
+						var windowHeight = angular.element(window).height();
+						var theadHeight = thead.height();
+						var tbodyHeight = ( windowHeight - ( theadHeight + 100 ) + 'px' );
+
+						thead.css( 'display', 'block' );
+						thead.css( 'width', tableWidth );
+
+						tbody.css( 'display', 'block' );
+						tbody.css( 'width', tableWidth );
+						tbody.css( 'overflow', 'auto' );
+						tbody.css( 'height', tbodyHeight );
+
+					}, 100 );
+				}
+
+				angular.element( window ).on( 'resize', process );
+
+				scope.$on( '$destroy', function() {
+					angular.element( window ).off( 'resize', process );
+				});
+			}
+	};
+});
