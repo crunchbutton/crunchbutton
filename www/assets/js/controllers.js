@@ -1317,7 +1317,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 		$scope.restaurant = data.restaurant;
 
-		if( data.restaurant.allow_preorder ){
+		if( data.restaurant.allow_preorder && data.restaurant._preOrderDays.length ){
 			$scope.order._preOrderDays = data.restaurant._preOrderDays;
 			$scope.order.form.deliveryDay = $scope.order._preOrderDays[ 0 ].value;
 			$scope.deliveryDayChanged();
