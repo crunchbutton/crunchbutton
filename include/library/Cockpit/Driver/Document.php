@@ -8,6 +8,7 @@ class Cockpit_Driver_Document extends Cana_Table {
 	const ID_INDY_CONTRACTOR_AGREEMENT_HOURLY = 6;
 	const ID_INDY_CONTRACTOR_AGREEMENT_BRAND_REP = 9;
 	const ID_INDY_CONTRACTOR_AGREEMENT_COMMUNITY_MANAGER = 16;
+	const ID_DRIVER_W9 = 2;
 	const ID_COMMUNITY_MANAGER_W9 = 12;
 
 	const TYPE_DRIVER = 'driver';
