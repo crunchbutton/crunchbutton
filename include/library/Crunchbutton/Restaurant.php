@@ -1280,8 +1280,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $_segments;
 	}
 
+	public function allowPreorder(){
+		// add code to check if the community is closed and stuff
+		return $this->allow_preorder;
+	}
+
 	public function preOrderDays(){
-		if( $this->allow_preorder ){
+		if( $this->allowPreorder() ){
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 			$days = [];
 			$days[] = [ 'value' => $now->format( 'Y-m-d' ), 'label' => $now->format( 'D M d ' ) . '(Today)' ];

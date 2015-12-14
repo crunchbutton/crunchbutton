@@ -523,7 +523,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 				$rootScope.navigation.link('/drivers/apply', 'push' );
 				return;
 			}
-			if ( restaurant.openRestaurantPage( dateTime.getNow() ) ) {
+			if ( restaurant.openRestaurantPage( dateTime.getNow() ) || restaurant.allow_preorder ) {
 				// Store the load info of the clicked restaurant to optmize the restaurant page load
 				RestaurantService.basicInfo = restaurant;
 
