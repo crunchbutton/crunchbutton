@@ -2,7 +2,7 @@
 
 	<div class="divider dots spacer-one-one"></div>
 
-	<div ng-if="restaurant._open && order.showForm && order.cart.hasItems()">
+	<div ng-if="( restaurant._open || restaurant.force_pre_order ) && order.showForm && order.cart.hasItems()">
 
 		<!-- user info -->
 		<div class="delivery-info-container">
@@ -140,14 +140,14 @@
 
 					<div>
 						<div class="toggle-wrapper clearfix">
-							<button ng-click="order.toogleDeliveryTime( 'asap' )" ng-class="{'toggle-active': order.form.delivery_time_type=='asap' }" class="payment-form-toggle">Asap</button>
+							<button ng-click="order.toogleDeliveryTime( 'asap' )" ng-show="!restaurant.force_pre_order" ng-class="{'toggle-active': order.form.delivery_time_type=='asap' }" class="payment-form-toggle">Asap</button>
 							<button ng-click="order.toogleDeliveryTime( 'pre-order' )" ng-class="{'toggle-active': order.form.delivery_time_type=='pre-order' }" class="payment-form-toggle">Pre-order</button>
 						</div>
 					</div>
 
 					<div ng-if="order.form.delivery_time_type == 'asap'">
 						<p class="delivery-free restaurant-delivery-free">
-							<div ng-if="restaurant.eta && restaurant._open">Delivery estimate: {{restaurant.eta}} minutes</div><br><br>
+							<div ng-if="restaurant.eta && ( restaurant._open || restaurant.force_pre_order )">Delivery estimate: {{restaurant.eta}} minutes</div><br><br>
 						</p>
 					</div>
 

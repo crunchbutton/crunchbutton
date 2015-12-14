@@ -301,7 +301,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 		}
 
-		if (!$this->restaurant()->open()) {
+		if (!$this->restaurant()->open() && !$this->preordered ) {
 			$errors['closed'] = 'This restaurant is closed.';
 
 			$time = new DateTime('now', new DateTimeZone($this->restaurant()->timezone));

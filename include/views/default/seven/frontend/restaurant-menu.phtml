@@ -1,5 +1,4 @@
-
-<div ng-if="!order.cart.hasItems() && open" class="restaurant-box hide-desktop">
+<div ng-if="!order.cart.hasItems() && ( open || force_pre_order )" class="restaurant-box hide-desktop">
 	<div class="restaurant-box-inner">
 		<span class="restaurant-box-icon">
 			<i class="fa fa-arrow-down"></i>
