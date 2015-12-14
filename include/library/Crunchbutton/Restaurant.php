@@ -1201,9 +1201,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function preOrderHours(){
+
+		if( !$this->open_for_business ){
+			return false;
+		}
+
 		// get shift plus restaurant merged hours
 		$hours = Hour::hoursByRestaurant( $this, false, true );
-		$hours = self::preOrderProcessHours( $hours );
+		$hours = $this->preOrderProcessHours( $hours );
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$days = [];
 		for( $i = 1; $i <= 4; $i++ ){
@@ -1231,14 +1236,30 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $days;
 	}
 
-	public static function preOrderProcessHours( $hours ){
+	public function preOrderProcessHours( $hours ){
 		$_hours = [];
 		$_segments = [];
 		foreach( $hours as $hour ){
 			$interval = '+ 1 hour';
-			$open = $now = new DateTime( $hour->date . ' ' . $hour->time_open, new DateTimeZone( c::config()->timezone ) );
-			$close = $now = new DateTime( $hour->date . ' ' . $hour->time_close, new DateTimeZone( c::config()->timezone ) );
+			$now = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
+			$open = new DateTime( $hour->date . ' ' . $hour->time_open, new DateTimeZone( $this->timezone ) );
+			$close = new DateTime( $hour->date . ' ' . $hour->time_close, new DateTimeZone( $this->timezone ) );
 			$count = 0;
+
+			if( $now->format( 'Ymd' ) == $open->format( 'Ymd' ) ){
+				$eta = 5 * ceil( $this->smartEta() / 5 );
+				$minutes =  5 - ( $now->format( 'i' ) % 5 );
+				$now->modify( '+ ' . ( $eta + $minutes ) . ' minutes' );
+				if( $now > $open ){
+					$open = $now;
+				}
+			}
+			if( $now->format( 'Ymd' ) == $close->format( 'Ymd' ) ){
+				if( $now >= $close ){
+					continue;
+				}
+			}
+
 			$more = true;
 			while ( $more ) {
 				$_close = clone $open;
@@ -1247,7 +1268,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 					$_hour = clone $hour;
 					$_hour->time_open = $open->format( 'H:i' );
 					$_hour->time_close = $_close->format( 'H:i' );
-					unset( $_hour->buffered );
 					$_segments[] = $_hour;
 					$open = $_close;
 				}
