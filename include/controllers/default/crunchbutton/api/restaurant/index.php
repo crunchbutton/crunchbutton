@@ -166,43 +166,19 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 
 		if( $restaurant->allow_preorder ){
 			$json[ 'allow_preorder' ] = true;
-			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-			$days = [];
-			$days[] = [ 'value' => $now->format( 'Y-m-d' ), 'label' => $now->format( 'D M d ' ) . '(Today)' ];
-			for( $i = 1; $i <= 4; $i++ ){
-				$now->modify( '+ 1 day' );
-				$label = $now->format( 'D M d' );
-				if( $i == 1 ){
-					$label .= ' (Tomorrow)';
+			$days = $restaurant->preOrderDays();
+			if( $days ){
+				$json[ '_preOrderDays' ] = $days;
+				$hours = $restaurant->preOrderHours();
+				if( $hours ){
+					$json[ '_preOrderHours' ] = $hours;
+				} else {
+					$json[ 'allow_preorder' ] = false;
 				}
-				$days[] = [ 'value' => $now->format( 'Y-m-d' ), 'label' => $label  ];
+			} else {
+				$json[ 'allow_preorder' ] = false;
 			}
-			$json[ '_preOrderDays' ] = $days;
-
-			// calcs
-			if( $restaurant->open() ){
-				$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-				$now->setTimezone( new DateTimeZone( $restaurant->timezone ) );
-				$eta = 5 * ceil( $restaurant->smartEta() / 5 );
-
-				$minutes =  5 - ( $now->format( 'i' ) % 5 );
-
-				$now->modify( '+ ' . ( $eta + $minutes ) . ' minutes' );
-				$hours = [];
-				$hours[] = [ 'value' => $now->format( 'H:i' ), 'label' => $now->format( 'H:i' ) ];
-				for( $i = 1; $i <= 4; $i++ ){
-					$now->modify( '+ 30 minutes' );
-					$value = $now->format( 'H:i' );
-					$label = $now->format( 'H:i A' );
-					$now->modify( '+ 30 minutes' );
-					$label .= ' - ' . $now->format( 'H:i A' );
-					$hours[] = [ 'value' => $value, 'label' =>  $label ];
-				}
-			}
-			$json[ '_preOrderHours' ] = $hours;
 		}
-
-
 		echo json_encode( $json );exit;
 	}
 

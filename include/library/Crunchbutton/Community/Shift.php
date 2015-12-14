@@ -1271,7 +1271,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	}
 
 	// Return the shifts for the next week
-	public static function shiftsForNextWeek( $id_community, $todayAssigned = false ){
+	public static function shiftsForNextWeek( $id_community, $todayAssigned = false, $justAssignedShifts = false ){
 
 		$hours = [];
 
@@ -1307,10 +1307,17 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 					continue;
 				}
 
+				if( $justAssignedShifts  ){
+					if( !$shift->id_admin_shift_assign ){
+						continue;
+					}
+				}
+
 				$day = strtolower( $start->format( 'D' ) );
 				$full = $start->format( 'D: m/d/Y' );
 				$time_open = $start->format( 'H:i' );
 				$time_close = $end->format( 'H:i' );
+				$id_admin_shift_assign = $shift->id_admin_shift_assign;
 
 				$new_day = false;
 

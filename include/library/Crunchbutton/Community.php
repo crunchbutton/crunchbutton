@@ -1185,6 +1185,13 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return $this->_next_week_shifts;
 	}
 
+	public function assignedShiftsForNextWeek(){
+			if( !$this->_assigned_shift_for_next_week ){
+			$this->_assigned_shift_for_next_week = Crunchbutton_Community_Shift::shiftsForNextWeek( $this->id_community, false, true );
+		}
+		return $this->_assigned_shift_for_next_week;
+	}
+
 	// should return a smart value based on what time it is. for now just return db value
 	public function campusTime() {
 		return 1;
