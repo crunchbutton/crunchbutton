@@ -556,6 +556,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 	$rootScope._current_bundle = _current_bundle;
 
+	$rootScope.ngRepeatFinished = function(){
+		$rootScope.$broadcast( 'ng-repeat-finished', {} );
+	}
+
 	var url = App.service + 'config?init=1';
 	$http.get( url, {
 		cache: false
