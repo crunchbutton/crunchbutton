@@ -166,18 +166,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 
 		if( $restaurant->allow_preorder ){
 			$json[ 'allow_preorder' ] = true;
-			$days = $restaurant->preOrderDays();
-			if( $days ){
-				$json[ '_preOrderDays' ] = $days;
-				$hours = $restaurant->preOrderHours();
-				if( $hours ){
-					$json[ '_preOrderHours' ] = $hours;
-				} else {
-					$json[ 'allow_preorder' ] = false;
-				}
-			} else {
-				$json[ 'allow_preorder' ] = false;
-			}
+			$json[ '_preOrderDays' ] = $restaurant->preOrderHours();
 		}
 		echo json_encode( $json );exit;
 	}

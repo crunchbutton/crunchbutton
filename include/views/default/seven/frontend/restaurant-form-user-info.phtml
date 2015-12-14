@@ -157,7 +157,7 @@
 
 						<div class="payment-form-group form-group">
 							<i class="fa fa-calendar payment-form-icon form-icon form-field"></i>
-							<div class="form-input-select"><select ng-model="order.form.deliveryDay" ng-options="day.value as day.label for day in order._preOrderDays" tabindex="10" class="payment-form-select payment-form-input form-input form-field" id="preOrderDeliveryDate"></select></div>
+							<div class="form-input-select"><select ng-model="order.form.deliveryDay" ng-change="deliveryDayChanged()" ng-options="day.value as day.label for day in order._preOrderDays" tabindex="10" class="payment-form-select payment-form-input form-input form-field" id="preOrderDeliveryDate"></select></div>
 						</div>
 
 						<div class="divider"></div>
