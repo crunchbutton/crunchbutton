@@ -1,5 +1,5 @@
 <div class="box-content2 box-content-table">
-	<table class="tb-zebra sticky-header">
+	<table class="tb-zebra" sticky-header>
 		<thead>
 			<tr>
 				<th></th>
@@ -13,7 +13,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="restaurant in restaurants track by $index" ng-class="{ 'delivery_it_self': restaurant.delivery_it_self }" ng-attr-tabindex="{{$index+1}}" ng-init="$last ? doSomething() : null" tab-select="/restaurant/{{restaurant.permalink}}" on-finish-render="test()">
+			<tr ng-repeat="restaurant in restaurants track by $index" ng-class="{ 'delivery_it_self': restaurant.delivery_it_self }" ng-attr-tabindex="{{$index+1}}" ng-init="$last ? ngRepeatFinished() : null" tab-select="/restaurant/{{restaurant.permalink}}">
 				<td class="tb-image-row">
 				<a href="/restaurant/{{restaurant.permalink}}">
 					<div class="customer-image-crop" img-list-view-src="restaurant.images.thumb" img-null="restaurant-image-null"></div>
@@ -87,9 +87,7 @@
 		</tbody>
 	</table>
 </div>
-
 <ng-include src="'assets/view/restaurants-force-close-form.html'"></ng-include>
-
 <div class="notes-to-drivers-container zoom-anim-dialog mfp-hide dialog">
 	<div ng-controller="RestaurantNotesToDriverCtrl">
 		<h2 class="title left"><span>Notes to Driver: {{restaurant.name}}</span></h2>
