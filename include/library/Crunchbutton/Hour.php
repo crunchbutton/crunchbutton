@@ -50,7 +50,12 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			$message .= ' on ';
 			$message .= $nexOpen->format( 'D' );
 		}
-		$message .= '!';
+
+		if( $restaurant->allowPreorder() ){
+			$message .= '. Pre-order now!';
+		} else {
+			$message .= '!';
+		}
 
 		$result = array(	'day' => $nexOpen->format( 'l' ),
 											'hour' => intval( $nexOpen->format( 'h' ) ),

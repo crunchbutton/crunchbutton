@@ -31,7 +31,6 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			}
 		}
 		echo json_encode( $out );exit;
-
 	}
 
 	private function _byRange() {
@@ -79,6 +78,10 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 				if( intval( $restaurant->open_for_business ) == 0 && trim( $restaurant->force_close_tagline ) ){
 					$data[ 'short_description' ] = $restaurant->force_close_tagline;
 					$data[ '_short_description' ] = $restaurant->force_close_tagline;
+				}
+
+				if( $data[ '_open' ] ){
+					$data[ 'allow_preorder' ] = $restaurant->allowPreorder();
 				}
 
 				if( $data[ '_open' ] || $restaurant->show_when_closed ){
