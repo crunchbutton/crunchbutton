@@ -1330,6 +1330,11 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		MainNavigationService.restaurant = $scope.restaurant;
 
 		$scope.open = $scope.restaurant.open();
+		$scope.force_pre_order = $scope.restaurant.force_pre_order;
+
+		if( !$scope.open && $scope.restaurant.force_pre_order ){
+			$scope.open = true;
+		}
 
 		document.title = $scope.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
 

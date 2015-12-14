@@ -173,6 +173,11 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 		} else {
 			$json[ 'allow_preorder' ] = false;
 		}
+
+		if( !$json[ '_open' ] && $json[ 'allow_preorder' ] ){
+			$json[ 'force_pre_order' ] = true;
+		}
+
 		echo json_encode( $json );exit;
 	}
 
