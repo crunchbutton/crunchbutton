@@ -42,7 +42,7 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 	/* the transitions type could be push, fade, pop or instant */
 	service.link = function( path, transition , clearstack){
 
-		
+
 		// apply the css attribute first
 		if (App.isNarrowScreen() || App.transitionForDesktop){
 			if (transition == 'pop') {
@@ -60,7 +60,7 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 			}
 			App.rootScope.$safeApply();
 		}
-		
+
 		// wait for the digest cycle to be complete and transtion the page outside the normal digest
 		setTimeout( function(){
 			$location.search({});
