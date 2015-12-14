@@ -1200,6 +1200,31 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return false;
 	}
 
+	public function preOrderHours(){
+		// get shift + restaurant merged hours
+		$nextHours = Hour::hoursByRestaurant( $this, false, true );
+
+		return null;
+	}
+
+	public function preOrderDays(){
+		if( $this->allow_preorder ){
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$days = [];
+			$days[] = [ 'value' => $now->format( 'Y-m-d' ), 'label' => $now->format( 'D M d ' ) . '(Today)' ];
+			for( $i = 1; $i <= 4; $i++ ){
+				$now->modify( '+ 1 day' );
+				$label = $now->format( 'D M d' );
+				if( $i == 1 ){
+					$label .= ' (Tomorrow)';
+				}
+				$days[] = [ 'value' => $now->format( 'Y-m-d' ), 'label' => $label  ];
+			}
+			return $days;
+		}
+		return null;
+	}
+
 	/**
 	 * Returns an array with all the information for a Restaurant.
 	 *
