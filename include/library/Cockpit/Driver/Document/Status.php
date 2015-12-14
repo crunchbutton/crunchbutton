@@ -45,6 +45,7 @@ class Cockpit_Driver_Document_Status extends Cana_Table {
 						$doc->isRequired( false ) ){
 					$docStatus = Cockpit_Driver_Document_Status::document( $staff->id_admin, $doc->id_driver_document );
 					if( !$docStatus->id_driver_document_status ){
+						echo '<pre>';var_dump( $doc->id_driver_document );exit();
 						return false;
 					}
 				}
