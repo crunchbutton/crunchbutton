@@ -1294,6 +1294,20 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		$rootScope.$broadcast( 'restaurantSuggestion', $scope.restaurant );
 	}
 
+	$scope.deliveryDayChanged = function(){
+		$scope.order._preOrderHours = [];
+		$scope.order.form.deliveryHour = null;
+		for( x in $scope.order._preOrderDays ){
+			var day = $scope.order._preOrderDays[ x ];
+			if( $scope.order.form.deliveryDay == day.value ){
+				$scope.order._preOrderHours = day[ 'hours' ];
+				if( $scope.order._preOrderHours.length ){
+					$scope.order.form.deliveryHour = $scope.order._preOrderHours[ 0 ].value
+				}
+			}
+		}
+	}
+
 	// Event will be called after the restaurant load
 	$scope.$on( 'restaurantLoaded', function(e, data) {
 
@@ -1305,9 +1319,8 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 		if( data.restaurant.allow_preorder ){
 			$scope.order._preOrderDays = data.restaurant._preOrderDays;
-			$scope.order._preOrderHours = data.restaurant._preOrderHours;
 			$scope.order.form.deliveryDay = $scope.order._preOrderDays[ 0 ].value;
-			$scope.order.form.deliveryHour = $scope.order._preOrderHours[ 0 ].value;
+			$scope.deliveryDayChanged();
 		}
 
 		$rootScope.$broadcast( 'updateQuote', $scope.restaurant.id_community );
