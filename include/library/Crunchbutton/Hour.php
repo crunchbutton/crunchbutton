@@ -50,7 +50,12 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			$message .= ' on ';
 			$message .= $nexOpen->format( 'D' );
 		}
-		$message .= '!';
+
+		if( $restaurant->allowPreorder() ){
+			$message .= '. Pre-order now!';
+		} else {
+			$message .= '!';
+		}
 
 		$result = array(	'day' => $nexOpen->format( 'l' ),
 											'hour' => intval( $nexOpen->format( 'h' ) ),
@@ -234,7 +239,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		return $_hour;
 	}
 
-	public static function hoursByRestaurant( $restaurant, $gmt = false ){
+	public static function hoursByRestaurant( $restaurant, $gmt = false, $justAssignedShiftHours = false ){
 
 		$hours = self::q( "SELECT * FROM hour WHERE id_restaurant = {$restaurant->id_restaurant}" );
 		if ( $gmt ) {
@@ -312,7 +317,11 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 				$_hours_utc_buffered = [];
 
 				// So, if a restaurant closes less than 30 minutes after the shifts close, we want a 30 minute buffer to kick in
-				$community_hrs = $community->shiftsForNextWeek( true );
+				if( $justAssignedShiftHours ){
+					$community_hrs = $community->assignedShiftsForNextWeek();
+				} else {
+					$community_hrs = $community->shiftsForNextWeek( true );
+				}
 				$community_hrs = $community_hrs->get( 0 );
 
 				// empty array to store the merged hours
@@ -375,6 +384,10 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 						$day = date('Y-m-d', strtotime("next " . $hour->day ) );
 					}
 
+					if( $justAssignedShiftHours ){
+						$hour->date = $day;
+					}
+
 					$close_time = intval( str_replace( ':', '', $hour->time_close ) );
 					$opens_time = intval( str_replace( ':', '', $hour->time_open ) );
 
@@ -384,6 +397,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 						$minutes = ( intval( substr( $community_opens[ $hour->day ], 0, $substr ) ) * 60 ) + substr( $community_opens[ $hour->day ], -2 );
 						$substr = ( strlen( $opens_time ) == 4 ) ? 2 : 1;
 						$opens_time_minutes = ( intval( substr( $opens_time, 0, $substr ) ) * 60 ) + substr( $opens_time, -2 );
+
 						if( $community_opens[ $hour->day ] > $opens_time ){
 
 							$opens_time = $community_opens[ $hour->day ] . '';
@@ -396,6 +410,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 							$opens_time = $_hour . ':' . $_min;
 							$hour->time_open = $opens_time;
 						}
+						// echo '<pre>';var_dump( $hour );
 					}
 
 					// closes
@@ -404,6 +419,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 						$minutes = ( intval( substr( $community_closes[ $hour->day ], 0, $substr ) ) * 60 ) + substr( $community_closes[ $hour->day ], -2 );
 						$substr = ( strlen( $close_time ) == 4 ) ? 2 : 1;
 						$close_time_minutes = ( intval( substr( $close_time, 0, $substr ) ) * 60 ) + substr( $close_time, -2 );
+
 						if( $community_closes[ $hour->day ] < $close_time ){
 							$close_time = $community_closes[ $hour->day ] . '';
 							$_min = substr( $close_time, -2 );
@@ -451,6 +467,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 								$_close = null;
 							}
 						}
+						// echo '<pre>';var_dump( $hour );
 
 					} else {
 						// if the community doent have shift remove the ours
@@ -470,8 +487,10 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 					$hour->buffered = true;
 				}
 			}
+			// echo '<pre>';var_dump( $_restaurant_hours_objects );exit();
 			return $_restaurant_hours_objects;
 		}
+
 		return $restaurant->_hours_;
 	}
 

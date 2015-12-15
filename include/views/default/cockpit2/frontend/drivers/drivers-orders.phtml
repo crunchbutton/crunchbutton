@@ -30,7 +30,7 @@
 
 			<div ng-if="driverorders.length">
 
-				<div class="box-content item order-item-wrap" ng-repeat="order in driverorders | filter:filterOrders" ng-class="order.status.status">
+				<div class="box-content item order-item-wrap {{order.status.status}}" ng-repeat="order in driverorders | filter:filterOrders" ng-class="{'pre-ordered': order.preordered && !order.preordered.could_be_accepted }">
 					<div ng-class="{'notMyOrder': order.status.driver.id_admin !== account.user.id_admin, 'myOrder': order.status.driver.id_admin == account.user.id_admin}">
 						<h6 class="row-status" ng-if="order.status.status == 'canceled' || ( order.status.driver.id_admin !== account.user.id_admin && order.status.status !== 'new' )">
 
@@ -45,7 +45,7 @@
 
 						<div class="order-item-content">
 							<!-- action -->
-							<div class="column-action">
+							<div class="column-action" ng-if="!order.preordered || ( order.preordered && order.preordered.could_be_accepted )">
 
 								<button class="button orange-on-orange button-pushable" ng-click="accept(order.id_order)" ng-if="order.status.status == 'new' || !order.status.status" > Accept </button>
 								<button class="button green-on-green button-pushable" ng-click="pickedup(order.id_order)" ng-if="order.status.driver.id_admin == account.user.id_admin && order.status.status == 'accepted'"> Picked up </button>
@@ -57,11 +57,25 @@
 							</div>
 
 							<!-- date -->
-							<div ng-if="order.status.status != 'canceled'">
+							<div ng-if="!order.preordered || ( order.preordered && order.preordered.could_be_accepted )">
+								<div ng-if="order.status.status != 'canceled'">
 
-								<a ng-click="showOrder( order.id_order )">
+									<a ng-click="showOrder( order.id_order )">
 
-									<div class="column-date" ng-click="showOrder( order.id_order )">
+										<div class="column-date" ng-click="showOrder( order.id_order )">
+											<?//<h3 class="day">{{order._date | date:'MM/dd'}}</h3> ?>
+											<div class="orderid">{{order.id_order | limitTo:-3:0}}</div>
+											<div class="order-details">details</div>
+											<div class="hour">{{order.timestamp | tsToHour}}</div>
+										</div>
+
+										<!-- vertical divider -->
+										<div class="vert-divider"></div>
+									</a>
+								</div>
+
+								<div ng-if="order.status.status == 'canceled'">
+									<div class="column-date">
 										<?//<h3 class="day">{{order._date | date:'MM/dd'}}</h3> ?>
 										<div class="orderid">{{order.id_order | limitTo:-3:0}}</div>
 										<div class="order-details">details</div>
@@ -70,19 +84,26 @@
 
 									<!-- vertical divider -->
 									<div class="vert-divider"></div>
-								</a>
+								</div>
 							</div>
 
-							<div ng-if="order.status.status == 'canceled'">
-								<div class="column-date">
-									<?//<h3 class="day">{{order._date | date:'MM/dd'}}</h3> ?>
-									<div class="orderid">{{order.id_order | limitTo:-3:0}}</div>
-									<div class="order-details">details</div>
-									<div class="hour">{{order.timestamp | tsToHour}}</div>
+							<div ng-if="order.preordered && !order.preordered.could_be_accepted">
+
+								<div>
+									<div class="column-date">
+										<div class="order-pre-order-title">
+											Pre-order
+										</div>
+										<div class="order-pre-order-subtitle">
+											Expected Delivery:
+										</div>
+										<div class="hour">{{order.preordered.date_delivery}}</div>
+									</div>
+
+									<!-- vertical divider -->
+									<div class="vert-divider"></div>
 								</div>
 
-								<!-- vertical divider -->
-								<div class="vert-divider"></div>
 							</div>
 
 							<!-- info -->
@@ -103,6 +124,9 @@
 
 								<div class="customer-pointer">
 									{{order.name}}
+									<span ng-if="order.preordered && order.preordered.could_be_accepted">
+										(<i class="fa fa-clock-o"></i> Pre order. Expected Delivery: {{order.preordered.date_delivery}})
+									</span>
 								</div>
 
 								<div class="phone-pointer" ng-if="order.status.status == 'new' || order.status.driver.id_admin == account.user.id_admin">

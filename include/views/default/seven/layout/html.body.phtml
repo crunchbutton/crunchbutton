@@ -121,6 +121,7 @@
 
 	<div id="snap-content" class="snap-content">
 		<div class="navs fixed" data-position="fixed" ng-controller="MainHeaderCtrl">
+
 			<div class="nav nav-top">
 				<div class="content">
 					<div class="hide-before-init dropdown dropdown-tip" ng-show="menudropdown">
@@ -136,7 +137,7 @@
 					<div title="Menu" class="menu side" ng-click="navigation.menu()" ng-if="navigation.buttons.menu"></div>
 					<div title="Back" ng-if="navigation.buttons.back" class="nav-back hide-before-init" ng-click="back()"></div>
 
-					<div title="Cart" class="nav-cart hide-before-init" ng-click="cartScroll(order.restaurant.permalink)" ng-if="order.info.totalItems && ((navigation.page == 'restaurant' && order.restaurant._open) || navigation.page != 'restaurant')" ng-class="{ 'animation-blink' : cart.blink}">
+					<div title="Cart" class="nav-cart hide-before-init" ng-click="cartScroll(order.restaurant.permalink)" ng-if="order.info.totalItems && ((navigation.page == 'restaurant' && ( order.restaurant._open || order.restaurant.force_pre_order ) ) || navigation.page != 'restaurant')" ng-class="{ 'animation-blink' : cart.blink}">
 						<div class="fa fa-shopping-cart"></div>
 						<div class="nav-cart-count">{{order.info.totalItems}}</div>
 					</div>
@@ -158,8 +159,8 @@
 			</div>
 		</div>
 
-		<div class="hide-desktop button-bottom-wrapper fixed hide-desktop">
-			<div class="button-pushable" ng-show="navigation.order.form.name || navigation.order.form.phone"><button class="button orange get-food ani-all" ng-click="navigation.order.submit();"><div>Place Order</div></button></div>
+		<div class="hide-desktop button-bottom-wrapper fixed">
+			<div class="button-pushable" ng-show="navigation.order.form.name || navigation.order.form.phone"><button class="button orange get-food ani-all" ng-click="navigation.order.submit();"><div>Submit Order</div></button></div>
 			<div class="button-pushable" ng-show="!navigation.order.form.name && !navigation.order.form.phone"><button class="button orange get-food ani-all" ng-click="navigation.order.checkout();"><div>Checkout</div></button></div>
 		</div>
 

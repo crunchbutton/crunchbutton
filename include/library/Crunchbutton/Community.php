@@ -1185,6 +1185,13 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return $this->_next_week_shifts;
 	}
 
+	public function assignedShiftsForNextWeek(){
+			if( !$this->_assigned_shift_for_next_week ){
+			$this->_assigned_shift_for_next_week = Crunchbutton_Community_Shift::shiftsForNextWeek( $this->id_community, false, true );
+		}
+		return $this->_assigned_shift_for_next_week;
+	}
+
 	// should return a smart value based on what time it is. for now just return db value
 	public function campusTime() {
 		return 1;
@@ -1460,6 +1467,18 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			return true;
 		}
 		return false;
+	}
+
+
+	public function hasPreOrders(){
+		$query = "SELECT
+							COUNT(*) AS total
+							FROM `order` o
+							LEFT JOIN order_action oa ON oa.id_order_action = o.delivery_status
+							WHERE o.id_community = ? AND o.preordered = 1
+							AND ( ( oa.type != ? AND oa.type != ? ) OR oa.type IS NULL )";
+		$total = c::db()->get( $query, [ $this->id_community, Crunchbutton_Order_Action::DELIVERY_DELIVERED, Crunchbutton_Order_Action::DELIVERY_CANCELED ] )->get( 0 );
+		return intval( $total->total );
 	}
 
 	// Smart population of "our most popular locations" on UI2 #6056

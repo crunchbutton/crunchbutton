@@ -1200,6 +1200,121 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return false;
 	}
 
+	public function preOrderHours(){
+
+		if( !$this->allowPreorder() ){
+			return false;
+		}
+
+		if( !$this->open_for_business ){
+			return false;
+		}
+
+		// get shift plus restaurant merged hours
+		$hours = Hour::hoursByRestaurant( $this, false, true );
+		$hours = $this->preOrderProcessHours( $hours );
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$days = [];
+		for( $i = 1; $i <= 4; $i++ ){
+
+			$label = $now->format( 'D M d' );
+			if( $i == 1 ){
+				$label .= ' (Today)';
+			}
+			if( $i == 2 ){
+				$label .= ' (Tomorrow)';
+			}
+			$day = [ 'value' => $now->format( 'Y-m-d' ), 'label' => $label, 'hours' => [] ];
+
+			foreach( $hours as $hour ){
+				if( $hour->date == $now->format( 'Y-m-d' ) ){
+					$label = $hour->time_open . ' - ' . $hour->time_close;
+					$day[ 'hours' ][] = [ 'label' => $label, 'value' => $hour->time_open ];
+				}
+			}
+			if( sizeof( $day[ 'hours' ] ) > 0 ){
+				$days[] = $day;
+			}
+			$now->modify( '+ 1 day' );
+		}
+		return $days;
+	}
+
+	public function preOrderProcessHours( $hours ){
+
+		$_hours = [];
+		$_segments = [];
+
+		foreach( $hours as $hour ){
+
+			$interval = Crunchbutton_Order::PRE_ORDER_INTERVAL;
+
+			$now = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
+			$open = new DateTime( $hour->date . ' ' . $hour->time_open, new DateTimeZone( $this->timezone ) );
+			$close = new DateTime( $hour->date . ' ' . $hour->time_close, new DateTimeZone( $this->timezone ) );
+			$count = 0;
+
+			$open->modify( $interval );
+
+			if( $now->format( 'Ymd' ) == $open->format( 'Ymd' ) ){
+				$eta = 5 * ceil( $this->smartEta() / 5 );
+				$minutes =  5 - ( $now->format( 'i' ) % 5 );
+				$now->modify( '+ ' . ( $eta + $minutes ) . ' minutes' );
+				if( $now > $open ){
+					$open = $now;
+				}
+			}
+
+			if( $now->format( 'Ymd' ) == $close->format( 'Ymd' ) ){
+				if( $now >= $close ){
+					continue;
+				}
+			}
+
+			$more = true;
+			while ( $more ) {
+				$_close = clone $open;
+				$_close->modify( $interval );
+				if( $_close <= $close ){
+					$_hour = clone $hour;
+					$_hour->time_open = $open->format( 'H:i' );
+					$_hour->time_close = $_close->format( 'H:i' );
+					$_segments[] = $_hour;
+					$open = $_close;
+				}
+				$count++;
+				if( $count == 24 ){
+					$more = false;
+				}
+			}
+		}
+		return $_segments;
+	}
+
+	public function allowPreorder(){
+		// add code to check if the community is closed and stuff
+		$community = $this->community()->get( 0 );
+		return $community->allow_preorder && $this->delivery_service && $this->allow_preorder;
+	}
+
+	public function preOrderDays(){
+		if( $this->allowPreorder() ){
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$days = [];
+			$days[] = [ 'value' => $now->format( 'Y-m-d' ), 'label' => $now->format( 'D M d ' ) . '(Today)' ];
+			for( $i = 1; $i <= 4; $i++ ){
+				$now->modify( '+ 1 day' );
+				$label = $now->format( 'D M d' );
+				if( $i == 1 ){
+					$label .= ' (Tomorrow)';
+				}
+				$days[] = [ 'value' => $now->format( 'Y-m-d' ), 'label' => $label  ];
+			}
+			return $days;
+		}
+		return null;
+	}
+
 	/**
 	 * Returns an array with all the information for a Restaurant.
 	 *

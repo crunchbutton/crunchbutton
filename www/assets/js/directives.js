@@ -62,10 +62,16 @@ NGApp.directive('addToCart', function(OrderService) {
 		restrict: 'A',
 		link: function(scope, element, attrs) {
 			element.bind('click', function (e) {
-				if (!OrderService.restaurant._open) {
+				var add = false;
+				if (OrderService.restaurant._open) {
+					add = true;
+				}
+				if (OrderService.restaurant.force_pre_order) {
+					add = true;
+				}
+				if( !add ){
 					return;
 				}
-
 				if (App.isUI2()) {
 					setTimeout(function() {
 						var el = $(element.get(0));

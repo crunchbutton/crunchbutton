@@ -95,6 +95,7 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 			dateend: '',
 			user: '',
 			phone: '',
+			type: 'all',
 			fullcount: false
 		},
 		update: function() {
@@ -143,6 +144,11 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 			}
 		}
 	}
+
+	var options = [];
+	options.push( { value: 'all', label: 'All' } );
+	options.push( { value: 'pre-orders', label: 'Pre orders' } );
+	$scope.types = options;
 
 	var options = [];
 	options.push( { value: '20', label: '20' } );

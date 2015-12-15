@@ -49,6 +49,11 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['timestamp'] = $this->date()->format('U');				// unix epoc
 		$out['date'] = $this->date()->format('c');					// date in timezone that the order was placed in
 
+		$date_delivery = $this->date_delivery();
+		if( $date_delivery ){
+			$out['date_delivery'] = $date_delivery->format('c');
+		}
+
 		$out['_message'] = nl2br($this->orderMessage('web'));
 		$out['charged'] = floatval( $this->charged() );
 		$out['notes_to_driver'] = $this->restaurant()->notes_to_driver;
@@ -362,6 +367,22 @@ class Cockpit_Order extends Crunchbutton_Order {
 				}
 			}
 		}
+
+		if( $this->preordered ){
+			$could_be_accepted = false;
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$now->modify( '+ 90 minutes' );
+			$date_delivery = new DateTime( $this->date_delivery, new DateTimeZone( c::config()->timezone ) );
+			if( $now >= $date_delivery ){
+				$could_be_accepted = true;
+			}
+			$date_delivery->setTimezone(  new DateTimeZone( $this->restaurant()->timezone )  );
+			$date_delivery = $date_delivery->format( 'H:i A' );
+			$preordered = [ 'could_be_accepted' => $could_be_accepted, 'date_delivery' => $date_delivery ];
+			$out[ 'preordered' ] = $preordered;
+		}
+
+
 		return $out;
 	}
 

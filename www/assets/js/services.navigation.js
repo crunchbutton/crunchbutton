@@ -20,7 +20,7 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 	service.getFood = function( cartItems ){
 		if( service.page == 'restaurant' &&
 				cartItems &&
-				service.restaurant && service.restaurant && service.restaurant._open &&
+				service.restaurant && service.restaurant && ( service.restaurant._open || service.restaurant.force_pre_order ) &&
 				!App.rootScope.notificationBarStatus ){
 			angular.element( '.button-bottom-wrapper' ).addClass( 'button-bottom-show' );
 		} else {
@@ -44,16 +44,16 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 
 	/* the transitions type could be push, fade, pop or instant */
 	service.link = function( path, transition , clearstack){
-		
+
 		// apply the css attribute first
 		if (App.transitionAnimationEnabled && (App.isNarrowScreen() || App.transitionForDesktop)){
 			App.rootScope.animationClass = transition ? 'animation-' + transition : '';
 			App.rootScope.$safeApply();
 		}
-		
+
 		// wait for the digest cycle to be complete and transtion the page outside the normal digest
 		setTimeout( function(){
-			
+
 			if (path) {
 				$location.path(path);
 			} else {
@@ -72,7 +72,7 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 				service.control();
 			}
 			App.rootScope.$safeApply();
-			
+
 		}, 1);
 
 		// close the side bar no matter what

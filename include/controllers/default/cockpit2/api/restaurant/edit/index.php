@@ -280,6 +280,7 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 	private function _deliveryExport( $printJson = true ){
 		$out = [ 'id_restaurant' => $this->restaurant->id_restaurant, 'permalink' => $this->restaurant->permalink ];
 		$out[ 'delivery_service' ] = $this->restaurant->delivery_service;
+		$out[ 'allow_preorder' ] = $this->restaurant->allow_preorder;
 		$out[ 'delivery_radius_type' ] = $this->restaurant->delivery_radius_type;
 		$out[ 'order_ahead_time' ] = $this->restaurant->order_ahead_time;
 		$out[ 'delivery' ] = $this->restaurant->delivery;
