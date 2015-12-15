@@ -1,5 +1,5 @@
-<div class="divider dots spacer-one-two" ng-if="order.info.subtotal && order.info.subtotal!='0.00' && restaurant._open && !isMobileWidth"></div>
-<div class="payment-total content-padding" ng-if="order.info.subtotal && order.info.subtotal!='0.00' && restaurant._open">
+<div class="divider dots spacer-one-two" ng-if="order.info.subtotal && order.info.subtotal!='0.00' && ( restaurant._open || restaurant.force_pre_order ) && !isMobileWidth"></div>
+<div class="payment-total content-padding" ng-if="order.info.subtotal && order.info.subtotal!='0.00' && ( restaurant._open || restaurant.force_pre_order )">
 
 
 	<div class="giftcard-balance-container" ng-show="credit.hasValue">

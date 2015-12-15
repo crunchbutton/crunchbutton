@@ -1,4 +1,4 @@
-<div class="delivery-payment-info restaurant-side-bar restaurant-side-user-info" ng-if="order.loaded && restaurant._open && !order.showForm && order.cart.hasItems()">
+<div class="delivery-payment-info restaurant-side-bar restaurant-side-user-info" ng-if="order.loaded && ( restaurant._open || restaurant.force_pre_order ) && !order.showForm && order.cart.hasItems()">
 
 	<div class="divider dots"></div>
 

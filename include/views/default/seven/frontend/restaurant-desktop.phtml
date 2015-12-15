@@ -2,7 +2,7 @@
 
 	<div restaurant-is-closed></div>
 
-	<div ng-if="!order.cart.hasItems() && open" class="restaurant-box hide-mobile">
+	<div ng-if="!order.cart.hasItems() && ( open || force_pre_order )" class="restaurant-box hide-mobile">
 		<div class="restaurant-box-inner">
 			<span class="restaurant-box-icon">
 				<i class="fa fa-arrow-left"></i>
@@ -13,12 +13,12 @@
 		</div>
 	</div>
 
-	<div class="cart-items restaurant-side-bar restaurant-side-bar-margin" ng-if="order.cart.hasItems() && open">
+	<div class="cart-items restaurant-side-bar restaurant-side-bar-margin" ng-if="order.cart.hasItems() && ( open || force_pre_order )">
 
 		<!-- cart -->
 		<ng-include src="'assets/view/restaurant-cart.html'"></ng-include>
 
-		<div ng-if="restaurant._open && order.cart.hasItems()">
+		<div ng-if="( restaurant._open || restaurant.force_pre_order ) && order.cart.hasItems()">
 
 			<!-- breakdown -->
 			<div class="payment-content">

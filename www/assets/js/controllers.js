@@ -523,7 +523,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 				$rootScope.navigation.link('/drivers/apply', 'push' );
 				return;
 			}
-			if ( restaurant.openRestaurantPage( dateTime.getNow() ) ) {
+			if ( restaurant.openRestaurantPage( dateTime.getNow() ) || restaurant.allow_preorder ) {
 				// Store the load info of the clicked restaurant to optmize the restaurant page load
 				RestaurantService.basicInfo = restaurant;
 
@@ -1119,13 +1119,14 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		order.toogleDelivery( type );
 		$scope.order._tips = order._tips();
 	}
+	$scope.order.toogleDeliveryTime = function( type ){
+		order.toogleDeliveryTime( type );
+	}
 	$scope.order.tooglePayment = function( type ){
 		return order.tooglePayment( type );
 	}
 	$scope.order._years = order._years();
-
 	$scope.order._months = order._months();
-
 	$scope.order._tips = order._tips();
 
 	$scope.showCreditPayment = function(){
@@ -1293,6 +1294,20 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		$rootScope.$broadcast( 'restaurantSuggestion', $scope.restaurant );
 	}
 
+	$scope.deliveryDayChanged = function(){
+		$scope.order._preOrderHours = [];
+		$scope.order.form.deliveryHour = null;
+		for( x in $scope.order._preOrderDays ){
+			var day = $scope.order._preOrderDays[ x ];
+			if( $scope.order.form.deliveryDay == day.value ){
+				$scope.order._preOrderHours = day[ 'hours' ];
+				if( $scope.order._preOrderHours.length ){
+					$scope.order.form.deliveryHour = $scope.order._preOrderHours[ 0 ].value
+				}
+			}
+		}
+	}
+
 	// Event will be called after the restaurant load
 	$scope.$on( 'restaurantLoaded', function(e, data) {
 
@@ -1302,6 +1317,12 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 		$scope.restaurant = data.restaurant;
 
+		if( data.restaurant.allow_preorder && data.restaurant._preOrderDays.length ){
+			$scope.order._preOrderDays = data.restaurant._preOrderDays;
+			$scope.order.form.deliveryDay = $scope.order._preOrderDays[ 0 ].value;
+			$scope.deliveryDayChanged();
+		}
+
 		$rootScope.$broadcast( 'updateQuote', $scope.restaurant.id_community );
 
 		order.restaurant = $scope.restaurant;
@@ -1309,6 +1330,11 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		MainNavigationService.restaurant = $scope.restaurant;
 
 		$scope.open = $scope.restaurant.open();
+		$scope.force_pre_order = $scope.restaurant.force_pre_order;
+
+		if( !$scope.open && $scope.restaurant.force_pre_order ){
+			$scope.open = true;
+		}
 
 		document.title = $scope.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
 
