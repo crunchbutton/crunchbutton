@@ -23,7 +23,9 @@
 		<div class="info-block" ng-if="oc.order.status.status != 'delivered'">
 			<div class="order-icon2"><i class="fa fa-clock-o"></i></div>
 			<div class="order-info2 order-info-small">
-				Ordered @ {{oc.order.date | convertimeformat:account.user.timezone:'h:mm a'}}<span ng-if="oc.order._delivery_estimated_time">. Deliver by {{oc.order._delivery_estimated_time_timestamp | tsToHour}}</span>
+				Ordered @ {{oc.order.date | convertimeformat:account.user.timezone:'h:mm a'}}.
+					<span ng-if="!oc.order.preordered && oc.order._delivery_estimated_time"> Deliver by {{oc.order._delivery_estimated_time_timestamp | tsToHour}}</span>
+					<span ng-if="oc.order.preordered && oc.order.preordered.date_delivery"> Pre-order. Expected Delivery {{oc.order.preordered.date_delivery}}.</span>
 			</div>
 		</div>
 		<br>

@@ -1247,7 +1247,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		foreach( $hours as $hour ){
 
-			$interval = '+ 1 hour';
+			$interval = Crunchbutton_Order::PRE_ORDER_INTERVAL;
 
 			$now = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
 			$open = new DateTime( $hour->date . ' ' . $hour->time_open, new DateTimeZone( $this->timezone ) );
