@@ -11,9 +11,11 @@ RUN apt-get update && apt-get install -y \
         curl \
         git \
 		nginx \
+		zlib1g-dev \
     && docker-php-ext-install iconv mcrypt \
 	&& docker-php-ext-install pdo pdo_mysql \
-	&& docker-php-ext-install mbstring
+	&& docker-php-ext-install mbstring \
+	&& docker-php-ext-install zip
 
 ENV PHPREDIS_VERSION php7
 
@@ -23,7 +25,6 @@ RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$P
     && mv phpredis-$PHPREDIS_VERSION /usr/src/php/ext/redis \
     && docker-php-ext-install redis
 
-
 ADD conf/nginx.docker.conf /etc/nginx/sites-available/default
 RUN echo "cgi.fix_pathinfo = 0;" >> /usr/local/etc/php/conf.d/fix_pathinfo.ini
 #RUN echo "listen = /var/run/php5-fpm.sock" >> /usr/local/etc/php-fpm.conf
@@ -31,5 +32,8 @@ RUN echo " \n\
 listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.conf
 
 ADD ./ /app
+RUN php --ini
+RUN cd /app && curl -sS https://getcomposer.org/installer | php
+RUN cd /app && php composer.phar install --no-dev --optimize-autoloader --prefer-dist
 
 CMD nginx && php-fpm
