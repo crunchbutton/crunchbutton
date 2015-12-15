@@ -1202,6 +1202,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function preOrderHours(){
 
+		if( !$this->allowPreorder() ){
+			return false;
+		}
+
 		if( !$this->open_for_business ){
 			return false;
 		}
@@ -1237,14 +1241,20 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function preOrderProcessHours( $hours ){
+
 		$_hours = [];
 		$_segments = [];
+
 		foreach( $hours as $hour ){
+
 			$interval = '+ 1 hour';
+
 			$now = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
 			$open = new DateTime( $hour->date . ' ' . $hour->time_open, new DateTimeZone( $this->timezone ) );
 			$close = new DateTime( $hour->date . ' ' . $hour->time_close, new DateTimeZone( $this->timezone ) );
 			$count = 0;
+
+			$open->modify( $interval );
 
 			if( $now->format( 'Ymd' ) == $open->format( 'Ymd' ) ){
 				$eta = 5 * ceil( $this->smartEta() / 5 );
@@ -1254,6 +1264,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 					$open = $now;
 				}
 			}
+
 			if( $now->format( 'Ymd' ) == $close->format( 'Ymd' ) ){
 				if( $now >= $close ){
 					continue;
@@ -1264,7 +1275,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			while ( $more ) {
 				$_close = clone $open;
 				$_close->modify( $interval );
-				if( $_close < $close ){
+				if( $_close <= $close ){
 					$_hour = clone $hour;
 					$_hour->time_open = $open->format( 'H:i' );
 					$_hour->time_close = $_close->format( 'H:i' );
@@ -1282,7 +1293,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function allowPreorder(){
 		// add code to check if the community is closed and stuff
-		return $this->allow_preorder;
+		return $this->delivery_service && $this->allow_preorder;
 	}
 
 	public function preOrderDays(){
