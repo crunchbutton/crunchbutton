@@ -1293,7 +1293,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function allowPreorder(){
 		// add code to check if the community is closed and stuff
-		return $this->delivery_service && $this->allow_preorder;
+		$community = $this->community()->get( 0 );
+		return $community->allow_preorder && $this->delivery_service && $this->allow_preorder;
 	}
 
 	public function preOrderDays(){
