@@ -66,6 +66,11 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 								switch ( c::getPagePiece( 3 ) ) {
 									case 'open-close-status':
 										$out = $community->properties();
+										$remove = [ 'delivery_logistics', 'id_driver_group', 'combine_restaurant_driver_hours', 'driver_checkin', 'top', 'tagline1', 'tagline2', 'drivers_can_open', 'amount_per_order', 'campus_cash', 'campus_cash_name', 'campus_cash_validation', 'campus_cash_fee', 'campus_cash_mask', 'campus_cash_receipt_info', 'signature', 'campus_cash_delivery_confirmation', 'campus_cash_default_payment', 'allow_preorder' ];
+										foreach ( $remove as $rem ) {
+											unset( $out[ $rem ] );
+										}
+										$out[ 'has_pre_orders' ] = $community->hasPreOrders();
 										echo json_encode( $out );exit;
 										break;
 
