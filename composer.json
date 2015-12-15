@@ -1,6 +1,5 @@
 {
 	"require": {
-		"php": "~7.0@beta",
 		"ext-mbstring": "*",
 		"arzynik/cana": "dev-master",
 		"leafo/scssphp": "~0.5.1",
