@@ -172,11 +172,31 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 				$signature = ( $order->requireSignature() ? 1 : 0 );
 				$timestamp = Crunchbutton_Util::dateToUnixTimestamp( $order->date() );
 				$status = $order->status()->last();
+				$date_delivery = null;
+
+				$preordered = ( $order->preordered ) ? 1 : 0;
+				if( $preordered ){
+					$could_be_accepted = false;
+					$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+					$now->modify( '+ 90 minutes' );
+					$date_delivery = new DateTime( $order->date_delivery, new DateTimeZone( c::config()->timezone ) );
+					if( $now >= $date_delivery ){
+						$could_be_accepted = true;
+					}
+					$date_delivery->setTimezone(  new DateTimeZone( $order->restaurant()->timezone )  );
+					$date_delivery = $date_delivery->format( 'H:i A' );
+					$preordered = ( object ) [ 'could_be_accepted' => $could_be_accepted, 'date_delivery' => $date_delivery ];
+				}
+
+				if( $status[ 'status' ] != 'new' && $preordered ){
+					$preordered = false;
+				}
 
 				$exports[] = Cana_Model::toModel( [
 					'id_order' => $order->id_order,
 					'status' => $status,
 					'name' => $order->name,
+					'preordered' => $preordered,
 					'address' => $order->address,
 					'phone' => $order->phone,
 					'date' => $order->date(),
