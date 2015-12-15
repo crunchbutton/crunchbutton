@@ -1169,27 +1169,28 @@ App.dialog = {
 };
 
 // Service to show a flash message
-NGApp.factory( 'flash', function( $timeout ) {
+NGApp.factory( 'flash', function( $timeout, $rootScope ) {
 
-	var message = [];
-
-	// $rootScope.$on('$routeChangeSuccess', function() {
-	// 	clearMessage();
-	// } );
+	var message = { level : null, text : null };
 
 	var clearMessage = function(){
-		message = false;
+		$rootScope.$apply(function() {
+			var level = ( level ) ? level : 'success';
+			message = { level : null, text : null };
+		});
 	}
 
 	service = {};
 	service.setMessage = function( text, level ){
-		var level = ( level ) ? level : 'success';
-		message = { level : level, text : text };
+		$rootScope.$apply(function() {
+			var level = ( level ) ? level : 'success';
+			message = { level : level, text : text };
+		});
 		$timeout( function() { clearMessage() }, 3 * 1000 );
 	}
 
 	service.hasMessage = function(){
-		return message != false;
+		return message.level;
 	}
 
 	service.getLevel = function(){
@@ -1207,7 +1208,6 @@ NGApp.factory( 'flash', function( $timeout ) {
 	return service;
 
 } );
-
 
 App.path = function() {
 	var path = parent.loation.hash.replace('#').replace('cockpit.phtml');
