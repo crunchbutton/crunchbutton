@@ -8,7 +8,6 @@
  *
  */
 
-
 class Crunchbutton_App extends Cana_App {
 	private $_crypt;
 
@@ -181,6 +180,10 @@ class Crunchbutton_App extends Cana_App {
 
 		$config = $this->config();
 		$config->site = Crunchbutton_Site::byDomain();
+
+		if ($config->site->config('maintenance')->val()) {
+			$this->dbError();
+		}
 
 		if ($config->site->name == 'redirect' && $config->site->theme && php_sapi_name() !== 'cli') {
 			header('Location: '.$config->site->theme.$_SERVER['REQUEST_URI']);
@@ -678,7 +681,14 @@ class Crunchbutton_App extends Cana_App {
 	}
 
 	public function dbError() {
-		include(c::config()->dirs->www.'server-vacation.html');
+		$date = new DateTime;
+		$startDate = new DateTime('2015-12-01');
+		$endDate = new DateTime('2016-01-05');
+		if ($date > $startDate && $date < $endDate) {
+			$holiday = '-holidays';
+		}
+
+		include(c::config()->dirs->www.'server-vacation'.$holiday.'.html');
 		exit;
 	}
 
