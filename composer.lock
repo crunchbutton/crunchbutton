@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "cdd88302a58acc9656cd7c216aaf111e",
-    "content-hash": "050a2a8ab8eac795b5f2ef7faafd3e37",
+    "hash": "d3ece88d6551207f2499f83c41d30c35",
+    "content-hash": "6aebdc2a7a2711d133d14e094ddef659",
     "packages": [
         {
             "name": "arzynik/cana",
@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/arzynik/cana.git",
-                "reference": "f55139cdf0e12d2c4a5f8711bf886c7ae0999610"
+                "reference": "4b12e00d9d7680b49a8d7b75c077667d7a597dc2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/arzynik/cana/zipball/f55139cdf0e12d2c4a5f8711bf886c7ae0999610",
-                "reference": "f55139cdf0e12d2c4a5f8711bf886c7ae0999610",
+                "url": "https://api.github.com/repos/arzynik/cana/zipball/4b12e00d9d7680b49a8d7b75c077667d7a597dc2",
+                "reference": "4b12e00d9d7680b49a8d7b75c077667d7a597dc2",
                 "shasum": ""
             },
             "require": {
@@ -52,7 +52,7 @@
                 "oo",
                 "php"
             ],
-            "time": "2015-11-19 21:28:50"
+            "time": "2015-12-15 20:14:14"
         },
         {
             "name": "duccio/apns-php",
@@ -1331,7 +1331,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/satooshi/php-coveralls/zipball/2fbf803803d179ab1082807308a67bbd5a760c70",
+                "url": "https://api.github.com/repos/satooshi/php-coveralls/zipball/e70899e79e92b66bf20d18a7aa9e5b6613f2d052",
                 "reference": "2fbf803803d179ab1082807308a67bbd5a760c70",
                 "shasum": ""
             },
@@ -2054,7 +2054,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "php": 10,
         "arzynik/cana": 20,
         "duccio/apns-php": 20,
         "satooshi/php-coveralls": 20
@@ -2062,7 +2061,6 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "~7.0@beta",
         "ext-mbstring": "*"
     },
     "platform-dev": []
