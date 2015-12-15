@@ -93,6 +93,7 @@
 							<div class="box-error">
 								<small ng-show="form.allowPreOrder.$error.required">Required.</small>
 							</div>
+							<div class="notes" ng-show="restaurant.allow_preorder">Please make sure that this option is also enabled at the community's page.</div>
 						</li>
 
 						<li class="li-input" ng-class="{'error':form.restaurantDeliveryServiceMarkup.$invalid}" ng-show="restaurant.delivery && restaurant.delivery_service">
