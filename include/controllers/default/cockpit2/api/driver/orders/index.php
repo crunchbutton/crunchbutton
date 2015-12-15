@@ -184,8 +184,9 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 						$could_be_accepted = true;
 					}
 					$date_delivery->setTimezone(  new DateTimeZone( $order->restaurant()->timezone )  );
-					$date_delivery = $date_delivery->format( 'H:i A' );
-					$preordered = ( object ) [ 'could_be_accepted' => $could_be_accepted, 'date_delivery' => $date_delivery ];
+					$sort = $date_delivery->format( 'YmdHis' );
+					$date_delivery = $date_delivery->format( 'h:i A' );
+					$preordered = ( object ) [ 'could_be_accepted' => $could_be_accepted, 'date_delivery' => $date_delivery, 'sort' => $sort ];
 				}
 
 				if( $status[ 'status' ] != 'new' && $preordered ){
@@ -209,6 +210,11 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 			}
 
 			usort( $exports, function( $a, $b ){
+
+				if( $a->preordered && $b->preordered ){
+					return $a->preordered->sort > $b->preordered->sort;
+				}
+
 				if( $a->lastStatus->status == $b->lastStatus->status ){
 					return $a->id_order < $b->id_order;
 				}

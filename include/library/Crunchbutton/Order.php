@@ -1082,12 +1082,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		if( $reset ){
 			$this->_date = null;
 		}
-
 		if (!isset($this->_date) || !$this->_date) {
 			if( $this->date ){
 				$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
 				$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
-			} else if( $this->preordered && $this->preordered_date ){
+			} else if( $this->preordered_date ){
 				$this->_date = new DateTime($this->preordered_date, new DateTimeZone(c::config()->timezone));
 				$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
 			}
@@ -1313,7 +1312,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				'c.delivery_logistics is not null)))  or (op.id_order is not null and op.priority_expiration < ?) ' .
 				'or (op.id_order is not null and op.priority_expiration >= ? and op.id_admin = ? '.
 				'and op.priority_given != ?)) and o.delivery_service=true and o.delivery_type = "delivery" and ( o.date > ? OR ( o.preordered = 1 and o.date_delivery between ? and ? ) )'.
-				'and ' . $where . ' ORDER BY o.preordered ASC, o.date_delivery ASC, o.id_order';
+				'and ' . $where . ' ORDER BY o.id_order';
 //			$op = Crunchbutton_Order_Priority::PRIORITY_LOW;
 //			print "The query params: $nowString, $nowString, $admin->id_admin, $op, $interval\n";
 

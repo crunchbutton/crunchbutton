@@ -129,6 +129,14 @@
 						<button class="button save" ng-click="sendTextMessage();">Text Message {{driversCount}} Driver<span ng-show="driversCount > 1">s</span>	</button>
 					</li>
 
+					<li class="li-input divider-line" ng-show="community.has_pre_orders">
+						<div class="label label-red">
+							<a href="/orders?limit=20&page=1&fullcount=false&search=&restaurant=&community=6&driver=&date=&view=list&datestart=&dateend=&user=&phone=&type=pre-orders">
+								This community has {{community.has_pre_orders}} pending pre-orders, please take a look on that before close.
+							</a>
+						</div>
+					</li>
+
 					<li class="li-input divider-line" ng-show="community.close_all_restaurants || community.close_3rd_party_delivery_restaurants">
 						<label class="switch-wrap">
 							<input type="checkbox" class="switch" ng-model="reallyWantToClose"/><div></div>
