@@ -42,9 +42,9 @@ class Crunchbutton_Order_Priority extends Cana_Table
         $query = 'SELECT p.*, oa.id_order_action FROM order_priority p left outer join order_action as oa using (id_order, id_admin) WHERE
             oa.type is null and p.priority_algo_version= ? and
             p.priority_given= ? and p.num_undelivered_orders = 0 and p.num_drivers_with_priority=1 and
-            p.id_admin= ? AND p.priority_time >= ? and p.priority_expiration <= now() order by p.priority_expiration desc limit ?';
+            p.id_admin= ? AND p.priority_time >= ? and p.priority_expiration <= now() order by p.priority_expiration desc limit '.intval($limit);
 
-        return Crunchbutton_Order_Priority::q($query, [Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX_ALGO_VERSION, Crunchbutton_Order_Priority::PRIORITY_HIGH, $id_admin, $minDtString, $limit]);
+        return Crunchbutton_Order_Priority::q($query, [Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX_ALGO_VERSION, Crunchbutton_Order_Priority::PRIORITY_HIGH, $id_admin, $minDtString]);
     }
 
     public static function getNumDriverOrderActionsSince($minDtString, $id_admin) {

@@ -142,11 +142,9 @@ class Controller_api_quotes extends Crunchbutton_Controller_Rest {
 
 		$q .= '
 			ORDER BY q.name ASC
-			LIMIT ?
-			OFFSET ?
+			LIMIT '.intval($limit).'
+			OFFSET '.intval($offset).'
 		';
-		$keys[] = $limit;
-		$keys[] = $offset;
 
 		// do the query
 		$data = [];
