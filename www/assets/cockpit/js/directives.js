@@ -779,12 +779,8 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 
 				$rootScope.$on( 'ng-repeat-finished', function(e, data) {
 					process();
+					// just to make sure
 					setTimeout( function(){ process(); }, 600 );
-					console.log('process();');
-					console.log('process();');
-					console.log('process();');
-					console.log('process();');
-					console.log('process();');
 				});
 
 				var process = function(){
