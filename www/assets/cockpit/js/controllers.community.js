@@ -267,7 +267,12 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 		$scope.community = null;
 		App.dialog.show('.open-close-community-dialog-container');
 
-		var permalink = data.permalink ? data.permalink : $routeParams.id;
+		if( data && data.permalink ){
+			var permalink = data.permalink;
+		} else {
+			var permalink = $routeParams.id;
+		}
+
 
 		CommunityService.openCloseStatus( permalink, function( d ) {
 			$scope.loading = false;
