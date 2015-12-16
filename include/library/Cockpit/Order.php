@@ -48,10 +48,10 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['user'] = $this->user()->uuid;
 
 		//$out['timestamp'] = Crunchbutton_Util::dateToUnixTimestamp( $date );
-
-		$out['timestamp'] = $this->date()->format('U');				// unix epoc
-		$out['date'] = $this->date()->format('c');					// date in timezone that the order was placed in
-
+		if( $date ){
+			$out['timestamp'] = $this->date()->format('U');				// unix epoc
+			$out['date'] = $this->date()->format('c');					// date in timezone that the order was placed in
+		}
 		$date_delivery = $this->date_delivery();
 		if( $date_delivery ){
 			$out['date_delivery'] = $date_delivery->format('c');
