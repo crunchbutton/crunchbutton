@@ -44,7 +44,7 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 
 													previous = getQuery();
 													update();
-											}, 1500 );
+											}, 10 );
 		};
 
 		// @todo: this breaks linking to pages
