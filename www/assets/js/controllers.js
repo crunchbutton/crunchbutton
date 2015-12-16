@@ -232,8 +232,9 @@ NGApp.controller('ThankyouCtrl', function ($scope) {
 /**
  * owners page
  */
+
 NGApp.controller('OwnersCtrl', function ($scope) {
-	var join = 'moc.nottubhcnurc@nioj'.split('').reverse().join('');
+	var join = 'moc.nottubhcnurc@sunem'.split('').reverse().join('');
 	$scope.join = join;
 });
 
@@ -247,7 +248,7 @@ NGApp.controller('AboutCtrl', function ($scope) {
  * legal page
  */
 NGApp.controller('LegalCtrl', function ($scope) {
-	var join = 'moc.nottubhcnurc@nioj'.split('').reverse().join('');
+	var join = 'moc.nottubhcnurc@sunem'.split('').reverse().join('');
 	var goodbye = 'moc.nottubhcnurc@eybdoog'.split('').reverse().join('');
 	$scope.join = join;
 	$scope.goodbye = goodbye;
@@ -313,7 +314,7 @@ NGApp.controller('FreeFoodCtrl', function ($scope, $location, AccountService, Re
  */
 NGApp.controller('HelpCtrl', function ($scope) {
 	var happy_customers = 'moc.nottubhcnurc@sremotsucyppah'.split('').reverse().join('');
-	var join = 'moc.nottubhcnurc@nioj'.split('').reverse().join('');
+	var join = 'moc.nottubhcnurc@sunem'.split('').reverse().join('');
 	var angry_customers = 'moc.nottubhcnurc@sremotsucyrgna'.split('').reverse().join('');
 	$scope.happy_customers = happy_customers;
 	$scope.angry_customers = angry_customers;
