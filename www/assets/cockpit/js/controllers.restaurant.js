@@ -780,6 +780,7 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 	}
 
 	$scope.addSelectSubOption = function( option, dish, category, subOption ){
+
 		var options = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options;
 		var sort = options.length ? ( options.length + 1 ) : 1;
 		if( !subOption ){
@@ -967,7 +968,9 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 				select.id_dish_option = null;
 				var options = angular.copy( select.options );
 				var sort = $scope.addSelectOption( dishTo, categoryTo, select );
-				var _select = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ sort - 1 ];
+
+				var _select = $scope.restaurant.categories[ categoryTo.sort - 1 ]._dishes[ dishTo.sort - 1 ].options.selects[ sort - 1 ];
+
 				if( options.length ){
 					for( y in options ){
 						var subOption = options[ y ];
