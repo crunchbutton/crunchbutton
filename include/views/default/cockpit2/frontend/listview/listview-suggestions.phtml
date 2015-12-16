@@ -1,43 +1,47 @@
 <div class="box-content2 box-content-table">
-	<table class="tb-zebra">
-		<tr>
-			<th>Content</th>
-			<th>Date</th>
-			<th>Info</th>
-			<th>Name/Email</th>
-			<th>Type</th>
-			<th>Status</th>
-			<th></th>
-		</tr>
-		<tr ng-repeat="suggestion in suggestions track by $index" ng-attr-tabindex="{{$index+1}}">
-			<td>
-				<span ng-bind-html-unsafe="suggestion.content" class="listview-smaller"></span>
-			</td>
-			<td nowrap="nowrap">{{suggestion.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}</td>
-			<td nowrap="nowrap" class="listview-smaller">
-				<div ng-if="suggestion.id_user"><i class="fa fa-smile-o"></i> <a href="/customer/{{suggestion.id_user}}">
-					<span ng-show="!suggestion.customer">Customer</span>
-					<span ng-show="suggestion.customer">{{suggestion.customer}}</span>
-				</a></div>
-				<div ng-if="suggestion.restaurant"><i class="fa fa-coffee"></i> <a href="/restaurant/{{suggestion.id_restaurant}}">{{suggestion.restaurant}}</a></div>
-				<div ng-if="suggestion.community"><i class="fa fa-slideshare"></i> <a href="/community/{{suggestion.id_community}}">{{suggestion.community}}</a></div>
-			</td>
-			<td>{{suggestion.name}}</td>
-			<td nowrap="">
-				<span class="tag tag-blue" ng-if="suggestion.type == 'dish'">Add item</span>
-				<span class="tag tag-green" ng-if="suggestion.type == 'suggestion'">Suggestion</span>
-				<span class="tag tag-purple" ng-if="suggestion.type == 'restaurant'">Restaurant</span>
-				<span class="tag tag-orange" ng-if="suggestion.type == 'email'">Email me</span>
-			</td>
-			<td>
-				<span class="tag tag-red" ng-if="suggestion.status == 'new'">New</span>
-				<span class="tag tag-grey" ng-if="suggestion.status == 'deleted'">Deleted</span>
-				<span class="tag tag-green" ng-if="suggestion.status == 'applied'">Applied</span>
-			</td>
-			<td nowrap>
-				<a ng-show="suggestion.status != 'deleted'" href="" ng-click="remove( suggestion.id_suggestion )"><button class="button button-small button-empty button-red"><i class="fa fa-thumbs-down"></i>&nbsp;&nbsp;Reject</button></a>
-				<a ng-show="suggestion.status != 'applied'" href="" ng-click="apply( suggestion.id_suggestion )"><button class="button button-small button-empty button-blue"><i class="fa fa-thumbs-up"></i>&nbsp;&nbsp;Applied</button></a>
-			</td>
-		</tr>
+	<table class="tb-zebra" sticky-header>
+		<thead>
+			<tr>
+				<th>Content</th>
+				<th>Date</th>
+				<th>Info</th>
+				<th>Name/Email</th>
+				<th>Type</th>
+				<th>Status</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="suggestion in suggestions track by $index" ng-attr-tabindex="{{$index+1}}" ng-init="$last ? ngRepeatFinished() : null">
+				<td>
+					<span ng-bind-html-unsafe="suggestion.content" class="listview-smaller"></span>
+				</td>
+				<td nowrap="nowrap">{{suggestion.date | localtime | timestamp | date:'MM/dd @ HH:mm'}}</td>
+				<td nowrap="nowrap" class="listview-smaller">
+					<div ng-if="suggestion.id_user"><i class="fa fa-smile-o"></i> <a href="/customer/{{suggestion.id_user}}">
+						<span ng-show="!suggestion.customer">Customer</span>
+						<span ng-show="suggestion.customer">{{suggestion.customer}}</span>
+					</a></div>
+					<div ng-if="suggestion.restaurant"><i class="fa fa-coffee"></i> <a href="/restaurant/{{suggestion.id_restaurant}}">{{suggestion.restaurant}}</a></div>
+					<div ng-if="suggestion.community"><i class="fa fa-slideshare"></i> <a href="/community/{{suggestion.id_community}}">{{suggestion.community}}</a></div>
+				</td>
+				<td>{{suggestion.name}}</td>
+				<td nowrap="">
+					<span class="tag tag-blue" ng-if="suggestion.type == 'dish'">Add item</span>
+					<span class="tag tag-green" ng-if="suggestion.type == 'suggestion'">Suggestion</span>
+					<span class="tag tag-purple" ng-if="suggestion.type == 'restaurant'">Restaurant</span>
+					<span class="tag tag-orange" ng-if="suggestion.type == 'email'">Email me</span>
+				</td>
+				<td>
+					<span class="tag tag-red" ng-if="suggestion.status == 'new'">New</span>
+					<span class="tag tag-grey" ng-if="suggestion.status == 'deleted'">Deleted</span>
+					<span class="tag tag-green" ng-if="suggestion.status == 'applied'">Applied</span>
+				</td>
+				<td nowrap>
+					<a ng-show="suggestion.status != 'deleted'" href="" ng-click="remove( suggestion.id_suggestion )"><button class="button button-small button-empty button-red"><i class="fa fa-thumbs-down"></i>&nbsp;&nbsp;Reject</button></a>
+					<a ng-show="suggestion.status != 'applied'" href="" ng-click="apply( suggestion.id_suggestion )"><button class="button button-small button-empty button-blue"><i class="fa fa-thumbs-up"></i>&nbsp;&nbsp;Applied</button></a>
+				</td>
+			</tr>
+		</tbody>
 	</table>
 </div>

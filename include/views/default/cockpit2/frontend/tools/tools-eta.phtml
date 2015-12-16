@@ -7,25 +7,29 @@
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
 	<div class="box-content2 box-content-table">
-		<table class="tb-zebra">
-			<tr>
-				<th>Restaurant</th>
-				<th>Community</th>
-				<th>ETA (Minutes)</th>
-				<th>Active drivers</th>
-				<th>Orders placed but not picked up</th>
-				<th>Orders picked up but not delivered</th>
-				<th>Additional orders from the same restaurant accepted by the same driver</th>
-			</tr>
-			<tr ng-repeat="restaurant in restaurants">
-				<td>{{restaurant.restaurant}}</td>
-				<td>{{restaurant.community}}</td>
-				<td>{{restaurant.eta}}</td>
-				<td>{{restaurant.activeDrivers}}</td>
-				<td>{{restaurant.ordersPlacedButNotPickedUp}}</td>
-				<td>{{restaurant.ordersPickedUpButNotDelivered}}</td>
-				<td>{{restaurant.additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver}}</td>
-			</tr>
+		<table class="tb-zebra" sticky-header>
+			<thead>
+				<tr>
+					<th>Restaurant</th>
+					<th>Community</th>
+					<th>ETA (Minutes)</th>
+					<th>Active drivers</th>
+					<th>Orders placed but not picked up</th>
+					<th>Orders picked up but not delivered</th>
+					<th>Additional orders from the same restaurant accepted by the same driver</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="restaurant in restaurants" ng-init="$last ? ngRepeatFinished() : null">
+					<td>{{restaurant.restaurant}}</td>
+					<td>{{restaurant.community}}</td>
+					<td>{{restaurant.eta}}</td>
+					<td>{{restaurant.activeDrivers}}</td>
+					<td>{{restaurant.ordersPlacedButNotPickedUp}}</td>
+					<td>{{restaurant.ordersPickedUpButNotDelivered}}</td>
+					<td>{{restaurant.additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver}}</td>
+				</tr>
+			</tbody>
 		</table>
 	</div>
 
