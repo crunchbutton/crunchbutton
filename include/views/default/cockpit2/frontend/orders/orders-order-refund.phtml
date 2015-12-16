@@ -45,12 +45,20 @@
 						Because a gift card was used for this order, we will refund the card ${{order.charged}} and refund ${{order.credit}} as a gift card on the account.
 					</div>
 				</li>
+
 				<li class="li-input divider-line" ng-if="order.status.status == 'accepted' || order.status.status == 'pickedup' || order.status.status == 'transfered'">
 					<label class="switch-wrap">
 						<input type="checkbox" class="switch" ng-model="refund.tell_driver"/><div></div>
 					</label>
 					<div class="label">Tell driver not to deliver this canceled order?</div>
 				</li>
+
+				<li ng-if="refund.cancel_order">
+					<div class="label">
+						If more than 5 minutes has passed, make sure you have a good reason for doing so.
+					</div>
+				</li>
+
 				<li class="li-input" ng-show="!isRefunding">
 					<button class="button save" ng-click="refund_order();">Refund</button>
 				</li>
