@@ -82,6 +82,7 @@ class StripeTest extends PHPUnit_Framework_TestCase {
 
 			self::$order = new Order([
 				'name' => self::$user->name,
+				'date' => date('Y-m-d H:i:s'),
 				'address' => '123 UNIT TEST',
 				'phone' => '234-567-8901',
 				'txn' => $r['txn'],
