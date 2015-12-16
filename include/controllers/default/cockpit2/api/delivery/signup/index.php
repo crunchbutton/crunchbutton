@@ -88,11 +88,9 @@ class Controller_api_delivery_signup extends Crunchbutton_Controller_RestAccount
 //			#, sm.id_support_message
 		$q .= '
 			ORDER BY ds.id_delivery_signup DESC
-			LIMIT ?
-			OFFSET ?
+			LIMIT '.intval($getCount ? $limit : $limit+1).'
+			OFFSET '.intval($offset).'
 		';
-		$keys[] = $getCount ? $limit : $limit+1;
-		$keys[] = $offset;
 
 		// do the query
 		$d = [];

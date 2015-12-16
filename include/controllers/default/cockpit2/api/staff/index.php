@@ -601,11 +601,9 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		if ($working == 'all') {
 			$q .= '
-				LIMIT ?
-				OFFSET ?
+				LIMIT '.intval($getCount ? $limit : $limit+1).'
+				OFFSET '.intval($offset).'
 			';
-			$keys[] = $getCount ? $limit : $limit+1;
-			$keys[] = $offset;
 		}
 
 		$docs = Cockpit_Driver_Document::driver();

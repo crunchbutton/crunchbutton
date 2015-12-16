@@ -75,11 +75,9 @@ class Controller_api_staff_notes extends Crunchbutton_Controller_RestAccount {
 
 		$q .= '
 			ORDER BY an.date DESC
-			LIMIT ?
-			OFFSET ?
+			LIMIT '.intval($limit).'
+			OFFSET '.intval($offset).'
 		';
-		$keys[] = $limit;
-		$keys[] = $offset;
 
 		// do the query
 		$data = [];
