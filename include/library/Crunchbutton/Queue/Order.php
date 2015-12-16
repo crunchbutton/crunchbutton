@@ -6,7 +6,8 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 		$debug_dt = new DateTime('now', new DateTimeZone(c::config()->timezone));
 		$debugDtString0 = $debug_dt->format('Y-m-d H:i:s');
 
-		if( !$this->order()->preordered ){
+		$preordered = $this->order()->preordered;
+		if( !$preordered ){
 			// send customer a receipt in 30 seconds
 			$q = Queue::create([
 				'type' => Crunchbutton_Queue::TYPE_ORDER_RECEIPT,
@@ -29,8 +30,9 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 			$debugDtString2 = $debug_dt->format('Y-m-d H:i:s');
 
             $dl = $this->order()->community()->delivery_logistics;
-			// perform delivery logistics only if there are multiple drivers and it is enabled
-			if ($dl && $drivers->count() > 1) {
+			// perform delivery logistics only if there are multiple drivers and it is enabled, and
+			//  it is not a pre-order
+			if (!$preordered && $dl && $drivers->count() > 1) {
 				if ($dl == Crunchbutton_Order_Logistics::LOGISTICS_COMPLEX) {
 					Log::debug(['id_order' => $this->order()->id_order, 'time' => $debugDtString0, 'stage' => 'start_queue_run',
 						'type' => 'complexLogistics']);
