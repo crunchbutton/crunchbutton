@@ -213,7 +213,7 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 		$out[ 'fee_restaurant' ] = $this->restaurant->fee_restaurant;
 		$out[ 'fee_customer' ] = $this->restaurant->fee_customer;
 		$out[ 'id_community_chain' ] = null;
-		$out[ 'tax' ] = $this->restaurant->tax;
+		$out[ 'tax' ] = intval( $this->restaurant->tax );
 
 		$chain = $this->restaurant->chain();
 		if( $chain->id_community_chain ){
@@ -253,6 +253,12 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 			$restaurantChain->id_restaurant = $this->restaurant->id_restaurant;
 			$restaurantChain->save();
 		}
+
+		if( $this->request()[ 'id_community' ] ){
+			$this->restaurant->removeCommunity();
+			$this->restaurant->saveCommunity( $this->request()[ 'id_community' ] );
+		}
+
 
 		if( $this->restaurant->id_restaurant ){
 			echo json_encode( [ 'success' => true ] );exit;
