@@ -73,13 +73,9 @@ class Controller_api_suggestions extends Crunchbutton_Controller_Rest {
 		}
 
 		$q .= '
-			LIMIT ?
-			OFFSET ?
+			LIMIT '.intval($limit).'
+			OFFSET '.intval($offset).'
 		';
-
-		$keys[] = $limit;
-		$keys[] = $offset;
-
 
 		$data = [];
 

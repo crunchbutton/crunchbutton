@@ -168,11 +168,9 @@ class Controller_api_promo_discountcode extends Crunchbutton_Controller_RestAcco
 
 		$q .= '
 			ORDER BY p.id_promo DESC
-			LIMIT ?
-			OFFSET ?
+			LIMIT '.intval($limit).'
+			OFFSET '.intval($offset).'
 		';
-		$keys[] = $limit;
-		$keys[] = $offset;
 
 		// do the query
 		$data = [];
