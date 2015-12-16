@@ -1030,9 +1030,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 		$q .= ' ORDER BY id_queue DESC ';
 
-		$q .= ' LIMIT ? OFFSET ? ';
-		$keys[] = $limit;
-		$keys[] = $offset;
+		$q .= ' LIMIT '.intval($limit).' OFFSET '.intval($offset).' ';
 
 		$query = str_replace( '-WILD-',' q.id_queue, q.type, q.date_end AS finished_at, q.date_start AS started_at, q.status, qt.type, a.name, q.info ', $q );
 
@@ -1180,9 +1178,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 		$q .= ' ORDER BY id_payment_schedule DESC ';
 
-		$q .= ' LIMIT ? OFFSET ? ';
-		$keys[] = $limit;
-		$keys[] = $offset;
+		$q .= ' LIMIT '.intval($limit).' OFFSET '.intval($offset).' ';
 
 		// do the query
 		$data = [];

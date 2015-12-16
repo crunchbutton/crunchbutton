@@ -84,11 +84,9 @@ class Controller_api_PexCard_CardLog extends Crunchbutton_Controller_RestAccount
 
 		$q .= '
 			ORDER BY log.timestamp DESC
-			LIMIT ?
-			OFFSET ?
+			LIMIT '.intval($limit).'
+			OFFSET '.intval($offset).'
 		';
-		$keys[] = $limit;
-		$keys[] = $offset;
 
 		// do the query
 		$d = [];

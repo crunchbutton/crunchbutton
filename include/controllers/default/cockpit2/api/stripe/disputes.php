@@ -60,11 +60,9 @@ class Controller_Api_Stripe_Disputes extends Crunchbutton_Controller_RestAccount
 //			#, sm.id_support_message
 		$q .= '
 			ORDER BY sd.id_stripe_dispute DESC
-			LIMIT ?
-			OFFSET ?
+			LIMIT '.intval($getCount ? $limit : $limit+1).'
+			OFFSET '.intval($offset).'
 		';
-		$keys[] = $getCount ? $limit : $limit+1;
-		$keys[] = $offset;
 
 		// do the query
 		$d = [];
