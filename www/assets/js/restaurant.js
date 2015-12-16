@@ -329,20 +329,27 @@ var Restaurant = function(id) {
 			load = ( age >= 60 );
 		}
 		if( load ){
+			if( self.loadingHours ){
+				return;
+			}
+			self.loadingHours = true;
 			var url = App.service + 'restaurant/hours/' + self.id_restaurant;
 			App.http.get( url, {
 				cache: false
 			} ).success( function ( hours ) {
-				self.cachedAt = now;
-				self.hours = hours;
-				self._hours_processed = false;
-				self.processHours();
-				if( callback ){
-					if( typeof callback === 'function' ){
-						callback();
+				self.loadingHours = false;
+				if( hours && hours.constructor === Array ){
+					self.cachedAt = now;
+					self.hours = hours;
+					self._hours_processed = false;
+					self.processHours();
+					if( callback ){
+						if( typeof callback === 'function' ){
+							callback( self );
+						}
 					}
 				}
-			} );
+			} ).error( function(){ self.loadingHours = false; } );
 		}
 	}
 

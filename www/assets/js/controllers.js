@@ -377,7 +377,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		$rootScope.navigation.link('/location', 'instant' );
 	}
 
-	$scope.$on( 'windowVisible', function(e, data) {
+	$scope.$on( 'window-focus', function(e, data) {
 		updateRestaurantsHours();
 	});
 
@@ -456,7 +456,6 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	var updateStatus = function(){
 		updateRestaurantsStatus = $timeout( function(){
 			// Update status of the restaurant's list
-			updateRestaurantsHours();
 			$rootScope.$safeApply();
 			updateStatus();
 			checkOpen();
@@ -480,7 +479,6 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	// It means the list is already loaded so we need to update the restaurant's status
 	if( RestaurantsService.forceGetStatus ){
 		setTimeout( function(){
-			updateRestaurantsHours();
 			updateStatus();
 			$rootScope.$safeApply();
 		}, 1 );
@@ -491,8 +489,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	$rootScope.$on( 'appResume', function(e, data) {
 		var checkDateTime = function(){
 			if( dateTime && dateTime.getNow && dateTime.getNow() ){
-				if( $location.path() == '/' + RestaurantsService.permalink ){
-					updateRestaurantsHours();
+				if( $location.path() == '/' + RestaurantsService.permalink ){;
 					$rootScope.$safeApply();
 					updateStatus();
 				}
@@ -970,13 +967,11 @@ NGApp.controller('LocationUnavailableCtrl', function ($scope, $http, $location, 
  */
 NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $rootScope, $timeout, $window, RestaurantService, OrderService, CreditService, GiftCardService, PositionsService, MainNavigationService, CreditCardService) {
 
-	$scope.$on( 'windowVisible', function(e, data) {
-		$scope.restaurant.reloadHours( true, function(){
+	$scope.$on( 'window-focus', function(e, data) {
+		$scope.restaurant.reloadHours( true, function( restaurant ){
+			$scope.restaurant = restaurant;
 			$scope.restaurant.open();
-			var open = $scope.restaurant._open;
-			if ($scope.open != open) {
-				$scope.open = open;
-			}
+			$scope.open = $scope.restaurant._open;
 			if (!$scope.$$phase){
 				$scope.$apply();
 			}
