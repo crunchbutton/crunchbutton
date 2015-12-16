@@ -211,6 +211,10 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 			ids.push( restaurants[x].id_restaurant );
 		}
 		if( ids.length > 0 ){
+			if( service.loadingHours ){
+				return;
+			}
+			service.loadingHours = true;
 			var url = App.service + 'restaurants/hours/' + ids.join( ',' );
 			$http.get( url, {
 				cache: false
@@ -226,14 +230,14 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 							restaurants[y].cachedAt = now;
 							restaurants[y]._hours_processed = false;
 							restaurants[y].processHours();
-							continue;
 						}
 					}
 				}
+				service.loadingHours = false;
 				if( callback ){
 					callback();
 				}
-			} );
+			} ).error( function(){ service.loadingHours = false; } );
 		}
 	}
 
