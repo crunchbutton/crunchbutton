@@ -10,26 +10,26 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
 			$this->error(401);
 		}
-		
-		
+
+
 		// manual query is faster than using the Order->exports
-		
+
 		// @todo: merge this with Order::find when we get rid of old cockpit/orders
-		
-		$limit = $this->request()['limit'] ? $this->request()['limit'] : 20;
+
+		$limit = intval($this->request()['limit'] ? $this->request()['limit'] : 20);
 		$search = $this->request()['search'] ? $this->request()['search'] : '';
-		$page = $this->request()['page'] ? $this->request()['page'] : 1;
+		$page = intval($this->request()['page'] ? $this->request()['page'] : 1);
 		$sort = $this->request()['sort'] ? $this->request()['sort'] : null;
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
 		$keys = [];
-		
+
 		if ($sort{0} == '-') {
 			$sort = substr($sort, 1);
 			$sc = true;
 		} else {
 			$sc = false;
 		}
-		
+
 		if ($page == 1) {
 			$offset = '0';
 		} else {
@@ -47,7 +47,7 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 			LEFT JOIN `user_payment_type` on `user_payment_type`.id_user=`user`.id_user and `user_payment_type`.active = true
 			WHERE 1=1
 		';
-		
+
 		if ($search) {
 			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
@@ -66,7 +66,7 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 			$q .= $s['query'];
 			$keys = array_merge($keys, $s['keys']);
 		}
-		
+
 		$q .= '
 			GROUP BY `user`.id_user
 		';
@@ -80,7 +80,7 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 				$count = $c->c;
 			}
 		}
-		
+
 		switch ($sort) {
 			case 'name':
 				$q .= ' ORDER BY user.name '.($sc ? 'DESC' : 'ASC').', `user`.id_user DESC ';
@@ -103,12 +103,10 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		}
 
 		$q .= '
-			LIMIT ?
-			OFFSET ?
+			LIMIT '.($getCount ? $limit : $limit+1).'
+			OFFSET '.$offset.'
 		';
-		$keys[] = $getCount ? $limit : $limit+1;
-		$keys[] = $offset;
-		
+
 		// do the query
 		$data = [];
 		//(SELECT `order`.date FROM `order` WHERE `order`.id_user = user.id_user order by `order`.date desc limit 1) as _order_date,
@@ -125,7 +123,7 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		$more = false;
 
 		while ($o = $r->fetch()) {
-			
+
 			if (!$getCount && $i == $limit + 1) {
 				$more = true;
 				break;
