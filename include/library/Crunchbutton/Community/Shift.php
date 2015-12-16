@@ -89,9 +89,9 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				ass.id_admin = ?
 				AND cs.date_start <= ?
 			ORDER BY cs.date_start DESC
-			LIMIT ?
+			LIMIT '.intval($limit).'
 		';
-		return Crunchbutton_Community_Shift::q( $query, [$id_admin, $now->format( 'Y-m-d' ), $limit]);
+		return Crunchbutton_Community_Shift::q( $query, [$id_admin, $now->format( 'Y-m-d' )]);
 	}
 
 	public static function nextShiftsByAdmin( $id_admin, $limit = 20 ){

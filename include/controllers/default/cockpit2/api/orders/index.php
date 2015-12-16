@@ -181,11 +181,9 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		';
 
 		$q .= '
-			LIMIT ?
-			OFFSET ?
+			LIMIT '.intval($getCount ? $limit : $limit+1).'
+			OFFSET '.intval($offset).'
 		';
-		$keys[] = $getCount ? $limit : $limit+1;
-		$keys[] = $offset;
 
 		// do the query
 		$data = [];

@@ -1,7 +1,7 @@
 <?php
 
 class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
-	
+
 	public function init() {
 
 		$limit = $this->request()['limit'] ? $this->request()['limit'] : 20;
@@ -14,7 +14,7 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 		$today = $this->request()['today'] ? true : false;
 
 		$keys = [];
-		
+
 		if ($page == 1) {
 			$offset = '0';
 		} else {
@@ -44,7 +44,7 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 				AND ('.$st.')
 			';
 		}
-		
+
 		if ($today) {
 			$q .= '
 				AND c.date_start >= date_sub(now(), interval 2 hour)
@@ -66,7 +66,7 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 			$keys[] = Phone::clean(c::admin()->phone);
 			$keys[] = Phone::clean(c::admin()->phone);
 		}
-		
+
 		if ($search) {
 			$s = Crunchbutton_Query::search([
 				'search' => stripslashes($search),
@@ -85,7 +85,7 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 			$q .= $s['query'];
 			$keys = array_merge($keys, $s['keys']);
 		}
-		
+
 		$q .= '
 			GROUP BY c.id_call
 		';
@@ -102,11 +102,9 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 
 		$q .= '
 			ORDER BY c.date_start DESC
-			LIMIT ?
-			OFFSET ?
+			LIMIT '.intval($getCount ? $limit : $limit+1).'
+			OFFSET '.intval($offset).'
 		';
-		$keys[] = $getCount ? $limit : $limit+1;
-		$keys[] = $offset;
 
 		// do the query
 		$data = [];
@@ -192,7 +190,7 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 				break;
 			}
 			$i++;
-			
+
 			$call->from = preg_replace('/^\+1/','',$call->from);
 			$support = Support::byPhone($call->from);
 			$ticket = [];
