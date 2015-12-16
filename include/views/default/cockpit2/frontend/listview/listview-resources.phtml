@@ -13,7 +13,7 @@
 		</thead>
 		<tbody>
 			<tr ng-repeat="resource in resources track by $index" ng-init="$last ? ngRepeatFinished() : null" ng-attr-tabindex="{{$index+1}}" tab-select="/resource/{{resource.id_resource}}">
-				<td class="tb-v-center">
+				<td class="tb-v-center" nowrap="">
 					<span class="listview-bold">{{resource.name}}</span>
 					<br><a target="_system" href="{{resource.path}}">{{resource.file}}</a>
 				</td>
