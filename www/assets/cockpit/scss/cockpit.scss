@@ -4550,3 +4550,13 @@ table.receipt{
 	height: 100vh;
 	width: 100%;
 }
+
+.display-table{
+	display: table;
+}
+	.display-table-row{
+		display: table-row;
+	}
+		.display-table-cell{
+			display: table-cell;
+		}
