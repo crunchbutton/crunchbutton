@@ -143,7 +143,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				$status = $order->refund( $amount, $reason, $tell_driver );
 
 				if( $cancel_order ){
-					$order->setStatus( Crunchbutton_Order_Action::DELIVERY_CANCELED, false );
+					$order->setStatus( Crunchbutton_Order_Action::DELIVERY_CANCELED, false, null, null, true );
 				}
 
 				if( $status ){
