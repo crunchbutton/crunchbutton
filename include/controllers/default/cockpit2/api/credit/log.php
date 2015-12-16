@@ -58,8 +58,7 @@ class Controller_api_credit_log extends Crunchbutton_Controller_RestAccount {
 			$limit = ( ( $page -1 ) * $limit ) . ',' . $limit;
 		}
 
-		$query .= ' LIMIT ?';
-		$keys[] = $limit;
+		$query .= ' LIMIT '.intval($limit);
 
 		$credits = Crunchbutton_Credit::q( ( str_replace( '-WILD-', ' credit.* ', $query ) ), $keys );
 
