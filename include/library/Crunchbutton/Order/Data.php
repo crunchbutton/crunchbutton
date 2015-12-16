@@ -106,4 +106,30 @@ class Crunchbutton_Order_Data extends Cana_Table {
 		$data->save();
 
 	}
+
+	public static function applyOldPrice( $id_order, $dishesList ){
+
+		$data = Crunchbutton_Order_Data::q( 'SELECT * FROM order_data WHERE id_order = ? AND type = ? ORDER BY id_order_data DESC LIMIT 1', [ $id_order, self::TYPE_SNAPSHOT ] )->get( 0 );
+		if( $data->id_order_data ){
+			$data = json_decode( $data->content );
+			// echo json_encode( $data );exit;
+			if( $data->dishes ){
+				foreach( $data->dishes as $data_dish ){
+					$data_dish->name = $data_dish->name . ': ';
+					foreach( $dishesList as $key => $dish ){
+						if( $data_dish->name == $dish[ 'name' ] ){
+							if( $dish[ 'price' ][ 'regular' ] < ( $data_dish->price->regular * $dish[ 'quantity' ] ) ){
+								$dish[ 'price' ][ 'regular_new' ] = $dish[ 'price' ][ 'regular' ];
+								$dish[ 'price' ][ 'regular' ] = $data_dish->price->regular;
+							}
+						}
+						$dishesList[ $key ] = $dish;
+					}
+				}
+			}
+		}
+		// echo '<pre>';var_dump( $dishesList );exit();
+		return $dishesList;
+	}
+
 }
