@@ -298,6 +298,7 @@
 						</td>
 						<td class="fooditem dish-price">
 							${{dish.price.regular | formatPrice}}
+							<span ng-if="dish.price.regular_new" title="Price changed to: ${{dish.price.regular_new | formatPrice}}">*</span>
 						</td>
 					</tr>
 					<tr><td><br></td></tr>
@@ -317,6 +318,17 @@
 					<tr class="listview-smaller"><td></td><td colspan="2" class="listview-bold" style="text-align: right">Total:</td><td class="listview-bold " nowrap>${{order.final_price_plus_delivery_markup | number:2}}</td></tr>
 				</table>
 
+
+				<div class="no-box-content-color">
+					<div class="field-container">
+						<div class="field-row">
+							<div class="field-key">
+								* Item prices are estimates and do not nessicarily reflect what the user was charged.
+							</div>
+						</div>
+					</div>
+					<br>
+				</div>
 
 			</div>
 			<div class="divider"></div>
