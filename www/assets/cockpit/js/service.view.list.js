@@ -130,6 +130,11 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 			} else {
 				scope.loading = false;
 			}
+
+			setTimeout( function(){
+				scope.ngRepeatFinished();
+			}, 500 );
+
 		};
 
 		var update = function() {

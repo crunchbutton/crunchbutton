@@ -91,7 +91,6 @@
 						</td>
 						<td>
 							<span class="listview-smaller">{{payment.note}}</span>
-
 							<div>
 								<!-- <span class="tag tag-darkgreen" ng-if="payment.arbritary">Arbritary</span> -->
 								<span class="tag tag-lightblue" ng-if="payment.check">Check</span>
@@ -109,12 +108,12 @@
 								<span class="tag tag-black" ng-if="payment.payment_status == 'reversed'">Reversed</span>
 
 								<button ng-if="!payment.check && payment.id_payment && payment.payment_status != 'succeeded' && payment.payment_status != 'reversed'" title="Check payment status" ng-click="payment_status( payment.id_payment );" class="button button-small button-empty button-green"><i class="fa fa-refresh" ng-class="{'fa-spin': balancedRefresh == payment.id_payment}"></i></button>
-								  </span>
+								&nbsp;
 						</td>
 						<td>$ {{payment.amount | formatPrice}}</td>
 						<td>
 							<span class="listview-smaller">
-								{{payment.date | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}
+								{{payment.date | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}&nbsp;
 							</span>
 						</td>
 						<td>
@@ -124,9 +123,9 @@
 								<span class="tag tag-black" ng-if="payment.status == 'error'">Error</span>
 								<span class="tag tag-lightgrey" ng-if="payment.status == 'deleted'">Deleted</span>
 								<span class="tag tag-blue" ng-if="payment.status == 'archived'">Archived</span>
+								&nbsp;
 						</td>
 						<td nowrap class="tb-v-center">
-
 							<div ng-if="payment.status != 'done'">
 								<button ng-if="payment.status != 'archived'" title="Archive" ng-click="archive( payment.id_payment_schedule );" class="button button-small button-empty button-green"><i class="fa fa-archive"></i></button>
 								<button ng-if="payment.status != 'deleted'" title="Delete" ng-click="delete( payment.id_payment_schedule );" class="button button-small button-empty button-green"><i class="fa fa-trash"></i></button>

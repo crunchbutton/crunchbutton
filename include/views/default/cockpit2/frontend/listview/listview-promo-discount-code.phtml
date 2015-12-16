@@ -1,39 +1,43 @@
 <div class="box-content2 box-content-table">
-	<table class="tb-zebra">
-		<tr>
-			<th></th>
-			<th>Code</th>
-			<th>Value</th>
-			<th>Community</th>
-			<th>Date start</th>
-			<th>Date end</th>
-			<th>Users</th>
-			<th>Created By</th>
-			<th>Active</th>
-			<th class="tb-small"></th>
-		</tr>
-		<tr ng-repeat="promo in promos track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/promo/discount-code/{{promo.id_promo}}">
-			<td>#{{promo.id_promo}}</td>
-			<td>{{promo.code}}</td>
-			<td>
-				<span class="tag tag-blue" ng-if="promo.delivery_fee">Delivery fee</span>
-				<span ng-if="!promo.delivery_fee">${{promo.value}}</span>
-			</td>
-			<td>
-				<span class="tag tag-red" ng-if="!promo.community">All</span>
-				<span class="tag tag-lightgrey" ng-if="promo.community">{{promo.community}}</span>
-			</td>
-			<td>{{promo.date_start}}</td>
-			<td>{{promo.date_end}}</td>
-			<td>{{promo.usable_by}}</td>
-			<td>{{promo.admin}}</td>
-			<td nowrap class="tb-center tb-v-center">
-				<span class="tag tag-green" ng-if="promo.active">Active</span>
-				<span class="tag tag-red" ng-if="!promo.active">Inactive</span>
-			</td>
-			<td nowrap class="tb-v-center">
-				<a href="/promo/discount-code/{{promo.id_promo}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
-			</td>
-		</tr>
+	<table class="tb-zebra" sticky-header>
+		<thead>
+			<tr>
+				<th></th>
+				<th>Code</th>
+				<th>Value</th>
+				<th>Community</th>
+				<th>Date start</th>
+				<th>Date end</th>
+				<th>Users</th>
+				<th>Created By</th>
+				<th>Active</th>
+				<th class="tb-small"></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="promo in promos track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/promo/discount-code/{{promo.id_promo}}" ng-init="$last ? ngRepeatFinished() : null">
+				<td>#{{promo.id_promo}}</td>
+				<td>{{promo.code}}</td>
+				<td>
+					<span class="tag tag-blue" ng-if="promo.delivery_fee">Delivery fee</span>
+					<span ng-if="!promo.delivery_fee">${{promo.value}}</span>
+				</td>
+				<td>
+					<span class="tag tag-red" ng-if="!promo.community">All</span>
+					<span class="tag tag-lightgrey" ng-if="promo.community">{{promo.community}}</span>
+				</td>
+				<td>{{promo.date_start}}</td>
+				<td>{{promo.date_end}}</td>
+				<td>{{promo.usable_by}}</td>
+				<td>{{promo.admin}}</td>
+				<td nowrap class="tb-center tb-v-center">
+					<span class="tag tag-green" ng-if="promo.active">Active</span>
+					<span class="tag tag-red" ng-if="!promo.active">Inactive</span>
+				</td>
+				<td nowrap class="tb-v-center">
+					<a href="/promo/discount-code/{{promo.id_promo}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+				</td>
+			</tr>
+		</tbody>
 	</table>
 </div>

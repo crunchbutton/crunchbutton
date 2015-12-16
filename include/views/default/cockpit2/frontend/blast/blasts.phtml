@@ -5,31 +5,35 @@
 	<h1 class="title"><i class="fa fa-bullhorn"></i>Blasts</h1>
 	<div class="bar-loader bar-loader-title" ng-class="{'bar-loader-loading': loadingBlasts}"></div>
 	<div class="box-content2 box-content-table">
-		<table class="tb-zebra">
-			<tr>
-				<th>ID</th>
-				<th>Content</th>
-				<th>Date</th>
-				<th>Users</th>
-				<th>Status</th>
-				<th>Updated</th>
-			</tr>
-			<tr ng-repeat="blast in blasts">
-				<td><a href="/blast/{{blast.id_blast}}">{{blast.id_blast}}</a></td>
-				<td>{{blast.content}}</td>
-				<td>{{blast.date}}</td>
-				<td>({{blast.progress}} / {{blast.users}})</td>
-				<td class="deploy-status-{{blast.status}}">
-					{{blast.status}}
-					<span ng-if="blast.status=='blasting'">&nbsp;&nbsp;&nbsp;<i class="fa fa-cog fa-spin"></i></span>
-					<span ng-if="blast.status=='new'">&nbsp;&nbsp;&nbsp;<a href="" ng-click="cancel(blast.id_blast)"><i class="fa fa-times-circle"></i></a></span>
-				</td>
-				<td><span ng-if="blast.updated"><span am-time-ago="blast.updated*1000"></span></span></td>
+		<table class="tb-zebra" sticky-header>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Content</th>
+					<th>Date</th>
+					<th>Users</th>
+					<th>Status</th>
+					<th>Updated</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="blast in blasts"  ng-init="$last ? ngRepeatFinished() : null">
+					<td><a href="/blast/{{blast.id_blast}}">{{blast.id_blast}}</a></td>
+					<td>{{blast.content}}</td>
+					<td>{{blast.date}}</td>
+					<td>({{blast.progress}} / {{blast.users}})</td>
+					<td class="deploy-status-{{blast.status}}">
+						{{blast.status}}
+						<span ng-if="blast.status=='blasting'">&nbsp;&nbsp;&nbsp;<i class="fa fa-cog fa-spin"></i></span>
+						<span ng-if="blast.status=='new'">&nbsp;&nbsp;&nbsp;<a href="" ng-click="cancel(blast.id_blast)"><i class="fa fa-times-circle"></i></a></span>
+					</td>
+					<td><span ng-if="blast.updated"><span am-time-ago="blast.updated*1000"></span></span></td>
 
-			</tr>
+				</tr>
+			</tbody>
 		</table>
 	</div>
-	
+
 	<div>
 		<h1 class="title"><i class="fa fa-bolt"></i>Create a new Blast</h1>
 		<div class="box-content2 box-content-table">

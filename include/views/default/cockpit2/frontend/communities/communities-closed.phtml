@@ -20,31 +20,35 @@
 	</div>
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 	<div class="box-content2 box-content-table">
-		<table class="tb-zebra">
-			<tr>
-				<th>Name</th>
-				<th>Closed Since</th>
-				<th>Closed</th>
-				<th>Drivers On Shift</th>
-				<th>Message</th>
-				<th>Closed By</th>
-			</tr>
-			<tr ng-repeat="community in communities track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/community/{{community.permalink || community.id_community}}">
-				<td><a class="listview-smaller" href="/community/{{community.permalink}}">{{community.name}}</a></td>
-				<td><span class="listview-smaller">{{community.log.how_long}}</span></td>
-				<td nowrap="">
-					<span class="tag tag-orange" ng-if="community.is_auto_closed">Is Auto Closed</span>
-					<span ng-if="community.is_auto_closed && community.close_3rd_party_delivery_restaurants"><br></span>
-					<span class="tag tag-purple" ng-if="community.close_3rd_party_delivery_restaurants">3rd Party Restaurants</span>
-					<span ng-if="( community.is_auto_closed && community.close_all_restaurants && !community.close_3rd_party_delivery_restaurants ) || (community.close_all_restaurants && community.close_3rd_party_delivery_restaurants )"><br></span>
-					<span class="tag tag-red" ng-if="community.close_all_restaurants">All Restaurants</span>
-				</td>
-				<td>{{community.drivers_working}}</td>
-				<td><span class="listview-smaller">{{community.log.note}}</span></td>
-				<td>
-					{{community.log.closed_by}}
-				</td>
-			</tr>
+		<table class="tb-zebra" sticky-header>
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Closed Since</th>
+					<th>Closed</th>
+					<th>Drivers On Shift</th>
+					<th>Message</th>
+					<th>Closed By</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="community in communities track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/community/{{community.permalink || community.id_community}}" ng-init="$last ? ngRepeatFinished() : null">
+					<td><a class="listview-smaller" href="/community/{{community.permalink}}">{{community.name}}</a></td>
+					<td><span class="listview-smaller">{{community.log.how_long}}</span></td>
+					<td nowrap="">
+						<span class="tag tag-orange" ng-if="community.is_auto_closed">Is Auto Closed</span>
+						<span ng-if="community.is_auto_closed && community.close_3rd_party_delivery_restaurants"><br></span>
+						<span class="tag tag-purple" ng-if="community.close_3rd_party_delivery_restaurants">3rd Party Restaurants</span>
+						<span ng-if="( community.is_auto_closed && community.close_all_restaurants && !community.close_3rd_party_delivery_restaurants ) || (community.close_all_restaurants && community.close_3rd_party_delivery_restaurants )"><br></span>
+						<span class="tag tag-red" ng-if="community.close_all_restaurants">All Restaurants</span>
+					</td>
+					<td>{{community.drivers_working}}</td>
+					<td><span class="listview-smaller">{{community.log.note}}</span></td>
+					<td>
+						{{community.log.closed_by}}
+					</td>
+				</tr>
+			</tbody>
 		</table>
 	</div>
 </div>

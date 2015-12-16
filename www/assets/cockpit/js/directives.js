@@ -779,6 +779,12 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 
 				$rootScope.$on( 'ng-repeat-finished', function(e, data) {
 					process();
+					setTimeout( function(){ process(); }, 600 );
+					console.log('process();');
+					console.log('process();');
+					console.log('process();');
+					console.log('process();');
+					console.log('process();');
 				});
 
 				var process = function(){
@@ -790,6 +796,17 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 						var thead = table.find( 'thead' );
 						var tbody = table.find( 'tbody' );
 
+						if( App.isNarrowScreen() ){
+							thead.css( 'display', 'inherit' );
+							thead.css( 'width', 'auto' );
+
+							tbody.css( 'display', 'inherit' );
+							tbody.css( 'width', 'auto' );
+							tbody.css( 'overflow-y', 'visible' );
+							tbody.css( 'height', 'auto' );
+							return;
+						}
+
 						var tableWidth = table.width();
 
 						var tbodyLine = angular.element(tbody).find( 'tr' )[ 0 ];
@@ -800,14 +817,30 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 
 						var totalWidth = 0;
 
-						for( i=0; i < tbodyColumns.length; i++ ){
+						var totalValidColumns = 0;
+
+						for( i = 0; i < tbodyColumns.length; i++ ){
 							var td = angular.element( tbodyColumns[ i ] );
+							td.width( 'auto' );
 							totalWidth += td.width();
+							if( td.width() > 0 ){
+								totalValidColumns++;
+							}
 						}
 
+						var widthToAdd = 0;
 						var widthLeft = tableWidth - totalWidth;
-						var currentWidth = angular.element( tbodyColumns[ 1 ] ).width();
-						angular.element( tbodyColumns[ 1 ] ).width( ( currentWidth + widthLeft ) + 'px' );
+						totalValidColumns--;
+						if( totalValidColumns ){
+							widthToAdd = ( widthLeft / totalValidColumns );
+						}
+
+						for( i=0; i < tbodyColumns.length; i++ ){
+							var td = angular.element( tbodyColumns[ i ] );
+							if( i > 0 && td.width() > 0 ){
+								td.width( td.width() + widthToAdd );
+							}
+						}
 
 						for( i=0; i<tbodyColumns.length; i++ ){
 							var th = angular.element( theadColumns[ i ] );
@@ -819,14 +852,14 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 
 						var windowHeight = angular.element(window).height();
 						var theadHeight = thead.height();
-						var tbodyHeight = ( windowHeight - ( theadHeight + 100 ) + 'px' );
+						var tbodyHeight = ( windowHeight - ( theadHeight + 270 ) + 'px' );
 
 						thead.css( 'display', 'block' );
 						thead.css( 'width', tableWidth );
 
 						tbody.css( 'display', 'block' );
 						tbody.css( 'width', tableWidth );
-						tbody.css( 'overflow', 'auto' );
+						tbody.css( 'overflow-y', 'scroll' );
 						tbody.css( 'height', tbodyHeight );
 
 					}, 100 );
