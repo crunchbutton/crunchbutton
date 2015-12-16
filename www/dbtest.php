@@ -26,7 +26,7 @@ $getDb = function($args) {
 		$options[PDO::ATTR_PERSISTENT] = true;
 	}
 
-	if ($args->sslca) {
+	if ($args->sslca && !$_REQUEST['nossl']) {
 		$options[PDO::MYSQL_ATTR_SSL_CA] = $args->sslca;
 		$options[PDO::ATTR_TIMEOUT] = 4;
 		$options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
@@ -58,14 +58,20 @@ $stmt = $dbWrite->prepare($query);
 $stmt->execute($args);
 
 
-$query = 'select * from site';
+$query = 'select * from site where active=?';
 $stmt = $dbRead->prepare($query);
-$stmt->execute();
+$stmt->execute([true]);
 
 while ($o = $stmt->fetch()) {
-
 	print_r($o);
+}
 
+$query = 'select * from site where active=:active';
+$stmt = $dbRead->prepare($query);
+$stmt->execute([active => true]);
+
+while ($o = $stmt->fetch()) {
+	print_r($o);
 }
 
 
