@@ -2,7 +2,7 @@
 
 class Cockpit_Category extends Crunchbutton_Category {
 
-		public function dishes() {
+	public function dishes($where = []) {
 		if (!isset($this->_dishes)) {
 			$defaultFilters = [
 				'id_restaurant' => $this->id_restaurant,
