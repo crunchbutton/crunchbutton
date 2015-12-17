@@ -15,6 +15,8 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	const DRIVER_OPEN_COMMUNITY_ERROR_CREATING_SHIFT = 3;
 	const DRIVER_OPEN_COMMUNITY_ERROR_ASSIGNING_SHIFT = 4;
 
+	const PREORDER_MINUTES_AFTER_COMMUNITY_OPEN_DEFAULT = 60;
+
 	public static function all($force = null) {
 		$ip = preg_replace('/[^0-9\.]+/','',c::getIp());
 		$force = preg_replace('/[^a-z\-]+/','',$force);
@@ -1479,6 +1481,14 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 							AND ( ( oa.type != ? AND oa.type != ? ) OR oa.type IS NULL )";
 		$total = c::db()->get( $query, [ $this->id_community, Crunchbutton_Order_Action::DELIVERY_DELIVERED, Crunchbutton_Order_Action::DELIVERY_CANCELED ] )->get( 0 );
 		return intval( $total->total );
+	}
+
+	public function preorderMinAfterCommunityOpen(){
+		if( $this->preorder_min_after_community_open ){
+			return intval( $this->preorder_min_after_community_open );
+		} else {
+			return self::PREORDER_MINUTES_AFTER_COMMUNITY_OPEN_DEFAULT;
+		}
 	}
 
 	// Smart population of "our most popular locations" on UI2 #6056

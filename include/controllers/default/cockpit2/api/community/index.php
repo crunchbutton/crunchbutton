@@ -328,6 +328,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						$community->campus_cash = $this->request()[ 'campus_cash' ];
 						$community->campus_cash_name = $this->request()[ 'campus_cash_name' ];
 						$community->allow_preorder = $this->request()[ 'allow_preorder' ];
+						$community->preorder_min_after_community_open = $this->request()[ 'preorder_min_after_community_open' ];
 						// feature disabled
 						$community->campus_cash_fee = 0;
 						$community->campus_cash_mask = $this->request()[ 'campus_cash_mask' ];
