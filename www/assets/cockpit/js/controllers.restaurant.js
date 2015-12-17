@@ -638,8 +638,10 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 	$scope.addCategory = function(){
 		var categories = $scope.restaurant.categories;
 		var sort = categories.length ? ( categories.length + 1 ) : 1;
-		categories.push( { id_restaurant: $scope.restaurant.id_restaurant, expanded: true, sort: sort, _dishes: [] } );
+		var _rand = getRandomSpan();
+		categories.push( { id_restaurant: $scope.restaurant.id_restaurant, expanded: true, sort: sort, _dishes: [], _rand: _rand } );
 		$scope.restaurant.categories = RestaurantEditService.menu.sort.category( categories );
+		$scope.focus( '#category-' + _rand );
 	}
 
 	$scope.deleteCategory = function( category ){
@@ -675,8 +677,10 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 		} else {
 			dish.id_category = null;
 		}
+		dish._rand = getRandomSpan();
 		dishes.push( dish );
 		$scope.restaurant.categories[ category.sort - 1 ]._dishes = RestaurantEditService.menu.parse.dish( dishes );
+		$scope.focus( '#dish-' + dish._rand );
 	}
 
 	$scope.deleteDish = function( dish, category ){
@@ -709,8 +713,10 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 		checkbox.sort = sort;
 		checkbox.id_option = null;
 		checkbox.id_dish_option = null;
+		checkbox._rand = getRandomSpan();
 		options.push( checkbox );
 		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.checkboxes = RestaurantEditService.menu.sort.option( options );
+		$scope.focus( '#checkbox-' + checkbox._rand );
 	}
 
 	$scope.deleteCheckboxOption = function( option, dish, category ){
@@ -745,8 +751,10 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 		select.id_option = rand;
 		select.id_dish_option = null;
 		select.options = [];
+		select._rand = getRandomSpan();
 		options.push( select );
 		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects = RestaurantEditService.menu.sort.option( options );
+		$scope.focus( '#select-' + select._rand );
 		return sort;
 	}
 
@@ -772,6 +780,7 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 	}
 
 	$scope.addSelectSubOption = function( option, dish, category, subOption ){
+
 		var options = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options;
 		var sort = options.length ? ( options.length + 1 ) : 1;
 		if( !subOption ){
@@ -779,8 +788,10 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 		}
 		subOption.default = ( sort == 1 );
 		subOption.id_option_parent = option.id_option;
+		subOption._rand = getRandomSpan();
 		options.push( subOption );
 		$scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ option.sort - 1 ].options = RestaurantEditService.menu.sort.option( options );
+		$scope.focus( '#sub-option-' + subOption._rand );
 	}
 
 	$scope.deleteSelectSubOption = function( suboption, option, dish, category ){
@@ -957,7 +968,9 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 				select.id_dish_option = null;
 				var options = angular.copy( select.options );
 				var sort = $scope.addSelectOption( dishTo, categoryTo, select );
-				var _select = $scope.restaurant.categories[ category.sort - 1 ]._dishes[ dish.sort - 1 ].options.selects[ sort - 1 ];
+
+				var _select = $scope.restaurant.categories[ categoryTo.sort - 1 ]._dishes[ dishTo.sort - 1 ].options.selects[ sort - 1 ];
+
 				if( options.length ){
 					for( y in options ){
 						var subOption = options[ y ];
