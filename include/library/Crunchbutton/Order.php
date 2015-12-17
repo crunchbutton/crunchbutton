@@ -1069,11 +1069,13 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return Crunchbutton_Order_Action::byOrder( $this->id_order );
 	}
 
-	public function date_delivery(){
+	public function date_delivery( $timezone = 'restaurant' ){
 		if( $this->date_delivery ){
 			if (!isset($this->_date_delivery)) {
 				$this->_date_delivery = new DateTime($this->date_delivery, new DateTimeZone(c::config()->timezone));
-				$this->_date_delivery->setTimezone(new DateTimeZone($this->restaurant()->timezone));
+				if( $timezone == 'restaurant' ){
+					$this->_date_delivery->setTimezone(new DateTimeZone($this->restaurant()->timezone));
+				}
 			}
 			return $this->_date_delivery;
 		}
@@ -1084,11 +1086,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$this->_date = null;
 		}
 		if (!isset($this->_date) || !$this->_date) {
-			if( $this->date ){
-				$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
-				$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
-			} else if( $this->preordered_date ){
+			if( $this->preordered && $this->preordered_date ){
 				$this->_date = new DateTime($this->preordered_date, new DateTimeZone(c::config()->timezone));
+				$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
+			} else {
+				$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
 				$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
 			}
 		}
