@@ -28,7 +28,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	const STATUS_REFUNDED_PARTIALLY = 'Partially Refunded';
 
 	const PRE_ORDER_INTERVAL = '+ 1 hour';
-	const PRE_ORDER_DELIVERY_WINDOW = ' + 15 minutes';
+	const PRE_ORDER_DELIVERY_WINDOW = '+ 15 minutes';
 
 	/**
 	 * Process an order
@@ -2488,9 +2488,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$date_delivery = new DateTime( $this->date_delivery, new DateTimeZone( c::config()->timezone ) );
 			$date_delivery->setTimezone(  new DateTimeZone( $this->restaurant()->timezone )  );
 
-			$out['date_delivery_formatted'] = $date_delivery->format( 'D M d, H:i A - ' );
-			$date_delivery->modify( self::PRE_ORDER_INTERVAL );
-			$out['date_delivery_formatted'] .= $date_delivery->format( 'H:i A' );
+			$out['date_delivery_formatted'] = $date_delivery->format( 'D M d ') . $this->preOrderDeliveryWindow();
 		}
 
 		$date->setTimeZone($timezone);
