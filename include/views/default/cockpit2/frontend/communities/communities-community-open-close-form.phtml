@@ -132,7 +132,7 @@
 					<li class="li-input divider-line" ng-show="community.has_pre_orders">
 						<div class="label label-red">
 							<a href="/orders?limit=20&page=1&fullcount=false&search=&restaurant=&community=6&driver=&date=&view=list&datestart=&dateend=&user=&phone=&type=pre-orders">
-								This community has {{community.has_pre_orders}} pending pre-orders, please take a look on that before close.
+								This community has {{community.has_pre_orders}} pending pre-order<span ng-if="community.has_pre_orders > 1">s</span>, please take a look on that before close.
 							</a>
 						</div>
 					</li>

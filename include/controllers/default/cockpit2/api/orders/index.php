@@ -268,7 +268,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 				}
 			}
 
-			if( !$o->date && $o->preordered && $o->preordered_date ){
+			if( $o->preordered && $o->preordered_date ){
 				$o->date = $o->preordered_date;
 			}
 			$data[] = $o;
