@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-#https://github.com/arzynik/heroku-buildpack-cmd
-#echo $SOURCE_VERSION > $1/.gitversion
-#export "SOURCE_VERSION=$SOURCE_VERSION"
-#cd $1/cli && ./build.sh $1 $2 $3
