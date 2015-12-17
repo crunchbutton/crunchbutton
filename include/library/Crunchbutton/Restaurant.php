@@ -1247,19 +1247,22 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		foreach( $hours as $hour ){
 
-			$interval = Crunchbutton_Order::PRE_ORDER_INTERVAL;
+			$interval = Crunchbutton_Order::PRE_ORDER_DELIVERY_WINDOW;
 
 			$now = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
 			$open = new DateTime( $hour->date . ' ' . $hour->time_open, new DateTimeZone( $this->timezone ) );
 			$close = new DateTime( $hour->date . ' ' . $hour->time_close, new DateTimeZone( $this->timezone ) );
 			$count = 0;
 
-			$open->modify( $interval );
+			$minutes = $this->preorderMinAfterCommunityOpen();
+
+			$open->modify( "+ $minutes minutes" );
 
 			if( $now->format( 'Ymd' ) == $open->format( 'Ymd' ) ){
 				$eta = 5 * ceil( $this->smartEta() / 5 );
 				$minutes =  5 - ( $now->format( 'i' ) % 5 );
 				$now->modify( '+ ' . ( $eta + $minutes ) . ' minutes' );
+				// $open
 				if( $now > $open ){
 					$open = $now;
 				}
@@ -1288,6 +1291,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				}
 			}
 		}
+		// echo json_encode( $_segments );exit;
 		return $_segments;
 	}
 
@@ -1295,6 +1299,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		// add code to check if the community is closed and stuff
 		$community = $this->community()->get( 0 );
 		return $community->allow_preorder && $this->delivery_service && $this->allow_preorder;
+	}
+
+	public function preorderMinAfterCommunityOpen(){
+		if( $this->allowPreorder() ){
+			$community = $this->community()->get( 0 );
+			return $community->preorderMinAfterCommunityOpen();
+		}
+		return null;
 	}
 
 	public function preOrderDays(){

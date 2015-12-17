@@ -160,8 +160,8 @@
 			<div class="order-info order-info-oneline">
 				<p>
 					<span ng-show="(order.delivery_type == 'delivery')">
-						Delivery order
-						<p ng-show="order.date_delivery_formatted" class="order-info-address">{{order.date_delivery_formatted}}</p>
+						<p ng-show="!order.date_delivery_formatted">Delivery order</p>
+						<p ng-show="order.date_delivery_formatted" class="order-info-address">Delivery around: {{order.date_delivery_formatted}}</p>
 					</span>
 					<span ng-hide="(order.delivery_type == 'delivery')">Takeout order</span>
 				</p>

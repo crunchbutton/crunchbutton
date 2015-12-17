@@ -429,9 +429,10 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		if (is_null($attempts)) {
 			$attempts = $this->calculateAttempts($order);
 		}
+
 		if( $env != 'live' ){
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin at DEV - not sent', 'notification_type' => $this->type, 'value'=> $this->value, 'attempt' => $attempts, 'type' => 'delivery-driver' ]);
-			// return;
+			return;
 		}
 
 		$is_enable = ( !is_null( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_KEY ) ) ? ( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_KEY ) == '1' ) : Crunchbutton_Admin_Notification::IS_ENABLE_DEFAULT );
@@ -802,7 +803,12 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 							$message .= $order->message('sms-admin');
 							break;
 						case 'push':
-							$message = '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
+							if( $order->preordered ){
+								$message = '#' . $order->id . ': ' . $order->user()->name . ' has placed an pre-order to ' . $order->restaurant()->name . ' for expected delivery within the window of ' . $order->preOrderDeliveryWindow() . '.';
+							} else {
+								$message = '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
+							}
+
 							break;
 					}
 

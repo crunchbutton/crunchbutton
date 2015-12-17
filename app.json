@@ -1,0 +1,10 @@
+{
+	"name": "Crunchbutton",
+	"description": "crunchbutton and cockpit websites",
+	"repository": "https://github.com/crunchbutton/crunchbutton",
+	"env": {
+		"DATABASE_URL": {
+			"required": true
+		}
+	}
+}
