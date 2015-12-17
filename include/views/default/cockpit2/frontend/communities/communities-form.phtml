@@ -191,7 +191,7 @@
 				</li>
 
 				<li class="li-input" ng-class="{'error':form.allowPreOrder.$invalid}">
-					<div class="label">Pre-Orders Enable</div>
+					<div class="label">Pre-Orders Enable:</div>
 					<div class="input">
 						<select name="allowPreOrder" ng-model="community.allow_preorder" ng-options="opt.value as opt.label for opt in yesNo" ></select>
 					</div>
@@ -202,6 +202,20 @@
 						If it is "No" it will disable pre-orders for all restaurants that belong to this community
 					</div>
 				</li>
+
+
+				<li class="li-input" ng-show="community.allow_preorder" ng-class="{'error':form.allowPreOrder.$invalid}">
+					<div class="label">Minutes to delivery pre-orders after community is open:</div>
+					<div class="input">
+						<div class="input"><input type="text" name="communityRange" ng-model="community.preorder_min_after_community_open" ng-required="community.allow_preorder" placeholder="Default 60 minutes"></div>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.allowPreOrder.$error.required">Required.</small>
+					</div>
+				</li>
+
+
+
 			</ul>
 
 			</div>

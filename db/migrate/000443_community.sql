@@ -1,0 +1,1 @@
+ALTER TABLE `community` ADD COLUMN `preorder_min_after_community_open` int(11) unsigned NOT NULL DEFAULT 60;
