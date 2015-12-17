@@ -21,6 +21,7 @@ class Crunchbutton_Order_Data extends Cana_Table {
 			}
 		}
 		$out[ 'order' ] = json_decode( $out[ 'order' ] );
+		$out[ 'order' ][ 'delivery_window' ] = Crunchbutton_Order::PRE_ORDER_DELIVERY_WINDOW;
 		$out[ 'restaurant' ] = $order->restaurant()->properties();
 		$out[ 'community' ] = $order->community()->properties();
 		$out[ 'dishes' ] = [];

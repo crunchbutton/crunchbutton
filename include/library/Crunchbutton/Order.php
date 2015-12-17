@@ -28,6 +28,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	const STATUS_REFUNDED_PARTIALLY = 'Partially Refunded';
 
 	const PRE_ORDER_INTERVAL = '+ 1 hour';
+	const PRE_ORDER_DELIVERY_WINDOW = ' + 15 minutes';
 
 	/**
 	 * Process an order
@@ -2353,14 +2354,35 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					if( $this->campus_cash ){
 						$msg .= $spacer . 'Check ID at delivery';
 					}
-
+					if( $this->preordered ){
+						$msg .= $spacer . 'PRE ORDER Expected Delivery: ' . $this->preOrderDeliveryWindow();
+					}
 				}
-
 				break;
-
 		}
-
 		return $msg;
+	}
+
+	public function preOrderDeliveryWindow(){
+		if( $this->preordered ){
+			$msg = '';
+			$date_delivery = new DateTime( $this->date_delivery, new DateTimeZone( c::config()->timezone ) );
+			$date_delivery->setTimezone(  new DateTimeZone( $this->restaurant()->timezone )  );
+			if( $date_delivery->format( 'i' ) > 0 ){
+				$msg .= $date_delivery->format( 'g:i' );
+			} else {
+				$msg .= $date_delivery->format( 'g' );
+			}
+			$msg .= '-';
+			$date_delivery->modify( self::PRE_ORDER_DELIVERY_WINDOW );
+			if( $date_delivery->format( 'i' ) > 0 ){
+				$msg .= $date_delivery->format( 'g:iA' );
+			} else {
+				$msg .= $date_delivery->format( 'gA' );
+			}
+			return $msg;
+		}
+		return null;
 	}
 
 	public function phoeneticNumber($num) {
