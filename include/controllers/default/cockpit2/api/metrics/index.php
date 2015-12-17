@@ -101,9 +101,9 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 		if(is_null($communityIDs) || $communityIDs == ['active']) {
 			$communityIDs = [];
 			foreach($allowedCommunityMap as $id_community => $community) {
-				if($community->active == 1) {
+				// if($community->active == 1) {
 					$communityIDs[] = $id_community;
-				}
+				// }
 			}
 		}
 		$allowed = [];
@@ -276,7 +276,6 @@ class _Community_Metric_Container {
 			$labelMap = [];
 			foreach($rows as $row) {
 				$labelMap[$row[$labelCol]] = $row;
-				// $all[  ]
 			}
 			$count = 0;
 			foreach($allLabels as $label) {
@@ -299,7 +298,13 @@ class _Community_Metric_Container {
 			}
 			$out[$key] = $data;
 		}
-		$out[ -1 ] = $all;
+		$_all = [];
+		foreach( $all as $k => $v ){
+			if( $k > 0 ){
+				$_all[] = $v;
+			}
+		}
+		$out[ -1 ] = $_all;
 		// backfill data for each community
 		foreach($this->communities as $id_community) {
 			if(!isset($out[$id_community])) {
@@ -436,7 +441,7 @@ class _Community_Metric_Container {
 	}
 	public static function _buildOrderFilter($table) {
 		$out = '(' . $table . '.likely_test = FALSE OR ' . $table . '.likely_test IS NULL)';
-		$out = $out . ' AND (' . $table . '.refunded IS NULL OR ' . $table . '.refunded = FALSE)';
+		$out = $out . ' AND (' . $table . '.do_not_reimburse_driver IS NULL OR ' . $table . '.do_not_reimburse_driver = 0)';
 		return '(' . $out . ')';
 	}
 	public static function _buildThirdPartyOrderFilter($table) {
