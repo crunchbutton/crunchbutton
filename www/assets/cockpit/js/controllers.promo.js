@@ -1,5 +1,11 @@
 NGApp.config(['$routeProvider', function($routeProvider) {
 	$routeProvider
+		.when('/promo/', {
+			action: 'promo',
+			controller: 'PromoCtrl',
+			templateUrl: 'assets/view/promo.html'
+
+		})
 		.when('/promo/discount-codes/', {
 			action: 'promo',
 			controller: 'PromoDiscountCodesCtrl',
@@ -10,8 +16,21 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			action: 'promo',
 			controller: 'PromoDiscountCodeCtrl',
 			templateUrl: 'assets/view/promo-discount-code-form.html'
+		})
+		.when('/promo/gift-cards/', {
+			action: 'promo',
+			controller: 'GiftCardsCtrl',
+			templateUrl: 'assets/view/promo-gift-cards.html'
+
+		})
+		.when('/promo/gift-card/generate', {
+			action: 'promo',
+			controller: 'GiftCardGenerateCtrl',
+			templateUrl: 'assets/view/promo-gift-card-generate.html'
 		});
 }]);
+
+NGApp.controller('PromoCtrl', function ($scope) {});
 
 NGApp.controller('PromoDiscountCodesCtrl', function ($rootScope, $scope, ViewListService, PromoDiscountCodeService, CommunityService ) {
 
@@ -41,6 +60,109 @@ NGApp.controller('PromoDiscountCodesCtrl', function ($rootScope, $scope, ViewLis
 		}
 	});
 } );
+
+NGApp.controller('GiftCardsCtrl', function ($rootScope, $scope, ViewListService, GiftCardService, CommunityService ) {
+
+	$rootScope.title = 'Discount code';
+
+	$scope.yesNo = GiftCardService.yesNo();
+
+	angular.extend($scope, ViewListService);
+
+	$scope.view({
+		scope: $scope,
+		watch: {
+			search: '',
+			redeemed: 'all'
+		},
+		update: function() {
+			GiftCardService.list( $scope.query, function(d) {
+				$scope.promos = d.results;
+				$scope.complete(d);
+			});
+		}
+	});
+} );
+
+NGApp.controller( 'GiftCardGenerateCtrl', function ($scope, $routeParams, $filter, GiftCardService, CommunityService ) {
+	$scope.save = function(){
+
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			return;
+		}
+
+		$scope.isSaving = true;
+
+		GiftCardService.save( $scope.promo, function( json ){
+			$scope.isSaving = false;
+			if( json.success ){
+				App.alert( json.success + ' Gift Cards saved!');
+				$scope.navigation.link( '/promo/gift-cards' );
+			} else {
+				App.alert( 'Error saving: ' + json.error );
+			}
+		} );
+	}
+
+	$scope.ready = true;
+	$scope.yesNo = GiftCardService.yesNo();
+	$scope.paidBy = GiftCardService.paidBy();
+	$scope.promo = { 'paid_by': 'CRUNCHBUTTON', 'value': 1, 'total': 1, 'chars_length': 7, 'include_gift_card_id': true, 'use_numbers': true, 'use_letters': false, 'exclude_chars': '0O', 'prefix': '' };
+
+	$scope.$watchCollection( 'promo', function( newValue, oldValue, scope ) {
+		updateInfo();
+	});
+
+	var updateInfo = function(){
+		var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		var numbers = '0123456789';
+		var exclude_chars = $( '#exclude_chars' ).val();
+		var chars_to_use = '';
+
+		if( $scope.promo.use_numbers ){
+			chars_to_use += numbers;
+		}
+		if( $scope.promo.use_letters ){
+			chars_to_use += letters;
+		}
+		var exclude_chars = $scope.promo.exclude_chars;
+		exclude_chars = exclude_chars.split('');
+		$( exclude_chars ).each( function( k, v ){
+			chars_to_use = chars_to_use.replace( v.toUpperCase(), '' );
+		} );
+		$scope.promo.chars_to_use = chars_to_use;
+
+		var length = $scope.promo.chars_length;
+		if( parseInt( length ) > 12 ){
+			length = 12;
+		}
+		if( parseInt( length ) < 7 ){
+			length = 7;
+		}
+		$scope.promo.chars_length = length;
+
+		length = length - $scope.promo.prefix.length;
+		if( $scope.promo.include_gift_card_id ){
+			length -= 6;
+		}
+
+		var possible_combinations = Math.pow( chars_to_use.length, length );
+
+		if( $scope.promo.include_gift_card_id ){
+			possible_combinations = parseInt( possible_combinations ) + $scope.promo.total;
+		}
+
+		if( possible_combinations >= 1 && possible_combinations > $scope.promo.total ){
+			$scope.is_ok_to_generate = true;
+		} else {
+			$scope.is_ok_to_generate = false;
+		}
+		$scope.possible_combinations = possible_combinations;
+	}
+
+});
+
 
 NGApp.controller( 'PromoDiscountCodeCtrl', function ($scope, $routeParams, $filter, PromoDiscountCodeService, CommunityService ) {
 
