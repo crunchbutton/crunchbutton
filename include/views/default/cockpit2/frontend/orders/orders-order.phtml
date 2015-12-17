@@ -40,7 +40,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="field-row">
+					<div class="field-row" ng-if="order.date_delivery">
 						<div class="field-key">Desired Delivery Time</div>
 						<div class="field-value">
 							<span ng-if="order.restaurant.timezone != account.user.timezone">

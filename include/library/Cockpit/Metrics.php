@@ -126,8 +126,7 @@ class Cockpit_Metrics
     public function availableCommunities($simple = true)
     {
         $hasPermissionFullPermission = c::admin()->permission()->check(['global', 'metrics-all', 'metrics-communities-all']);
-        $qString = 'SELECT * FROM community WHERE active = 1 and name not like "%test%" and '.
-            ' name not like "%Dollar%" and private=0 ORDER BY name ASC';
+        $qString = 'SELECT * FROM community WHERE id_community IN ( SELECT DISTINCT( id_community ) FROM `order` ) and name not like "%test%" and name not like "%Dollar%" and name not like "%No longer in use%" and private=0 ORDER BY name ASC';
         $communities = Crunchbutton_Community::q($qString);
 
         if (!$hasPermissionFullPermission) {

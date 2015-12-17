@@ -28,6 +28,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	const STATUS_REFUNDED_PARTIALLY = 'Partially Refunded';
 
 	const PRE_ORDER_INTERVAL = '+ 1 hour';
+	const PRE_ORDER_DELIVERY_WINDOW = '+ 15 minutes';
 
 	/**
 	 * Process an order
@@ -1068,11 +1069,13 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return Crunchbutton_Order_Action::byOrder( $this->id_order );
 	}
 
-	public function date_delivery(){
+	public function date_delivery( $timezone = 'restaurant' ){
 		if( $this->date_delivery ){
 			if (!isset($this->_date_delivery)) {
 				$this->_date_delivery = new DateTime($this->date_delivery, new DateTimeZone(c::config()->timezone));
-				$this->_date_delivery->setTimezone(new DateTimeZone($this->restaurant()->timezone));
+				if( $timezone == 'restaurant' ){
+					$this->_date_delivery->setTimezone(new DateTimeZone($this->restaurant()->timezone));
+				}
 			}
 			return $this->_date_delivery;
 		}
@@ -1083,11 +1086,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$this->_date = null;
 		}
 		if (!isset($this->_date) || !$this->_date) {
-			if( $this->date ){
-				$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
-				$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
-			} else if( $this->preordered_date ){
+			if( $this->preordered && $this->preordered_date ){
 				$this->_date = new DateTime($this->preordered_date, new DateTimeZone(c::config()->timezone));
+				$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
+			} else {
+				$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
 				$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
 			}
 		}
@@ -1323,17 +1326,20 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				'(op.id_order is null and ((c.delivery_logistics is null) or (o.date < ? and ' .
 				'c.delivery_logistics is not null)))  or (op.id_order is not null and op.priority_expiration < ?) ' .
 				'or (op.id_order is not null and op.priority_expiration >= ? and op.id_admin = ? '.
-				'and op.priority_given != ?)) and o.delivery_service=true and o.delivery_type = "delivery" and ( o.date > ? OR ( o.preordered = 1 and o.date_delivery between ? and ? ) )'.
+				'and op.priority_given != ?)) and o.delivery_service=true and o.delivery_type = "delivery" and ( o.date > ? OR ( o.preordered = 1 and o.date_delivery < ? ) )'.
 				'and ' . $where . ' ORDER BY o.id_order';
 //			$op = Crunchbutton_Order_Priority::PRIORITY_LOW;
 //			print "The query params: $nowString, $nowString, $admin->id_admin, $op, $interval\n";
 
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-			$preorder_date_start = $now->format( 'Y-m-d 00:00:01' );
-			$preorder_date_end = $now->format( 'Y-m-d 23:59:59' );
+			if( $admin->timezone ){
+				$now->setTimezone( new DateTimeZone( $admin->timezone ) );
+			}
+			$now->modify( '+ 6 hours' );
+			$preorder_date = $now->format( 'Y-m-d H:i:s' );
 
 			return Order::q($query, [$interval1Min, $nowString, $nowString, $admin->id_admin,
-				Crunchbutton_Order_Priority::PRIORITY_LOW, $interval, $preorder_date_start, $preorder_date_end]);
+				Crunchbutton_Order_Priority::PRIORITY_LOW, $interval, $preorder_date]);
 
 			//
 		}
@@ -2365,14 +2371,35 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					if( $this->campus_cash ){
 						$msg .= $spacer . 'Check ID at delivery';
 					}
-
+					if( $this->preordered ){
+						$msg .= $spacer . 'PRE ORDER Expected Delivery: ' . $this->preOrderDeliveryWindow();
+					}
 				}
-
 				break;
-
 		}
-
 		return $msg;
+	}
+
+	public function preOrderDeliveryWindow(){
+		if( $this->preordered ){
+			$msg = '';
+			$date_delivery = new DateTime( $this->date_delivery, new DateTimeZone( c::config()->timezone ) );
+			$date_delivery->setTimezone(  new DateTimeZone( $this->restaurant()->timezone )  );
+			if( $date_delivery->format( 'i' ) > 0 ){
+				$msg .= $date_delivery->format( 'g:i' );
+			} else {
+				$msg .= $date_delivery->format( 'g' );
+			}
+			$msg .= '-';
+			$date_delivery->modify( self::PRE_ORDER_DELIVERY_WINDOW );
+			if( $date_delivery->format( 'i' ) > 0 ){
+				$msg .= $date_delivery->format( 'g:iA' );
+			} else {
+				$msg .= $date_delivery->format( 'gA' );
+			}
+			return $msg;
+		}
+		return null;
 	}
 
 	public function phoeneticNumber($num) {
@@ -2473,9 +2500,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$date_delivery = new DateTime( $this->date_delivery, new DateTimeZone( c::config()->timezone ) );
 			$date_delivery->setTimezone(  new DateTimeZone( $this->restaurant()->timezone )  );
 
-			$out['date_delivery_formatted'] = $date_delivery->format( 'D M d, H:i A - ' );
-			$date_delivery->modify( self::PRE_ORDER_INTERVAL );
-			$out['date_delivery_formatted'] .= $date_delivery->format( 'H:i A' );
+			$out['date_delivery_formatted'] = $date_delivery->format( 'D M d ') . $this->preOrderDeliveryWindow();
 		}
 
 		$date->setTimeZone($timezone);
