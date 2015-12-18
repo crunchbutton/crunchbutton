@@ -246,6 +246,16 @@
 							</div>
 						</li>
 
+						<li class="li-input" ng-class="{'error':form.restaurantCampusCash.$invalid}">
+							<div class="label">Campus Cash</div>
+							<div class="input">
+								<select name="restaurantCampusCash" required ng-model="restaurant.campus_cash" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+							</div>
+							<div class="box-error">
+								<small ng-show="form.restaurantCampusCash.$error.required">Required.</small>
+							</div>
+						</li>
+
 						<li class="li-input" ng-class="{'error':form.restaurantGiftCard.$invalid}">
 							<div class="label">Gift card</div>
 							<div class="input">
@@ -286,6 +296,7 @@
 							</div>
 							<div class="notes">Percent (%)</div>
 						</li>
+
 
 					</ul>
 

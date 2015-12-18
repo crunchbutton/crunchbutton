@@ -50,13 +50,12 @@
 							</span>
 							{{order.date_delivery | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}
 							&nbsp;(<span class="listview-bold">{{order.date_delivery | convertimeformat:account.user.timezone:'z'}}</span>)
-
+							<span class="tag tag-purple" ng-if="order.date_delivery">Pre ordered</span>
 						</div>
 					</div>
 					<div class="field-row">
 						<div class="field-key">Status</div>
 						<div class="field-value">
-							<span class="tag tag-purple">Pre ordered</span>
 							<span ng-if="order.status">
 								<span class="tag tag-red" ng-if="order.status.status == 'new'">New</span>
 								<span class="tag tag-green" ng-if="order.status.status == 'accepted'">Accepted</span>

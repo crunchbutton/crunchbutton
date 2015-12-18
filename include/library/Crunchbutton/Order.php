@@ -2371,9 +2371,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					if( $this->campus_cash ){
 						$msg .= $spacer . 'Check ID at delivery';
 					}
-					if( $this->preordered ){
-						$msg .= $spacer . 'PRE ORDER Expected Delivery: ' . $this->preOrderDeliveryWindow();
-					}
+
 				}
 				break;
 		}
@@ -3295,7 +3293,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 			return false;
 		}
-		return null;
+		return false;
 	}
 
 	public function calcDistance(){
@@ -3329,7 +3327,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				return Crunchbutton_GoogleGeocode::latlonDistanceInMiles( $customerLat, $customerLon, $restaurantLat, $restaurantLon );
 			}
 		}
-		return null;
+		return false;
 	}
 
 	public function shouldUsePexCard(){
@@ -3503,12 +3501,19 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->modify( '- 5 min' );
 		$orders = Order::q( 'SELECT * FROM `order` WHERE date > ? AND delivery_type = ?', [ $now->format( 'Y-m-d H:i:s' ), self::SHIPPING_DELIVERY ] );
-		$pattern = "%s just placed an order out of delivery radius! Distance %s. Order details: Order %d in the %s community to this address %s. Please double check that this address is close enough to be delivered (if it's just slightly out of range it may be fine), and cancel the order if necessary. Thanks!";
 		foreach( $orders as $order ){
 			if( !$order->orderHasGeomatchedTicket() ){
 				if( !$order->isAtDeliveryRadius() ){
-					$distance = number_format( $order->calcDistance(), 2 ) . ' miles';
-					$message = sprintf( $pattern, $order->name, $distance, $order->id_order, $order->community()->name, $order->address );
+
+					if( $order->calcDistance() === false ){
+						$pattern = "%s just placed an order, the system could not calculate delivery radius! Order details: Order %d in the %s community to this address %s. Please double check that this address is close enough to be delivered (if it's just slightly out of range it may be fine), and cancel the order if necessary. Thanks!";
+						$message = sprintf( $pattern, $order->name, $distance, $order->id_order, $order->community()->name, $order->address );
+					} else {
+						$distance = number_format( $order->calcDistance(), 2 ) . ' miles';
+						$pattern = "%s just placed an order out of delivery radius! Distance %s. Order details: Order %d in the %s community to this address %s. Please double check that this address is close enough to be delivered (if it's just slightly out of range it may be fine), and cancel the order if necessary. Thanks!";
+						$message = sprintf( $pattern, $order->name, $distance, $order->id_order, $order->community()->name, $order->address );
+					}
+
 					echo $message . "\n";
 					Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
 					$action = new Crunchbutton_Order_Action;

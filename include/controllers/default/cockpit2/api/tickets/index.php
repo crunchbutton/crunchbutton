@@ -80,6 +80,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 					's.name' => 'like',
 					'o.name' => 'like',
 					'u.name' => 'like',
+					'u.email' => 'like',
 					'sm.body' => 'like',
 
 					'u.phone' => 'likephone',

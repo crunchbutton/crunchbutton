@@ -4,6 +4,11 @@
 
 	<div class="content-padding">
 
+		<span class="hide-mobile">
+			<a ng-click="order.showForm=true" class="order-change-info-link">Change info</a>
+			<div class="divider dots spacer-one-two"></div>
+		</span>
+
 		<div class="order-icon">
 			<i class="fa fa-phone payment-form-icon form-icon form-field"></i>
 		</div>
@@ -73,6 +78,15 @@
 
 		<div class="divider spacer-one-two"></div>
 
-		<button class="button green button-empty" ng-click="order.showForm=true">Change info</button>
+		<span class="hide-desktop">
+			<button class="button green button-empty" ng-click="order.showForm=true">Change info</button>
+		</span>
+
+		<span class="hide-mobile">
+			<div ng-if="!order.showForm">
+				<ng-include src="'assets/view/restaurant-place-order-button.html'"></ng-include>
+			</div>
+		</span>
+
 	</div>
 </div>

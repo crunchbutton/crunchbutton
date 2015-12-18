@@ -319,9 +319,7 @@ class Crunchbutton_Promo extends Cana_Table
 
 	public function queNotifySMS() {
 		$gift = $this;
-		c::timeout(function() use( $gift ) {
-			$gift->notifySMS();
-		});
+		$gift->notifySMS();
 	}
 
 	public function queNotifyEMAIL() {
@@ -385,14 +383,6 @@ class Crunchbutton_Promo extends Cana_Table
 
 		$gift = $this;
 
-		Log::debug([
-				'action' => 'INSIDE notifySMS cana::timeout',
-				'promo_id' => $gift->id_promo,
-				'promo_code' => $gift->code,
-				'method' => '$promo->notifySMS()',
-				'type' => 'promo_sms'
-			]);
-
 		$env = c::getEnv();
 
 		$phone = $gift->phone;
@@ -401,22 +391,9 @@ class Crunchbutton_Promo extends Cana_Table
 			return false;
 		}
 
-		if( $env == 'live' ){
-			$serverUrl = '_DOMAIN_';
-		} else {
-			$serverUrl = 'beta.crunchr.co';
-		}
-
-		$url = $serverUrl . '/giftcard/'. $gift->code;
-
-		if( $gift->restaurant()->id_restaurant ){
-			$message = Crunchbutton_Message_Sms::greeting() . "Congrats, you got a gift card to {$gift->restaurant()->name}! Enter code: {$gift->code} in your order notes or click here: {$url}";
-		} else {
-			$message = Crunchbutton_Message_Sms::greeting() . "Congrats, you got a gift card to Crunchbutton! Enter code: {$gift->code} in your order notes or click here: {$url}";
-		}
-
+		$message = Crunchbutton_Message_Sms::greeting() . "Congrats, you got a gift card to Crunchbutton! Enter code: {$gift->code} in your order notes next time to redeem it.";
 		$gift->note = 'SMS sent to ' . $phone . ' at ' . date( 'M jS Y g:i:s A') . "\n" . $gift->note;
-		$gift->issued = static::ISSUED_TEXT;
+		$gift->issued = self::ISSUED_TEXT;
 		$gift->save();
 
 		Crunchbutton_Message_Sms::send([

@@ -421,7 +421,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		return $attempts;
 	}
 
-
 	public function send( Crunchbutton_Order $order, $attempts=null ) {
 
 		$env = c::getEnv();
@@ -561,8 +560,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			}
 		}
 
-
-
 		$group = Group::byName( Crunchbutton_Config::getVal( Crunchbutton_Admin_Notification::REPS_NONE_WORKING_GROUP_NAME_KEY ) );
 		$users = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );
 		$twilio = new Services_Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
@@ -573,16 +570,22 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			$community = '';
 		}
 
-		$message = "No drivers for O#{$order->id_order} \nR: {$order->restaurant()->name} {$community}/ {$order->restaurant()->phone()} \nC: {$order->name} / {$order->phone()}";
+
+		if( $order->preordered ){
+			$message = "No drivers to delivery the pre-order O#{$order->id_order} \nR: {$order->restaurant()->name} {$community}/ {$order->restaurant()->phone()} \nC: {$order->name} / {$order->phone()} \nDesired Delivery Time: {$order->preOrderDeliveryWindow()}";
+		} else {
+			$message = "No drivers for O#{$order->id_order} \nR: {$order->restaurant()->name} {$community}/ {$order->restaurant()->phone()} \nC: {$order->name} / {$order->phone()}";
+		}
 
 		// Make these notifications pop up on support on cockpit #3008
-		Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
+		Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message, 'bubble' => true ] );
 
 		Crunchbutton_Message_Sms::send([
 			'to' => Crunchbutton_Support::getUsers(),
 			'message' => $message,
 			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
 		]);
+
 	}
 
 	public function host_callback(){
@@ -666,7 +669,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	}
 
 	public function sendSms( Crunchbutton_Order $order, $message){
-
 		$sms = $this->value;
 
 		$ret = Crunchbutton_Message_Sms::send([
@@ -800,7 +802,11 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 						case 'sms':
 							$message = Crunchbutton_Message_Sms::greeting($this->admin()->id_admin ? $this->admin()->firstName() : '');
 							$message .= self::REPS_COCKPIT . $order->id_order . "\n";
+							if( $order->preordered ){
+								$message .= 'Please accept and deliver this pre-order between ' . $order->preOrderDeliveryWindow() . "\n";
+							}
 							$message .= $order->message('sms-admin');
+							echo $message;exit;
 							break;
 						case 'push':
 							if( $order->preordered ){
