@@ -58,18 +58,84 @@ class Controller_api_promo_giftcard extends Crunchbutton_Controller_RestAccount 
 	}
 
 	private function _post(){
-		$this->_save();
+
+		switch ( c::getPagePiece( 3 ) ) {
+			case 'create':
+				$this->_create();
+				break;
+
+			case 'generate':
+				$this->_generate();
+				break;
+		}
 	}
 
-	private function _save(){
+	private function _create(){
+
+		$random_code = intval( $this->request()[ 'random_code' ] );
+		if( !$random_code ){
+
+			$code = trim( $this->request()[ 'code' ] );
+			if( strlen( $code ) < 7 ){
+				echo json_encode( [ 'error' => 'The code must to have at least 7 chars.' ] );exit;
+			}
+
+			$giftcard = Crunchbutton_Promo::byCode( $code )->get( 0 );
+			if( $giftcard->id_promo ){
+				echo json_encode( [ 'error' => 'This code was already taken, please type another one!' ] );exit;
+			}
+		}
+
+		$value = intval( $this->request()[ 'value' ] );
+		$id_admin = c::user()->id_admin;
+		$created_by = c::user()->login;
+		$paid_by = $this->request()[ 'paid_by' ];
+		$phone = $this->request()[ 'phone' ];
+		$notify_phone = $this->request()[ 'notify_phone' ];
+
+		if( $notify_phone ){
+			if( !Phone::clean( $phone ) ){
+				echo json_encode( [ 'error' => 'Enter a valid phone number!' ] );exit;
+			}
+		}
+
+		$giftcard = new Crunchbutton_Promo;
+		$giftcard->value = $value;
+		$giftcard->type = Crunchbutton_Promo::TYPE_GIFTCARD;
+		$giftcard->active = 1;
+		$giftcard->id_admin = $id_admin;
+		$giftcard->paid_by = $paid_by;
+		$giftcard->created_by = $created_by;
+		$giftcard->amount_type = 'cash';
+		$giftcard->date = date('Y-m-d H:i:s');
+		$giftcard->phone = $phone;
+		$giftcard->save();
+		if( $code ){
+			$giftcard->code = $code;
+		} else {
+			$giftcard->code = $giftcard->promoCodeGeneratorUseChars( '123456789', 7, $giftcard->id_promo, '' );
+		}
+
+		if( $notify_phone && $giftcard->phone ){
+			$giftcard->queNotifySMS();
+		}
+
+		$giftcard->save();
+
+
+		echo json_encode( [ 'success' => true ] );exit;
+	}
+
+
+	private function _generate(){
 
 		$value = intval( $this->request()[ 'value' ] );
 		$total = intval( $this->request()[ 'total' ] );
 		$id_admin = c::user()->id_admin;
-		// legacy
 		$created_by = c::user()->login;
 		$include_gift_card_id = $this->request()[ 'include_gift_card_id' ];
 		$chars_to_use = $this->request()[ 'chars_to_use' ];
+		$paid_by = $this->request()[ 'paid_by' ];
 		$exclude_chars = $this->request()[ 'exclude_chars' ];
 		$length = intval( $this->request()[ 'chars_length' ] );
 		$prefix = $this->request()[ 'prefix' ];
@@ -82,7 +148,7 @@ class Controller_api_promo_giftcard extends Crunchbutton_Controller_RestAccount 
 			$giftcard->active = 1;
 			$giftcard->id_admin = $id_admin;
 			$giftcard->paid_by = $paid_by;
-			$giftcard->created_by = $created_by;
+			$giftcard->created_by = $created_by; // legacy
 			$giftcard->amount_type = 'cash';
 			if( $id_community ){
 				$giftcard->id_community = $id_community;
@@ -188,7 +254,7 @@ class Controller_api_promo_giftcard extends Crunchbutton_Controller_RestAccount 
 		// do the query
 		$data = [];
 		$r = c::db()->query(str_replace('-WILD-','
-			p.id_promo, p.code, p.id_user, p.value, p.date, p.id_admin, p.active, a.name as admin, u.name as user, a.login as login
+			p.id_promo, p.code, p.id_user, p.value, p.date, p.id_admin, p.active, a.name as admin, u.name as user, a.login as login, p.phone, p.note
 		', $q), $keys);
 
 		while ($s = $r->fetch()) {
@@ -197,6 +263,12 @@ class Controller_api_promo_giftcard extends Crunchbutton_Controller_RestAccount 
 			$s->id_promo = floatval( $s->id_promo );
 			$s->id_admin = floatval( $s->id_admin );
 			$s->redeemed = floatval( $s->id_user ) ? true : false;
+			if( $s->note ){
+				$s->note = nl2br( $s->note );
+			}
+			if( $s->phone ){
+				$s->phone = Phone::formatted( $s->phone );
+			}
 			$data[] = $s;
 		}
 

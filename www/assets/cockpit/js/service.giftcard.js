@@ -2,7 +2,8 @@ NGApp.factory( 'GiftCardService', function( $rootScope, $resource, ResourceFacto
 
 	// Create a private promo 'drivers'
 	var promo = $resource( App.service + 'promo/giftcard/:action/:id_promo', { action: '@action' }, {
-				'save' : { 'method': 'POST', params : { action: 'save' } },
+				'generate' : { 'method': 'POST', params : { action: 'generate' } },
+				'create' : { 'method': 'POST', params : { action: 'create' } },
 				'get' : { 'method': 'GET', params : { } },
 				'list' : { 'method': 'GET', params : { 'action' : 'list' }, isArray: true }
 			}
@@ -24,8 +25,14 @@ NGApp.factory( 'GiftCardService', function( $rootScope, $resource, ResourceFacto
 		} );
 	}
 
-	service.save = function( giftcard, callback ){
-		promo.save( giftcard, function( json ){
+	service.generate = function( giftcard, callback ){
+		promo.generate( giftcard, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.create = function( giftcard, callback ){
+		promo.create( giftcard, function( json ){
 			callback( json );
 		} );
 	}

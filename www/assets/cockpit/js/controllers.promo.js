@@ -27,6 +27,11 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			action: 'promo',
 			controller: 'GiftCardGenerateCtrl',
 			templateUrl: 'assets/view/promo-gift-card-generate.html'
+		})
+		.when('/promo/gift-card/create', {
+			action: 'promo',
+			controller: 'GiftCardCreateCtrl',
+			templateUrl: 'assets/view/promo-gift-card-create.html'
 		});
 }]);
 
@@ -84,7 +89,8 @@ NGApp.controller('GiftCardsCtrl', function ($rootScope, $scope, ViewListService,
 	});
 } );
 
-NGApp.controller( 'GiftCardGenerateCtrl', function ($scope, $routeParams, $filter, GiftCardService, CommunityService ) {
+NGApp.controller( 'GiftCardCreateCtrl', function ($scope, $routeParams, $filter, GiftCardService ) {
+
 	$scope.save = function(){
 
 		if( $scope.form.$invalid ){
@@ -94,7 +100,40 @@ NGApp.controller( 'GiftCardGenerateCtrl', function ($scope, $routeParams, $filte
 
 		$scope.isSaving = true;
 
-		GiftCardService.save( $scope.promo, function( json ){
+		GiftCardService.create( $scope.promo, function( json ){
+			$scope.isSaving = false;
+			if( json.success ){
+				App.alert( 'Gift Cards created!');
+				$scope.navigation.link( '/promo/gift-cards' );
+			} else {
+				App.alert( 'Error saving: ' + json.error + '<br>' );
+			}
+		} );
+	}
+
+	$scope.ready = true;
+	$scope.yesNo = GiftCardService.yesNo();
+	$scope.paidBy = GiftCardService.paidBy();
+	$scope.promo = { 	'paid_by': 'CRUNCHBUTTON',
+										'value': 1,
+										'random_code': 0,
+										'notify_email': 0,
+										'notify_phone': 0,
+										'random_code': false };
+
+});
+
+NGApp.controller( 'GiftCardGenerateCtrl', function ($scope, $routeParams, $filter, GiftCardService ) {
+
+	$scope.save = function(){
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			return;
+		}
+
+		$scope.isSaving = true;
+
+		GiftCardService.generate( $scope.promo, function( json ){
 			$scope.isSaving = false;
 			if( json.success ){
 				App.alert( json.success + ' Gift Cards saved!');
