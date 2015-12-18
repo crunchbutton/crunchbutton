@@ -890,6 +890,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 				$paymentType = $order->paymentType();
 				$out['order'][ 'campus_cash_sha1' ] = $paymentType->stripe_id;
 			}
+
 		}
 
 		// Export the comments
