@@ -1324,36 +1324,68 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public static function createShiftForNonScheduledDriver( $id_community ){
+
 		$community = Community::o( $id_community );
+
+		if( !$community->id_community ){
+			return false;
+		}
+
 		$driver = c::admin();
 
-		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-		$now->setTimezone( new DateTimeZone( $community->timezone ) );
-		$start = $now->format( 'Y-m-d H:i' );
-		$now->modify( '+ 1 hour' );
-		$end = $now->format( 'Y-m-d H:i' );
-		$newShift = new Crunchbutton_Community_Shift();
-		$newShift->id_community = $community->id_community;
-		$newShift->date_start = $start;
-		$newShift->date_end = $end;
-		$newShift->active = 1;
-		$newShift->created_by_driver = 1;
-		$newShift->date = date('Y-m-d H:i:s');;
-		$newShift->id_driver = $driver->id_admin;
-		if( $newShift->date_start && $newShift->date_end ){
-			$newShift->save();
-			$newShift = Crunchbutton_Community_Shift::o( $newShift->id_community_shift );
-		}
+		if( !$driver->isWorking() ){
 
-		if( $newShift->id_community_shift ){
-			$assignment = new Crunchbutton_Admin_Shift_Assign();
-			$assignment->id_admin = $driver->id_admin;
-			$assignment->id_community_shift = $newShift->id_community_shift;
-			$assignment->confirmed = true;
-			$assignment->date = date('Y-m-d H:i:s');
-			$assignment->save();
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$now->setTimezone( new DateTimeZone( $community->timezone ) );
+			$start = $now->format( 'Y-m-d H:i' );
+			$now->modify( '+ 1 hour' );
+
+			$end = null;
+
+			$shift = Crunchbutton_Community_Shift::nextShiftByAdmin( $driver->id_admin, 1 );
+			$shift = $shift->get( 0 );
+
+			if( $shift->id_community_shift ){
+				$shiftStart = $shift->dateStart();
+
+				if( $now > $shiftStart ){
+					$end = $shiftStart->format( 'Y-m-d H:i' );
+					// checking driver
+					$assignment = Crunchbutton_Admin_Shift_Assign::o( $shift->id_admin_shift_assign );
+					if( $assignment->id_community_shift ){
+						$assignment->confirmed = true;
+						$assignment->save();
+					}
+				}
+			}
+
+			if( !$end ){
+				$end = $now->format( 'Y-m-d H:i' );
+			}
+
+			$newShift = new Crunchbutton_Community_Shift();
+			$newShift->id_community = $community->id_community;
+			$newShift->date_start = $start;
+			$newShift->date_end = $end;
+			$newShift->active = 1;
+			$newShift->created_by_driver = 1;
+			$newShift->date = date('Y-m-d H:i:s');;
+			$newShift->id_driver = $driver->id_admin;
+			if( $newShift->date_start && $newShift->date_end ){
+				$newShift->save();
+				$newShift = Crunchbutton_Community_Shift::o( $newShift->id_community_shift );
+			}
+
+			if( $newShift->id_community_shift ){
+				$assignment = new Crunchbutton_Admin_Shift_Assign();
+				$assignment->id_admin = $driver->id_admin;
+				$assignment->id_community_shift = $newShift->id_community_shift;
+				$assignment->confirmed = true;
+				$assignment->date = date('Y-m-d H:i:s');
+				$assignment->save();
+			}
+			return $newShift;
 		}
-		return $newShift;
 	}
 
 	public function openCommunityByDriver( $id_driver, $shiftEnd ){
