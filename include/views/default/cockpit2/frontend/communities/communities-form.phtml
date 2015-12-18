@@ -207,10 +207,30 @@
 				<li class="li-input" ng-show="community.allow_preorder" ng-class="{'error':form.allowPreOrder.$invalid}">
 					<div class="label">Minutes to delivery pre-orders after community is open:</div>
 					<div class="input">
-						<div class="input"><input type="text" name="communityRange" ng-model="community.preorder_min_after_community_open" ng-required="community.allow_preorder" placeholder="Default 60 minutes"></div>
+						<div class="input"><input  type="number" ignore-mouse-wheel name="communityRange" ng-model="community.preorder_min_after_community_open" ng-required="community.allow_preorder" placeholder="Default 60 minutes"></div>
 					</div>
 					<div class="box-error">
 						<small ng-show="form.allowPreOrder.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.notifyNonShiftDrivers.$invalid}">
+					<div class="label">Send non-scheduled community drivers orders?</div>
+					<div class="input">
+						<select name="notifyNonShiftDrivers" ng-model="community.notify_non_shift_drivers" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.notifyNonShiftDrivers.$error.required">Required.</small>
+					</div>
+				</li>
+
+				<li class="li-input" ng-class="{'error':form.notifyNonShiftDriversMin.$invalid}" ng-if="community.notify_non_shift_drivers">
+					<div class="label">Minutes to delivery pre-orders after community is open:</div>
+					<div class="input">
+						<div class="input"><input  type="number" ignore-mouse-wheel name="notifyNonShiftDriversMin" ng-model="community.notify_non_shift_drivers_min" ng-required="community.notify_non_shift_drivers" placeholder="Default 5 minutes"></div>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.notifyNonShiftDriversMin.$error.required">Required.</small>
 					</div>
 				</li>
 
@@ -333,23 +353,16 @@
 		</div>
 	</form>
 
-
-
-		<div class="support-box-wrap box-content2">
-
-
+</div>
+		<div class="support-box-wrap box-content2" sticky-bottom="80">
 			<div class="no-box-content-color">
-
-	<ul class="ul-inputs">
-		<li class="li-input" ng-show="!isSaving">
-			<button class="button save" ng-click="save();">Save</button>
-		</li>
-		<li class="li-input" ng-show="isSaving">
-			<i class="fa fa-circle-o-notch fa-spin"></i>
-		</li>
-	</ul>
-</div>
+				<ul class="ul-inputs">
+					<li class="li-input" ng-show="!isSaving">
+						<button class="button save" ng-click="save();">Save</button>
+					</li>
+					<li class="li-input" ng-show="isSaving">
+						<i class="fa fa-circle-o-notch fa-spin"></i>
+					</li>
+				</ul>
+			</div>
 		</div>
-
-</div>
-
