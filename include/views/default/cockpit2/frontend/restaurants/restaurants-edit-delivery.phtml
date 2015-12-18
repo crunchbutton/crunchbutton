@@ -1,187 +1,190 @@
 <div ng-controller="RestaurantEditDeliveryCtrl" class="tab-content">
+	<div class="tab-content">
 
-	<form name="form" novalidate ng-show="!loading">
+		<form name="form" novalidate ng-show="!loading">
 
-		<div class="support-boxes">
+			<div class="support-boxes">
 
-			<div class="support-box-wrap box-content2">
-				<div class="support-box-wrap-header">
-					<h1>Delivery Options</h1>
-					<div class="divider"></div>
+				<div class="support-box-wrap box-content2">
+					<div class="support-box-wrap-header">
+						<h1>Delivery Options</h1>
+						<div class="divider"></div>
+					</div>
+
+					<div class="no-box-content-color">
+
+						<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+							<li class="li-input" ng-class="{'error':form.restaurantDelivery.$invalid}">
+								<div class="label">Delivery</div>
+								<div class="input">
+									<select name="restaurantDelivery" required ng-model="restaurant.delivery" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+								</div>
+								<div class="box-error">
+									<small ng-show="form.restaurantDelivery.$error.required">Required.</small>
+								</div>
+							</li>
+
+
+							<li class="li-input" ng-show="restaurant.delivery">
+								<div class="label">Delivery minimum ($)</div>
+								<div class="input"><input type="number" name="restaurantDeliveryMin" ng-model="restaurant.delivery_min" ignore-mouse-wheel></div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':form.restaurantDeliveryMinAmount.$invalid}" ng-show="restaurant.delivery && restaurant.delivery_min > 0">
+								<div class="label">Delivery minimum based on:</div>
+								<div class="input">
+									<select name="restaurantDeliveryMinAmount" ng-required="restaurant.delivery_min > 0" ng-model="restaurant.delivery_min_amt" ng-options="opt.value as opt.label for opt in deliveryMinAmount" ></select>
+								</div>
+								<div class="box-error">
+									<small ng-show="form.restaurantDeliveryMinAmount.$error.required">Required.</small>
+								</div>
+							</li>
+
+							<li class="li-input" ng-show="restaurant.delivery">
+								<div class="label">Delivery fee ($)</div>
+								<div class="input"><input type="number" name="restaurantDeliveryFee" ng-model="restaurant.delivery_fee" ignore-mouse-wheel></div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':form.restaurantDeliveryRadius.$invalid}" ng-show="restaurant.delivery">
+								<div class="label">Radius</div>
+								<div class="input">
+									<div class="input"><input type="number" step="any" type="number" ng-required="restaurant.delivery" name="restaurantDeliveryRadius" ng-model="restaurant.delivery_radius" ignore-mouse-wheel></div>
+								</div>
+								<div class="notes">Miles</div>
+								<div class="box-error">
+									<small ng-show="form.restaurantDeliveryRadius.$error.required">Required.</small>
+								</div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':form.restaurantDeliveryRadiosType.$invalid}" ng-show="restaurant.delivery">
+								<div class="label">Delivery Radius Type</div>
+								<div class="input">
+									<select name="restaurantDeliveryRadiosType" required ng-model="restaurant.delivery_radius_type" ng-options="opt.value as opt.label for opt in deliveryRadiusType" ></select>
+								</div>
+								<div class="box-error">
+									<small ng-show="form.restaurantDeliveryRadiosType.$error.required">Required.</small>
+								</div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':form.restaurantDeliveryEstTime.$invalid}" ng-show="restaurant.delivery">
+								<div class="label">Est. delivery time</div>
+								<div class="input"><input type="number" ng-required="restaurant.delivery" name="restaurantDeliveryEstTime" ng-model="restaurant.delivery_estimated_time" ignore-mouse-wheel></div>
+								<div class="notes">Minutes</div>
+								<div class="box-error">
+									<small ng-show="form.restaurantDeliveryEstTime.$error.required">Required.</small>
+								</div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':form.restaurantDeliveryService.$invalid}" ng-show="restaurant.delivery">
+								<div class="label">Delivery by Crunchbutton (3rd-party delivery)</div>
+								<div class="input">
+									<select name="restaurantDeliveryService" required ng-model="restaurant.delivery_service" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+								</div>
+								<div class="box-error">
+									<small ng-show="form.restaurantDeliveryService.$error.required">Required.</small>
+								</div>
+							</li>
+
+							<li class="li-input" ng-if="restaurant.delivery_service" ng-class="{'error':form.allowPreOrder.$invalid}">
+								<div class="label">Allow Pre-Orders</div>
+								<div class="input">
+									<select name="allowPreOrder" ng-required="restaurant.delivery_service" ng-model="restaurant.allow_preorder" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+								</div>
+								<div class="box-error">
+									<small ng-show="form.allowPreOrder.$error.required">Required.</small>
+								</div>
+								<div class="notes" ng-show="restaurant.allow_preorder">Please make sure that this option is also enabled at the community's page.</div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':form.restaurantDeliveryServiceMarkup.$invalid}" ng-show="restaurant.delivery && restaurant.delivery_service">
+								<div class="label">Delivery Service Percent Markup</div>
+								<div class="input"><input type="number" ng-required="restaurant.delivery_service" name="restaurantDeliveryServiceMarkup" ng-model="restaurant.delivery_service_markup" ignore-mouse-wheel></div>
+								<div class="box-error">
+									<small ng-show="form.restaurantDeliveryServiceMarkup.$error.required">Required.</small>
+								</div>
+							</li>
+
+						</ul>
+					</div>
 				</div>
 
-				<div class="no-box-content-color">
+				<div class="support-box-wrap box-content2">
+					<div class="support-box-wrap-header">
+						<h1>Takeout Options</h1>
+						<div class="divider"></div>
+					</div>
 
-					<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+					<div class="no-box-content-color">
 
-						<li class="li-input" ng-class="{'error':form.restaurantDelivery.$invalid}">
-							<div class="label">Delivery</div>
-							<div class="input">
-								<select name="restaurantDelivery" required ng-model="restaurant.delivery" ng-options="opt.value as opt.label for opt in yesNo" ></select>
-							</div>
-							<div class="box-error">
-								<small ng-show="form.restaurantDelivery.$error.required">Required.</small>
-							</div>
-						</li>
+						<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+							<li class="li-input" ng-class="{'error':form.restaurantTakeout.$invalid}">
+								<div class="label">Takeout</div>
+								<div class="input">
+									<select name="restaurantTakeout" required ng-model="restaurant.takeout" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+								</div>
+								<div class="box-error">
+									<small ng-show="form.restaurantTakeout.$error.required">Required.</small>
+								</div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':form.restaurantPickupEstTime.$invalid}" ng-show="restaurant.takeout">
+								<div class="label">Est. takeout  time</div>
+								<div class="input">
+									<div class="input"><input type="number" ng-required="restaurant.takeout" name="restaurantPickupEstTime" ng-model="restaurant.pickup_estimated_time" ignore-mouse-wheel></div>
+								</div>
+								<div class="notes">Minutes</div>
+								<div class="box-error">
+									<small ng-show="form.restaurantPickupEstTime.$error.required">Required.</small>
+								</div>
+							</li>
 
 
-						<li class="li-input" ng-show="restaurant.delivery">
-							<div class="label">Delivery minimum ($)</div>
-							<div class="input"><input type="number" name="restaurantDeliveryMin" ng-model="restaurant.delivery_min" ignore-mouse-wheel></div>
-						</li>
-
-						<li class="li-input" ng-class="{'error':form.restaurantDeliveryMinAmount.$invalid}" ng-show="restaurant.delivery && restaurant.delivery_min > 0">
-							<div class="label">Delivery minimum based on:</div>
-							<div class="input">
-								<select name="restaurantDeliveryMinAmount" ng-required="restaurant.delivery_min > 0" ng-model="restaurant.delivery_min_amt" ng-options="opt.value as opt.label for opt in deliveryMinAmount" ></select>
-							</div>
-							<div class="box-error">
-								<small ng-show="form.restaurantDeliveryMinAmount.$error.required">Required.</small>
-							</div>
-						</li>
-
-						<li class="li-input" ng-show="restaurant.delivery">
-							<div class="label">Delivery fee ($)</div>
-							<div class="input"><input type="number" name="restaurantDeliveryFee" ng-model="restaurant.delivery_fee" ignore-mouse-wheel></div>
-						</li>
-
-						<li class="li-input" ng-class="{'error':form.restaurantDeliveryRadius.$invalid}" ng-show="restaurant.delivery">
-							<div class="label">Radius</div>
-							<div class="input">
-								<div class="input"><input type="number" step="any" type="number" ng-required="restaurant.delivery" name="restaurantDeliveryRadius" ng-model="restaurant.delivery_radius" ignore-mouse-wheel></div>
-							</div>
-							<div class="notes">Miles</div>
-							<div class="box-error">
-								<small ng-show="form.restaurantDeliveryRadius.$error.required">Required.</small>
-							</div>
-						</li>
-
-						<li class="li-input" ng-class="{'error':form.restaurantDeliveryRadiosType.$invalid}" ng-show="restaurant.delivery">
-							<div class="label">Delivery Radius Type</div>
-							<div class="input">
-								<select name="restaurantDeliveryRadiosType" required ng-model="restaurant.delivery_radius_type" ng-options="opt.value as opt.label for opt in deliveryRadiusType" ></select>
-							</div>
-							<div class="box-error">
-								<small ng-show="form.restaurantDeliveryRadiosType.$error.required">Required.</small>
-							</div>
-						</li>
-
-						<li class="li-input" ng-class="{'error':form.restaurantDeliveryEstTime.$invalid}" ng-show="restaurant.delivery">
-							<div class="label">Est. delivery time</div>
-							<div class="input"><input type="number" ng-required="restaurant.delivery" name="restaurantDeliveryEstTime" ng-model="restaurant.delivery_estimated_time" ignore-mouse-wheel></div>
-							<div class="notes">Minutes</div>
-							<div class="box-error">
-								<small ng-show="form.restaurantDeliveryEstTime.$error.required">Required.</small>
-							</div>
-						</li>
-
-						<li class="li-input" ng-class="{'error':form.restaurantDeliveryService.$invalid}" ng-show="restaurant.delivery">
-							<div class="label">Delivery by Crunchbutton (3rd-party delivery)</div>
-							<div class="input">
-								<select name="restaurantDeliveryService" required ng-model="restaurant.delivery_service" ng-options="opt.value as opt.label for opt in yesNo" ></select>
-							</div>
-							<div class="box-error">
-								<small ng-show="form.restaurantDeliveryService.$error.required">Required.</small>
-							</div>
-						</li>
-
-						<li class="li-input" ng-if="restaurant.delivery_service" ng-class="{'error':form.allowPreOrder.$invalid}">
-							<div class="label">Allow Pre-Orders</div>
-							<div class="input">
-								<select name="allowPreOrder" ng-required="restaurant.delivery_service" ng-model="restaurant.allow_preorder" ng-options="opt.value as opt.label for opt in yesNo" ></select>
-							</div>
-							<div class="box-error">
-								<small ng-show="form.allowPreOrder.$error.required">Required.</small>
-							</div>
-							<div class="notes" ng-show="restaurant.allow_preorder">Please make sure that this option is also enabled at the community's page.</div>
-						</li>
-
-						<li class="li-input" ng-class="{'error':form.restaurantDeliveryServiceMarkup.$invalid}" ng-show="restaurant.delivery && restaurant.delivery_service">
-							<div class="label">Delivery Service Percent Markup</div>
-							<div class="input"><input type="number" ng-required="restaurant.delivery_service" name="restaurantDeliveryServiceMarkup" ng-model="restaurant.delivery_service_markup" ignore-mouse-wheel></div>
-							<div class="box-error">
-								<small ng-show="form.restaurantDeliveryServiceMarkup.$error.required">Required.</small>
-							</div>
-						</li>
-
-					</ul>
-				</div>
-			</div>
-
-			<div class="support-box-wrap box-content2">
-				<div class="support-box-wrap-header">
-					<h1>Takeout Options</h1>
-					<div class="divider"></div>
+						</ul>
+					</div>
 				</div>
 
-				<div class="no-box-content-color">
+				<div class="support-box-wrap box-content2">
+					<div class="support-box-wrap-header">
+						<h1>Logistics</h1>
+						<div class="divider"></div>
+					</div>
 
-					<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+					<div class="no-box-content-color">
 
-						<li class="li-input" ng-class="{'error':form.restaurantTakeout.$invalid}">
-							<div class="label">Takeout</div>
-							<div class="input">
-								<select name="restaurantTakeout" required ng-model="restaurant.takeout" ng-options="opt.value as opt.label for opt in yesNo" ></select>
-							</div>
-							<div class="box-error">
-								<small ng-show="form.restaurantTakeout.$error.required">Required.</small>
-							</div>
-						</li>
+						<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
-						<li class="li-input" ng-class="{'error':form.restaurantPickupEstTime.$invalid}" ng-show="restaurant.takeout">
-							<div class="label">Est. takeout  time</div>
-							<div class="input">
-								<div class="input"><input type="number" ng-required="restaurant.takeout" name="restaurantPickupEstTime" ng-model="restaurant.pickup_estimated_time" ignore-mouse-wheel></div>
-							</div>
-							<div class="notes">Minutes</div>
-							<div class="box-error">
-								<small ng-show="form.restaurantPickupEstTime.$error.required">Required.</small>
-							</div>
-						</li>
-
-
-					</ul>
-				</div>
-			</div>
-
-			<div class="support-box-wrap box-content2">
-				<div class="support-box-wrap-header">
-					<h1>Logistics</h1>
-					<div class="divider"></div>
-				</div>
-
-				<div class="no-box-content-color">
-
-					<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+							<li class="li-input">
+								<div class="label">Order Ahead Time (minutes):</div>
+								<div class="input"><input type="text" name="restaurantOrderAheadTime" ng-model="restaurant.order_ahead_time"></div>
+								<div class="notes">This is the number of minutes it takes before an order is ready for pickup if the driver calls the restaurant ahead of time or orders online. For fast food restaurants this is typically 0. For other types of restaurants, you can get this information by calling the restaurant and/or looking at the restaurant's website where it may give you the earliest pickup time when ordering online. This information is important for helping us to correctly route orders to drivers, so the more accurate you can get this number to be, the more you help us to serve more customers faster. Use the General Notes section if you have any other comments related to this.</div>
+							</li>
 
 						<li class="li-input">
-							<div class="label">Order Ahead Time (minutes):</div>
-							<div class="input"><input type="text" name="restaurantOrderAheadTime" ng-model="restaurant.order_ahead_time"></div>
-							<div class="notes">This is the number of minutes it takes before an order is ready for pickup if the driver calls the restaurant ahead of time or orders online. For fast food restaurants this is typically 0. For other types of restaurants, you can get this information by calling the restaurant and/or looking at the restaurant's website where it may give you the earliest pickup time when ordering online. This information is important for helping us to correctly route orders to drivers, so the more accurate you can get this number to be, the more you help us to serve more customers faster. Use the General Notes section if you have any other comments related to this.</div>
-						</li>
+								<div class="label">Service Time (minutes):</div>
+								<div class="input"><input type="text" name="restaurantServiceTime" ng-model="restaurant.service_time"></div>
+								<div class="notes">This is the number of minutes it takes once a driver has parked for him/her to pick up the food at the restaurant. Some restaurants don't allow you to order ahead, so this number may be higher for those restaurants. For a restaurant where the driver already ordered ahead of time and is just picking up, this is probably like 5 minutes. For other restaurants, it could be closer to 10-15 minutes or more if the driver has to wait in line. A Yelp review search might give you a sense of how bad lines are. Use whatever information you can obtain. This information is important for helping us to correctly route orders to drivers, so the more accurate you can get this number to be, the more you help us to serve more customers faster. We do understand that this can vary over time of day and day of week, but do your best. Use the General Notes section if you have any other comments related to this.</div>
+							</li>
 
-					<li class="li-input">
-							<div class="label">Service Time (minutes):</div>
-							<div class="input"><input type="text" name="restaurantServiceTime" ng-model="restaurant.service_time"></div>
-							<div class="notes">This is the number of minutes it takes once a driver has parked for him/her to pick up the food at the restaurant. Some restaurants don't allow you to order ahead, so this number may be higher for those restaurants. For a restaurant where the driver already ordered ahead of time and is just picking up, this is probably like 5 minutes. For other restaurants, it could be closer to 10-15 minutes or more if the driver has to wait in line. A Yelp review search might give you a sense of how bad lines are. Use whatever information you can obtain. This information is important for helping us to correctly route orders to drivers, so the more accurate you can get this number to be, the more you help us to serve more customers faster. We do understand that this can vary over time of day and day of week, but do your best. Use the General Notes section if you have any other comments related to this.</div>
-						</li>
+						</ul>
 
-					</ul>
+					</div>
 
 				</div>
 
+
 			</div>
 
+		</form>
 
-		</div>
-
-	</form>
+	</div>
 
 	<div class="support-box-wrap box-content2" ng-show="!loading" sticky-bottom="80">
 		<div class="no-box-content-color">
 			<ul class="ul-inputs">
 				<li class="li-input" ng-show="!isSaving">
-					<button class="button save" ng-click="save();">Save</button>
+					<button class="button save" ng-click="save();">Save Delivery Info</button>
 				</li>
 				<li class="li-input" ng-show="isSaving">
 					<i class="fa fa-circle-o-notch fa-spin"></i>
