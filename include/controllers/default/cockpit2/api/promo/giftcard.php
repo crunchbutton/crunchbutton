@@ -92,6 +92,7 @@ class Controller_api_promo_giftcard extends Crunchbutton_Controller_RestAccount 
 		$paid_by = $this->request()[ 'paid_by' ];
 		$phone = $this->request()[ 'phone' ];
 		$notify_phone = $this->request()[ 'notify_phone' ];
+		$note = $this->request()[ 'note' ];
 
 		if( $notify_phone ){
 			if( !Phone::clean( $phone ) ){
@@ -106,6 +107,7 @@ class Controller_api_promo_giftcard extends Crunchbutton_Controller_RestAccount 
 		$giftcard->id_admin = $id_admin;
 		$giftcard->paid_by = $paid_by;
 		$giftcard->created_by = $created_by;
+		$giftcard->note = $note;
 		$giftcard->amount_type = 'cash';
 		$giftcard->date = date('Y-m-d H:i:s');
 		$giftcard->phone = $phone;
