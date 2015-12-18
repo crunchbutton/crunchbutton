@@ -1,4 +1,6 @@
-<div ng-controller="RestaurantEditMenuCtrl" class="tab-content">
+<div ng-controller="RestaurantEditMenuCtrl">
+
+	<div class="tab-content">
 
 	<form name="form" novalidate ng-show="!loading">
 
@@ -319,11 +321,13 @@
 		</div>
 	</div>
 
+</div>
+
 	<div class="support-box-wrap box-content2" ng-show="!loading" sticky-bottom="80">
 		<div class="no-box-content-color">
 			<ul class="ul-inputs">
 				<li class="li-input" ng-show="!isSaving">
-					<button class="button save" ng-click="save();">Save</button>
+					<button class="button save" ng-click="save();">Save Menu</button>
 				</li>
 				<li class="li-input" ng-show="isSaving">
 					<i class="fa fa-circle-o-notch fa-spin"></i>

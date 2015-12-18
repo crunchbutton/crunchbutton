@@ -743,7 +743,7 @@ NGApp.directive( 'stickyBottom', function ( $document ) {
 					setHeight();
         });
 
-				angular.element(elem).css( 'position', 'absolute' );
+				angular.element(elem).css( 'position', 'fixed' );
 				var el_height = attrs.stickyBottom;
 
 				if( !angular.element(elem).attr( 'wall' ) ){
