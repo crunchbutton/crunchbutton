@@ -1248,13 +1248,25 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public static function deliveryOrdersByCommunity($hours, $id_community){
-
+		// Pre-orders that haven't been processed and don't have a date are not included
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->modify( '- ' . $hours . ' hours' );
 		$interval = $now->format( 'Y-m-d H:i:s' );
 
-		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o WHERE o.delivery_service=true and date > ? and id_community = ? ORDER BY o.id_order';
+		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o WHERE o.delivery_service=true and date > ? and date is not null and id_community = ? ORDER BY o.id_order';
 		return Order::q($query, [$interval, $id_community]);
+	}
+
+	public static function deliveryOrdersByCommunityBeforeNow($hours, $id_community){
+		// For backtest/simulation purposes
+		// Note that pre-orders are not removed, but it's not clear how to screen them out.
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$nowString = $now->format( 'Y-m-d H:i:s' );
+		$now->modify( '- ' . $hours . ' hours' );
+		$interval = $now->format( 'Y-m-d H:i:s' );
+
+		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o WHERE o.delivery_service=true and date > ? and date <= ? and date is not null and id_community = ? ORDER BY o.id_order';
+		return Order::q($query, [$interval, $nowString, $id_community]);
 	}
 
 	/*

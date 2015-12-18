@@ -34,6 +34,24 @@ class Crunchbutton_Order_Priority extends Cana_Table
         }
     }
 
+    public static function priorityOrdersBeforeNow($seconds, $id_admin, $id_restaurant)
+    {
+        // TODO: Refactor some more
+        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $nowString = $now->format('Y-m-d H:i:s');
+        $now->modify('- ' . $seconds . ' seconds');
+        $interval = $now->format('Y-m-d H:i:s');
+        if (is_null($id_restaurant)) {
+            $query = 'SELECT p.* FROM order_priority p WHERE p.id_admin= ? AND p.priority_time >= ? AND p.priority_time <= ?';
+            return Crunchbutton_Order_Priority::q($query, [$id_admin, $interval, $nowString]);
+        }
+        else {
+            $query = 'SELECT p.* FROM order_priority p WHERE p.id_admin= ? and p.id_restaurant = ? AND p.priority_time >= ? AND p.priority_time <= ?';
+            return Crunchbutton_Order_Priority::q($query, [$id_admin, $id_restaurant, $interval, $nowString]);
+        }
+    }
+
+
 
     public static function lastNExpiredSpecialPriorityOrders($minDtString, $id_admin, $limit)
     {

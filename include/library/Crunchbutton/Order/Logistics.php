@@ -50,6 +50,8 @@ class Crunchbutton_Order_Logistics extends Cana_Model
     const LC_MAX_FAKE_ORDER_PARKING_TIME = 5; // minutes
     const LC_MAX_FAKE_ORDER_SERVICE_TIME = 5; // minutes
 
+    const PRE_ORDER_WINDOW_SIZE = 15; // minutes TODO: Currently not used.  Maybe make penalty much harsher after this.
+
     public function __construct($delivery_logistics, $order, $drivers = null,
                                 $distanceType = Crunchbutton_Optimizer_Input::DISTANCE_LATLON,
                                 $fakeRestaurantGeo = null, $fakeCustomerGeo = null, $fakeMinAgo = null, $doCreateFakeOrders = null, $noAdjustment=false)
@@ -115,6 +117,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 
     public function getTravelTime($order, $communityspeed = 10.0)
     {
+        // Travel time between two customers
         if (array_key_exists($order->id_order, $this->orderDistanceCache)) {
             $traveltime = $this->orderDistanceCache[$order->id_order];
         } else {
@@ -268,10 +271,10 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         return $bp_c;
     }
 
-    public function getOrderAheadCorrection($community_speed, $order_ahead_time)
+    public function getOrderAheadCorrection($community_speed, $order_ahead_time, $hasUnpickedupPreorder)
     {
         $correction = 0;
-        if (!is_null($order_ahead_time)) {
+        if (!is_null($order_ahead_time) && !$hasUnpickedupPreorder) {
             if ($order_ahead_time > $this->order_ahead_correction_limit1 && $order_ahead_time <= $this->order_ahead_correction_limit2) {
                 $correction = $this->order_ahead_correction1;
             } else if ($order_ahead_time > $this->order_ahead_correction_limit2) {
@@ -386,8 +389,126 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         return $keepFlag;
     }
 
+    public function addPreorderInfoToDestinationList($order, $isNewOrder, $isPickedUpOrder, $dlist, $communityTime, $dow, $serverDT, $experience=1)
+    {
+        // Add restaurant, customer pair
+//        print "addPreorderInfoToDestinationList\n";
+        $keepFlag = true;
+        $nowDate = $serverDT->format('Y-m-d H:i:s');
+        $customer_geo = $this->getCustomerGeo($order);
+        if (is_null($customer_geo)) {
+            $keepFlag = false;
+            Log::debug(['id_order' => $order->id_order, 'time' => $nowDate, 'stage' => 'addOrderInfoWithNoCustomerGeo',
+                'type' => 'complexLogistics']);
+        } else {
+            $r_geo = $this->getRestaurantGeo($order);
+            $r_pt = $this->getRestaurantParkingTime($order, $communityTime, $dow, $experience);
+            $r_ordertime = $this->getRestaurantOrderTime($order, $communityTime, $dow);
+            $r_cluster = $this->getRestaurantCluster($order, $communityTime, $dow);
+            $r_st = $this->getRestaurantServiceTime($order, $communityTime, $dow, $experience);
+        }
+
+        if ($keepFlag) {
+
+            if (is_null($serverDT) || is_null($order->date) || is_null($order->date_delivery)) {
+                $keepFlag = false;
+            } else {
+                // order->date is the time that the order is sent to drivers
+                $orderDT = new DateTime($order->date, new DateTimeZone(c::config()->timezone));
+                $orderTime = round(($orderDT->getTimestamp() - $serverDT->getTimestamp()) / 60.0);
+                // $order->date_delivery corresponds to the earliest time of the window
+                $deliveryDT = new DateTime($order->date_delivery, new DateTimeZone(c::config()->timezone));
+                $deliveryTime = round(($deliveryDT->getTimestamp() - $serverDT->getTimestamp()) / 60.0);
+
+                $earlyRestaurantWindow = max(0, $orderTime + $r_ordertime);
+                // Penalty starts being applied once the order is delivered after the deliveryTime
+                // TODO: Maybe loosen the penalty by adding some minutes?
+                $midWindow = $deliveryTime;
+                $impliedOrderTime = $deliveryTime - self::LC_PENALTY_THRESHOLD;
+                // TODO: Not sure we want to use the slack max time here.  Doesn't matter for now
+                $lateWindow = $impliedOrderTime + Crunchbutton_Order_Logistics::LC_SLACK_MAX_TIME;
+
+                $fakeOrderTime = (-$this->fakeMinAgo);
+                $fakeOrderAheadTime = min($r_ordertime, self::LC_MAX_FAKE_ORDER_AHEAD_TIME);
+                $fakeEarlyWindow = max(0, $fakeOrderTime + $fakeOrderAheadTime);
+                $fakeMidWindow = $fakeOrderTime + Crunchbutton_Order_Logistics::LC_PENALTY_THRESHOLD;
+                $fakeLateWindow = $fakeOrderTime + Crunchbutton_Order_Logistics::LC_SLACK_MAX_TIME;
+                if ($isNewOrder) {
+                    // Save this info for fake orders
+                    $this->newOrderOrderTime = $fakeOrderTime;
+                    $this->newOrderEarlyWindow = $fakeEarlyWindow;
+                    $this->newOrderMidWindow = $fakeMidWindow;
+                    $this->newOrderLateWindow = $fakeLateWindow;
+                    $this->newOrderParkingTime = min($r_pt, self::LC_MAX_FAKE_ORDER_PARKING_TIME);
+                    $this->newOrderServiceTime = min($r_st, self::LC_MAX_FAKE_ORDER_SERVICE_TIME);
+                }
+            }
+        }
+        if ($keepFlag) {
+            if ($isPickedUpOrder) {
+                // Dummy restaurant destination = customer location
+                $dummyClusterNumber = $this->getNextDummyClusterNumber();
+                $restaurant_destination = new Crunchbutton_Order_Logistics_Destination([
+                    'objectId' => $dummyClusterNumber,
+                    'type' => Crunchbutton_Order_Logistics_Destination::TYPE_RESTAURANT,
+                    'geo' => $customer_geo,
+                    'orderTime' => $orderTime,
+                    'earlyWindow' => $earlyRestaurantWindow,
+                    'midWindow' => Crunchbutton_Order_Logistics::LC_HORIZON,
+                    'lateWindow' => $lateWindow,
+                    'restaurantParkingTime' => 0,
+                    'restaurantServiceTime' => 0,
+                    'cluster' => $dummyClusterNumber,
+                    'isFake' => true,
+                    'idOrder' => null
+                ]);
+            } else {
+                $restaurant_destination = new Crunchbutton_Order_Logistics_Destination([
+                    'objectId' => $order->id_restaurant,
+                    'type' => Crunchbutton_Order_Logistics_Destination::TYPE_RESTAURANT,
+                    'geo' => $r_geo,
+                    'orderTime' => $orderTime,
+                    'earlyWindow' => $earlyRestaurantWindow,
+                    'midWindow' => Crunchbutton_Order_Logistics::LC_HORIZON,
+                    'lateWindow' => $lateWindow,
+                    'restaurantParkingTime' => $r_pt,
+                    'restaurantServiceTime' => $r_st,
+                    'cluster' => $r_cluster,
+                    'isFake' => false,
+                    'idOrder' => $order->id_order
+                ]);
+            }
+
+            $customer_destination = new Crunchbutton_Order_Logistics_Destination([
+                'objectId' => $order->id_order,
+                'type' => Crunchbutton_Order_Logistics_Destination::TYPE_CUSTOMER,
+                'geo' => $customer_geo,
+                'orderTime' => $impliedOrderTime,
+                'earlyWindow' => $deliveryTime,
+                'midWindow' => $midWindow,
+                'lateWindow' => $lateWindow,
+                'isFake' => false,
+                'idOrder' => $order->id_order
+            ]);
+            $retVal = $dlist->addDestinationPair($restaurant_destination, $customer_destination, $isNewOrder);
+            if (is_null($retVal)){
+                Log::debug(['id_order' => $order->id_order, 'time' => $nowDate, 'stage' => 'errorAddingDestinationPair1',
+                    'type' => 'complexLogistics']);
+            } else if ($retVal === false) {
+                Log::debug(['id_order' => $order->id_order, 'time' => $nowDate, 'stage' => 'errorAddingDestinationPair2',
+                    'type' => 'complexLogistics']);
+            }
+        }
+        return $keepFlag;
+    }
+
+
     public function calculateDriverScoreCorrection($community, $community_speed, $earliestBundleMinutes, $qualifyingOrderCount,
-                                                   $pickedUpFlag, $tooEarlyFlag, $nonQualifyingOrderFlag) {
+                                                   $pickedUpFlag, $tooEarlyFlag, $nonQualifyingOrderFlag, $hasUnpickedupPreorder,
+                                                   $earliestBundleMinutesIsPreorder) {
+
+        // Don't really need $earliestBundleMinutesIsPreorder because the $tooEarlyFlag should handle situations
+        //  where there are unpickedup orders that are way too in the past.
         $correction = null;
 //        print "$earliestBundleMinutes, $qualifyingOrderCount, $pickedUpFlag, $tooEarlyFlag, $nonQualifyingOrderFlag\n";
         if (!$pickedUpFlag && !$tooEarlyFlag && !$nonQualifyingOrderFlag && ($qualifyingOrderCount > 0) &&
@@ -408,6 +529,9 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 $slope_per_minute = Crunchbutton_Order_Logistics_Bundleparam::SLOPE_PER_MINUTE;
                 $max_minutes = Crunchbutton_Order_Logistics_Bundleparam::MAX_MINUTES;
                 $baseline_mph = Crunchbutton_Order_Logistics_Bundleparam::BASELINE_MPH;
+            }
+            if ($earliestBundleMinutesIsPreorder && $hasUnpickedupPreorder && ($earliestBundleMinutes > $max_minutes)) {
+                $earliestBundleMinutes = $max_minutes;
             }
             if (!is_null($earliestBundleMinutes) && ($earliestBundleMinutes <= $max_minutes)) {
                 $correction = $cutoff_at_zero + ($earliestBundleMinutes * $slope_per_minute);
@@ -451,6 +575,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 
     public function complexLogistics($distanceType = Crunchbutton_Optimizer_Input::DISTANCE_LATLON)
     {
+
         $newOrder = $this->order();
         $orderAheadTime = null;
 //        $cur_id_restaurant = $newOrder->id_restaurant;
@@ -470,6 +595,12 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         $skipFlag = false;
         $skipReason = 0;
         $skipId = 0;
+
+        // Pre-orders shouldn't make it here, but screen them out anyhow.
+        if ($newOrder->preordered) {
+            $skipFlag = true;
+            $skipReason = 90;
+        }
 
         $numGoodOptimizations = 0;
         $numSelectedDrivers = 0; // Number of drivers to get priority.  Should be 1, but there could be ties.
@@ -495,6 +626,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         $numProbablyInactiveDrivers = 0;
 
         if (!$skipFlag) {
+
             $new_id_order = $newOrder->id_order;
             $curCommunityTz = $curCommunity->timezone;
 
@@ -532,8 +664,11 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 $pickedUpFlag = false;
                 $tooEarlyFlag = false;
                 $earliestBundleMinutes = null;
+                $earliestBundleMinutesIsPreorder = false;
                 $numAcceptedUndeliveredOrders = 0;  // This only counts accepted but undelivered orders
                 $isProbablyInactive = false;
+                $numUnpickedupPreorders = 0;
+                $numUnpickedupPreordersInRange = 0;
                 if (!$skipFlag) {
                     $spos = Crunchbutton_Order_Priority::lastNExpiredSpecialPriorityOrders($missedMinTimeString, $driver->id_admin, self::LC_MAX_MISSED_PRIORITY_ORDERS);
                     if ($spos->count() == self::LC_MAX_MISSED_PRIORITY_ORDERS) {
@@ -558,6 +693,8 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     } else{
                         $driver_mph = $cs_mph;
                     }
+                    // Unpicked-up pre-order from the same restaurant
+                    $driver->__hasUnpickedupPreorder = false;
                     $driver->__mph = $driver_mph;
                     $dlist = new Crunchbutton_Order_Logistics_DestinationList($distanceType);
                     $dlist->driverMph = $driver_mph;
@@ -586,6 +723,8 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                             if ($order->id_order == $new_id_order) {
 //                                print "Found this order\n";
                                 // Split up for debugging
+                                // Note that we screened for pre-orders earlier, so we are not screening again.
+                                // TODO: Code could change if pre-orders are included somehow.
                                 $checkIt = $this->addOrderInfoToDestinationList($order, true, false, $dlist,
                                     $curCommunityTime, $dow, $server_dt, $driver_experience);
                                 if (!$checkIt) {
@@ -609,6 +748,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                                     $lastStatusDriver = $osl['driver'];
                                 }
                                 if ($osl && array_key_exists('timestamp', $osl)) {
+                                    // This timestamp is timezone-independent
                                     $lastStatusTimestamp = $osl['timestamp'];
                                 }
 
@@ -632,6 +772,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                                         $pickedUpFlag = true;
                                     } else if ($lastStatus == 'accepted' && (!$isRefunded || !$doNotReimburseDriver)) {
 //                                        print "Found accepted order\n";
+
                                         $addOrder = true;
                                         $numAcceptedUndeliveredOrders++;
                                         $driver->__driverLocation->addAcceptedOrder($lastStatusTimestamp, $server_dt->getTimestamp(),
@@ -639,29 +780,57 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                                         $orderBundle = $this->getRestaurantCluster($order, $curCommunityTime, $dow);
                                         $curOrderBundle = $this->getRestaurantCluster($newOrder, $curCommunityTime, $dow);
 //                                        $order_id_restaurant = $order->id_restaurant;
-                                        if ($orderBundle == $curOrderBundle) {
-                                            $serverTimestamp = $server_dt->getTimeStamp();
-                                            if ($lastStatusTimestamp && $lastStatusTimestamp + $this->time_bundle > $serverTimestamp) {
-                                                $traveltime = $this->getTravelTime($order, $driver_mph);
-                                                if (is_null($traveltime) || $traveltime < $this->max_bundle_travel_time) {
-                                                    $qualifyingOrderCount++;
-                                                    $age = ($serverTimestamp - $lastStatusTimestamp) / 60.0;
-                                                    if (is_null($earliestBundleMinutes) || ($age > $earliestBundleMinutes)) {
-                                                        $earliestBundleMinutes = $age;
+
+                                        if ($order->preordered) {
+                                            if (!is_null($order->date_delivery)) {
+                                                $numUnpickedupPreorders++;
+                                                $deliveryDT = new DateTime($order->date_delivery, new DateTimeZone(c::config()->timezone));
+                                                $deliveryTime = round(($deliveryDT->getTimestamp() - $server_dt->getTimestamp()) / 60.0);
+                                                if ($deliveryTime <= self::LC_PENALTY_THRESHOLD) {
+                                                    $numUnpickedupPreordersInRange++;
+                                                    $traveltime = $this->getTravelTime($order, $driver_mph);
+                                                    if (is_null($traveltime) || $traveltime < $this->max_bundle_travel_time) {
+                                                        if ($orderBundle == $curOrderBundle) {
+                                                            $driver->__hasUnpickedupPreorder = true;
+                                                            $qualifyingOrderCount++;
+                                                            $age = $deliveryTime;
+                                                            if (is_null($earliestBundleMinutes) || ($age > $earliestBundleMinutes)) {
+                                                                $earliestBundleMinutes = $age;
+                                                                $earliestBundleMinutesIsPreorder = true;
+                                                            }
+                                                        }
+                                                    } else {
+                                                        $nonQualifyingOrderFlag = true;
                                                     }
+                                                }
+                                            }
+
+                                        } else {
+                                            if ($orderBundle == $curOrderBundle) {
+                                                $serverTimestamp = $server_dt->getTimeStamp();
+                                                if ($lastStatusTimestamp && $lastStatusTimestamp + $this->time_bundle > $serverTimestamp) {
+                                                    $traveltime = $this->getTravelTime($order, $driver_mph);
+                                                    if (is_null($traveltime) || $traveltime < $this->max_bundle_travel_time) {
+                                                        $qualifyingOrderCount++;
+                                                        $age = ($serverTimestamp - $lastStatusTimestamp) / 60.0;
+                                                        if (is_null($earliestBundleMinutes) || ($age > $earliestBundleMinutes)) {
+                                                            $earliestBundleMinutes = $age;
+                                                            $earliestBundleMinutesIsPreorder = false;
+                                                        }
 //                            Log::debug(['id_order' => $newOrder->id_order, 'time' => $nowDate, 'driver' => $driver->id_admin,
 //                                'stage' => 'accepted_order_counted', 'order_check'=>$order->id_order,
 //                                'type' => 'simpleLogistics']);
+                                                    } else {
+                                                        $nonQualifyingOrderFlag = true;
+                                                    }
                                                 } else {
-                                                    $nonQualifyingOrderFlag = true;
-                                                }
-                                            } else {
-                                                // The driver accepted an order from the restaurant earlier than the time window.
-                                                //  Assumption is he's got the food and bundling doesn't help him.
-                                                $tooEarlyFlag = true;
+                                                    // The driver accepted an order from the restaurant earlier than the time window.
+                                                    //  Assumption is he's got the food and bundling doesn't help him.
+                                                    $tooEarlyFlag = true;
 //                        Log::debug(['id_order' => $newOrder->id_order, 'time' => $nowDate, 'driver' => $driver->id_admin,
 //                            'stage' => 'too early flag', 'order_check'=>$order->id_order,
 //                            'type' => 'simpleLogistics']);
+                                                }
                                             }
                                         }
                                     } else if ($lastStatus == 'delivered') {
@@ -672,6 +841,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                                     }
                                 } else if ($lastStatus == 'new' && (!$isRefunded || !$doNotReimburseDriver) && Crunchbutton_Order_Priority::checkOrderInArray($order->id_order, $priorityOrders)) {
 //                                    print "Found new priority order\n";
+                                    // Pre-orders have no priority right now, so we don't need to worry about them
                                     $addOrder = true;
                                     $orderBundle = $this->getRestaurantCluster($order, $curCommunityTime, $dow);
                                     $curOrderBundle = $this->getRestaurantCluster($newOrder, $curCommunityTime, $dow);
@@ -684,6 +854,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                                                 $age = ($serverTimestamp - $lastStatusTimestamp) / 60.0;
                                                 if (is_null($earliestBundleMinutes) || ($age > $earliestBundleMinutes)) {
                                                     $earliestBundleMinutes = $age;
+                                                    $earliestBundleMinutesIsPreorder = false;
                                                 }
 //                            Log::debug(['id_order' => $newOrder->id_order, 'time' => $nowDate, 'driver' => $driver->id_admin,
 //                                'stage' => 'accepted_order_counted', 'order_check'=>$order->id_order,
@@ -695,14 +866,25 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 
                                 if ($addOrder) {
                                     // Split up for debugging
-                                    $checkIt = $this->addOrderInfoToDestinationList($order, false,
-                                        $isPickedUpOrder, $dlist, $curCommunityTime, $dow, $server_dt, $driver_experience);
-                                    if (!$checkIt) {
-                                        $skipFlag = true;
-                                        $skipReason = 4;
-                                        $skipId = $order->id_order;
+                                    if ($order->preordered) {
+                                        $checkIt = $this->addPreorderInfoToDestinationList($order, false,
+                                            $isPickedUpOrder, $dlist, $curCommunityTime, $dow, $server_dt, $driver_experience);
+                                        if (!$checkIt) {
+                                            $skipFlag = true;
+                                            $skipReason = 40;
+                                            $skipId = $order->id_order;
+                                        }
+                                        $driverOrderCount++;
+                                    } else {
+                                        $checkIt = $this->addOrderInfoToDestinationList($order, false,
+                                            $isPickedUpOrder, $dlist, $curCommunityTime, $dow, $server_dt, $driver_experience);
+                                        if (!$checkIt) {
+                                            $skipFlag = true;
+                                            $skipReason = 4;
+                                            $skipId = $order->id_order;
+                                        }
+                                        $driverOrderCount++;
                                     }
-                                    $driverOrderCount++;
                                 }
                             }
                         }
@@ -715,7 +897,9 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     }
 
                 }
-                if ($driverOrderCount <= 1) {
+                // Order count needs to be at least 1 since the order itself is counted
+                $adjustedDriverOrderCount = $driverOrderCount - ($numUnpickedupPreorders - $numUnpickedupPreordersInRange);
+                if ($adjustedDriverOrderCount <= 1) {
                     $driversWithNoOrdersCount++;
                     $driver->__hasNoOrders = true;
                 } else{
@@ -726,8 +910,11 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 $driver->__tooEarlyFlag = $tooEarlyFlag;
                 $driver->__nonQualifyingOrderFlag = $nonQualifyingOrderFlag;
                 $driver->__earliestBundleMinutes = $earliestBundleMinutes;
+                $driver->__earliestBundleMinutesIsPreorder = $earliestBundleMinutesIsPreorder;
                 $driver->__numAcceptedUndeliveredOrders = $numAcceptedUndeliveredOrders;
                 $driver->__isProbablyInactive = $isProbablyInactive;
+                $driver->__numUnpickedupPreorders = $numUnpickedupPreorders;
+                $driver->__numUnpickedupPreordersInRange = $numUnpickedupPreordersInRange;
                 if ($isProbablyInactive) {
                     $numProbablyInactiveDrivers++;
                 } else{
@@ -750,14 +937,16 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     $pickedUpFlag = $driver->__pickedUpFlag;
                     $tooEarlyFlag = $driver->__tooEarlyFlag;
                     $earliestBundleMinutes = $driver->__earliestBundleMinutes;
+                    $earliestBundleMinutesIsPreorder = $driver->__earliestBundleMinutesIsPreorder;
                     $nonQualifyingOrderFlag = $driver->__nonQualifyingOrderFlag;
                     $driverCorrection = $this->calculateDriverScoreCorrection($curCommunity, $driver->__mph,
                         $earliestBundleMinutes,
-                        $qualifyingOrderCount, $pickedUpFlag, $tooEarlyFlag, $nonQualifyingOrderFlag);
+                        $qualifyingOrderCount, $pickedUpFlag, $tooEarlyFlag, $nonQualifyingOrderFlag,
+                        $driver->__hasUnpickedupPreorder, $driver->__earliestBundleMinutesIsPreorder);
                     if (!is_null($driverCorrection)) {
-                        $orderAheadCorrection = $this->getOrderAheadCorrection($driver->mph, $orderAheadTime);
+                        $orderAheadCorrection = $this->getOrderAheadCorrection($driver->mph, $orderAheadTime, $driver->__hasUnpickedupPreorder,
+                            $earliestBundleMinutesIsPreorder);
                         $totalCorrection = $driverCorrection + $orderAheadCorrection;
-//                        print "The correction is $driverCorrection $orderAheadCorrection $totalCorrection\n";
 
                         if (is_null($minCorrection) || ($totalCorrection < $minCorrection)) {
                             $minCorrection = $totalCorrection;
@@ -831,7 +1020,6 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                                     $useScoreCorrection = $scoreCorrection;
                                 }
                                 $scoreChange = $resultNew->score - ($resultOld->score + $useScoreCorrection);
-//                            print "The score change is $scoreChange\n";
                                 $driver->__scoreChange = $scoreChange;
                                 if ($scoreChange < $bestScoreChangeOverall) {
                                     $bestScoreChangeOverall = $scoreChange;
@@ -915,7 +1103,6 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 //                print("Num selected Drivers: $numSelectedDrivers\n");
 //                print("Num selected Inactive Drivers: $numSelectedInactiveDrivers\n");
             }
-
         }
 
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
@@ -995,6 +1182,9 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 'num_drivers_with_priority' => $num_drivers_with_priority,
                 'seconds_delay' => $seconds_delay,
                 'is_probably_inactive' => $driver->__isProbablyInactive,
+                'num_unpickedup_preorders' => $driver->__numUnpickedupPreorders,
+                'num_unpickedup_pos_in_range' => $driver->__numUnpickedupPreordersInRange,
+                'num_orders_bundle_check' => $driver->__qualifyingOrderCount,
                 'priority_expiration' => $priority_expiration
             ]);
             $priority->save();
@@ -1030,13 +1220,14 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         }
 //        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
 //        $nowDate = $now->format('Y-m-d H:i:s');
-        $ordersUnfiltered = Order::deliveryOrdersByCommunity(2, $curCommunity->id_community);
+        // Add the now criteria to deal with simulation / historical studies
+        $ordersUnfiltered = Order::deliveryOrdersByCommunityBeforeNow(2, $curCommunity->id_community);
         foreach ($this->drivers() as $driver) {
             // Get orders in the last two hours for this driver
 
             // Get priority orders that have been routed to that driver in the last
             //  n seconds for that restaurant
-            $priorityOrders = Crunchbutton_Order_Priority::priorityOrders(self::TIME_MAX_DELAY + self::TIME_BUFFER,
+            $priorityOrders = Crunchbutton_Order_Priority::priorityOrdersBeforeNow(self::TIME_MAX_DELAY + self::TIME_BUFFER,
                 $driver->id_admin, $cur_id_restaurant);
             $uniqueRestaurants = [];
             $acceptCount = 0;
@@ -1096,22 +1287,33 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     // Count accepted orders that have happened in the last n minutes
                     $uniqueRestaurants[$order->id_restaurant] = 1;
                     if ($order->id_restaurant == $cur_id_restaurant) {
-
-                        if ($lastStatusTimestamp && $lastStatusTimestamp + self::TIME_BUNDLE > $time->getTimeStamp()) {
-                            $traveltime = $this->getTravelTime($order, $cs_mph);
-                            if (is_null($traveltime) || $traveltime < self::MAX_BUNDLE_TRAVEL_TIME) {
+                        if ($order->preordered && !is_null($order->date_delivery)) {
+                            // If pre-order is due to be delivered in less than n minutes and
+                            //  it has been accepted, but not picked-up, then bundle.
+                            // TODO: This algo could use some improvement
+                            $deliveryDT = new DateTime($order->date_delivery, new DateTimeZone(c::config()->timezone));
+                            $deliveryTime = round(($deliveryDT->getTimestamp() - $time->getTimestamp()) / 60.0);
+                            if ($deliveryTime <= self::LC_PENALTY_THRESHOLD) {
                                 $acceptCount++;
+                            }
+                        } else {
+                            if ($lastStatusTimestamp && $lastStatusTimestamp + self::TIME_BUNDLE > $time->getTimeStamp()) {
+                                $traveltime = $this->getTravelTime($order, $cs_mph);
+                                if (is_null($traveltime) || $traveltime < self::MAX_BUNDLE_TRAVEL_TIME) {
+                                    $acceptCount++;
 //                            Log::debug(['id_order' => $newOrder->id_order, 'time' => $nowDate, 'driver' => $driver->id_admin,
 //                                'stage' => 'accepted_order_counted', 'order_check'=>$order->id_order,
 //                                'type' => 'simpleLogistics']);
-                            }
-                        } else {
-                            // The driver accepted an order from the restaurant earlier than the time window.
-                            //  Assumption is he's got the food and bundling doesn't help him.
-                            $tooEarlyFlag = true;
+                                }
+                            } else {
+                                // The driver accepted an order from the restaurant earlier than the time window.
+                                //  Assumption is he's very close to getting the food and bundling doesn't help him,
+                                //   meaning that he won't have time to deal with a new order from the same restaurant
+                                $tooEarlyFlag = true;
 //                        Log::debug(['id_order' => $newOrder->id_order, 'time' => $nowDate, 'driver' => $driver->id_admin,
 //                            'stage' => 'too early flag', 'order_check'=>$order->id_order,
 //                            'type' => 'simpleLogistics']);
+                            }
                         }
                     }
                 } else if ($lastStatus == 'new' && (!$isRefunded || !$doNotReimburseDriver) && Crunchbutton_Order_Priority::checkOrderInArray($order->id_order, $priorityOrders)) {
@@ -1137,6 +1339,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
             if ($tooEarlyFlag) {
                 $acceptCount = 0;
             }
+            $driver->__acceptCount = $acceptCount;
             $driverOrderCounts[$driver->id_admin] = $acceptCount;
             $driverUniqueRestaurantCounts[$driver->id_admin] = count($uniqueRestaurants);
 
