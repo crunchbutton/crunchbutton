@@ -32,7 +32,7 @@ class Crunchbutton_GoogleGeocode
 
         if ($address) {
             $address = str_replace(' ', '+', preg_replace('/\s+/', ' ', trim($address)));
-            $address = str_replace('#', 'number ', $address);
+            $address = str_replace('#', '+', $address);
         }
         $url = $rootUrl
             . $address
