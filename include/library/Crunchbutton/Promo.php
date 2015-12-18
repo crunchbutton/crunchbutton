@@ -78,8 +78,8 @@ class Crunchbutton_Promo extends Cana_Table
 		}
 
 		// make sure the code do not exist
-		$promo = Crunchbutton_Promo::byCode( $rnd_id );
-		if( $promo->count() > 0 ){
+		$result = c::db()->get( 'SELECT COUNT(*) AS total FROM promo WHERE code = ?', [ $rnd_id ] )->get( 0 );
+		if( intval( $result->total ) > 0 ){
 			return static::promoCodeGeneratorUseChars( $chars, $length, $id_promo, $prefix );
 		} else {
 			return $rnd_id;

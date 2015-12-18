@@ -160,11 +160,8 @@ class Controller_api_promo_discountcode extends Crunchbutton_Controller_RestAcco
 		}
 
 		// get the count
-		$count = 0;
-		$r = c::db()->query(str_replace('-WILD-','COUNT(*) c', $q), $keys);
-		while ($c = $r->fetch()) {
-			$count++;
-		}
+		$r = c::db()->get(str_replace('-WILD-','COUNT(*) c', $q), $keys)->get(0);
+		$count = intval( $r->c );
 
 		$q .= '
 			ORDER BY p.id_promo DESC

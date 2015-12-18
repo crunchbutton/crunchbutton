@@ -1,0 +1,143 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-gift"></i><span>Generate Gift Card</span></h1>
+
+	<div class="divider"></div>
+
+	<form name="form" novalidate>
+
+		<div class="support-box-wrap box-content2">
+
+			<div class="support-box-wrap-header">
+				<h1>Generate Gift Cards</h1>
+				<div class="divider"></div>
+			</div>
+			<div class="no-box-content-color">
+
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+					<li class="li-input" ng-class="{'error':form.value.$invalid}">
+						<div class="label">Value:</div>
+						<div class="input"><input step="any" min="1" type="number" name="value" ng-model="promo.value" required ignore-mouse-wheel placeholder=""></div>
+						<div class="box-error">
+							<small ng-show="form.value.$error.required">Required.</small>
+							<small ng-show="form.value.$error.min">It should be at least $1.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':form.total.$invalid}">
+						<div class="label">Number of Gift Cards:</div>
+						<div class="input"><input type="number" min="1" name="total" ng-model="promo.total" required ignore-mouse-wheel placeholder=""></div>
+						<div class="box-error">
+							<small ng-show="form.total.$error.required">Required.</small>
+							<small ng-show="form.total.$error.min">You should generate at least 1 gift card.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':form.paid_by.$invalid}">
+						<div class="label">Paid by:</div>
+						<div class="input">
+							<select name="paid_by" required ng-model="promo.paid_by" ng-options="opt.value as opt.label for opt in paidBy" ></select>
+						</div>
+						<div class="box-error">
+							<small ng-show="form.paid_by.$error.required">Required.</small>
+						</div>
+					</li>
+
+				</ul>
+			</div>
+		</div>
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Advanced Options</h1>
+				<div class="divider"></div>
+			</div>
+			<div class="no-box-content-color">
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+					<li class="li-input" ng-class="{'error':form.chars_length.$invalid}">
+						<div class="label">Gift card length:</div>
+						<div class="input"><input type="number" min="7" name="chars_length" ng-model="promo.chars_length" required ignore-mouse-wheel placeholder=""></div>
+						<div class="box-error">
+							<small ng-show="form.chars_length.$error.required">Required.</small>
+							<small ng-show="form.chars_length.$error.min">It should be at least 7.</small>
+						</div>
+					</li>
+
+					<li class="li-input">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="promo.include_gift_card_id"/><div></div>
+						</label>
+						<div class="label">Include the Gift Card ID at the code:</div>
+					</li>
+
+					<li class="li-input">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="promo.use_numbers"/><div></div>
+						</label>
+						<div class="label">Use numbers:</div>
+					</li>
+
+					<li class="li-input">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="promo.use_letters"/><div></div>
+						</label>
+						<div class="label">Use letters:</div>
+					</li>
+
+
+					<li class="li-input">
+						<div class="label">Prefix:</div>
+						<div class="input"><input type="text" name="prefix" ng-model="promo.prefix" placeholder=""></div>
+					</li>
+
+					<li class="li-input">
+						<div class="label">Exclude chars:</div>
+						<div class="input"><input type="text" name="exclude_chars" ng-model="promo.exclude_chars" placeholder=""></div>
+						<div class="box-error">
+							<small ng-show="form.value.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input">
+						<div class="label">Chars will be used:</div>
+						<div class="input"><input type="text" readonly="" name="chars_to_use" ng-model="promo.chars_to_use"></div>
+					</li>
+
+				</ul>
+			</div>
+		</div>
+
+
+		<div class="support-box-wrap box-content2">
+			<div class="no-box-content-color">
+				<ul class="ul-inputs" ng-if="is_ok_to_generate">
+					<li class="li-input" ng-show="!isSaving">
+						<button class="button save" ng-click="save();">Generate</button>
+						<div class="notes">Possible combinations: {{possible_combinations}}</div>
+					</li>
+					<li class="li-input" ng-show="isSaving">
+						<i class="fa fa-circle-o-notch fa-spin"></i>
+					</li>
+				</ul>
+					<ul class="ul-inputs" ng-if="!is_ok_to_generate">
+					<li class="li-input" ng-show="!isSaving">
+						<div class="label">Oops! Something wrong! Please review the options!</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</form>
+
+
+
+
+	<br><br><br>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>
