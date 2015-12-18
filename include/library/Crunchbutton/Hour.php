@@ -37,11 +37,13 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		$tomorrow->modify( '+ 1 day' );
 		$isTomorrow = ( !$isToday && $nexOpen->format( 'YmdHis' ) < $tomorrow->format( 'YmdHis' ) );
 
-		$message = 'Available at ' . $nexOpen->format( 'g' );
+		$message = 'Usually available at ' . $nexOpen->format( 'g' );
 		if( $nexOpen->format( 'i' ) != '00' ){
 			$message .= ':' . $nexOpen->format( 'i' );
 		}
 		$message .= $nexOpen->format( 'A' );
+
+		/* change to auto-closed text #7270
 		if( $isToday ){
 			$message .= ' Today';
 		} else if( $isTomorrow ){
@@ -50,6 +52,7 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 			$message .= ' on ';
 			$message .= $nexOpen->format( 'D' );
 		}
+		*/
 
 		if( $restaurant->allowPreorder() ){
 			$message .= '. Pre-order now!';

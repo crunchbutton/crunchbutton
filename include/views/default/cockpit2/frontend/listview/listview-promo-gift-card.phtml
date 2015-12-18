@@ -5,7 +5,7 @@
 				<th></th>
 				<th>Code</th>
 				<th>Value</th>
-				<th>User</th>
+				<th>Info</th>
 				<th>Created By</th>
 				<th>Status</th>
 				<th class="tb-small"></th>
@@ -16,7 +16,11 @@
 				<td>#{{promo.id_promo}}</td>
 				<td>{{promo.code}}</td>
 				<td>${{promo.value | number:2}}</td>
-				<td><a ng-if="promo.id_user" href="/customer/{{promo.id_user}}">{{promo.user}}</a>&nbsp;</td>
+				<td>
+					<a ng-if="promo.id_user" href="/customer/{{promo.id_user}}">{{promo.user}}</a>
+					<div ng-if="promo.phone"><a href ng-click="callText(promo.phone)">{{promo.phone}}</a></div>
+					<div class="listview-smaller" ng-bind-html="promo.note" ng-if="promo.note"></div>
+				</td>
 				<td><a ng-if="promo.login" href="/staff/{{promo.login}}">{{promo.admin}}</a>&nbsp;</td>
 				<td nowrap class="tb-center tb-v-center">
 					<span class="tag tag-green" ng-if="promo.active">Active</span>

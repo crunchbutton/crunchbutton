@@ -338,6 +338,24 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 		} );
 	}
 
+	$scope.updateEntityName = function(){
+		if( $scope.formUpdateEntityName.$invalid ){
+			App.alert( 'Please fill in all required fields! <br>' );
+			$scope.submittedEntityName = true;
+			return;
+		}
+
+		$scope.isUpdating = true;
+
+		if( $scope.restaurant.id_restaurant ){
+			RestaurantService.update_entity_name( $scope.restaurant.payment_type, function( d ){
+				$scope.isUpdating = false;
+				App.alert( 'Entity Name Updated! <br>' );
+				load();
+			} );
+		}
+	}
+
 	$scope.save = function(){
 
 		if( $scope.formBasic.$invalid ){

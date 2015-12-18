@@ -1,0 +1,115 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-gift"></i><span>Add Gift Card</span></h1>
+
+	<div class="divider"></div>
+
+	<form name="form" novalidate>
+
+		<div class="support-box-wrap box-content2">
+
+			<div class="support-box-wrap-header">
+				<h1>Create Gift Cards</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+					<li class="li-input" ng-class="{'error':form.value.$invalid}">
+						<div class="label">Value:</div>
+						<div class="input"><input step="any" min="1" type="number" name="value" ng-model="promo.value" required ignore-mouse-wheel placeholder=""></div>
+						<div class="box-error">
+							<small ng-show="form.value.$error.required">Required.</small>
+							<small ng-show="form.value.$error.min">It should be at least $1.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':form.paid_by.$invalid}">
+						<div class="label">Paid by:</div>
+						<div class="input">
+							<select name="paid_by" required ng-model="promo.paid_by" ng-options="opt.value as opt.label for opt in paidBy" ></select>
+						</div>
+						<div class="box-error">
+							<small ng-show="form.paid_by.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="promo.random_code"/><div></div>
+						</label>
+						<div class="label">Random code:</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':form.code.$invalid}" ng-if="!promo.random_code">
+						<div class="label">Code:</div>
+						<div class="input"><input type="text" name="code" ng-model="promo.code" ng-required="!promo.random_code" placeholder=""></div>
+						<div class="box-error">
+							<small ng-show="form.code.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input">
+						<div class="label">Note:</div>
+						<div class="input"><input type="text" name="note" ng-model="promo.note"></div>
+					</li>
+
+				</ul>
+			</div>
+		</div>
+
+		<div class="support-box-wrap box-content2">
+
+			<div class="support-box-wrap-header">
+				<h1>Notify</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+					<li class="li-input">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="promo.notify_phone"/><div></div>
+						</label>
+						<div class="label">Notify by phone:</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':form.phone.$invalid}" ng-if="promo.notify_phone">
+						<div class="label">Phone:</div>
+						<div class="input"><input type="text" name="phone" ng-model="promo.phone" ng-required="promo.notify_phone" placeholder=""></div>
+						<div class="box-error">
+							<small ng-show="form.phone.$error.required">Required.</small>
+						</div>
+					</li>
+
+				</ul>
+			</div>
+		</div>
+
+
+		<div class="support-box-wrap box-content2">
+			<div class="no-box-content-color">
+				<ul class="ul-inputs">
+					<li class="li-input" ng-show="!isSaving">
+						<button class="button save" ng-click="save();">Create</button>
+					</li>
+					<li class="li-input" ng-show="isSaving">
+						<i class="fa fa-circle-o-notch fa-spin"></i>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</form>
+
+	<br><br><br>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

@@ -68,6 +68,7 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 
 		$restaurant = new Restaurant;
 		$restaurant->cash = 1;
+		$restaurant->campus_cash = 1;
 		$restaurant->credit = 1;
 		$restaurant->giftcard = 1;
 		$restaurant->delivery = 1;
@@ -207,6 +208,7 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 		$out[ 'active_restaurant_order_placement' ] = $this->restaurant->active_restaurant_order_placement;
 		$out[ 'show_when_closed' ] = $this->restaurant->show_when_closed;
 		$out[ 'cash' ] = $this->restaurant->cash;
+		$out[ 'campus_cash' ] = $this->restaurant->campus_cash;
 		$out[ 'credit' ] = $this->restaurant->credit;
 		$out[ 'giftcard' ] = $this->restaurant->giftcard;
 		$out[ 'fee_on_subtotal' ] = $this->restaurant->fee_on_subtotal;

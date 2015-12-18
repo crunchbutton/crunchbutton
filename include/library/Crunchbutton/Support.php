@@ -890,6 +890,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 				$paymentType = $order->paymentType();
 				$out['order'][ 'campus_cash_sha1' ] = $paymentType->stripe_id;
 			}
+
 		}
 
 		// Export the comments
@@ -1080,11 +1081,20 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			if( !$_name ){
 				$_name = $ticket->findsTheSendersName();
 			}
+
+			$email = $ticket->email;
+
+			if( !$email && $ticket->id_user ){
+				$user = User::o( $ticket->id_user );
+				$email = $user->email;
+			}
+
 			if( !$_name ){
 				$_name = '<i>Unknown</i>';
 			}
 			$type = $ticket->findsTheSendersType();
 			$data[ 'name' ] = $type . $_name;
+			$data[ 'email' ] = $email;
 			$messages = Crunchbutton_Support_Message::q( 'SELECT * FROM support_message sm WHERE id_support = ? AND sm.date > DATE_SUB( NOW(), interval ' . $days . ' day )', [$ticket->id_support]);
 			$count = 0;
 			$prev_type = null;
@@ -1092,6 +1102,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			$prev_body = null;
 			$_firstMessageDate = null;
 			$_secondMessageDate = null;
+
 			foreach( $messages as $message ){
 				if( $message->from == Crunchbutton_Support_Message::TYPE_FROM_SYSTEM ||
 					$message->body == Crunchbutton_Support_Message::TICKET_CREATED_COCKPIT_BODY ){
