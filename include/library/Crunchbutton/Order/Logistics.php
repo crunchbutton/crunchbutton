@@ -271,10 +271,10 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         return $bp_c;
     }
 
-    public function getOrderAheadCorrection($community_speed, $order_ahead_time)
+    public function getOrderAheadCorrection($community_speed, $order_ahead_time, $hasUnpickedupPreorder)
     {
         $correction = 0;
-        if (!is_null($order_ahead_time)) {
+        if (!is_null($order_ahead_time) && !$hasUnpickedupPreorder) {
             if ($order_ahead_time > $this->order_ahead_correction_limit1 && $order_ahead_time <= $this->order_ahead_correction_limit2) {
                 $correction = $this->order_ahead_correction1;
             } else if ($order_ahead_time > $this->order_ahead_correction_limit2) {
@@ -504,7 +504,11 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 
 
     public function calculateDriverScoreCorrection($community, $community_speed, $earliestBundleMinutes, $qualifyingOrderCount,
-                                                   $pickedUpFlag, $tooEarlyFlag, $nonQualifyingOrderFlag) {
+                                                   $pickedUpFlag, $tooEarlyFlag, $nonQualifyingOrderFlag, $hasUnpickedupPreorder,
+                                                   $earliestBundleMinutesIsPreorder) {
+
+        // Don't really need $earliestBundleMinutesIsPreorder because the $tooEarlyFlag should handle situations
+        //  where there are unpickedup orders that are way too in the past.
         $correction = null;
 //        print "$earliestBundleMinutes, $qualifyingOrderCount, $pickedUpFlag, $tooEarlyFlag, $nonQualifyingOrderFlag\n";
         if (!$pickedUpFlag && !$tooEarlyFlag && !$nonQualifyingOrderFlag && ($qualifyingOrderCount > 0) &&
@@ -525,6 +529,9 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 $slope_per_minute = Crunchbutton_Order_Logistics_Bundleparam::SLOPE_PER_MINUTE;
                 $max_minutes = Crunchbutton_Order_Logistics_Bundleparam::MAX_MINUTES;
                 $baseline_mph = Crunchbutton_Order_Logistics_Bundleparam::BASELINE_MPH;
+            }
+            if ($earliestBundleMinutesIsPreorder && $hasUnpickedupPreorder && ($earliestBundleMinutes > $max_minutes)) {
+                $earliestBundleMinutes = $max_minutes;
             }
             if (!is_null($earliestBundleMinutes) && ($earliestBundleMinutes <= $max_minutes)) {
                 $correction = $cutoff_at_zero + ($earliestBundleMinutes * $slope_per_minute);
@@ -568,6 +575,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
 
     public function complexLogistics($distanceType = Crunchbutton_Optimizer_Input::DISTANCE_LATLON)
     {
+
         $newOrder = $this->order();
         $orderAheadTime = null;
 //        $cur_id_restaurant = $newOrder->id_restaurant;
@@ -618,6 +626,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
         $numProbablyInactiveDrivers = 0;
 
         if (!$skipFlag) {
+
             $new_id_order = $newOrder->id_order;
             $curCommunityTz = $curCommunity->timezone;
 
@@ -655,6 +664,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 $pickedUpFlag = false;
                 $tooEarlyFlag = false;
                 $earliestBundleMinutes = null;
+                $earliestBundleMinutesIsPreorder = false;
                 $numAcceptedUndeliveredOrders = 0;  // This only counts accepted but undelivered orders
                 $isProbablyInactive = false;
                 $numUnpickedupPreorders = 0;
@@ -683,6 +693,8 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     } else{
                         $driver_mph = $cs_mph;
                     }
+                    // Unpicked-up pre-order from the same restaurant
+                    $driver->__hasUnpickedupPreorder = false;
                     $driver->__mph = $driver_mph;
                     $dlist = new Crunchbutton_Order_Logistics_DestinationList($distanceType);
                     $dlist->driverMph = $driver_mph;
@@ -736,6 +748,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                                     $lastStatusDriver = $osl['driver'];
                                 }
                                 if ($osl && array_key_exists('timestamp', $osl)) {
+                                    // This timestamp is timezone-independent
                                     $lastStatusTimestamp = $osl['timestamp'];
                                 }
 
@@ -778,7 +791,13 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                                                     $traveltime = $this->getTravelTime($order, $driver_mph);
                                                     if (is_null($traveltime) || $traveltime < $this->max_bundle_travel_time) {
                                                         if ($orderBundle == $curOrderBundle) {
+                                                            $driver->__hasUnpickedupPreorder = true;
                                                             $qualifyingOrderCount++;
+                                                            $age = $deliveryTime;
+                                                            if (is_null($earliestBundleMinutes) || ($age > $earliestBundleMinutes)) {
+                                                                $earliestBundleMinutes = $age;
+                                                                $earliestBundleMinutesIsPreorder = true;
+                                                            }
                                                         }
                                                     } else {
                                                         $nonQualifyingOrderFlag = true;
@@ -796,6 +815,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                                                         $age = ($serverTimestamp - $lastStatusTimestamp) / 60.0;
                                                         if (is_null($earliestBundleMinutes) || ($age > $earliestBundleMinutes)) {
                                                             $earliestBundleMinutes = $age;
+                                                            $earliestBundleMinutesIsPreorder = false;
                                                         }
 //                            Log::debug(['id_order' => $newOrder->id_order, 'time' => $nowDate, 'driver' => $driver->id_admin,
 //                                'stage' => 'accepted_order_counted', 'order_check'=>$order->id_order,
@@ -834,6 +854,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                                                 $age = ($serverTimestamp - $lastStatusTimestamp) / 60.0;
                                                 if (is_null($earliestBundleMinutes) || ($age > $earliestBundleMinutes)) {
                                                     $earliestBundleMinutes = $age;
+                                                    $earliestBundleMinutesIsPreorder = false;
                                                 }
 //                            Log::debug(['id_order' => $newOrder->id_order, 'time' => $nowDate, 'driver' => $driver->id_admin,
 //                                'stage' => 'accepted_order_counted', 'order_check'=>$order->id_order,
@@ -876,7 +897,9 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     }
 
                 }
-                if ($driverOrderCount <= 1) {
+                // Order count needs to be at least 1 since the order itself is counted
+                $adjustedDriverOrderCount = $driverOrderCount - ($numUnpickedupPreorders - $numUnpickedupPreordersInRange);
+                if ($adjustedDriverOrderCount <= 1) {
                     $driversWithNoOrdersCount++;
                     $driver->__hasNoOrders = true;
                 } else{
@@ -887,6 +910,7 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                 $driver->__tooEarlyFlag = $tooEarlyFlag;
                 $driver->__nonQualifyingOrderFlag = $nonQualifyingOrderFlag;
                 $driver->__earliestBundleMinutes = $earliestBundleMinutes;
+                $driver->__earliestBundleMinutesIsPreorder = $earliestBundleMinutesIsPreorder;
                 $driver->__numAcceptedUndeliveredOrders = $numAcceptedUndeliveredOrders;
                 $driver->__isProbablyInactive = $isProbablyInactive;
                 $driver->__numUnpickedupPreorders = $numUnpickedupPreorders;
@@ -913,14 +937,16 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                     $pickedUpFlag = $driver->__pickedUpFlag;
                     $tooEarlyFlag = $driver->__tooEarlyFlag;
                     $earliestBundleMinutes = $driver->__earliestBundleMinutes;
+                    $earliestBundleMinutesIsPreorder = $driver->__earliestBundleMinutesIsPreorder;
                     $nonQualifyingOrderFlag = $driver->__nonQualifyingOrderFlag;
                     $driverCorrection = $this->calculateDriverScoreCorrection($curCommunity, $driver->__mph,
                         $earliestBundleMinutes,
-                        $qualifyingOrderCount, $pickedUpFlag, $tooEarlyFlag, $nonQualifyingOrderFlag);
+                        $qualifyingOrderCount, $pickedUpFlag, $tooEarlyFlag, $nonQualifyingOrderFlag,
+                        $driver->__hasUnpickedupPreorder, $driver->__earliestBundleMinutesIsPreorder);
                     if (!is_null($driverCorrection)) {
-                        $orderAheadCorrection = $this->getOrderAheadCorrection($driver->mph, $orderAheadTime);
+                        $orderAheadCorrection = $this->getOrderAheadCorrection($driver->mph, $orderAheadTime, $driver->__hasUnpickedupPreorder,
+                            $earliestBundleMinutesIsPreorder);
                         $totalCorrection = $driverCorrection + $orderAheadCorrection;
-//                        print "The correction is $driverCorrection $orderAheadCorrection $totalCorrection\n";
 
                         if (is_null($minCorrection) || ($totalCorrection < $minCorrection)) {
                             $minCorrection = $totalCorrection;
@@ -994,7 +1020,6 @@ class Crunchbutton_Order_Logistics extends Cana_Model
                                     $useScoreCorrection = $scoreCorrection;
                                 }
                                 $scoreChange = $resultNew->score - ($resultOld->score + $useScoreCorrection);
-//                            print "The score change is $scoreChange\n";
                                 $driver->__scoreChange = $scoreChange;
                                 if ($scoreChange < $bestScoreChangeOverall) {
                                     $bestScoreChangeOverall = $scoreChange;
