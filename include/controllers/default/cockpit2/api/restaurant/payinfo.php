@@ -21,6 +21,10 @@ class Controller_api_restaurant_payinfo extends Crunchbutton_Controller_RestAcco
 				$this->_paymentMethodSave();
 			break;
 
+			case 'update-entity-name':
+				$this->_updateEntityName();
+			break;
+
 			case 'stripe':
 				$this->_stripe();
 			break;
@@ -142,6 +146,17 @@ class Controller_api_restaurant_payinfo extends Crunchbutton_Controller_RestAcco
 			$this->_error( 'Error creating stripe account' );
 		}
 
+	}
+
+	private function _updateEntityName(){
+		$restaurant = $this->_restaurant();
+		$payment_method = $restaurant->payment_type();
+		$payment_method->legal_name_payment = $this->request()[ 'legal_name_payment' ];;
+		$payment_method->save();
+
+		$payment_method->updateEntityName();
+
+		$this->_exports();
 	}
 
 	private function _paymentMethodSave(){
