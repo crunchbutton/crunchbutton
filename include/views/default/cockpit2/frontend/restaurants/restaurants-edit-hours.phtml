@@ -1,136 +1,140 @@
-<div ng-controller="RestaurantEditHoursCtrl" class="tab-content">
+<div ng-controller="RestaurantEditHoursCtrl">
 
-	<form name="form" novalidate ng-show="!loading">
+	<div class="tab-content">
 
-		<div class="support-boxes">
+		<form name="form" novalidate ng-show="!loading">
 
-			<div class="support-box-wrap box-content2">
-				<div class="support-box-wrap-header">
-					<h1>Hours</h1>
-					<div class="divider"></div>
+			<div class="support-boxes">
+
+				<div class="support-box-wrap box-content2">
+					<div class="support-box-wrap-header">
+						<h1>Hours</h1>
+						<div class="divider"></div>
+					</div>
+
+					<div class="no-box-content-color">
+
+						<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+							<li class="li-input" ng-class="{'error':form.hoursMonday.$invalid}">
+								<div class="label">Monday:</div>
+								<div class="input">
+									<input type="text" class="input-small" name="hoursMonday" ng-model="restaurant.hours.mon" restaurant-hours-validation required ng-model="restaurant.hours.mon">
+								</div>
+								<div class="box-error">
+									<small ng-show="form.hoursMonday.$error.required">Required.</small>
+									<small ng-show="form.hoursMonday.$error.restaurantHoursValidation">Unable to figure out what this time means.</small>
+								</div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':form.hoursTuesday.$invalid}">
+								<div class="label">Tuesday:</div>
+								<div class="input">
+									<input type="text" class="input-small" name="hoursTuesday" ng-model="restaurant.hours.tue" restaurant-hours-validation required ng-model="restaurant.hours.tue">
+									<a href="" ng-click="restaurant.hours.tue = restaurant.hours.mon"><button class="button button-small button-empty button-green"><i class="fa fa-copy"></i>&nbsp;&nbsp;Copy from Monday</button></a>
+								</div>
+								<div class="box-error">
+									<small ng-show="form.hoursTuesday.$error.required">Required.</small>
+									<small ng-show="form.hoursTuesday.$error.restaurantHoursValidation">Unable to figure out what this time means.</small>
+								</div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':form.hoursWednesday.$invalid}">
+								<div class="label">Wednesday:</div>
+								<div class="input">
+									<input type="text" class="input-small" name="hoursWednesday" ng-model="restaurant.hours.wed" restaurant-hours-validation required ng-model="restaurant.hours.wed">
+									<a href="" ng-click="restaurant.hours.wed = restaurant.hours.tue"><button class="button button-small button-empty button-green"><i class="fa fa-copy"></i>&nbsp;&nbsp;Copy from Tuesday</button></a>
+								</div>
+								<div class="box-error">
+									<small ng-show="form.hoursWednesday.$error.required">Required.</small>
+									<small ng-show="form.hoursWednesday.$error.restaurantHoursValidation">Unable to figure out what this time means.</small>
+								</div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':form.hoursThursday.$invalid}">
+								<div class="label">Thursday:</div>
+								<div class="input">
+									<input type="text" class="input-small" name="hoursThursday" ng-model="restaurant.hours.thu" restaurant-hours-validation required ng-model="restaurant.hours.thu">
+									<a href="" ng-click="restaurant.hours.thu = restaurant.hours.wed"><button class="button button-small button-empty button-green"><i class="fa fa-copy"></i>&nbsp;&nbsp;Copy from Wednesday</button></a>
+								</div>
+								<div class="box-error">
+									<small ng-show="form.hoursThursday.$error.required">Required.</small>
+									<small ng-show="form.hoursThursday.$error.restaurantHoursValidation">Unable to figure out what this time means.</small>
+								</div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':form.hoursFriday.$invalid}">
+								<div class="label">Friday:</div>
+								<div class="input">
+									<input type="text" class="input-small" name="hoursFriday" ng-model="restaurant.hours.fri" restaurant-hours-validation required ng-model="restaurant.hours.fri">
+									<a href="" ng-click="restaurant.hours.fri = restaurant.hours.thu"><button class="button button-small button-empty button-green"><i class="fa fa-copy"></i>&nbsp;&nbsp;Copy from Thursday</button></a>
+								</div>
+								<div class="box-error">
+									<small ng-show="form.hoursFriday.$error.required">Required.</small>
+									<small ng-show="form.hoursFriday.$error.restaurantHoursValidation">Unable to figure out what this time means.</small>
+								</div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':form.hoursSaturday.$invalid}">
+								<div class="label">Saturday:</div>
+								<div class="input">
+									<input type="text" class="input-small" name="hoursSaturday" ng-model="restaurant.hours.sat" restaurant-hours-validation required ng-model="restaurant.hours.sat">
+									<a href="" ng-click="restaurant.hours.sat = restaurant.hours.fri"><button class="button button-small button-empty button-green"><i class="fa fa-copy"></i>&nbsp;&nbsp;Copy from Friday</button></a>
+								</div>
+								<div class="box-error">
+									<small ng-show="form.hoursSaturday.$error.required">Required.</small>
+									<small ng-show="form.hoursSaturday.$error.restaurantHoursValidation">Unable to figure out what this time means.</small>
+								</div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':form.hoursSunday.$invalid}">
+								<div class="label">Sunday:</div>
+								<div class="input">
+									<input type="text" class="input-small" name="hoursSunday" ng-model="restaurant.hours.sun" restaurant-hours-validation required ng-model="restaurant.hours.sun">
+									<a href="" ng-click="restaurant.hours.sun = restaurant.hours.sat"><button class="button button-small button-empty button-green"><i class="fa fa-copy"></i>&nbsp;&nbsp;Copy from Saturday</button></a>
+								</div>
+								<div class="box-error">
+									<small ng-show="form.hoursSunday.$error.required">Required.</small>
+									<small ng-show="form.hoursSunday.$error.restaurantHoursValidation">Unable to figure out what this time means.</small>
+								</div>
+							</li>
+
+						</ul>
+
+					</div>
+					<div class="no-box-content-color">
+						<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+							<li class="li-input">
+								<div class="notes">
+											e.g. “12 PM - 2:30 AM” or “Closed”
+									<br>
+									Use a comma for multiple time segments. e.g. “11 am - 1:30 PM, 2:15 PM - 1 AM”
+									<br>
+									If Crunchbutton drivers do the delivery, hours are the intersection of the restaurants hours and Crunchbutton delivery hours.
+									<br>
+									Don’t forget to include a buffer for closing, if appropriate.
+								</div>
+							</li>
+						</ul>
+					</div>
 				</div>
 
-				<div class="no-box-content-color">
-
-					<ul ng-class="{'submitted':submitted}" class="ul-inputs">
-
-						<li class="li-input" ng-class="{'error':form.hoursMonday.$invalid}">
-							<div class="label">Monday:</div>
-							<div class="input">
-								<input type="text" class="input-small" name="hoursMonday" ng-model="restaurant.hours.mon" restaurant-hours-validation required ng-model="restaurant.hours.mon">
-							</div>
-							<div class="box-error">
-								<small ng-show="form.hoursMonday.$error.required">Required.</small>
-								<small ng-show="form.hoursMonday.$error.restaurantHoursValidation">Unable to figure out what this time means.</small>
-							</div>
-						</li>
-
-						<li class="li-input" ng-class="{'error':form.hoursTuesday.$invalid}">
-							<div class="label">Tuesday:</div>
-							<div class="input">
-								<input type="text" class="input-small" name="hoursTuesday" ng-model="restaurant.hours.tue" restaurant-hours-validation required ng-model="restaurant.hours.tue">
-								<a href="" ng-click="restaurant.hours.tue = restaurant.hours.mon"><button class="button button-small button-empty button-green"><i class="fa fa-copy"></i>&nbsp;&nbsp;Copy from Monday</button></a>
-							</div>
-							<div class="box-error">
-								<small ng-show="form.hoursTuesday.$error.required">Required.</small>
-								<small ng-show="form.hoursTuesday.$error.restaurantHoursValidation">Unable to figure out what this time means.</small>
-							</div>
-						</li>
-
-						<li class="li-input" ng-class="{'error':form.hoursWednesday.$invalid}">
-							<div class="label">Wednesday:</div>
-							<div class="input">
-								<input type="text" class="input-small" name="hoursWednesday" ng-model="restaurant.hours.wed" restaurant-hours-validation required ng-model="restaurant.hours.wed">
-								<a href="" ng-click="restaurant.hours.wed = restaurant.hours.tue"><button class="button button-small button-empty button-green"><i class="fa fa-copy"></i>&nbsp;&nbsp;Copy from Tuesday</button></a>
-							</div>
-							<div class="box-error">
-								<small ng-show="form.hoursWednesday.$error.required">Required.</small>
-								<small ng-show="form.hoursWednesday.$error.restaurantHoursValidation">Unable to figure out what this time means.</small>
-							</div>
-						</li>
-
-						<li class="li-input" ng-class="{'error':form.hoursThursday.$invalid}">
-							<div class="label">Thursday:</div>
-							<div class="input">
-								<input type="text" class="input-small" name="hoursThursday" ng-model="restaurant.hours.thu" restaurant-hours-validation required ng-model="restaurant.hours.thu">
-								<a href="" ng-click="restaurant.hours.thu = restaurant.hours.wed"><button class="button button-small button-empty button-green"><i class="fa fa-copy"></i>&nbsp;&nbsp;Copy from Wednesday</button></a>
-							</div>
-							<div class="box-error">
-								<small ng-show="form.hoursThursday.$error.required">Required.</small>
-								<small ng-show="form.hoursThursday.$error.restaurantHoursValidation">Unable to figure out what this time means.</small>
-							</div>
-						</li>
-
-						<li class="li-input" ng-class="{'error':form.hoursFriday.$invalid}">
-							<div class="label">Friday:</div>
-							<div class="input">
-								<input type="text" class="input-small" name="hoursFriday" ng-model="restaurant.hours.fri" restaurant-hours-validation required ng-model="restaurant.hours.fri">
-								<a href="" ng-click="restaurant.hours.fri = restaurant.hours.thu"><button class="button button-small button-empty button-green"><i class="fa fa-copy"></i>&nbsp;&nbsp;Copy from Thursday</button></a>
-							</div>
-							<div class="box-error">
-								<small ng-show="form.hoursFriday.$error.required">Required.</small>
-								<small ng-show="form.hoursFriday.$error.restaurantHoursValidation">Unable to figure out what this time means.</small>
-							</div>
-						</li>
-
-						<li class="li-input" ng-class="{'error':form.hoursSaturday.$invalid}">
-							<div class="label">Saturday:</div>
-							<div class="input">
-								<input type="text" class="input-small" name="hoursSaturday" ng-model="restaurant.hours.sat" restaurant-hours-validation required ng-model="restaurant.hours.sat">
-								<a href="" ng-click="restaurant.hours.sat = restaurant.hours.fri"><button class="button button-small button-empty button-green"><i class="fa fa-copy"></i>&nbsp;&nbsp;Copy from Friday</button></a>
-							</div>
-							<div class="box-error">
-								<small ng-show="form.hoursSaturday.$error.required">Required.</small>
-								<small ng-show="form.hoursSaturday.$error.restaurantHoursValidation">Unable to figure out what this time means.</small>
-							</div>
-						</li>
-
-						<li class="li-input" ng-class="{'error':form.hoursSunday.$invalid}">
-							<div class="label">Sunday:</div>
-							<div class="input">
-								<input type="text" class="input-small" name="hoursSunday" ng-model="restaurant.hours.sun" restaurant-hours-validation required ng-model="restaurant.hours.sun">
-								<a href="" ng-click="restaurant.hours.sun = restaurant.hours.sat"><button class="button button-small button-empty button-green"><i class="fa fa-copy"></i>&nbsp;&nbsp;Copy from Saturday</button></a>
-							</div>
-							<div class="box-error">
-								<small ng-show="form.hoursSunday.$error.required">Required.</small>
-								<small ng-show="form.hoursSunday.$error.restaurantHoursValidation">Unable to figure out what this time means.</small>
-							</div>
-						</li>
-
-					</ul>
-
-				</div>
-				<div class="no-box-content-color">
-					<ul ng-class="{'submitted':submitted}" class="ul-inputs">
-						<li class="li-input">
-							<div class="notes">
-										e.g. “12 PM - 2:30 AM” or “Closed”
-								<br>
-								Use a comma for multiple time segments. e.g. “11 am - 1:30 PM, 2:15 PM - 1 AM”
-								<br>
-								If Crunchbutton drivers do the delivery, hours are the intersection of the restaurants hours and Crunchbutton delivery hours.
-								<br>
-								Don’t forget to include a buffer for closing, if appropriate.
-							</div>
-						</li>
-					</ul>
-				</div>
 			</div>
 
-		</div>
+		</form>
 
-	</form>
-
-	<div class="support-box-wrap box-content2" ng-show="!loading" sticky-bottom="80">
-		<div class="no-box-content-color">
-			<ul class="ul-inputs">
-				<li class="li-input" ng-show="!isSaving">
-					<button class="button save" ng-click="save();">Save</button>
-				</li>
-				<li class="li-input" ng-show="isSaving">
-					<i class="fa fa-circle-o-notch fa-spin"></i>
-				</li>
-			</ul>
-		</div>
 	</div>
+
+		<div class="support-box-wrap box-content2" ng-show="!loading" sticky-bottom="80">
+			<div class="no-box-content-color">
+				<ul class="ul-inputs">
+					<li class="li-input" ng-show="!isSaving">
+						<button class="button save" ng-click="save();">Save Hours</button>
+					</li>
+					<li class="li-input" ng-show="isSaving">
+						<i class="fa fa-circle-o-notch fa-spin"></i>
+					</li>
+				</ul>
+			</div>
+		</div>
 </div>

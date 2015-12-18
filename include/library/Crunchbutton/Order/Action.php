@@ -62,6 +62,14 @@ class Crunchbutton_Order_Action extends Cana_Table {
 		return $this->_date;
 	}
 
+	public function dateWithTimezone($timezone) {
+		if (!isset($this->_date)) {
+			$this->_date = new DateTime($this->timestamp, new DateTimeZone($timezone));
+		}
+		return $this->_date;
+	}
+
+
 	public function ordersDeliveryByAdminPeriod( $id_admin, $date_start, $date_end ){
 		// convert the shift to LA timezone
 		$date_start = new DateTime( $date_start, new DateTimeZone( c::config()->timezone ) );
