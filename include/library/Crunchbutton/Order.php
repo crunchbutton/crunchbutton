@@ -2359,9 +2359,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					if( $this->campus_cash ){
 						$msg .= $spacer . 'Check ID at delivery';
 					}
-					if( $this->preordered ){
-						$msg .= $spacer . 'PRE ORDER Expected Delivery: ' . $this->preOrderDeliveryWindow();
-					}
+
 				}
 				break;
 		}

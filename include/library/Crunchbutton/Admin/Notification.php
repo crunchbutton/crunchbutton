@@ -666,7 +666,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	}
 
 	public function sendSms( Crunchbutton_Order $order, $message){
-
 		$sms = $this->value;
 
 		$ret = Crunchbutton_Message_Sms::send([
@@ -800,7 +799,11 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 						case 'sms':
 							$message = Crunchbutton_Message_Sms::greeting($this->admin()->id_admin ? $this->admin()->firstName() : '');
 							$message .= self::REPS_COCKPIT . $order->id_order . "\n";
+							if( $order->preordered ){
+								$message .= 'Please accept and deliver this pre-order between ' . $order->preOrderDeliveryWindow() . "\n";
+							}
 							$message .= $order->message('sms-admin');
+							echo $message;exit;
 							break;
 						case 'push':
 							if( $order->preordered ){
