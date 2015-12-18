@@ -22,7 +22,6 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 		}
 	);
 
-
 	var restaurant = ResourceFactory.createResource( App.service + 'restaurants/:id_restaurant', { id_restaurant: '@id_restaurant'}, {
 		'load' : {
 			url: App.service + 'restaurant/:id_restaurant',
@@ -40,6 +39,7 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 			'stripe_status' : { 'method': 'GET', params : { 'action' : 'stripe-status' } },
 			'send_verification_info' : { 'method': 'GET', params : { 'action' : 'stripe-send-verification-info' } },
 			'payment_method_save' : { 'method': 'POST', params : { 'action' : 'payment-method' } },
+			'update_entity_name' : { 'method': 'POST', params : { 'action' : 'update-entity-name' } },
 			'balanced_to_sprite' : { 'method': 'POST', params : { 'action' : 'balanced-to-stripe' } },
 			'balanced_to_sprite_account' : { 'method': 'POST', params : { 'action' : 'balanced-to-stripe' } },
 			'stripe' : { 'method': 'POST', params : { 'action' : 'stripe' } },
@@ -107,9 +107,6 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 		} );
 	}
 
-
-
-
 	service.no_payment_method = function( callback ){
 		restaurants.no_payment_method( function( data ){
 			callback( data );
@@ -136,6 +133,12 @@ NGApp.factory('RestaurantService', function( $rootScope, $resource, $routeParams
 
 	service.payment_method_save = function( params, callback ){
 		payinfo.payment_method_save( params,  function( data ){
+			callback( data );
+		} );
+	}
+
+	service.update_entity_name = function( params, callback ){
+		payinfo.update_entity_name( params,  function( data ){
 			callback( data );
 		} );
 	}

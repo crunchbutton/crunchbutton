@@ -143,6 +143,42 @@
 
 		</div>
 
+	<form name="formUpdateEntityName" novalidate>
+		<div class="support-box-wrap box-content2">
+
+			<div class="support-box-wrap-header">
+				<h1>Update Legal Entity Name to Restaurant Account on Stripe</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<ul ng-class="{'submitted':submittedEntityName}" class="ul-inputs">
+
+					<li class="li-input" ng-class="{'error':formUpdateEntityName.name.$invalid}">
+						<div class="label">Name:</div>
+						<div class="input"><input type="text" name="name" maxlength="250" ng-model="restaurant.payment_type.legal_name_payment"></div>
+						<div class="box-error">
+							<small ng-show="formUpdateEntityName.name.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-show="!isUpdating">
+						<button class="button save" ng-click="updateEntityName();">Update</button>
+
+					</li>
+					<li class="li-input" ng-show="isUpdating">
+						<i class="fa fa-circle-o-notch fa-spin"></i>
+					</li>
+
+				</ul>
+
+			</div>
+
+		</div>
+
+	</form>
+
 	<form name="formBasic" novalidate>
 
 		<div class="support-box-wrap box-content2">

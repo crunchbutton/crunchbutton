@@ -31,6 +31,18 @@ class Crunchbutton_Restaurant_Payment_Type extends Cana_Table_Trackchange {
 		} );
 	}
 
+	public function updateEntityName(){
+		$paymentType = $this;
+		if ( $paymentType->stripe_id && $paymentType->legal_name_payment ) {
+			$stripeAccount = \Stripe\Account::retrieve($this->stripe_id);
+			$stripeAccount->business_name = $paymentType->legal_name_payment ;
+			$stripeAccount->legal_entity->business_name = $paymentType->legal_name_payment ;
+			$stripeAccount->save();
+			return $stripeAccount;
+		}
+		return false;
+	}
+
 	public function exports(){
 		$out = $this->properties();
 		$out[ 'max_pay_promotion' ] = intval( $out[ 'max_pay_promotion' ] );
