@@ -89,6 +89,19 @@
 							<span ng-if="!ticket.order.status">{{ticket.order.confirmed ? 'Confirmed' : 'Placed'}}</span>
 						</div>
 					</div>
+					<div class="field-row" ng-if="ticket.order.date_delivery">
+						<div class="field-key">Desired Delivery Time</div>
+						<div class="field-value">
+							<span ng-if="ticket.restaurant.timezone != account.user.timezone">
+								{{ticket.order.date_delivery | convertimeformat:ticket.restaurant.timezone:'MMMM Do YYYY, h:mm:ss a'}}
+								&nbsp;(<span class="listview-bold">{{ticket.order.date_delivery | convertimeformat:ticket.restaurant.timezone:'z'}}</span>)
+								<br>
+							</span>
+							{{ticket.order.date_delivery | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}
+							&nbsp;(<span class="listview-bold">{{ticket.order.date_delivery | convertimeformat:account.user.timezone:'z'}}</span>)
+							<span class="tag tag-purple" ng-if="ticket.order.date_delivery">Pre ordered</span>
+						</div>
+					</div>
 					<div class="field-row" ng-if="ticket.order.status.status != 'delivered' && eta.time">
 						<div class="field-key">ETA</div>
 						<div class="field-value">
