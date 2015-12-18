@@ -41,6 +41,5 @@ RUN cd /app && php composer.phar install --no-dev --optimize-autoloader --prefer
 #RUN mkdir /app/cache/min && chmod 0777 /app/cache/min
 RUN mkdir /tmp/data && chmod 0777 /tmp/data
 RUN mkdir /tmp/min && chmod 0777 /tmp/min
-RUN cd /app/cli && ./build.sh
 
-CMD nginx && php-fpm
+CMD /app/cli/build.sh && nginx && php-fpm
