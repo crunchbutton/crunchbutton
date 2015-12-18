@@ -447,7 +447,8 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		}
 
 		Log::debug( [ 'order' => $order->id_order, 'attempts' => $attempts, 'action' => 'notification to admin starting', 'notification_type' => $this->type, 'value'=> $this->value, 'type' => 'delivery-driver' ]);
-
+// @remove -- remove it before commit
+		$attempts = 0;
 		if( $attempts == 0 ){
 			switch ( $this->type ) {
 				case Crunchbutton_Admin_Notification::TYPE_FAX :
@@ -670,7 +671,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 	public function sendSms( Crunchbutton_Order $order, $message){
 		$sms = $this->value;
-
 		$ret = Crunchbutton_Message_Sms::send([
 			'to' => $sms,
 			'from' => 'driver',
@@ -806,7 +806,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 								$message .= 'Please accept and deliver this pre-order between ' . $order->preOrderDeliveryWindow() . "\n";
 							}
 							$message .= $order->message('sms-admin');
-							echo $message;exit;
 							break;
 						case 'push':
 							if( $order->preordered ){
