@@ -66,6 +66,12 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 								break;
 
 							case 'delivery-accept':
+
+								// check if the driver is current working, if they arent creates a shift for they
+								if( !$this->_checkIfDriverIsWorking() ){
+									$shift = Community::createShiftForNonScheduledDriver( $order->id_community );
+								}
+
 								$res['status'] = $order->setStatus(Crunchbutton_Order_Action::DELIVERY_ACCEPTED, true);
 								Crunchbutton_Admin_Shift_Assign::autoCheckingWhenDriverIsDoingOrders();
 								break;
@@ -223,6 +229,16 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 
 			echo json_encode($exports);
 		}
+	}
+
+	// if the driver is not current working it will create a new shift $7281
+	private function _checkIfDriverIsWorking(){
+		$driver = c::admin();
+		return $driver->isWorking();
+	}
+
+	private function _createShiftForNonScheduledDriver( $id_community ){
+		return Community::createShiftForNonScheduledDriver( $id_community );
 	}
 
 	private function _receipt( $order ){

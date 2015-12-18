@@ -446,7 +446,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	// this means that the driver opened the community
 	public function isWorkingOnExtraShifts( $dt = null, $id_community = null, $checkIfTheyCheckedIn = false ){
 		$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $this->id_admin, $dt, $id_community, $checkIfTheyCheckedIn );
-		if( $shift && $shift->id_driver && $shift->id_driver == $this->id_admin ){
+		if( $shift && $shift->id_driver && $shift->created_by_driver ){
 			return true;
 		}
 		return false;

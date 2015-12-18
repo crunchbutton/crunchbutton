@@ -1323,6 +1323,39 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return ( !$this->allThirdPartyDeliveryRestaurantsClosed() && !$this->allRestaurantsClosed() && !$this->is_auto_closed && $shift->id_community_shift );
 	}
 
+	public static function createShiftForNonScheduledDriver( $id_community ){
+		$community = Community::o( $id_community );
+		$driver = c::admin();
+
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->setTimezone( new DateTimeZone( $community->timezone ) );
+		$start = $now->format( 'Y-m-d H:i' );
+		$now->modify( '+ 1 hour' );
+		$end = $now->format( 'Y-m-d H:i' );
+		$newShift = new Crunchbutton_Community_Shift();
+		$newShift->id_community = $community->id_community;
+		$newShift->date_start = $start;
+		$newShift->date_end = $end;
+		$newShift->active = 1;
+		$newShift->created_by_driver = 1;
+		$newShift->date = date('Y-m-d H:i:s');;
+		$newShift->id_driver = $driver->id_admin;
+		if( $newShift->date_start && $newShift->date_end ){
+			$newShift->save();
+			$newShift = Crunchbutton_Community_Shift::o( $newShift->id_community_shift );
+		}
+
+		if( $newShift->id_community_shift ){
+			$assignment = new Crunchbutton_Admin_Shift_Assign();
+			$assignment->id_admin = $driver->id_admin;
+			$assignment->id_community_shift = $newShift->id_community_shift;
+			$assignment->confirmed = true;
+			$assignment->date = date('Y-m-d H:i:s');
+			$assignment->save();
+		}
+		return $newShift;
+	}
+
 	public function openCommunityByDriver( $id_driver, $shiftEnd ){
 		// check if the driver belongs to the community
 		$driver = Admin::o( $id_driver );
@@ -1354,6 +1387,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$newShift->date_start = $start;
 			$newShift->date_end = $end;
 			$newShift->active = 1;
+			$newShift->created_by_driver = 1;
 			$newShift->date = date('Y-m-d H:i:s');;
 			$newShift->id_driver = $driver->id_admin;
 			if( $newShift->date_start && $newShift->date_end ){
