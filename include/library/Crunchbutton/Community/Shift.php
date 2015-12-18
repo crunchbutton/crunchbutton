@@ -94,8 +94,30 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return Crunchbutton_Community_Shift::q( $query, [$id_admin, $now->format( 'Y-m-d' )]);
 	}
 
+	public static function nextShiftByAdmin( $id_admin ){
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+		$admin = Admin::o( $id_admin );
+		if( $admin->timezone ){
+			$now->setTimezone( new DateTimeZone( $admin->timezone ) );
+		}
+
+		$query = '
+			SELECT cs.*, ass.id_admin_shift_assign, ass.confirmed FROM admin_shift_assign ass
+			INNER JOIN community_shift cs ON cs.id_community_shift = ass.id_community_shift
+			WHERE
+				ass.id_admin = ?
+				AND cs.date_start >= ?
+			ORDER BY cs.date_start ASC';
+		return Crunchbutton_Community_Shift::q( $query, [$id_admin, $now->format( 'Y-m-d H:i' )])->get( 0 );
+	}
+
 	public static function nextShiftsByAdmin( $id_admin, $limit = 20 ){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+		$admin = Admin::o( $id_admin );
+		if( $admin->timezone ){
+			$now->setTimezone( new DateTimeZone( $admin->timezone ) );
+		}
+
 		$query = '
 			SELECT cs.*, ass.id_admin_shift_assign, ass.confirmed FROM admin_shift_assign ass
 			INNER JOIN community_shift cs ON cs.id_community_shift = ass.id_community_shift
