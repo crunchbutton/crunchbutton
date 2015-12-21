@@ -7,7 +7,7 @@ NGApp.controller( 'CreditDialogCtrl', function ( $scope, $rootScope, CustomerSer
 
 		$(':focus').blur();
 
-		$scope.credit = {};
+		$scope.credit = { add_as_credit: true };
 
 		$scope.formCreditSubmitted = false;
 		$scope.isSaving = false;
@@ -20,6 +20,18 @@ NGApp.controller( 'CreditDialogCtrl', function ( $scope, $rootScope, CustomerSer
 			$scope.isLoading = false;
 
 		} );
+
+		$scope.$watch( 'credit.add_as_credit', function( newValue, oldValue, scope ) {
+			if( !newValue ){
+				$scope.credit.send_notification = true;
+			}
+		});
+
+		$scope.$watch( 'credit.send_notification', function( newValue, oldValue, scope ) {
+			if( !newValue ){
+				$scope.credit.add_as_credit = true;
+			}
+		});
 
 		$scope.complete = $rootScope.closePopup;
 

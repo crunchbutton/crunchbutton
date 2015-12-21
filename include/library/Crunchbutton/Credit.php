@@ -128,6 +128,28 @@ class Crunchbutton_Credit extends Cana_Table
 		return 0;
 	}
 
+
+	public function notifySMS() {
+
+		$user = $this->user();
+
+		$env = c::getEnv();
+
+		$phone = $user->phone;
+
+		if( !$phone ){
+			return false;
+		}
+
+		$message = "Congrats, you just got a gift card added as account credit on Crunchbutton.com!";
+
+		Crunchbutton_Message_Sms::send([
+			'to' => $phone,
+			'message' => $message,
+			'reason' => Crunchbutton_Message_Sms::REASON_GIFT_CARD
+		]);
+	}
+
 	public static function find($search = []) {
 
 		$query = 'SELECT `credit`.* FROM `credit` LEFT JOIN restaurant USING(id_restaurant) WHERE id_credit IS NOT NULL AND ( credit_type = ? OR credit_type != ? )';
