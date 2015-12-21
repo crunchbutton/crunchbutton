@@ -4,7 +4,19 @@
 	<div class="restaurants-top-tag hide-mobile" ng-if="slogan">
 		<h4 ng-bind-html-unsafe="slogan" class="restaurants-top-title"></h4>
 		<p ng-bind-html-unsafe="tagline"></p>
+		<p ng-if="operation_hours" class="operation-hours">
+			Crunchbutton delivers: <br><span ng-bind-html-unsafe="operation_hours"></span>
+		</p>
 		<p><br>{{entered}} - <a href="/location" title="Change">Change</i></a></p>
+	</div>
+
+	<div class="hide-desktop">
+		<p ng-if="operation_hours" class="operation-hours content-padding">
+			<strong>Crunchbutton delivers:</strong>
+			<br><span ng-bind-html-unsafe="operation_hours"></span>
+			<div class="divider"></div>
+			<br><br>
+		</p>
 	</div>
 
 	<div class="restaurants-bubble-wrap noselect">
