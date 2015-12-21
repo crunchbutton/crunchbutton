@@ -40,7 +40,7 @@
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton</db>
-			<host>96.126.99.119</host>
+			<host>crunchbutton.cstvhlbo53mv.us-east-1.rds.amazonaws.com</host>
 			<prefix></prefix>
 			<encrypted>true</encrypted>
 		</live>
@@ -48,8 +48,7 @@
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton</db>
-			<host>96.126.99.119</host>
-			<port>3307</port>
+			<host>crunchbutton.cstvhlbo53mv.us-east-1.rds.amazonaws.com</host>
 			<prefix></prefix>
 			<encrypted>true</encrypted>
 		</crondb>
@@ -57,7 +56,7 @@
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton_dev</db>
-			<host>96.126.99.119</host>
+			<host>crunchbutton.cstvhlbo53mv.us-east-1.rds.amazonaws.com</host>
 			<prefix></prefix>
 			<encrypted>true</encrypted>
 		</beta>
@@ -65,7 +64,7 @@
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton_ui1_archive</db>
-			<host>96.126.99.119</host>
+			<host>crunchbutton.cstvhlbo53mv.us-east-1.rds.amazonaws.com</host>
 			<prefix></prefix>
 			<encrypted>true</encrypted>
 		</ui1archive>
