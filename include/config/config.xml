@@ -40,7 +40,7 @@
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton</db>
-			<host>crunchbutton.cstvhlbo53mv.us-east-1.rds.amazonaws.com</host>
+			<host>_HOST_</host>
 			<prefix></prefix>
 			<encrypted>true</encrypted>
 		</live>
@@ -48,7 +48,7 @@
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton</db>
-			<host>crunchbutton.cstvhlbo53mv.us-east-1.rds.amazonaws.com</host>
+			<host>_HOST_</host>
 			<prefix></prefix>
 			<encrypted>true</encrypted>
 		</crondb>
@@ -56,7 +56,7 @@
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton_dev</db>
-			<host>crunchbutton.cstvhlbo53mv.us-east-1.rds.amazonaws.com</host>
+			<host>_HOST_</host>
 			<prefix></prefix>
 			<encrypted>true</encrypted>
 		</beta>
@@ -64,7 +64,7 @@
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton_ui1_archive</db>
-			<host>crunchbutton.cstvhlbo53mv.us-east-1.rds.amazonaws.com</host>
+			<host>_HOST_</host>
 			<prefix></prefix>
 			<encrypted>true</encrypted>
 		</ui1archive>
