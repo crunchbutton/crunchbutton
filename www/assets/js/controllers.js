@@ -594,18 +594,11 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 							tagline += '<br>' + RestaurantsService.community.tagline2;
 						}
 
-						if( RestaurantsService.community && RestaurantsService.community.display_hours ){
-							$scope.display_operations_hours = true;
+						if( RestaurantsService.community && RestaurantsService.community.operation_hours ){
+							$scope.operation_hours = RestaurantsService.community.operation_hours;
 						} else {
-							$scope.display_operations_hours = false;
+							$scope.operation_hours = false;
 						}
-						console.log('$scope.display_operations_hours',$scope.display_operations_hours);
-						console.log('$scope.display_operations_hours',$scope.display_operations_hours);
-						console.log('$scope.display_operations_hours',$scope.display_operations_hours);
-						console.log('$scope.display_operations_hours',$scope.display_operations_hours);
-						console.log('$scope.display_operations_hours',$scope.display_operations_hours);
-						console.log('$scope.display_operations_hours',$scope.display_operations_hours);
-						console.log('$scope.display_operations_hours',$scope.display_operations_hours);
 
 						if( $.trim( tagline ) == '' ){
 							var sloganReplace = ( prep || 'in' ) + ' ' + ( city || 'your area' );

@@ -1207,9 +1207,15 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 		return join( ' <br/> ', $_organized );
 	}
 
-	public static function restaurantClosedMessage( $restaurant ){
+	public static function restaurantClosedMessage( $restaurant, $hours = null ){
 
-		$_hours = self::getRestaurantRegularPlusHolidayHours( $restaurant );
+		if( $restaurant ){
+			$_hours = self::getRestaurantRegularPlusHolidayHours( $restaurant );
+		} else if( $hours ){
+			$_hours = $hours;
+		} else {
+			return null;
+		}
 
 		// Remove the closes status
 		foreach ( $_hours as $day => $hours ) {
