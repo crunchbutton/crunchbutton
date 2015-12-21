@@ -43,6 +43,7 @@
 			<host>_HOST_</host>
 			<prefix></prefix>
 			<encrypted>true</encrypted>
+			<sslca>../ssl/rds-combined-ca-bundle.pem</sslca>
 		</live>
 		<crondb>
 			<user>***REMOVED***</user>
@@ -51,6 +52,7 @@
 			<host>_HOST_</host>
 			<prefix></prefix>
 			<encrypted>true</encrypted>
+			<sslca>../ssl/rds-combined-ca-bundle.pem</sslca>
 		</crondb>
 		<beta>
 			<user>***REMOVED***</user>
@@ -59,6 +61,7 @@
 			<host>_HOST_</host>
 			<prefix></prefix>
 			<encrypted>true</encrypted>
+			<sslca>../ssl/rds-combined-ca-bundle.pem</sslca>
 		</beta>
 		<ui1archive>
 			<user>***REMOVED***</user>
@@ -67,6 +70,7 @@
 			<host>_HOST_</host>
 			<prefix></prefix>
 			<encrypted>true</encrypted>
+			<sslca>../ssl/rds-combined-ca-bundle.pem</sslca>
 		</ui1archive>
 		<local>
 			<user>root</user>
