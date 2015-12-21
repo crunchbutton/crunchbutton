@@ -10,7 +10,7 @@ RewriteRule .* - [E=HTTP_IF_NONE_MATCH:%{HTTP:If-None-Match}]
 
 
 RewriteCond %{REQUEST_FILENAME}		!-f
-RewriteCond %{HTTP_HOST}			^heroku\.crunchr\.co$
+RewriteCond %{HTTP_HOST}			^crunchbutton\.com$
 RewriteCond %{REQUEST_URI}			!^/(api|assets)
 RewriteCond %{DOCUMENT_ROOT}/build/crunchbutton.html -f
 RewriteRule ^(.*)$					build/crunchbutton.html [L,QSA]
@@ -19,13 +19,13 @@ RewriteCond %{DOCUMENT_ROOT}/build/crunchbutton.html !-f
 RewriteRule ^(.*)$					index.php [L,QSA]
 
 RewriteCond %{REQUEST_FILENAME}		!-f
-RewriteCond %{HTTP_HOST}			^heroku\.crunchr\.co$
+RewriteCond %{HTTP_HOST}			^crunchbutton\.com$
 RewriteCond %{REQUEST_URI}			^/(api|assets)
 RewriteRule ^(.*)$					index.php [L,QSA]
 
 
 RewriteCond %{REQUEST_FILENAME}		!-f
-RewriteCond %{HTTP_HOST}			^cockpit\.heroku\.crunchr\.co$
+RewriteCond %{HTTP_HOST}			^cockpit\.la$
 RewriteCond %{REQUEST_URI}			!^/(api|assets)
 RewriteCond %{DOCUMENT_ROOT}/build/cockpit.html -f
 RewriteRule ^(.*)$					build/cockpit.html [L,QSA]
@@ -34,7 +34,7 @@ RewriteCond %{DOCUMENT_ROOT}/build/cockpit.html !-f
 RewriteRule ^(.*)$					index.php [L,QSA]
 
 RewriteCond %{REQUEST_FILENAME}		!-f
-RewriteCond %{HTTP_HOST}			^cockpit\.heroku\.crunchr\.co$
+RewriteCond %{HTTP_HOST}			^cockpit\.la$
 RewriteCond %{REQUEST_URI}			^/(api|assets)
 RewriteRule ^(.*)$					index.php [L,QSA]
 
