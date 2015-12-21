@@ -81,9 +81,7 @@
 	<div class="restaurants-items">
 
 	<span ng-repeat="restaurant in restaurants | limitTo:restaurantsToShow" class="restaurants-repeated">
-		<ng-include src="'assets/view/restaurants-box-restaurant.html'" ng-if="!display_operations_hours"></ng-include>
-		<ng-include src="'assets/view/restaurants-box-restaurant-hours.html'" ng-if="display_operations_hours"></ng-include>
-
+		<ng-include src="'assets/view/restaurants-box-restaurant.html'"></ng-include>
 	</span>
 	<div class="divider"></div>
 
