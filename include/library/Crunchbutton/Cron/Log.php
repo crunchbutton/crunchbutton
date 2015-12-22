@@ -139,7 +139,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 
 	// called when the cron finish running
 	public function finished(){
-
+		$this->log( 'finished', 'finished' );
 		$job = Crunchbutton_Cron_Log::o( $this->id_cron_log );
 		$job->finished = date('Y-m-d H:i:s');
 		$job->interactions = ( !$job->interactions ? 1 : $job->interactions + 1 );
@@ -179,7 +179,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 	}
 
 	public function log( $method, $message ){
-		// $data = [ 'type' => 'cron-jobs', 'method' => $method, 'message' => $message, 'desc' => $this->description, 'id_cron_log' => $this->id_cron_log ];
+		$data = [ 'type' => 'cron-jobs', 'method' => $method, 'message' => $message, 'desc' => $this->description, 'id_cron_log' => $this->id_cron_log ];
 		Log::debug( $data );
 		echo date('Y-m-d H:i:s') . ' - ' . $this->class . '::' . $method . ' > ' . $message . "\n";
 	}
