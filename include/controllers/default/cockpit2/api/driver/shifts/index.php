@@ -13,7 +13,6 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 				$this->_checkin();
 				break;
 
-
 			default:
 				$this->_list();
 				break;
@@ -266,16 +265,33 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 
 		foreach ( $shifts as $shift ) {
 
+			$showShift = true;
+
 			if( $shift->isHidden() ){
+				$showShift = false;
+			}
+
+			$mine = 0;
+			$_drivers = [];
+			$drivers = $shift->getDrivers();
+			foreach ( $drivers as $driver ) {
+				$addDriver = true;
+				if( $shift->isHidden() ){
+					$addDriver = false;
+				}
+				if( c::admin()->id_admin == $driver->id_admin ){
+					$addDriver = true;
+					$showShift = true;
+				}
+				if( $addDriver ){
+					$_drivers[] = [ 'name' => $driver->name, 'phone' => $driver->phone(), 'id' => $driver->id_admin];
+				}
+			}
+
+			if( !$showShift ){
 				continue;
 			}
 
-			$drivers = $shift->getDrivers();
-			$mine = 0;
-			$_drivers = [];
-			foreach ( $drivers as $driver ) {
-				$_drivers[] = [ 'name' => $driver->name, 'phone' => $driver->phone(), 'id' => $driver->id_admin];
-			}
 			$export[] = Cana_Model::toModel( [
 					'id_community_shift' => $shift->id_community_shift,
 					'community' => $shift->community()->name,

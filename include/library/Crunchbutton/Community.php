@@ -1212,16 +1212,82 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return 'Temporarily Unavailable';
 	}
 
-    public function communityspeed($time, $dow) {
-        $qString = "SELECT * FROM `order_logistics_communityspeed` WHERE id_community= ? and "
-            ."time_start_community <= ? and time_end_community > ? and day_of_week = ?";
-        $cs = Crunchbutton_Order_Logistics_Communityspeed::q($qString, [$this->id_community, $time, $time, $dow]);
-        if (is_null($cs) || $cs->count()==0){
-            return null;
-        } else{
-            return $cs->get(0);
-        }
-    }
+	public function operationHours(){
+
+		$shiftsForNextWeek = $this->shiftsForNextWeek();
+
+		$hours = [];
+		$weekdays = [ 'mon' => 0, 'tue' => 1, 'wed' => 2, 'thu' => 3, 'fri' => 4, 'sat' => 5, 'sun' => 6 ];
+		foreach( $shiftsForNextWeek as $hour ){
+			// echo '<pre>';var_dump( $hour );exit();
+			$open = explode( ':', $hour->time_open );
+			$close = explode( ':', $hour->time_close );
+			$day = $hour->day;
+
+			$open_day = $weekdays[ $day ];
+			$close_day = $weekdays[ $day ];
+
+			if( intval( $open[ 0 ] ) > intval( $close[ 0 ] ) ){
+				$close_day += 1;
+			}
+
+			$hour->open = ( $open_day * 2400 ) + intval( $open[ 0 ] * 100 ) + $open[ 1 ];
+			$hour->close = ( $close_day * 2400 ) + intval( $close[ 0 ] * 100 ) + $close[ 1 ];
+			$hours[] = (array) $hour;
+
+		}
+
+		$hours = Cana_Util::sort_col( $hours, 'open' );
+
+		$hours = self::mergeHours( $hours );
+
+		$_hours = [];
+		foreach( $hours as $key => $hour ){
+			$day = $hour[ 'day' ];
+			if( !$_hours[ $day ] ){
+				$_hours[ $day ] = [];
+			}
+			$_hours[ $day ][] = [ 'from' => $hour[ 'time_open' ], 'to' => $hour[ 'time_close' ], 'status' => 'open' ];
+		}
+		$operation_hours = Hour::restaurantClosedMessage( null, $_hours );
+		return str_replace( ' <br/>', ', ', $operation_hours );
+	}
+
+	public static function mergeHours( $hours ){
+		$reprocess = false;
+		foreach( $hours as $key => $val ){
+			$getNext = false;
+			foreach( $hours as $keyNext => $valNext ){
+				if( $getNext ){
+					if( $hours[ $keyNext ][ 'open' ] <= $hours[ $key ][ 'close' ]
+							&& $hours[ $keyNext ][ 'close' ] - $hours[ $key ][ 'open' ] < 3600 ) {
+						$hours[ $key ][ 'close' ] = $hours[ $keyNext ][ 'close' ];
+						unset( $hours[ $keyNext ] );
+						$reprocess = true;
+						$getNext = false;
+					}
+				}
+				if( $key == $keyNext ){
+					$getNext = true;
+				}
+			}
+		}
+		if( $reprocess ){
+			return self::mergeHours( $hours );
+		}
+		return $hours;
+	}
+
+  public function communityspeed($time, $dow) {
+      $qString = "SELECT * FROM `order_logistics_communityspeed` WHERE id_community= ? and "
+          ."time_start_community <= ? and time_end_community > ? and day_of_week = ?";
+      $cs = Crunchbutton_Order_Logistics_Communityspeed::q($qString, [$this->id_community, $time, $time, $dow]);
+      if (is_null($cs) || $cs->count()==0){
+          return null;
+      } else{
+          return $cs->get(0);
+      }
+  }
 
 	public function fakecustomers() {
 		$qString = "SELECT * FROM `order_logistics_fakecustomer` WHERE id_community= ?";
@@ -1420,6 +1486,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$newShift->date_end = $end;
 			$newShift->active = 1;
 			$newShift->created_by_driver = 1;
+			$newShift->hidden = 1;
 			$newShift->date = date('Y-m-d H:i:s');;
 			$newShift->id_driver = $driver->id_admin;
 			if( $newShift->date_start && $newShift->date_end ){

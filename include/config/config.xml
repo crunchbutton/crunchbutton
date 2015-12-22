@@ -40,34 +40,37 @@
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton</db>
-			<host>96.126.99.119</host>
+			<host>_HOST_</host>
 			<prefix></prefix>
 			<encrypted>true</encrypted>
+			<sslca>../ssl/rds-combined-ca-bundle.pem</sslca>
 		</live>
 		<crondb>
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton</db>
-			<host>96.126.99.119</host>
-			<port>3307</port>
+			<host>_HOST_</host>
 			<prefix></prefix>
 			<encrypted>true</encrypted>
+			<sslca>../ssl/rds-combined-ca-bundle.pem</sslca>
 		</crondb>
 		<beta>
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton_dev</db>
-			<host>96.126.99.119</host>
+			<host>_HOST_</host>
 			<prefix></prefix>
 			<encrypted>true</encrypted>
+			<sslca>../ssl/rds-combined-ca-bundle.pem</sslca>
 		</beta>
 		<ui1archive>
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton_ui1_archive</db>
-			<host>96.126.99.119</host>
+			<host>_HOST_</host>
 			<prefix></prefix>
 			<encrypted>true</encrypted>
+			<sslca>../ssl/rds-combined-ca-bundle.pem</sslca>
 		</ui1archive>
 		<local>
 			<user>root</user>

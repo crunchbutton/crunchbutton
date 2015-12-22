@@ -201,6 +201,13 @@
 							</td>
 						</tr>
 
+						<tr class="class">
+							<td></td>
+							<td>Reminder: include napkins/straws/condiments as needed.</td>
+							<td></td>
+							<td></td>
+						</tr>
+
 						<tr ng-if="oc.order.notes">
 							<td colspan="4" class="order-notes">
 								<div class="order-item-block-big order-notes" ng-if="oc.order.notes">
@@ -218,6 +225,8 @@
 								</div>
 							</td>
 						</tr>
+
+
 						<?php /*
 						<!-- IN CASE WE NEED TO ADD THIS IN THE FUTURE
 						<tr ng-if="oc.order._tip">
@@ -258,6 +267,7 @@
 					</table>
 				</div>
 			</div>
+
 
 			<div ng-class="oc.order.pay_type=='cash' ? 'order-item-block-big' : 'info-block'">
 				<div class="order-icon2">

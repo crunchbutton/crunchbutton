@@ -135,6 +135,9 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 
 			if( $community ){
 				$config[ 'community' ] = [ 'id_community' => $community->id_community, 'tagline1' => $community->tagline1, 'tagline2' => $community->tagline2 ];
+				if( $community->display_hours_restaurants_page ){
+					$config[ 'community' ][ 'operation_hours' ] = $community->operationHours();
+				}
 			}
 		}
 
