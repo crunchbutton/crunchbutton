@@ -45,6 +45,20 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return self::q($q, $keys);
 	}
 
+	public function driversHelpOut(){
+		$list = [];
+		$drivers = $this->getDriversOfCommunity();
+		foreach( $drivers as $driver ){
+			if( $driver->active && !$driver->isWorking() ){
+				$info = Cockpit_Driver_Info::byAdmin( $driver->id_admin );
+				if( $info->down_to_help_out ){
+					$list[] = $driver;
+				}
+			}
+		}
+		return $list;
+	}
+
 	public function restaurantByLoc() {
 		if (!isset($this->_restaurantsByLoc)) {
 			$this->_restaurantsByLoc = Restaurant::byRange([

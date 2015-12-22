@@ -3,6 +3,7 @@
 class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 
 	public function run() {
+
 		$debug_dt = new DateTime('now', new DateTimeZone(c::config()->timezone));
 		$debugDtString0 = $debug_dt->format('Y-m-d H:i:s');
 
@@ -19,6 +20,7 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 		$this->order()->notifyRestaurants();
 
 		if ($this->order()->restaurant()->delivery_service){
+
 			$debug_dt = new DateTime('now', new DateTimeZone(c::config()->timezone));
 			$debugDtString1 = $debug_dt->format('Y-m-d H:i:s');
 
@@ -28,7 +30,7 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 			$debug_dt = new DateTime('now', new DateTimeZone(c::config()->timezone));
 			$debugDtString2 = $debug_dt->format('Y-m-d H:i:s');
 
-            $dl = $this->order()->community()->delivery_logistics;
+     	$dl = $this->order()->community()->delivery_logistics;
 			// perform delivery logistics only if there are multiple drivers and it is enabled, and
 			//  it is not a pre-order
 			if (!$preordered && $dl && $drivers->count() > 1) {
@@ -128,7 +130,23 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 			} else {
 				$this->order()->notifyDrivers();
 			}
+		}
 
+		// Send non-scheduled community drivers orders. #7281
+		$community = $this->order()->community();
+		if( $community && $community->notify_non_shift_drivers && $community->notify_non_shift_drivers_min ){
+
+			if( $this->order()->preordered ){
+				$seconds = 45 * 60;
+			} else {
+				$seconds = $community->notify_non_shift_drivers_min * 60;
+			}
+
+			$q = Queue::create([
+				'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_DRIVER_HELPOUT,
+				'id_order' => $this->order()->id_order,
+				'seconds' => $seconds
+			]);
 		}
 
 		// replaces Crunchbutton_Cron_Job_OrderRules
