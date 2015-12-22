@@ -51,6 +51,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 		echo "updating next time ... \n";
 		if( $this->update_next_time() ){
 			echo "saving status ... \n";
+
 			$this->current_status = Crunchbutton_Cron_Log::CURRENT_STATUS_RUNNING;
 			$this->save();
 
@@ -63,10 +64,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 				if( is_a( $job, 'Crunchbutton_Cron_Log' ) ){
 					echo "class {$this->class} is a Crunchbutton_Cron_Log ... \n";
 					if( method_exists( $job, 'run' ) ){
-
-						$env = ( $this->env ? $this->env : 'live' );
-						$job->run();
-
+						$q = Queue::create( [ 'type' => Crunchbutton_Queue::TYPE_CRON, 'id_cron_log' => $this->id_cron_log ] );
 					} else {
 						echo "class {$this->class} dont have a method run ... \n";
 						$this->log( 'run', 'error: ' . $this->class . ' doesnt have the method run' );
