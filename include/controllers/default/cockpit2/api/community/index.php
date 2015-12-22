@@ -306,6 +306,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						$community->tagline2 = $this->request()[ 'tagline2' ];
 						$community->active = $this->request()[ 'active' ];
 						$community->driver_checkin = $this->request()[ 'driver_checkin' ];
+						$community->display_eta = $this->request()[ 'display_eta' ];
 						$community->display_hours_restaurants_page = $this->request()[ 'display_hours_restaurants_page' ];
 						$community->combine_restaurant_driver_hours = $this->request()[ 'combine_restaurant_driver_hours' ];
 						$community->drivers_can_open = $this->request()[ 'drivers_can_open' ];
