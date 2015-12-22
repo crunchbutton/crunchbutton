@@ -1622,4 +1622,4 @@ $('body').on('touchstart', selScrollable, function(e) {
   }
 });
 
-window.addEventListener( 'focus', function(){ console.log('window-focus'); App.rootScope.$broadcast( 'window-focus' ); });
+window.addEventListener( 'focus', function(){ App.rootScope.$broadcast( 'window-focus' ); });
