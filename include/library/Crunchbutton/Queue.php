@@ -3,6 +3,7 @@
 class Crunchbutton_Queue extends Cana_Table {
 
 	const TYPE_CLASS_ORDER							= 'Crunchbutton_Queue_Order';
+	const TYPE_CLASS_CRON							= 'Crunchbutton_Queue_Cron';
 	const TYPE_CLASS_ORDER_RECEIPT					= 'Crunchbutton_Queue_Order_Receipt';
 	const TYPE_CLASS_ORDER_RECEIPT_SIGNATURE					= 'Crunchbutton_Queue_Order_ReceiptSignature';
 	const TYPE_CLASS_ORDER_CONFIRM					= 'Crunchbutton_Queue_Order_Confirm';
@@ -16,6 +17,7 @@ class Crunchbutton_Queue extends Cana_Table {
 	const TYPE_CLASS_RESTAURANT_TIME		= 'Crunchbutton_Queue_Restaurant_Time';
 
 	const TYPE_ORDER						= 'order';
+	const TYPE_CRON						= 'cron';
 	const TYPE_ORDER_RECEIPT				= 'order-receipt';
 	const TYPE_ORDER_RECEIPT_SIGNATURE				= 'order-receipt-signature';
 	const TYPE_ORDER_CONFIRM				= 'order-confirm';
@@ -117,6 +119,10 @@ class Crunchbutton_Queue extends Cana_Table {
 
 	public function order() {
 		return Order::o($this->id_order);
+	}
+
+	public function cron(){
+		return Crunchbutton_Cron_Log::o( $this->id_cron_log );
 	}
 
 	public function driver() {
