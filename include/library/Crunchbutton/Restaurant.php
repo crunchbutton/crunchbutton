@@ -1296,8 +1296,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function allowPreorder(){
-		// add code to check if the community is closed and stuff
 		$community = $this->community()->get( 0 );
+		if( $community->allRestaurantsClosed() || $community->allThirdPartyDeliveryRestaurantsClosed() ){
+			return false;
+		}
 		return $community->allow_preorder && $this->delivery_service && $this->allow_preorder;
 	}
 
@@ -1526,6 +1528,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				'user' => $comment->user()->get(0)->name(),
 				'fb' => $id
 			];
+		}
+
+		if( !$community->display_eta && !Crunchbutton_Util::isCockpit() ){
+			$ignore['eta'] = true;
 		}
 
 		// start eta

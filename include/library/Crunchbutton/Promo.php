@@ -4,6 +4,7 @@ class Crunchbutton_Promo extends Cana_Table
 {
 
 	const CHARS = '123456789ABCDEFGHIJKLMNPQRSTUVWXYZ';
+	const NUMBERS = '123456789';
 
 	const TYPE_SHARE = 'user_share';
 	const TYPE_GIFTCARD = 'gift_card';

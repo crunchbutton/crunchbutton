@@ -38,6 +38,30 @@
 					</div>
 				</li>
 
+				<li class="li-input">
+					<label class="switch-wrap">
+						<input type="checkbox" class="switch" ng-model="credit.add_as_credit"/><div></div>
+					</label>
+					<div class="label">Add as credit:</div>
+				</li>
+
+				<li class="li-input">
+					<label class="switch-wrap">
+						<input type="checkbox" class="switch" ng-model="credit.send_notification"/><div></div>
+					</label>
+					<div class="label">Send notification by text</div>
+				</li>
+
+
+				<li class="li-input" ng-if="credit.send_notification">
+					<div class="notes">
+						<strong>Message:</strong>
+						<br>
+						<span ng-if="!credit.add_as_credit">Congrats, you got a gift to Crunchbutton.com! Enter code: XXXXX in your order notes next time to redeem it.</span>
+						<span ng-if="credit.add_as_credit">Congrats, you just got a gift card added as account credit on Crunchbutton.com!</span>
+					</div>
+				</li>
+
 				<li class="li-input" ng-show="!isSaving">
 					<button class="button button-empty button-border button-orange button-full" ng-class="{'button-disabled': isLoading }" ng-click="save()"><i class="fa fa-gift"></i>&nbsp;&nbsp;Add Gift Card</button>
 				</li>

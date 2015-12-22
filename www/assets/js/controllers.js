@@ -594,6 +594,12 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 							tagline += '<br>' + RestaurantsService.community.tagline2;
 						}
 
+						if( RestaurantsService.community && RestaurantsService.community.operation_hours ){
+							$scope.operation_hours = RestaurantsService.community.operation_hours;
+						} else {
+							$scope.operation_hours = false;
+						}
+
 						if( $.trim( tagline ) == '' ){
 							var sloganReplace = ( prep || 'in' ) + ' ' + ( city || 'your area' );
 							sloganReplace = $.trim(sloganReplace);

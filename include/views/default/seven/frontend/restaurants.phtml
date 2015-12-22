@@ -4,7 +4,19 @@
 	<div class="restaurants-top-tag hide-mobile" ng-if="slogan">
 		<h4 ng-bind-html-unsafe="slogan" class="restaurants-top-title"></h4>
 		<p ng-bind-html-unsafe="tagline"></p>
+		<p ng-if="operation_hours" class="operation-hours">
+			Crunchbutton delivers: <br><span ng-bind-html-unsafe="operation_hours"></span>
+		</p>
 		<p><br>{{entered}} - <a href="/location" title="Change">Change</i></a></p>
+	</div>
+
+	<div class="hide-desktop">
+		<p ng-if="operation_hours" class="operation-hours content-padding">
+			<strong>Crunchbutton delivers:</strong>
+			<br><span ng-bind-html-unsafe="operation_hours"></span>
+			<div class="divider"></div>
+			<br><br>
+		</p>
 	</div>
 
 	<div class="restaurants-bubble-wrap noselect">
@@ -81,62 +93,13 @@
 	<div class="restaurants-items">
 
 	<span ng-repeat="restaurant in restaurants | limitTo:restaurantsToShow" class="restaurants-repeated">
+		<ng-include src="'assets/view/restaurants-box-restaurant.html'"></ng-include>
+	</span>
+	<div class="divider"></div>
 
-			<? /*
-			<div class="restaurant-list-divider" ng-if="restaurant._divider"></div>
-			*/ ?>
-
-			<div ng-click="display($event)" ng-class="{'meal-item-closed': restaurant._open==false}" class="restaurants-item" data-id_restaurant="{{restaurant.id_restaurant}}" data-permalink="{{restaurant.permalink}}">
-
-				<div class="restaurants-closed" ng-if="showSmallClosures && restaurant._tag == 'closed'">
-					<h2 class="restaurants-name">{{restaurant.name}}</h2>
-					<div class="restaurants-opensin" ng-if="restaurant._openIn > 0" >Available {{restaurant._opensIn_formatted}}</div>
-				</div>
-
-				<div class="restaurants-closed" ng-if="showSmallClosures && restaurant._tag == 'force_close'">
-					<h2 class="restaurants-name">{{restaurant.name}}</h2>
-					<div class="restaurants-opensin">Temporarily unavailable {{restaurant._closedDueTo}}</div>
-				</div>
-
-				<div class="restaurants-open" ng-if="!showSmallClosures || (showSmallClosures && restaurant._tag != 'closed' && restaurant._tag != 'force_close')">
-
-					<div class="restaurants-item-content">
-						<div class="ladda-label">
-							<div class="restaurants-pic" style="background-image: url({{restaurant.images.normal || restaurant.img}});"></div>
-							<h2 class="restaurants-name">{{restaurant.name}}</h2>
-							<h3 class="restaurants-description">{{restaurant._short_description}}</h3>
-
-							<div ng-switch on="restaurant._tag">
-								<div class="meal-item-tag meal-item-tag-closed" ng-switch-when="closed">Available {{restaurant._opensIn_formatted}}</div>
-
-
-								<div class="meal-item-tag meal-item-tag-closed" ng-switch-when="force_close">
-									<span ng-if="restaurant.open_for_business && restaurant.closed_message && !restaurant._opensIn_formatted">{{restaurant.closed_message}}</span>
-									<span ng-if="restaurant.open_for_business && restaurant._opensIn_formatted">Available {{restaurant._opensIn_formatted}}</span>
-									<span ng-if="!restaurant.open_for_business || ( !restaurant._opensIn_formatted && !restaurant.closed_message )">Temporarily unavailable {{restaurant._closedDueTo}}</span>
-								</div>
-
-								<div class="meal-item-tag" ng-switch-when="takeout">Take out only</div>
-								<div class="meal-item-tag" ng-switch-when="next_open">{{restaurant.next_open_time_message.message}}</div>
-								<div class="meal-item-tag" ng-switch-when="closing">Hurry, closes in {{restaurant._closesIn}} min!</div>
-								<div ng-switch-when="opening">
-									<div ng-if="restaurant._opensIn_formatted" class="meal-item-tag about-to-open"><span >Available {{restaurant._opensIn_formatted}}</span></div>
-								</div>
-							</div>
-
-							<div class="meal-item-tag-bottom" ng-if="restaurant._tag != ''"></div>
-
-						</div>
-					</div>
-				</div>
-			</div>
-
-		</span>
-		<div class="divider"></div>
-
-		<button class="button green restaurants-more" ng-if="restaurantsToShow < restaurants.length" ng-click="showMoreRestaurants()">
-			More awesome Restaurants
-		</button>
+	<button class="button green restaurants-more" ng-if="restaurantsToShow < restaurants.length" ng-click="showMoreRestaurants()">
+		More awesome Restaurants
+	</button>
 
 	</div>
 </div>
