@@ -128,6 +128,13 @@
 							<select name="displayHoursRestaurantsPage" required ng-model="community.display_hours_restaurants_page" ng-options="opt.value as opt.label for opt in yesNo" ></select>
 						</div>
 					</li>
+					<li class="li-input" ng-class="{'error':form.displayEta.$invalid}">
+						<div class="label">Display delivery estimate?</div>
+						<div class="input">
+							<select name="displayEta" required ng-model="community.display_eta" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
+
 				</ul>
 
 			</div>

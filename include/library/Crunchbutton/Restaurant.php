@@ -1528,6 +1528,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			];
 		}
 
+		if( !$community->display_eta && !Crunchbutton_Util::isCockpit() ){
+			$ignore['eta'] = true;
+		}
+
 		// start eta
 		if (!$ignore['eta']) {
 			$out[ 'eta' ] = $this->smartETA();
