@@ -589,6 +589,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.supportToggled = false;
 	$rootScope.supportToggle = function() {
 		$rootScope.supportToggled = !$rootScope.supportToggled;
+		App.rootScope.$broadcast( 'support-toggle' );
 	};
 	Mousetrap.bind('alt+s', function() {
 		$rootScope.$apply(function() {
@@ -1337,3 +1338,5 @@ if (parent.window.getAppVersion) {
 		App.version = v;
 	});
 }
+
+window.addEventListener( 'focus', function(){ App.rootScope.$broadcast( 'window-focus' ); });
