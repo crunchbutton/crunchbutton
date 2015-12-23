@@ -777,20 +777,18 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 
 			link: function ( scope, elem, attrs, ctrl ) {
 
-				$rootScope.$on( 'ng-repeat-finished', function(e, data) {
-					process();
-					// just to make sure
-					setTimeout( function(){ process(); }, 600 );
-				});
-
 				var process = function(){
 
 					setTimeout( function(){
 
-						var table = angular.element(elem);
+						var table = angular.element( elem );
 
 						var thead = table.find( 'thead' );
 						var tbody = table.find( 'tbody' );
+
+						table.css( 'width', '100%' );
+						tbody.css( 'width', '100%' );
+						thead.css( 'width', '100%' );
 
 						if( App.isNarrowScreen() ){
 							thead.css( 'display', 'inherit' );
@@ -804,6 +802,9 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 						}
 
 						var tableWidth = table.width();
+						if( tableWidth < 200 ){
+							return;
+						}
 
 						var tbodyLine = angular.element(tbody).find( 'tr' )[ 0 ];
 						var tbodyColumns = angular.element(tbodyLine).find( 'td' );
@@ -861,10 +862,28 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 					}, 100 );
 				}
 
-				angular.element( window ).on( 'resize', process );
+				$rootScope.$on( 'ng-repeat-finished', function(e, data) {
+					justDoIt();
+				});
+
+				scope.$on( 'window-focus', function(e, data) {
+					justDoIt();
+				});
+
+				scope.$on( 'support-toggle', function(e, data) {
+					justDoIt();
+				});
+
+				var justDoIt = function(){
+					process();
+					// just to make sure
+					setTimeout( function(){ process(); }, 200 );
+				}
+
+				angular.element( window ).on( 'resize', justDoIt );
 
 				scope.$on( '$destroy', function() {
-					angular.element( window ).off( 'resize', process );
+					angular.element( window ).off( 'resize', justDoIt );
 				});
 			}
 	};

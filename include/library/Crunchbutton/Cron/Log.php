@@ -20,7 +20,6 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 	}
 
 	public static function start(){
-
 		$crons = Crunchbutton_Cron_Log::q( "SELECT * FROM cron_log WHERE `interval` != '' AND interval_unity > 0" );
 		if( $crons->count() ){
 			foreach( $crons as $cron ){
@@ -31,33 +30,52 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 		}
 	}
 
-	public function que(){
+	public static function test(){
+		echo "starting ... \n";
+		$crons = Crunchbutton_Cron_Log::q( "SELECT * FROM cron_log WHERE class ='Crunchbutton_Cron_Job_Test'" );
+		if( $crons->count() ){
+			foreach( $crons as $cron ){
+				if( $cron->should_start() ){
+					echo "queing ... \n";
+					$cron->que();
+				} else {
+					echo "do not should start ... \n";
+				}
+			}
+		} else {
+			echo "no cron jobs to run ... \n";
+		}
+	}
 
+	public function que(){
+		echo "updating next time ... \n";
 		if( $this->update_next_time() ){
+			echo "saving status ... \n";
 
 			$this->current_status = Crunchbutton_Cron_Log::CURRENT_STATUS_RUNNING;
 			$this->save();
 
+
 			if( class_exists( $this->class ) ){
+				echo "class {$this->class} exists ... \n";
 				$job = new $this->class;
 				$job->id_cron_log = $this->id_cron_log;
 
 				if( is_a( $job, 'Crunchbutton_Cron_Log' ) ){
+					echo "class {$this->class} is a Crunchbutton_Cron_Log ... \n";
 					if( method_exists( $job, 'run' ) ){
-
-						$env = ( $this->env ? $this->env : 'live' );
-
-						Cana::timeout( function() use( $job ) {
-							$job->run();
-						}, 1000, true, $env );
-
+						// $q = Queue::create( [ 'type' => Crunchbutton_Queue::TYPE_CRON, 'id_cron_log' => $this->id_cron_log ] );
+						$job->run();
 					} else {
+						echo "class {$this->class} dont have a method run ... \n";
 						$this->log( 'run', 'error: ' . $this->class . ' doesnt have the method run' );
 					}
 				} else {
+					echo "class {$this->class} isnt a Crunchbutton_Cron_Log ... \n";
 					$this->log( 'run', 'error: ' . $this->class . ' isnt instance of Crunchbutton_Cron_Log' );
 				}
 			} else {
+				echo "class {$this->class} didnt find ... \n";
 				$this->log( 'run', 'error: ' . $this->class . ' doesnt exist' );
 			}
 		}
@@ -130,7 +148,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 		$message .= "\n\n";
 		$message .= json_encode( $this->properties() );
 
-		Crunchbutton_Cron_Log::warning( [ 'body' => $message ] );
+		// Crunchbutton_Cron_Log::warning( [ 'body' => $message ] );
 
 		// change the current status to let it start
 		$this->status = Crunchbutton_Cron_Log::CURRENT_STATUS_IDLE;
@@ -139,7 +157,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 
 	// called when the cron finish running
 	public function finished(){
-
+		$this->log( 'finished', 'finished' );
 		$job = Crunchbutton_Cron_Log::o( $this->id_cron_log );
 		$job->finished = date('Y-m-d H:i:s');
 		$job->interactions = ( !$job->interactions ? 1 : $job->interactions + 1 );
@@ -179,7 +197,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 	}
 
 	public function log( $method, $message ){
-		// $data = [ 'type' => 'cron-jobs', 'method' => $method, 'message' => $message, 'desc' => $this->description, 'id_cron_log' => $this->id_cron_log ];
+		$data = [ 'type' => 'cron-jobs', 'method' => $method, 'message' => $message, 'desc' => $this->description, 'id_cron_log' => $this->id_cron_log ];
 		Log::debug( $data );
 		echo date('Y-m-d H:i:s') . ' - ' . $this->class . '::' . $method . ' > ' . $message . "\n";
 	}
