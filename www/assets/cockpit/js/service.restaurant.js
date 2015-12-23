@@ -536,6 +536,9 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 				list[ i ].sort = ( i + 1 );
 				list[ i ].show_up = true;
 				list[ i ].show_down = true;
+				if( !list[ i ]._rand ){
+					list[ i ]._rand = service.getRandomSpan();
+				}
 				// list[ i ].expanded = true;
 			}
 			if( list ){
@@ -544,6 +547,10 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 			}
 		}
 		return list;
+	}
+
+	service.getRandomSpan = function(){
+		return Math.floor((Math.random()*1000)+1);
 	}
 
 	service.menu = {

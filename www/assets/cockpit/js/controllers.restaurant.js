@@ -897,11 +897,12 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 		$scope.restaurant.categories = RestaurantEditService.menu.sort.category( $scope.restaurant.categories, category, 'down' );
 	}
 	$scope.sortCategoryUp = function( category ){
+		console.log('category',category);
 		$scope.restaurant.categories = RestaurantEditService.menu.sort.category( $scope.restaurant.categories, category, 'up' );
 	}
 
 	var getRandomSpan = function(){
-		return Math.floor((Math.random()*1000)+1);
+		return RestaurantEditService.getRandomSpan();
 	}
 
 	load();
@@ -1007,6 +1008,177 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 		return;
 	}
 
+	// Restaurant menu shortcuts
+	Mousetrap.bind( 'ctrl+shift+c', function() {
+		$scope.$safeApply( function(){ $scope.addCategory(); } );
+		return false;
+	});
+
+	// Expand element
+	Mousetrap.bind( 'ctrl+e', function() {
+		var fn = null;
+		var element = getElement();
+		if( element ){
+			if( element.dish ){
+				fn = function(){
+						$scope.restaurant.categories[ element.category - 1 ]._dishes[ element.dish - 1 ].expanded = !$scope.restaurant.categories[ element.category - 1 ]._dishes[ element.dish - 1 ].expanded;
+					};
+			} else
+			if( element.category ){
+				fn = function(){
+						$scope.restaurant.categories[ element.category - 1 ].expanded = !$scope.restaurant.categories[ element.category - 1 ].expanded;
+					};
+			}
+			if( fn ){
+				$scope.$safeApply( fn() );
+			}
+		}
+		return false;
+	});
+
+	// Remove element
+	Mousetrap.bind( 'ctrl+-', function() {
+		var fn = null;
+		var element = getElement();
+		if( element ){
+			if( element.dish ){
+				fn = function(){
+					var category = $scope.restaurant.categories[ element.category - 1 ];
+					var dish = $scope.restaurant.categories[ element.category - 1 ]._dishes[ element.dish - 1 ];
+					$scope.deleteDish( dish, category );
+				};
+			} else
+			if( element.category ){
+				fn = function(){
+						$scope.deleteCategory( $scope.restaurant.categories[ element.category - 1 ] );
+					};
+			}
+			if( fn ){
+				$scope.$safeApply( fn() );
+			}
+		}
+		return false;
+	});
+
+	// Add dish
+	Mousetrap.bind('ctrl+d', function() {
+		var fn = null;
+		var element = getElement();
+		if( element && element.category ){
+			var fn = function(){
+				$scope.addDish( $scope.restaurant.categories[ element.category - 1 ] )
+			}
+		}
+		if( fn ){
+			$scope.$safeApply( fn() );
+		}
+		return false;
+	});
+
+	// Change position up
+	Mousetrap.bind('ctrl+[', function() {
+		var fn = null;
+		var element = getElement();
+		if( element ){
+			if( element.dish ){
+				fn = function(){
+					var category = $scope.restaurant.categories[ element.category - 1 ];
+					var dish = $scope.restaurant.categories[ element.category - 1 ]._dishes[ element.dish - 1 ];
+					if( dish.show_up ){
+						$scope.sortDishUp( dish, category );
+						$scope.focus( '#dish-' + dish._rand );
+					}
+				};
+			} else
+			if( element.category ){
+				var fn = function(){
+					var category = $scope.restaurant.categories[ element.category - 1 ];
+					if( category.show_up ){
+						$scope.sortCategoryUp( category );
+						$scope.focus( '#category-' + category._rand );
+					}
+				}
+			}
+		}
+		if( fn ){
+			$scope.$safeApply( fn() );
+		}
+		return false;
+	});
+
+	// Change position down
+	Mousetrap.bind('ctrl+]', function() {
+		var fn = null;
+		var element = getElement();
+		if( element ){
+			if( element.dish ){
+				fn = function(){
+					var category = $scope.restaurant.categories[ element.category - 1 ];
+					var dish = $scope.restaurant.categories[ element.category - 1 ]._dishes[ element.dish - 1 ];
+					if( dish.show_down ){
+						$scope.sortDishDown( dish, category );
+						$scope.focus( '#dish-' + dish._rand );
+					}
+				};
+			} else
+			if( element.category ){
+				var fn = function(){
+					var category = $scope.restaurant.categories[ element.category - 1 ];
+					if( category.show_down ){
+						$scope.sortCategoryDown( category );
+						$scope.focus( '#category-' + category._rand );
+					}
+				}
+			}
+		}
+		if( fn ){
+			$scope.$safeApply( fn() );
+		}
+		return false;
+	});
+
+	// Dish copy options
+	Mousetrap.bind('ctrl+shift+o', function() {
+		var fn = null;
+		var element = getElement();
+		if( element ){
+			if( element.dish ){
+				fn = function(){
+					var category = $scope.restaurant.categories[ element.category - 1 ];
+					var dish = $scope.restaurant.categories[ element.category - 1 ]._dishes[ element.dish - 1 ];
+					$scope.dishActionStart( dish, category );
+				};
+			}
+		}
+		if( fn ){
+			$scope.$safeApply( fn() );
+		}
+		return false;
+	});
+
+	var getElement = function(){
+		var el = $(':focus');
+		if( el.length ){
+			var element = el.attr( 'element' );
+			if( element ){
+				element = JSON.parse( element );
+				if( element ){
+					return element;
+				}
+			}
+		}
+		return null;
+	}
+
+	$scope.$on( '$destroy', function() {
+		Mousetrap.unbind( 'ctrl+shift+c' );
+		Mousetrap.unbind( 'ctrl+e' );
+		Mousetrap.unbind( 'ctrl+-' );
+		Mousetrap.unbind( 'ctrl+d' );
+		Mousetrap.unbind( 'ctrl+[' );
+		Mousetrap.unbind( 'ctrl+]' );
+		Mousetrap.unbind( 'ctrl+shift+o' );
+	});
 });
 
 
