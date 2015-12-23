@@ -134,6 +134,28 @@ class Cockpit_Driver_Info extends Cana_Table_Trackchange {
 		return Cockpit_Driver_Info::q( 'SELECT * FROM driver_info WHERE id_admin = ' . $id_admin );
 	}
 
+	public function stopHelpOutNotification(){
+		$this->down_to_help_out_stop = date( 'Y-m-d' );
+		$this->save();
+	}
+
+	public function couldReceiveHelpOutNotification(){
+
+		if( !$this->down_to_help_out ){
+			return false;
+		}
+
+		if( !$this->down_to_help_out_stop ){
+			return true;
+		}
+		if( $this->down_to_help_out_stop == date( 'Y-m-d' ) ){
+			return false;
+		}
+		$this->down_to_help_out_stop = null;
+		$this->save();
+		return true;
+	}
+
 	public function exports(){
 		$out = $this->properties();
 		$types = Cockpit_Driver_Info::carrierTypes();

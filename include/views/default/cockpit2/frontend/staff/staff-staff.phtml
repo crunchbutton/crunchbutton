@@ -234,6 +234,21 @@
 							{{staff.address}}
 						</div>
 					</div>
+					<div class="field-row">
+						<div class="field-key">Send notifications when driver is not scheduled?</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="staff.down_to_help_out">Yes</span>
+							<span class="tag tag-red" ng-if="!staff.down_to_help_out">No</span>
+						</div>
+					</div>
+					<div class="field-row" ng-if="staff.down_to_help_out">
+						<div class="field-key">Turn off notifications for today</div>
+						<div class="field-value">
+							<label class="switch-wrap">
+								<input type="checkbox" ng-change="change_down_to_help_notifications();" class="switch" ng-model="staff.down_to_help_out_turn_off_notifications"/><div></div>
+							</label>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -335,8 +350,8 @@
 				<h1>Documents</h1>
 				<div class="support-box-header-actions-wrap">
 					<div class="support-box-header-actions">
-						<a ng-if="staff.isDriver" href="/drivers/onboarding/{{staff.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-briefcase"></i>&nbsp;&nbsp;Upload</button></a>
-						<a ng-if="staff.isMarketingRep" href="/staff/marketing/{{staff.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-briefcase"></i></i>&nbsp;&nbsp;Upload</button></a>
+						<a ng-if="staff.isDriver" href="/drivers/onboarding/{{staff.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-briefcase"></i>&nbsp;&nbsp;Upload Driver Docs</button></a>
+						<a ng-if="staff.isMarketingRep" href="/staff/marketing/{{staff.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-briefcase"></i></i>&nbsp;&nbsp;Upload Brand Rep Docs</button></a>
 					</div>
 				</div>
 				<div class="divider"></div>

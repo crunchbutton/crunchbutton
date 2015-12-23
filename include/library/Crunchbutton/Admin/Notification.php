@@ -390,7 +390,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			case Crunchbutton_Admin_Notification::TYPE_SMS:
 				$res = $this->sendSms( $order, $this->getSmsMessage($order, null, 'sms', null, true ) );
 				break;
-
+/*
 			case Crunchbutton_Admin_Notification::TYPE_PUSH_IOS:
 				$res = $this->sendPushIos( $order, $this->getSmsMessage($order, null, 'push', null, true ) );
 				break;
@@ -398,7 +398,9 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			case Crunchbutton_Admin_Notification::TYPE_PUSH_ANDROID:
 				$res = $this->sendPushAndroid( $order, $this->getSmsMessage($order, null, 'push', null, true ) );
 				break;
+*/
 		}
+
 	}
 
 	public function sendPriority( Crunchbutton_Order $order, $priorityMsgType ){
@@ -815,11 +817,15 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 				default:
 				case 'sms':
 					$message = Crunchbutton_Message_Sms::greeting($this->admin()->id_admin ? $this->admin()->firstName() : '');
+					$message .= "You're not on shift but order volume is high, so we're sending along some orders if you want them!\n";
+					$message .= "If you want to stop receiving order notifications, just text back \"No\".\n";
 					$message .= self::REPS_COCKPIT . $order->id_order . "\n";
 					$message .= $order->message('sms-admin');
 					break;
 				case 'push':
-					$message = '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
+					$message = "You're not on shift but order volume is high, so we're sending along some orders if you want them!\n";
+					$message .= "If you want to stop receiving order notifications, just text back \"No\".\n";
+					$message .= '#' . $order->id . ': ' . $order->user()->name . ' has placed an order to ' . $order->restaurant()->name . '.';
 					break;
 			}
 		} else {

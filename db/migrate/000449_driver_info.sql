@@ -1,0 +1,1 @@
+ALTER TABLE `driver_info` ADD COLUMN `down_to_help_out_stop` date DEFAULT NULL;

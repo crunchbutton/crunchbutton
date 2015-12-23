@@ -59,6 +59,22 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return Crunchbutton_Admin::q( 'SELECT * FROM admin WHERE UPPER( invite_code ) = UPPER("' . $code . '")' );
 	}
 
+	public function stopHelpOutNotification(){
+		$driverInfo = Cockpit_Driver_Info::byAdmin( $this->id_admin )->get( 0 );
+		if( $driverInfo->id_admin ){
+			return $driverInfo->stopHelpOutNotification();
+		}
+		return false;
+	}
+
+	public function couldReceiveHelpOutNotification(){
+		$driverInfo = Cockpit_Driver_Info::byAdmin( $this->id_admin )->get( 0 );
+		if( $driverInfo->id_admin ){
+			return $driverInfo->couldReceiveHelpOutNotification();
+		}
+		return false;
+	}
+
 	public function vehicle(){
 		$vehicle = $this->getConfig( Cockpit_Admin::CONFIG_VEHICLE_KEY );
 		if( $vehicle ){

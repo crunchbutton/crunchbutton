@@ -92,6 +92,11 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 			url: App.service + 'staff/:id_admin/change-status',
 			method: 'POST',
 			params : {}
+		},
+		'change_down_to_help_notifications' : {
+			url: App.service + 'staff/:id_admin/change-down-to-help-notifications',
+			method: 'POST',
+			params : {}
 		}
 	});
 
@@ -158,6 +163,12 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 
 	service.change_status = function(params, callback) {
 		staff.change_status( params, function(data) {
+			callback(data);
+		});
+	}
+
+	service.change_down_to_help_notifications = function(params, callback) {
+		staff.change_down_to_help_notifications( params, function(data) {
 			callback(data);
 		});
 	}

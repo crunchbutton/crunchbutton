@@ -118,6 +118,13 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 		} );
 	}
 
+	$scope.change_down_to_help_notifications = function(){
+		var params = { id_admin: $scope.staff.id_admin };
+		StaffService.change_down_to_help_notifications( params, function(){
+			load();
+		} );
+	}
+
 	var load = function(){
 		StaffService.get($routeParams.id, function(staff) {
 			$rootScope.title = staff.name + ' | Staff';
