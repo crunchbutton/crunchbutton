@@ -148,7 +148,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 		$message .= "\n\n";
 		$message .= json_encode( $this->properties() );
 
-		// Crunchbutton_Cron_Log::warning( [ 'body' => $message ] );
+		Crunchbutton_Cron_Log::warning( [ 'body' => $message ] );
 
 		// change the current status to let it start
 		$this->status = Crunchbutton_Cron_Log::CURRENT_STATUS_IDLE;
