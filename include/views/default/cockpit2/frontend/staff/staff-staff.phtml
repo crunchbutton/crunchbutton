@@ -205,6 +205,12 @@
 						</div>
 					</div>
 					<div class="field-row">
+						<div class="field-key">How much per referral</div>
+						<div class="field-value">
+							${{staff.referral_admin_credit | formatPrice}}
+						</div>
+					</div>
+					<div class="field-row">
 						<div class="field-key">Activations</div>
 						<div class="field-value">
 							{{staff.referral_total || 0}}
@@ -219,7 +225,7 @@
 					<div class="field-row">
 						<div class="field-key">Credit amount to customer</div>
 						<div class="field-value">
-							{{staff.referral_customer_credit}}
+							${{staff.referral_customer_credit | formatPrice}}
 						</div>
 					</div>
 					<div class="field-row">
@@ -324,42 +330,37 @@
 			</div>
 		</div>
 
-		<div class="support-box-wrap box-content2">
+		<div class="support-box-wrap box-content2" ng-if="staff.docs">
 			<div class="support-box-wrap-header">
-				<h1>Shifts</h1>
+				<h1>Documents</h1>
 				<div class="support-box-header-actions-wrap">
 					<div class="support-box-header-actions">
-						<span class="tag tag-red" ng-if="!staff.shifts.length">No Shifts</span>
+						<a ng-if="staff.isDriver" href="/drivers/onboarding/{{staff.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-briefcase"></i>&nbsp;&nbsp;Upload</button></a>
+						<a ng-if="staff.isMarketingRep" href="/staff/marketing/{{staff.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-briefcase"></i></i>&nbsp;&nbsp;Upload</button></a>
 					</div>
 				</div>
 				<div class="divider"></div>
 			</div>
 
-			<div class="no-box-content-color box-content-table" ng-if="staff.shifts.length">
-				<table class="tb-zebra">
-					<tr>
-						<th>Time</th>
-						<th>Community</th>
-						<th>Confirmed</th>
-						<th class="tb-small"></th>
-					</tr>
-					<tr ng-repeat="shift in staff.shifts">
-						<td>
-							<span class="listview-smaller">
-								<span class="listview-bold">Start</span>: {{shift.date_start | localtime | timestamp | date:'MM/dd hh:mm a'}}<br>
-								<span class="listview-bold">End</span>: {{shift.date_end | localtime | timestamp | date:'MM/dd hh:mm a'}}
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row" ng-repeat="doc in staff.docs">
+						<div class="field-key">
+							<a href="/api/driver/documents/download/{{doc.status.id_driver_document_status}}" target="_blank" ng-if="doc.status.id_driver_document_status">{{doc.name}}</a>
+							<span ng-if="!doc.status.id_driver_document_status">{{doc.name}}</span>
+						</div>
+						<div class="field-value">
+							<span ng-if="doc.status">
+								<span ng-if="doc.status.id_admin_approved" class="tag tag-green">Approved</span>
+								<span ng-if="!doc.status.id_admin_approved" class="tag tag-lightblue">Not Approved</span>
 							</span>
-						</td>
-						<td><a href="/community/{{shift.id_community}}">{{shift.community_name}}</a></td>
-						<td>
-							<span class="tag tag-red link no-underline" ng-if="!shift.confirmed" ng-click="shift_checkin( shift.id_admin_shift_assign )">Not confirmed</span>
-							<span class="tag tag-green" ng-if="shift.confirmed">Checked in</span>
-						</td>
-						<td>
-							<span class="tag tag-blue" ng-if="shift.current">Now</span>
-						</td>
-					</tr>
-				</table>
+							<span ng-if="!doc.status">
+								<span ng-if="doc.required" class="tag tag-red">Required</span>
+								<span class="tag tag-lightgrey">Missing</span>
+							</span>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 
