@@ -347,8 +347,6 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			$out[ 'amount_per_order' ] = $payment_type->amountPerOrder();
 		}
 
-
-
 		$out['stripe_id'] = $payment_type->stripe_id;
 
 		if( $staff->driver_info()->pexcard_date ){
@@ -363,6 +361,48 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		if( $note ){
 			$out[ 'note' ] = $note->exports();
 		}
+
+
+		// shows the regular list
+		$list = [];
+		$docs = Cockpit_Driver_Document::driver();
+		foreach( $docs as $doc ){
+			if( !$doc->showDocument( $vehicle ) ){
+				continue;
+			}
+
+			if( $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_HOURLY &&
+				$payment_type->payment_type != Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+				continue;
+			}
+
+			if( $doc->id_driver_document == Cockpit_Driver_Document::ID_INDY_CONTRACTOR_AGREEMENT_ORDER &&
+				$payment_type->payment_type == Crunchbutton_Admin_Payment_Type::PAYMENT_TYPE_HOURS ){
+				continue;
+			}
+
+			$_doc = $doc->exports();;
+
+			$docStatus = Cockpit_Driver_Document_Status::document( $staff->id_admin, $doc->id_driver_document );
+			if( $docStatus->id_driver_document_status ){
+				$approvedBy = $docStatus->admin_approved();
+				$_doc[ 'status' ] = $docStatus->exports();
+				if( $approvedBy->id_admin ){
+					$_doc[ 'status' ][ 'approved' ] = $approvedBy->name;
+				} else {
+					$_doc[ 'status' ][ 'approved' ] = false;
+				}
+
+			}
+
+			$list[] = $_doc;
+		}
+
+
+		if( count( $list ) ){
+			$out['docs'] = $list;
+		}
+
 
 		/*
 		$out['shifts'] = [];
