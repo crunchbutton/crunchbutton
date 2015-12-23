@@ -66,6 +66,10 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 							$this->_change_status($staff);
 							break;
 
+						case 'change-down-to-help-notifications':
+							$this->_change_down_to_help_notifications($staff);
+							break;
+
 						case 'group':
 							$this->_permissionDenied();
 							$this->_isPost();
@@ -238,6 +242,21 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		}
 	}
 
+	private function _change_down_to_help_notifications( $staff ){
+		if( $staff->id_admin ){
+			$driverInfo = Cockpit_Driver_Info::byAdmin( $staff->id_admin )->get( 0 );
+			if( $driverInfo->down_to_help_out_stop == date( 'Y-m-d' ) ){
+				$driverInfo->down_to_help_out_stop = null;
+			} else {
+				$driverInfo->down_to_help_out_stop = date( 'Y-m-d' );
+			}
+			$driverInfo->save();
+			echo json_encode( [ 'success' => 'true' ] );
+		} else {
+			echo json_encode( [ 'error' => 'invalid object' ] );
+		}
+	}
+
 	private function _change_status( $staff ){
 		if( $staff->id_admin ){
 			$staff->active = ( boolval( $this->request()[ "active" ] ) ? 1 : 0 );
@@ -319,6 +338,12 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		$driver_info[ 'student' ] = strval( $driver_info[ 'student' ] );
 		$driver_info[ 'permashifts' ] = strval( $driver_info[ 'permashifts' ] );
+
+		if( $driver_info[ 'down_to_help_out_stop' ] == date( 'Y-m-d' ) ){
+			$driver_info[ 'down_to_help_out_turn_off_notifications' ] = true;
+		} else {
+			$driver_info[ 'down_to_help_out_turn_off_notifications' ] = false;
+		}
 
 		$driver_info[ 'iphone_type' ] = '';
 		$driver_info[ 'android_type' ] = '';

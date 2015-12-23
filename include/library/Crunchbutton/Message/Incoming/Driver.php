@@ -9,6 +9,7 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 	const ACTION_HELP = 'help';
 	const ACTION_SHIFT_CONFIRMATION = 'shift-confirmation';
 	const ACTION_SHIFT_CONFIRMATION_HELP = 'shift-confirmation-help';
+	const ACTION_DRIVER_HELP_OUT_STOP_NOTIFICATION = 'stop-help-out-notification';
 
 	public function __construct($params) {
 
@@ -54,8 +55,10 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 				$response = ['msg' => $message, 'stop' => true ];
 			}
 
-		} elseif ($action == self::ACTION_SHIFT_CONFIRMATION_HELP ){
-			// if the driver has a shift to confirm but didn't confirm it - it automaticaly creates a ticket
+		} elseif ( $action == self::ACTION_SHIFT_CONFIRMATION_HELP ){
+			// do nothing
+		} elseif ( $action == self::ACTION_DRIVER_HELP_OUT_STOP_NOTIFICATION ){
+			$response = ['msg' => $message, 'stop' => true ];
 		}
 
 		$this->response = (object) $response;
@@ -124,6 +127,7 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 			self::ACTION_DELIVERED => [ 'delivered', 'd' ],
 			self::ACTION_DETAILS => [ 'details' ],
 			self::ACTION_SHIFT_CONFIRMATION => [ '"yes"!','"yes!','yes"!','yes','yes!','"yes!"' ],
+			self::ACTION_DRIVER_HELP_OUT_STOP_NOTIFICATION => [ '"no"!', '"no"','"no!','no"!','no','no!','"no!"' ],
 			self::ACTION_HELP => [ 'help', 'h', 'info', 'commands', '\?', 'support']
 		];
 
@@ -132,11 +136,26 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 			$shift = Crunchbutton_Admin_Shift_Assign_Confirmation::checkIfPhoneHasShiftToConfirm( $phone );
 			if( $shift ){
 				foreach ($verbs[self::ACTION_SHIFT_CONFIRMATION] as $k => $verb) {
-					if ( $body == $verb ) {
+					if ( strtolower( $body ) == $verb ) {
 						return ['verb' => self::ACTION_SHIFT_CONFIRMATION, 'id_admin_shift_assign' => $shift->id_admin_shift_assign ];
 					}
 				}
 				return ['verb' => self::ACTION_SHIFT_CONFIRMATION_HELP, 'id_admin_shift_assign' => $shift->id_admin_shift_assign ];
+			}
+		}
+
+		// check if the driver has a driver help out to cancel - #7281
+		if( $phone ){
+			foreach ($verbs[self::ACTION_DRIVER_HELP_OUT_STOP_NOTIFICATION] as $k => $verb) {
+				if ( strtolower( $body ) == $verb ) {
+					$drivers = Admin::q( 'SELECT * FROM admin WHERE phone = ?', [ $phone ] );
+					foreach( $drivers as $driver ){
+						if( $driver->couldReceiveHelpOutNotification() ){
+							$driver->stopHelpOutNotification();
+						}
+					}
+					return ['verb' => self::ACTION_DRIVER_HELP_OUT_STOP_NOTIFICATION ];
+				}
 			}
 		}
 
