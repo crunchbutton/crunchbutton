@@ -18,6 +18,9 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		service.sideInfo.data = { id_support: service.sideInfo.id_support, messages: [], page: 0, loaded: 0, total: null, has_more: false };
 		service._private = { first_load: true, current_scroll: 0, could_load: true };
 		service.sideInfo.update_controller();
+		setTimeout( function(){
+			service.sideInfo.update_controller();
+		} )
 	};
 
 	service.sideInfo.force_first_page = function(){
@@ -76,15 +79,15 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		console.log('service.sideInfo.load');
 
 		if( service.sideInfo.id_support ){
-
+console.log('1',1);
 			if( !service._private.could_load ){
 				return false;
 			}
-
+console.log('2',2);
 			if( service.sideInfo.data.total !== null && service.sideInfo.data.loaded >= service.sideInfo.data.total ){
 				return;
 			}
-
+console.log('3',3);
 			service._private.could_load = false;
 
 			service.sideInfo.data.page++;
@@ -92,7 +95,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			var params = { id_support: service.sideInfo.id_support, page: service.sideInfo.data.page };
 
 			TicketService.side_info( params, function( data ){
-
+console.log('4',4);
 				service.sideInfo.scroll( 'current' );
 
 				service.sideInfo.data.pexcard = data.pexcard;
@@ -106,28 +109,32 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 						messages.push( data.messages.list[ x ] );
 					}
 				}
-
+console.log('5',5);
 				for( x in service.sideInfo.data.messages ){
 					if( service.sideInfo.data.messages[ x ].id_support_message ){
 						messages.push( service.sideInfo.data.messages[ x ] );
 					}
 				}
+console.log('6',6);
 				service.sideInfo.data.messages = messages;
 				service.sideInfo.data.loaded = service.sideInfo.data.messages.length;
 				service.sideInfo.data.has_more = ( service.sideInfo.data.loaded >= service.sideInfo.data.total ) ? false : true;
 				service.sideInfo.update_controller();
 				if( service._private.first_load ){
+console.log('7',7);
 					service.sideInfo.scroll( 'begin' );
 					service._private.first_load = false;
 					service.sideInfo.load_ticket_page();
 					$rootScope.$broadcast( 'triggerSideViewTicket', {} );
 				} else {
+console.log('8',8);
 					service.sideInfo.scroll();
 				}
-
+console.log('9',9);
 			} );
 			return true;
 		}
+		return false;
 	};
 
 	service.setViewTicket = function(id) {

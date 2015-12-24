@@ -226,7 +226,7 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	}
 
 	$rootScope.$on( 'staffNoteSaved', function(e, data) {
-		$scope.ticket.driver.note = data;
+		// $scope.ticket.driver.note = data;
 	});
 
 

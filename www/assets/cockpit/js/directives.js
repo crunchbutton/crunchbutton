@@ -34,7 +34,7 @@ NGApp.directive('ticketMessagesScroll', function( $rootScope ) {
 NGApp.directive('supportChatContents', function( $window, $rootScope ) {
 	return {
 		link: function( scope, elem, attrs ) {
-			$rootScope.$on( 'triggerSideViewTicket', function(e, data) {
+			scope.$on( 'triggerSideViewTicket', function(e, data) {
 				if( App.isMobile() ){
 					setTimeout( function(){ fixHeight() }, 500 );
 				}
