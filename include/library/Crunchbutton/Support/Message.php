@@ -194,6 +194,9 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		if( $out[ 'from' ] == 'rep' && $out[ 'type' ] == 'sms' && !$out[ 'status' ] ){
 			$out[ 'status' ] = 'unknown';
 		}
+		if( $out[ 'from' ] == 'rep' && $out[ 'is_driver' ] ){
+			$out[ 'is_support' ] = true;
+		}
 		return $out;
 	}
 
