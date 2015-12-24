@@ -12,14 +12,10 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 		$action = $parsed['verb'];
 
 		$this->order = Order::q('select * from `order` where phone=? order by date desc limit 1',[$params['from']])->get(0);
-		$this->support = Support::q('
-			select support.* from support
-			left join support_message using(id_support)
-			where support.phone=?
-			and timestampdiff(hour, support_message.date, now()) < 4
-			order by support_message.date desc
-			limit 1
-		',[$params['from']])->get(0);
+		$this->support = Support::q('SELECT s.* FROM support s
+																		INNER JOIN support_message sm ON sm.id_support = s.id_support
+																		WHERE s.phone = ? AND TIMESTAMPDIFF( hour, sm.date, NOW() ) < 24
+																		ORDER BY sm.date DESC LIMIT 1',[$params['from']])->get(0);
 
 		$response = [];
 
@@ -64,7 +60,17 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 
 	public function reply($params) {
 
-		if (!$this->support->id_support || ($this->support->id_support && $this->support->id_order && $this->support->id_order != $this->order->id_order)) {
+		// when it should create a new ticket
+		// when it didnt find a ticket
+		if( !$this->support->id_support ){
+			$created = true;
+		}
+		// when it find a ticket but it bellongs to another order
+		if( $this->support->id_support && $this->order->id_order && $this->support->id_order != $this->order->id_order ){
+			$created = true;
+		}
+
+		if ( $created ) {
 			// create a new ticket
 			$this->support = Support::createNewSMSTicket([
 				'phone' => $params['from'],
