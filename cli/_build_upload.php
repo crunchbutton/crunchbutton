@@ -13,7 +13,7 @@ echo "\n\x1B[44mdebug 1...\x1B[0m\n";
 $git = Cana_Util::gitVersion();
 echo "\n\x1B[44mdebug 2...\x1B[0m\n";
 if (!$git) {
-	"\x1B[31mFailed to get git version.\x1B[0m\n";
+	echo "\x1B[31mFailed to get git version.\x1B[0m\n";
 	exit(1);
 } else {
 	echo "Found git version $git\n";
