@@ -33,6 +33,10 @@
 				<name>crunchbutton-document-upload</name>
 				<cache></cache>
 			</document-upload>
+			<build>
+				<name>crunchbutton-build</name>
+				<cache>_URL_</cache>
+			</build>
 		</buckets>
 	</s3>
 	<db>
