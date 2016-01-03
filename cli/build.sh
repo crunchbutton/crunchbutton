@@ -12,4 +12,4 @@ $PHPPATH -f ./_build.php cockpit.la assets/cockpit/css/bundle.css s=cockpit $PHP
 $PHPPATH -f ./_build.php crunchbutton.com assets/js/bundle.js s=app $PHPPATH > /app/www/assets/js/bundle.js
 $PHPPATH -f ./_build.php cockpit.la assets/cockpit/js/bundle.js s=cockpit $PHPPATH > /app/www/assets/cockpit/js/bundle.js
 
-mv /app/www/.htaccess.heroku /app/www/.htaccess
+#mv /app/www/.htaccess.heroku /app/www/.htaccess
