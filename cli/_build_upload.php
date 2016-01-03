@@ -1,19 +1,51 @@
 #!/usr/bin/env php
 <?php
-
-error_reporting(E_ERROR | E_PARSE);
-ini_set('display_errors', true);
+error_reporting(E_ALL);
+ini_set('display_errors',true);
 set_time_limit(100);
 
-require_once('../include/crunchbutton.php');
+echo "\n\x1B[44mUploading build files to aws...\x1B[0m\n";
 
-$start = time();
-$end = $start + 59;
+require_once '../include/crunchbutton.php';
 
-echo "\x1B[44mRunning Queue...\x1B[0m\n";
-while (time() < $end) {
-	$c = Crunchbutton_Queue::process();
-	echo $c ? ("\x1B[32mFinished running ".$c." queue items\x1B[0m\n") : "\x1B[31mQueue is empty.\x1B[0m\n";
-	sleep(1);
+$git = Cana_Util::gitVersion();
+
+if (!$git) {
+	echo "\x1B[31mFailed to get git version.\x1B[0m\n";
+	exit(1);
+} else {
+	echo "Found git version $git\n";
 }
-echo "Done.\n\n";
+
+$v = new Crunchbutton_Deploy_Version([
+	'id_deploy_server' => 23,
+	'date' => date('Y-m-d H:i:s'),
+	'status' => 'success',
+	'version' => $git
+]);
+$v->save();
+$build = $v->id_deploy_version;
+
+$files = [
+	'/app/www/assets/css/bundle.css' => 'crunchbutton.'.$build.'.css',
+	'/app/www/assets/cockpit/css/bundle.css' => 'cockpit.'.$build.'.css',
+	'/app/www/assets/js/bundle.js' => 'crunchbutton.'.$build.'.js',
+	'/app/www/assets/cockpit/js/bundle.js' => 'cockpit.'.$build.'.js'
+];
+
+foreach ($files as $src => $dst) {
+	echo "	Uploading $dst...";
+	$upload = new Crunchbutton_Upload([
+		'file' => $src,
+		'resource' => $dst,
+		'bucket' => c::config()->s3->buckets->build->name,
+		'private' => false
+	]);
+	$upload->upload();
+	echo "complete.\n";
+}
+
+echo "Finished.\n\n";
+
+
+exit(0);
