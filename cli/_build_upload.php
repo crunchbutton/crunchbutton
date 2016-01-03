@@ -1,6 +1,6 @@
 #!/usr/bin/env php
 <?php
-error_reporting(E_ERROR | E_PARSE);
+error_reporting(E_ALL);
 ini_set('display_errors',true);
 set_time_limit(100);
 
@@ -8,10 +8,8 @@ echo "\n\x1B[44mUploading build files to aws...\x1B[0m\n";
 
 require_once '../include/crunchbutton.php';
 
-echo "\n\x1B[44mdebug 1...\x1B[0m\n";
-
 $git = Cana_Util::gitVersion();
-echo "\n\x1B[44mdebug 2...\x1B[0m\n";
+
 if (!$git) {
 	echo "\x1B[31mFailed to get git version.\x1B[0m\n";
 	exit(1);
