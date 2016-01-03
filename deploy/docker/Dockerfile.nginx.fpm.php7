@@ -1,7 +1,6 @@
 FROM php:7.0-fpm
 
 ENV DOCKER=1
-ENV DEBUG=1
 
 EXPOSE 80
 
