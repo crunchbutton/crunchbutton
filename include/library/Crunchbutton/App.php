@@ -278,6 +278,7 @@ class Crunchbutton_App extends Cana_App {
 			foreach ($backtracels as $l) {
 				fwrite($stderr, $l."\n");
 			}
+			fwrite($stderr, $e->getTraceAsString()."\n");
 
 			fwrite($stderr, "\n");
 			fclose($stderr);
