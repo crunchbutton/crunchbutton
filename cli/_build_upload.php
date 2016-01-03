@@ -4,6 +4,9 @@ error_reporting(E_ERROR | E_PARSE);
 ini_set('display_errors',true);
 set_time_limit(100);
 
+$_REQUEST['__host'] = $_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = '_DOMAIN_';
+$_REQUEST['__url'] = '';
+
 echo "\n\x1B[44mUploading build files to aws...\x1B[0m\n";
 
 require_once '../include/crunchbutton.php';
