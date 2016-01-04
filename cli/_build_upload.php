@@ -32,10 +32,10 @@ $v->save();
 $build = $git;
 
 $files = [
-	Cana::config()->dirs->www.'assets/css/bundle.css' => 'crunchbutton.'.$build.'.css',
-	Cana::config()->dirs->www.'assets/cockpit/css/bundle.css' => 'cockpit.'.$build.'.css',
-	Cana::config()->dirs->www.'assets/js/bundle.js' => 'crunchbutton.'.$build.'.js',
-	Cana::config()->dirs->www.'assets/cockpit/js/bundle.js' => 'cockpit.'.$build.'.js'
+	Cana::config()->dirs->www.'assets/css/bundle.css' => 'css/crunchbutton.css',
+	Cana::config()->dirs->www.'assets/cockpit/css/bundle.css' => 'css/cockpit.css',
+	Cana::config()->dirs->www.'assets/js/bundle.js' => 'js/crunchbutton.js',
+	Cana::config()->dirs->www.'assets/cockpit/js/bundle.js' => 'js/cockpit.js'
 ];
 
 $path = c::config()->dirs->www.'assets/images';
@@ -49,31 +49,25 @@ foreach ($fs as $fileInfo) {
 	$p = str_replace($path,'',$fileInfo->getPath());
 	if ($fileInfo->isFile() && ((!$p && substr($fileInfo->getBasename(),0,1) != '.') || ($p && !in_array($p, $exclude)))) {
 		$name = str_replace('//','/','images/'.$p.'/'.$fileInfo->getBasename());
-		$files[$name] = $name;
+		$ph = $path.$p.'/'.$fileInfo->getBasename();
+		$files[$ph] = $name;
 	}
 }
-
-
+$finfo = finfo_open(FILEINFO_MIME_TYPE);
 foreach ($files as $src => $dst) {
 	echo "	Uploading $dst...";
+	$type = finfo_file($finfo, $src);
+
 	$upload = new Crunchbutton_Upload([
 		'file' => $src,
-		'resource' => $dst,
+		'resource' => $build.'/'.$dst,
 		'bucket' => c::config()->s3->buckets->build->name,
-		'private' => false
+		'private' => false,
+		'type' => $type
 	]);
 	$s = $upload->upload();
-	if (!$s) {
-		$folder = new Crunchbutton_Upload([
-			'file' => '',
-			'resource' => dirname($dst).'/',
-			'bucket' => c::config()->s3->buckets->build->name,
-			'private' => false
-		]);
-		$s2 = $folder->upload();
-		echo ($s ? "\x1B[32mfolder created. \x1B[0m" : "\x1B[31mfailed to create folder. \x1B[0m");
-	}
-	echo ($s ? "\x1B[32msuccess\x1B[0m\n" : "\x1B[31mfailed\x1B[0m") . ".\n";
+
+	echo ($s ? "\x1B[32msuccess\x1B[0m" : "\x1B[31mfailed\x1B[0m") . ".\n";
 }
 
 echo "Complete.\n\n";
