@@ -85,7 +85,7 @@ spl_autoload_register(function ($className) {
 	}
 
 	if (!getenv('PHPUNIT')) {
-		throw new Cana_Exception_MissingLibrary('The file '.$GLOBALS['config']['dirs']['library'] . $className . '.php'.' does not exist');
+		throw new \Exception('The file '.$GLOBALS['config']['dirs']['library'] . $className . '.php'.' does not exist');
 		exit;
 	}
 });
