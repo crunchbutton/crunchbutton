@@ -65,8 +65,8 @@ foreach ($files as $src => $dst) {
 	$s = $upload->upload();
 	if (!$s) {
 		$folder = new Crunchbutton_Upload([
-			'file' => null,
-			'resource' => dirname($dst),
+			'file' => '',
+			'resource' => dirname($dst).'_$folder$',
 			'bucket' => c::config()->s3->buckets->build->name,
 			'private' => false
 		]);
