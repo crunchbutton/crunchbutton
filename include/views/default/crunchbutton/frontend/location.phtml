@@ -1,88 +1,32 @@
-<div class="main-content-readable home-greeting" ng-show="!locationError">
-	<div class="home-welcome">
-		<h1>Push a button. Get food delivered.</h1>
-		<h2>
-			Order the top food in your area.
-			<br />
-			After you order, everything is saved for future 1 click ordering.
-			<br />
-			<strong>Enter your Address:</strong>
-		</h2>
-	</div>
-</div>
-<div class="enter-location" ng-show="!locationError">
-	<form class="button-letseat-formform" onsubmit="return false;">
-		<table class="button-letseat-table" cellpadding="0" cellspacing="0">
-			<tr>
-				<td style="width: 100%;">
-					<input type="text" class="location-address" ng-class="{ 'location-warning' : warningPlaceholder }" ng-enter="letsEat()" ng-model="location.form.address" placeholder="<?=$this->export ? 'Enter zip code or address' : 'Enter your zip code or full address'?>"<?=$this->export ? '' : ' autofocus'?>>
-				</td>
-				<td>
-				<button class="location-detect" ng-spinner="loadingLocation" data-spinner-color="#fff" ng-click="locEat()">
-					<div class="location-detect-icon"></div>
-				</button>
-				</td>
-			</tr>
-		</table>
-	</form>
-</div>
-<div class="divider"></div>
-<div ng-click="letsEat()">
-	<button ng-show="!locationError" class="button-letseat-form button-bottom ladda-button button-orange">
-		<div class="ladda-label" data-spinner-color="#fff" ng-spinner="loadingGetfood" data-spinner-scale="1.5">Find Restaurants!</div>
-	</button>
-</div>
-<div class="error-location" ng-show="locationError">
-
-	<div class="main-content-readable" ng-controller="RecommendRestaurantCtrl">
-		<div class="home-welcome">
-			<h1>&#9785; Sorry!</h1>
-			<h2>
-				Your address wasn't recognized - <span ng-click="resetFormLocation()" class="change-location-inline">please try entering a street number and city</span>
-
-				<?php /* We detected your address as <span ng-click="resetFormLocation()" class="loc-your-area change-location-inline">{{yourArea}}</span>, which we don't serve. <br/>
-				Please {{isMobile | iif : 'tap' : 'click'}} <span ng-click="resetFormLocation()" class="change-location-inline">here</span> to enter a different address. */ ?>
-
-				<div ng-hide="recommend.greetings">
-					<div class="home-reccomend-spacer"></div>
-					Have something specific in mind? Tell us your favorite delivery restaurant in your area!
-				</div>
-			</h2>
-		</div>
-
-		<div class="home-recommend">
-			<div class="home-recommend-form" ng-hide="recommend.greetings">
-				<input type="text" ng-enter="recommend.send()" ng-model="recommend.form.restaurant" class="home-recommend-text" placeholder="ex: Your favorite restaurant">
-				<button ng-click="recommend.send()" class="home-recommend-button"><div>Recommend it!</div></button>
-				<div class="divider"></div>
-			</div>
-
-			<div class="home-recommend-thank-you" ng-show="recommend.greetings">
-				<div class="divider"></div>
-				<div class="home-recommend-message-thank-you">
-					<div ng-show="account.user.has_auth">
-						<span class="home-reccomend-message-content">We'll let you know if they make it to Crunchbutton.</span>
-					</div>
-					<div ng-show="!account.user.has_auth">
-						<button ng-click="signupOpen()" class="home-recommend-button"><div>Create an account</div></button>
-						<span class="home-reccomend-message-content">and we'll let you know when we launch in your area!</span>
-					</div>
+<div class="bg">
+	<div class="home-top parallax-bg">
+		<div class="top-pad"></div>
+	
+		<div ng-if="!locationError">
+			<div class="pushabutton"></div>
+			<div class="home-inputs">
+				<h4 class="action">What's your full address?</h4>
+				<table cellpadding="0" cellspacing="0" class="home-location">
+					<tr>
+						<td style="width: 100%;"><input class="location-address needsclick" autocapitalize="off" autocorrect="off" placeholder="e.g. 37 Elm St, New Haven CT 06511" ng-focus="softKeyboard($event);" geo-complete-enter="letsEat()" id="input-location-address" ng-model="location.form.address" geo-complete ng-class="{'new-location-address' : location.form.address}">
+						</td>
+						<td>
+							<button class="location-detect" ng-click="locEat()" ng-class="{'hide-location-detect': location.form.address}">
+								<span class="fa fa-location-arrow" ng-spinner="loadingLocation" data-spinner-color="#fff" data-spinner-scale="1.5"></span>
+							</button>
+						</td>
+					</tr>
+				</table>
+				<div class="button-pushable find-restaurants">
+					<button class="button orange find-restaurants button-letseat-form" ng-click="letsEat()">
+						<div ng-spinner="loadingGetfood" data-spinner-color="#fff" data-spinner-scale="1.6">Find Restaurants!</div>
+					</button>
 				</div>
 			</div>
-			<div class="divider"></div>
 		</div>
-	</div>
 
-	<div class="divider dots"></div>
-
-	<div class="main-content-readable content-item-locations">
-		<div class="home-welcome">
-			<h1>Our most popular locations</h1>
-			<div class="content-item-locations-cities">
-				<span ng-repeat="alias in topCommunities">
-					<span class="content-item-locations-city" ng-click="openCity(alias.alias)" permalink="{{alias.alias}}">{{alias.name}}</span>
-				</span>
-			</div>
-		</div>
 	</div>
+	
+	<div ng-include src="'assets/view/location.bottom.html'"></div>
+
 </div>

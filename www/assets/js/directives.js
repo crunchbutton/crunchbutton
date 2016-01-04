@@ -133,20 +133,6 @@ NGApp.directive('hackExpandContent', function() {
 		}
 });
 
-// Facebook button compoment
-NGApp.directive( 'facebookSigninButton', function ( AccountFacebookService ) {
-	return {
-		restrict: 'A',
-		templateUrl: 'assets/view/account.facebook.html',
-		scope: {
-			title: '@'
-		},
-		controller: function ( $scope ) {
-			$scope.facebook = AccountFacebookService;
-		}
-	};;
-});
-
 // Restaurant is closed
 NGApp.directive( 'restaurantIsClosed', function () {
 	return {
@@ -163,20 +149,6 @@ NGApp.directive( 'preLoadImage', function() {
 			}
 		};
 } );
-
-// Suggestion tool tip
-NGApp.directive( 'suggestionToolTip', function () {
-	return {
-		restrict: 'A',
-		templateUrl: 'assets/view/restaurant.suggestion.tooltip.html',
-		scope: {
-			type: '@'
-		},
-		controller: function ( $scope ) {
-			$scope.show = false;
-		}
-	};;
-});
 
 // Press enter directive
 NGApp.directive( 'ngEnter', function() {
