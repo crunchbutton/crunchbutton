@@ -38,6 +38,22 @@ $files = [
 	'/app/www/assets/cockpit/js/bundle.js' => 'cockpit.'.$build.'.js'
 ];
 
+$path = c::config()->dirs->www.'assets/images';
+$dir  = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
+$fs = new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::SELF_FIRST);
+
+foreach ($fs as $fileInfo) {
+	if ($fileInfo->getBasename() == '.DS_Store') {
+		continue;
+	}
+	$p = str_replace($path,'',$fileInfo->getPath());
+	if ($fileInfo->isFile() && ((!$p && substr($fileInfo->getBasename(),0,1) != '.') || ($p && !in_array($p, $exclude)))) {
+		$name = str_replace('//','/','images/'.$p.'/'.$fileInfo->getBasename());
+		$files[$name] = $name;
+	}
+}
+
+
 foreach ($files as $src => $dst) {
 	echo "	Uploading $dst...";
 	$upload = new Crunchbutton_Upload([
@@ -46,11 +62,11 @@ foreach ($files as $src => $dst) {
 		'bucket' => c::config()->s3->buckets->build->name,
 		'private' => false
 	]);
-	$upload->upload();
-	echo "complete.\n";
+	$s = $upload->upload();
+	echo ($s ? "\x1B[32msuccess\x1B[0m\n" : "\x1B[31mfailed\x1B[0m") . ".\n";
 }
 
-echo "Finished.\n\n";
+echo "Complete.\n\n";
 
 $v->status = 'success';
 $v->save();
