@@ -3,7 +3,8 @@
 <script src="https://static.twilio.com/libs/twiliojs/1.2/twilio.min.js"></script>
 
 <? if (c::config()->bundle) : ?>
-	<script src="/assets/cockpit/js/bundle.js?v=<?=Deploy_Server::currentVersion()?>&s=cockpit"></script>
+	<? $js = c::config()->site->config('s3-bundle')->val() ? 'https://'.c::config()->s3->buckets->build->cache.'/'.Deploy_Server::currentVersion().'/js/cockpit.js' : '/assets/cockpit/js/bundle.js?v='.Deploy_Server::currentVersion().'&s=cockpit' ?>
+	<script src="<?=$js?>"></script>
 <? else : ?>
 	<?=$this->display('bundle/js', ['set' => ['scripts' => ['cockpit']]])?>
 <? endif ; ?>

@@ -6,7 +6,7 @@
 <meta name="fragment" content="!" />
 <meta name="viewport" content="initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
 <meta name="format-detection" content="telephone=no">
-	
+
 
 <meta property="al:ios:app_name" content="Crunchbutton">
 <meta property="al:ios:app_store_id" content="721780390">
@@ -26,7 +26,8 @@
 <?=$this->display('layout/html.servertime')?>
 
 <? if (c::config()->bundle) : ?>
-	<link rel="stylesheet" type="text/css" href="/assets/css/bundle.css?v=<?=Deploy_Server::currentVersion()?>&s=seven">
+	<? $css = c::config()->site->config('s3-bundle')->val() ? 'https://'.c::config()->s3->buckets->build->cache.'/'.Deploy_Server::currentVersion().'/css/crunchbutton.css' : '/assets/css/bundle.css?v='.Deploy_Server::currentVersion() ?>
+	<link rel="stylesheet" type="text/css" href="<?=$css?>">
 <? else : ?>
 	<?=$this->display('bundle/css', ['set' => ['style' => ['seven']]])?>
 <? endif ; ?>
