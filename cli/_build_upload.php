@@ -63,6 +63,16 @@ foreach ($files as $src => $dst) {
 		'private' => false
 	]);
 	$s = $upload->upload();
+	if (!$s) {
+		$folder = new Crunchbutton_Upload([
+			'file' => null,
+			'resource' => dirname($dst),
+			'bucket' => c::config()->s3->buckets->build->name,
+			'private' => false
+		]);
+		$s2 = $folder->upload();
+		echo ($s ? "\x1B[32mfolder created. \x1B[0m\n" : "\x1B[31mfailed to create folder. \x1B[0m");
+	}
 	echo ($s ? "\x1B[32msuccess\x1B[0m\n" : "\x1B[31mfailed\x1B[0m") . ".\n";
 }
 
