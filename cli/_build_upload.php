@@ -24,11 +24,12 @@ if (!$git) {
 $v = new Crunchbutton_Deploy_Version([
 	'id_deploy_server' => 23,
 	'date' => date('Y-m-d H:i:s'),
-	'status' => 'success',
+	'status' => 'new',
 	'version' => $git
 ]);
 $v->save();
-$build = $v->id_deploy_version;
+//$build = $v->id_deploy_version;
+$build = $git;
 
 $files = [
 	'/app/www/assets/css/bundle.css' => 'crunchbutton.'.$build.'.css',
@@ -50,6 +51,9 @@ foreach ($files as $src => $dst) {
 }
 
 echo "Finished.\n\n";
+
+$v->status = 'success';
+$v->save();
 
 
 exit(0);
