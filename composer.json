@@ -12,7 +12,8 @@
 		"duccio/apns-php": "dev-master",
 		"knplabs/github-api": "~1.4",
 		"mrclay/minify": "^2.2",
-		"lob/lob-php": "^1.4"
+		"lob/lob-php": "^1.4",
+		"aws/aws-sdk-php": "^3.12"
 	},
 	"require-dev": {
 		"satooshi/php-coveralls": "dev-master",
