@@ -704,8 +704,22 @@ class Crunchbutton_App extends Cana_App {
 	}
 
 	public function s3() {
+		if (!isset($this->_s3)) {
+			$this->_s3 = new \Aws\S3\S3Client([
+				'version' => 'latest',
+				'region'  => 'us-east-1',
+				'credentials' => [
+					'key'    => c::config()->s3->key,
+					'secret' => c::config()->s3->secret,
+				]
+			]);
+		}
+		return $this->_s3;
+
+		/*
 		new Crunchbutton_S3;
 		S3::setAuth(c::config()->s3->key, c::config()->s3->secret);
+		*/
 	}
 
 	public function getIp() {
