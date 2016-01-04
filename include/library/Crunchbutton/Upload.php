@@ -6,7 +6,7 @@ class Crunchbutton_Upload {
 		$this->resource = $params['resource'];
 		$this->bucket = $params['bucket'];
 		$this->headers = [];
-		$this->permissions = $params['private'] ? S3::ACL_PRIVATE : S3::ACL_PUBLIC_READ;
+		$this->permissions = $params['private'] ? 'private' : 'public-read';
 
 		if ($params['type']) {
 			$this->headers['Content-Type'] = $params['type'];
@@ -17,9 +17,22 @@ class Crunchbutton_Upload {
 		$fileInfo = pathinfo($this->file);
 		$fullPath = trim($fileInfo['dirname'].'/'.$fileInfo['basename']);
 		$fileName = trim($fileInfo['basename']);
+		$body = fopen($fullPath, 'r');
 
-		$r = S3::putObject(S3::inputFile($fullPath, false), $this->bucket, $this->resource ? $this->resource : $fileName, $this->permissions, [], $this->headers);
+		//$r = S3::putObject(S3::inputFile($fullPath, false), $this->bucket, $this->resource ? $this->resource : $fileName, $this->permissions, [], $this->headers);
 
-		return $r == 1 ? true : false;
+		try {
+			c::s3()->putObject([
+				'Bucket' => $this->bucket,
+				'Key'    => $this->resource ? $this->resource : $fileName,
+				'Body'   => $body ? $body : '',
+				'ACL'    => $this->permissions,
+			]);
+			$status = true;
+		} catch (Aws\Exception\S3Exception $e) {
+			$status = false;
+		}
+
+		return $status;
 	}
 }

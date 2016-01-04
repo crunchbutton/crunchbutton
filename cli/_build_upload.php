@@ -32,10 +32,10 @@ $v->save();
 $build = $git;
 
 $files = [
-	'/app/www/assets/css/bundle.css' => 'crunchbutton.'.$build.'.css',
-	'/app/www/assets/cockpit/css/bundle.css' => 'cockpit.'.$build.'.css',
-	'/app/www/assets/js/bundle.js' => 'crunchbutton.'.$build.'.js',
-	'/app/www/assets/cockpit/js/bundle.js' => 'cockpit.'.$build.'.js'
+	Cana::config()->dirs->www.'assets/css/bundle.css' => 'crunchbutton.'.$build.'.css',
+	Cana::config()->dirs->www.'assets/cockpit/css/bundle.css' => 'cockpit.'.$build.'.css',
+	Cana::config()->dirs->www.'assets/js/bundle.js' => 'crunchbutton.'.$build.'.js',
+	Cana::config()->dirs->www.'assets/cockpit/js/bundle.js' => 'cockpit.'.$build.'.js'
 ];
 
 $path = c::config()->dirs->www.'assets/images';
@@ -66,12 +66,12 @@ foreach ($files as $src => $dst) {
 	if (!$s) {
 		$folder = new Crunchbutton_Upload([
 			'file' => '',
-			'resource' => dirname($dst).'_$folder$',
+			'resource' => dirname($dst).'/',
 			'bucket' => c::config()->s3->buckets->build->name,
 			'private' => false
 		]);
 		$s2 = $folder->upload();
-		echo ($s ? "\x1B[32mfolder created. \x1B[0m\n" : "\x1B[31mfailed to create folder. \x1B[0m");
+		echo ($s ? "\x1B[32mfolder created. \x1B[0m" : "\x1B[31mfailed to create folder. \x1B[0m");
 	}
 	echo ($s ? "\x1B[32msuccess\x1B[0m\n" : "\x1B[31mfailed\x1B[0m") . ".\n";
 }
