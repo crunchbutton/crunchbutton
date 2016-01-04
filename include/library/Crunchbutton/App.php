@@ -60,28 +60,28 @@ class Crunchbutton_App extends Cana_App {
 			$db = 'travispostgres';
 		} elseif ($travis && getenv('TRAVIS')) {
 			$db = 'travis';
-		// anything local or dev
+			// anything local or dev
 		} elseif (preg_match('/192\.168\.99|192\.168\.0|localhost$|^(crunch|cockpit|cockpitla).dev$|^dev.(pit|la|crunch|seven)$|^pererinha.dyndns-web.com$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'local';
-		// anything by heroku use its own db
+			// anything by heroku use its own db
 		} elseif (preg_match('/^(heroku.*)|(.*.herokuapp.com)$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'heroku';
-		// time to time we need to use beta.cockpit.la over beta db
+			// time to time we need to use beta.cockpit.la over beta db
 		} elseif (preg_match('/(beta.cockpit.la)|((^beta\.|^dev\.).*)/',$_SERVER['SERVER_NAME'])) {
 			$db = 'beta';
-		// any one of our cull live urls, or staging prefixes
+			// any one of our cull live urls, or staging prefixes
 		} elseif (preg_match('/^(.*?arzynik.svc.tutum.io)|(.*?crunchbutton.nody.co)|(.*?cockpit.nody.co)|cockpit.la|cbtn.io|_DOMAIN_|cockpit._DOMAIN_|spicywithdelivery.com|(staging[0-9]?.(cockpit.la|crunchr.co))|((live\.)?cockpit1.crunchr.co)|((live\..*)?crunchbutton.crunchr.co)|((live\.*)?cockpit.crunchr.co)$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'live';
-		// anything ._DOMAIN_ fails
+			// anything ._DOMAIN_ fails
 		} elseif (preg_match('/_DOMAIN_$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'fail';
-		// anything prefixed with beta or dev
+			// anything prefixed with beta or dev
 		} elseif (preg_match('/(ui1\.nody\.co)|(ui1\.crunchr\.co)/',$_SERVER['SERVER_NAME'])) {
 			$db = 'ui1archive';
-		// anything prefixed with beta or dev
+			// anything prefixed with beta or dev
 		} elseif (preg_match('/crunchr\.co$/',$_SERVER['SERVER_NAME'])) {
 			$db = 'beta';
-		// anything else (should be nothing)
+			// anything else (should be nothing)
 		} else {
 			$db = 'fail';
 		}
@@ -484,7 +484,7 @@ class Crunchbutton_App extends Cana_App {
 			// export the processor info
 			$config[ 'processor' ][ 'type' ] = Crunchbutton_User_Payment_Type::processor();
 			$config[ 'processor' ][ 'stripe' ] = c::config()->stripe->{c::getEnv()}->{'public'};
-//			$config[ 'processor' ][ 'balanced' ] = c::balanced()->href;
+			//			$config[ 'processor' ][ 'balanced' ] = c::balanced()->href;
 
 			if (!$this->auth()->get('loc_lat')) {
 				$geo = new Crunchbutton_Geo([
