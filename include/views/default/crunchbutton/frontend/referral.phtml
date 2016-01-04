@@ -1,14 +1,45 @@
-<div class="referral-container modal zoom-anim-dialog small-container mfp-hide" ng-controller="RewardCtrl">
-	<div>
-		<div class="success" ng-show="invitedUsers">
-			<h1>Congrats</h1>
+<div class="referral-container zoom-anim-dialog mfp-hide dialog mfp-hide" ng-controller="RewardCtrl">
+	<!-- Success -->
+	<div class="dialog-padding account-modal">
+		<p>
+			<b>Congrats!</b>
+		</p>
+		<div class="divider spacer-one-onehalf"></div>
+		<p>
 			<strong>{{invitedUsers}}</strong> just placed an order!
-			<br/><br/>
+			<br>
 			Get free deliveries for any other new customers you refer ;)
-		</div>
-		<div class="bottom-links">
-			<span class="giftcard-later" ng-click="modal.close();">Great</span>
-		</div>
-		<div class="divider"></div>
+		</p>
 	</div>
+
+	<div class="hide-mobile dialog-padding account-modal" ng-if="referral.url">
+
+		<div class="col-box">
+			<button class="button facebook button-refer" ng-click="referral.facebook('account')">
+				<i class="fa fa-facebook-square"></i> <span>Share</span>
+			</button>
+
+			<br><br>
+
+			<button class="button twitter button-refer" ng-click="referral.twitter('account')">
+				<i class="fa fa-twitter-square"></i> <span>Tweet</span>
+			</button>
+		</div>
+
+		<br><br>
+			<p>Your code: <span class="referal-text-spacer"></span><b>{{referral.invite_code}}</b></p>
+			<div>
+				<br>
+				<p>Invite URL: <span class="referal-text-spacer"></span><input class="referal-text-box modal" type="text" ng-simulate-read-only="{{referral.url}}" value="http://{{referral.url}}"></p>
+			</div>
+
+	</div>
+
+	<div class="dialog-divider"></div>
+	<div class="dialog-padding dialog-bottom-buttons">
+		<div class="button-pushable">
+			<button ng-click="modal.close()" class="button green">Great</button>
+		</div>
+	</div>
+
 </div>

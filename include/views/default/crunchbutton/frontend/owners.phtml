@@ -1,0 +1,74 @@
+<div class="top-pad"></div>
+
+<div class="owners-bubble-wrap noselect">
+	<div class="bubble-tail bubble-tail-beige bubble-animated">
+		<div class="text" ng-switch="ownerMessage">
+			<span class="single-line" ng-switch-when="1">Get it?</span>
+			<span class="single-line" ng-switch-when="2"><b>GOOD</b> for you!!</span>
+			<span ng-switch-when="3">No but seriously though</span>
+			<span ng-switch-when="4">You really should use Crunchbutton</span>
+			<span ng-switch-when="5">Our customers are awesome</span>
+			<span class="single-line" ng-switch-when="6">They love us</span>
+			<span class="small" ng-switch-when="7">And we are more<br>than willing to share<br> that love</span>
+			<span ng-switch-when="8">For a small fee of course</span>
+			<span ng-switch-when="9">I mean nothing is free</span>
+			<span class="single-line" ng-switch-when="10">Not even love</span>
+			<span class="single-line" ng-switch-when="11">Except from me</span>
+			<span class="single-line" ng-switch-when="12">I love you</span>
+			<span ng-switch-when="13">That was completely free</span>
+			<span class="single-line" ng-switch-when="14"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
+			<span ng-switch-default><b>We're good</b><br>for your business!</span>
+		</div>
+		<div class="bubble-tail-spacer"></div>
+	</div>
+	<div class="owner-brocoli animated-resize" ng-instant="ownerMessage = (ownerMessage > 13 ? 0 : (ownerMessage + 1))"></div>
+	<div class="divider"></div>
+</div>
+
+<div class="content-padding owner-content" ng-controller="SupportCtrl">
+	<br />
+
+	<p>We choose the best food that local customers love. We make your restaurant cemented as a local favorite, drive additional business, and make you and your customers happier.</p>
+	<br /><br />
+
+	<div class="owner-block">
+		<div class="owner-icon"><i class="fa fa-usd"></i></div>
+		<div class="owner-text">
+			<h4>No upfront costs.</h4>
+			<p>There is a percentage fee, but any or all of it can be passed to customers -- this includes credit card fees.</p>
+		</div>
+	</div>
+	<div class="divider"></div>
+
+	<div class="owner-block">
+		<div class="owner-icon"><i class="fa fa-heart"></i></div>
+		<div class="owner-text">
+			<h4>Customers love us.</h4>
+			<p>Simply put, we're the easiest to use online ordering out there. Customers make repeat orders with the click of a button. We make it easy for customers to view and order their favorite items, and if you qualify, we label you as a favorite for them.</p>
+		</div>
+	</div>
+
+	<div class="divider"></div>
+
+	<div class="owner-block">
+		<div class="owner-icon"><i class="fa fa-check"></i></div>
+		<div class="owner-text">
+			<h4>We're streamlined.</h4>
+			<p>Getting you up and running is as simple as collecting a few pieces of info. We can notify you of orders by fax, phone, text message, email, and/or online system, and our own delivery drivers can carry out the deliveries for you. We pay you by check or bank deposit.</p>
+		</div>
+	</div>
+
+	<div class="divider"></div>
+
+	<div class="owner-block">
+		<div class="owner-icon"><i class="fa fa-star"></i></div>
+		<div class="owner-text">
+			<h4>It's great for business.</h4>
+			<p>Your popular items are promoted as user favorites. Case study: a week after our launch in New Haven, we were driving $9K in orders per month to early adopter restaurants.</p>
+		</div>
+	</div>
+	<br><br>
+	<a href="mailto:{{join}}"><button class="button green">send us an email</button></a>
+	<br><br>
+	<p class="alternate-link"><a href="tel:+18003514161">or call us @ 800-351-4161</a></p>
+</div>

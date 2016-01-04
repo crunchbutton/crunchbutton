@@ -1,1 +1,132 @@
-ABOUT
+<div class="top-pad"></div>
+<? /* this is just a test thing
+		<div class="stamp-loader">
+			<span ng-lettering class="stamp-loader-lettering" data-lettering="letters">push a button</span>
+			<div class="stamp-loader-button"></div>
+			<div class="stamp-loader-words"></div>
+			
+
+		</div>
+		*/
+?>
+
+<div class="about-bubble-wrap noselect">
+	<div class="bubble-tail bubble-tail-green bubble-animated">
+		<div class="text" ng-switch="pearMessage">
+			<span ng-switch-when="1">I don't actually work here.</span>
+			<span ng-switch-when="2">These guys do though.</span>
+			<span ng-switch-when="3">You should buy them a beer.</span>
+			<span ng-switch-when="4">I'm sure they deserve it.</span>
+			<span class="single-line" ng-switch-when="5">Maybe two.</span>
+			<span class="single-line" ng-switch-when="6">Or three.</span>
+			<span ng-switch-when="7">In fact just buy them a keg.</span>
+			<span class="single-line" ng-switch-when="8">Me?</span>
+			<span class="small" ng-switch-when="9" style="margin-top: .5em;">A bottle of Veuve Clicquot, please.</span>
+			<span class="single-line" ng-switch-when="10">Cheers!</span>
+			<span class="single-line" ng-switch-when="11"><i class="fa fa-glass"></i> <i class="fa fa-glass"></i> <i class="fa fa-glass"></i></span>
+			<span ng-switch-default><b>Hey there!</b><br>Nice to meet you!</span>
+		</div>
+		<div class="bubble-tail-spacer"></div>
+	</div>
+	<div class="about-pear animated-resize" ng-instant="pearMessage = (pearMessage > 10 ? 0 : (pearMessage + 1))" instant-pass-thru></div>
+	<div class="divider"></div>
+</div>
+
+<br /><br /><br />
+<div class="content-padding col-box">
+	<div class="staff two-col">
+		<div class="staff-judd staff-image animated-resize"></div>
+		<h1>Judd Rosenblatt</h1>
+		<h2>Chief Eater</h2>
+		<p class="staff-favorite">
+			Fav<span class="staff-orite">orite</span> food: THE Wenzel
+			<br>Fav<span class="staff-orite">orite</span> beer: Oatmeal Stout
+		</p>
+		<p class="staff-content">
+			Ate a lot of Wenzels at Yale, now settles for gluten free buffalo chicken tacos in LA. He's the boss, so he bosses us around.
+		</p>
+	</div>
+
+	<div class="staff two-col">
+		<div class="staff-devin staff-image animated-resize"></div>
+		<h1>Devin Smith</h1>
+		<h2>Executive Chef</h2>
+		<p class="staff-favorite">
+			Fav<span class="staff-orite">orite</span> food: Toro Sushi
+			<br>Fav<span class="staff-orite">orite</span> beer: La Trappe Quadrupel
+		</p>
+		<p class="staff-content">
+			He builds stuff. Devin’s engineering background stems from his extensive lego building as a child. Best education ever. 
+		</p>
+	</div>
+	
+	<div class="staff two-col">
+		<div class="staff-david staff-image animated-resize"></div>
+		<h1>David Klumpp</h1>
+		<h2>Chief Taster</h2>
+		<p class="staff-favorite">
+			Fav<span class="staff-orite">orite</span> food: Chocolate Crostata
+			<br>Fav<span class="staff-orite">orite</span> beer: Root Beer
+		</p>
+		<p class="staff-content">
+			We're not really sure what he does. But without him we're pretty sure we would be thrown into a state of chaos.
+		</p>
+	</div>
+	
+	<div class="staff two-col">
+		<div class="staff-nick staff-image animated-resize"></div>
+		<h1>Nick Hunter</h1>
+		<h2>Chief Curator</h2>
+		<p class="staff-favorite">
+			Fav<span class="staff-orite">orite</span> food: Chicken Nachos
+			<br>Fav<span class="staff-orite">orite</span> beer: Hefeweizen
+		</p>
+		<p class="staff-content">
+			Nick will eat just about anything and everything. Hide your miso soup.
+		</p>
+	</div>
+	
+	<div class="staff two-col">
+		<div class="staff-daniel staff-image animated-resize"></div>
+		<h1>Daniel Camargo</h1>
+		<h2>Sous-chef</h2>
+		<p class="staff-favorite">
+			Fav<span class="staff-orite">orite</span> food: Pepperoni Pizza
+			<br>Fav<span class="staff-orite">orite</span> beer: Stella Artois
+		</p>
+		<p class="staff-content">
+			Part Brazilian, part super hero. When the day needs saving he saves it.
+		</p>
+	</div>
+</div>
+
+<div class="content-padding about-join-team-wrap noselect">
+	<div class="about-join-bubble-wrap">
+		<div class="bubble-curved bubble-curved-green bubble-animated animated-resize">
+			<div class="text" ng-switch="orangeMessage">
+				<span class="small" ng-switch-when="1">So you can write stupid messages like this</span>
+				<span  ng-switch-when="2">That no one will ever read</span>
+				<span ng-switch-when="3">So you could put anything</span>
+				<span class="single-line" ng-switch-when="4">No really.</span>
+				<span class="single-line" ng-switch-when="5">Like...</span>
+				<span class="single-line" ng-switch-when="6">"Hi Crystal!"</span>
+				<span ng-switch-when="7">Did I mention we like beer?</span>
+				<span class="single-line" ng-switch-when="8">Yeah we do.</span>
+				<span ng-switch-when="9">We even brew our own beer</span>
+				<span class="small" ng-switch-when="10">That just screams cool right there</span>
+				<span class="single-line" ng-switch-when="11"><i class="fa fa-beer"></i> <i class="fa fa-beer"></i> <i class="fa fa-beer"></i></span>
+				<span class="single-line" ng-switch-default><b>Join the team!</b></span>
+			</div>
+		</div>
+		<div class="bubble-curved-spacer"></div>
+	</div>
+	<div class="about-green-orange animated-resize" ng-instant="orangeMessage = (orangeMessage > 10 ? 0 : (orangeMessage + 1))" instant-pass-thru></div>
+	<div class="divider"></div>
+
+	<p>
+		<br><br>
+		Like food? Like fun? Like beer? Then we want you! Join our young ambitious team in sunny Los Angeles!
+	</p>
+	<br>
+	<button class="button lightorange" ng-click="navigation.link('/work','push')">Work with Us</button>
+</div>

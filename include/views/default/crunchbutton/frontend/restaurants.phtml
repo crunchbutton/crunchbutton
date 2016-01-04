@@ -1,60 +1,111 @@
-<div ng-show="!restaurants">
-	<div class="main-content-readable home-greeting">
-		<div class="home-welcome">
-			<h1>Finding you the best food...</h1>
-		</div>
-	</div>
-</div>
+<div class="top-pad"></div>
 
-<div ng-show="restaurants">
-	<div class="home-welcome home-tagline main-content-readable" ng-class="{'home-welcome-anony-hasuser': account.user.id_user}">
-		<div ng-show="image" class="community-image" style="background-image:url('https://i.crunchbutton.com/image/community/{{image}}');"></div>
-		<h1 ng-bind-html-unsafe="slogan" ng-hide="image"></h1>
-		<h2 ng-bind-html-unsafe="tagline"></h2>
-	</div>
-	<div>
-		<h2 ng-if="allClosed && community_closed" ng-bind-html-unsafe="community_closed" class="community-closed-message home-welcome home-tagline main-content-readable"></h2>
+<div class="restaurants-top-wrap content-padding">
+	<div class="restaurants-top-tag hide-mobile" ng-if="slogan">
+		<h4 ng-bind-html-unsafe="slogan" class="restaurants-top-title"></h4>
+		<p ng-bind-html-unsafe="tagline"></p>
+		<p ng-if="operation_hours" class="operation-hours">
+			Crunchbutton delivers: <br><span ng-bind-html-unsafe="operation_hours"></span>
+		</p>
+		<p><br>{{entered}} - <a href="/location" title="Change">Change</i></a></p>
 	</div>
 
-	<? /*
-	<div class="home-welcome home-tagline main-content-readable home-welcome-user" ng-show="account.user.id_user">
-		<h1 ng-bind-html-unsafe="motivationText"></h1>
+	<div class="hide-desktop">
+		<p ng-if="operation_hours" class="operation-hours content-padding">
+			<strong>Crunchbutton delivers:</strong>
+			<br><span ng-bind-html-unsafe="operation_hours"></span>
+			<div class="divider"></div>
+			<br><br>
+		</p>
 	</div>
-	*/ ?>
 
-	<div class="content-padder-before"></div>
-	<div class="content-padder">
-		<div class="meal-items {{mealItemClass}}">
+	<div class="restaurants-bubble-wrap noselect">
+		<div ng-if="!image">
+			<div ng-if="!allClosed">
+				<div class="bubble-tail bubble-tail-green bubble-animated">
+					<div class="text" ng-switch="pushMessage">
+						<span ng-switch-when="1">We choose<br>the best food...</span>
+						<span ng-switch-when="2">From the best restaurants...</span>
+						<span ng-switch-when="3">So you don't<br> have to!</span>
+						<span ng-switch-when="4">Screw huge<br> menus!</span>
+						<span class="single-line" ng-switch-when="5">Screw gross food!!</span>
+						<span ng-switch-when="6">We only have awesome stuff!</span>
+						<span class="single-line" ng-switch-when="7">Got a suggestion?</span>
+						<span ng-switch-when="8">Want to work<br> for us?</span>
+						<span class="single-line" ng-switch-when="9">Send us a text!</span>
+						<span ng-switch-when="10">We are always looking for...</span>
+						<span ng-switch-when="11" class="single-line">Awesome people...</span>
+						<span class="single-line" ng-switch-when="12">And great food!</span>
+						<span class="single-line" ng-switch-when="13"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
+						<span ng-switch-default class="restaurants-push-tagline">
+							<span class="hide-desktop"><b>Push a button</b><br>Get food delivered</span>
+							<span class="hide-mobile">Choose a <br><b>restaurant</b></span>
+						</span>
 
-			<div ng-click="display($event)" ng-class="{'meal-item-closed': restaurant._open==false}" class="meal-item" data-id_restaurant="{{restaurant.id_restaurant}}" data-permalink="{{restaurant.permalink}}" ng-repeat="restaurant in restaurants | limitTo:restaurantsToShow">
-
-				<div class="meal-item-content">
-					<div class="ladda-label" ng-spinner="loadingRestaurant[restaurant.id_restaurant]" data-spinner-color="#333333" data-spinner-scale=".5">
-						<div class="meal-pic" style="background: url({{restaurant.img}});"></div>
-						<h2 class="meal-restaurant">{{restaurant.name}}</h2>
-						<h3 class="meal-food">{{restaurant._short_description}}</h3>
-						<div ng-switch on="restaurant._tag">
-							<div class="meal-item-tag" ng-switch-when="takeout">Take out only</div>
-							<div class="meal-item-tag about-to-close" ng-switch-when="closing">Hurry, closes in {{restaurant._closesIn}} min!</div>
-							<div ng-switch-when="opening">
-								<div class="meal-item-tag-closed" ng-if="restaurant._opensIn_formatted">
-									Available {{restaurant._opensIn_formatted}}
-								</div>
-							</div>
-							<div class="meal-item-tag-closed" ng-switch-when="closed">
-								<span ng-if="restaurant._opensIn_formatted">Available {{restaurant._opensIn_formatted}}</span>
-								<span ng-if="!restaurant._opensIn_formatted">Available in a few hours</span>
-							</div>
-							<div class="meal-item-tag-closed" ng-switch-when="force_close">Temporarily unavailable {{restaurant._closedDueTo}}</div>
-							<div class="meal-item-tag-closed" ng-switch-when="next_open">{{restaurant.next_open_time_message.message}}</div>
-						</div>
 					</div>
+					<div class="bubble-tail-spacer"></div>
 				</div>
-				<div class="meal-item-spacer"></div>
+				<div class="restaurants-orange" ng-instant="pushMessage = (pushMessage > 12 ? 0 : (pushMessage + 1))" instant-pass-thru></div>
 			</div>
-			<button class="show-more-restaurants" ng-show="restaurantsToShow < restaurants.length" ng-click="showMoreRestaurants()">
-				Show more Restaurants
-			</button>
+
+			<div ng-if="allClosed">
+				<div class="bubble-tail bubble-tail-green bubble-animated noselect">
+					<div class="text" ng-switch="pushMessage">
+						<span ng-switch-when="1">We will be back soon.</span>
+						<span ng-switch-when="2" class="small">Know of some awesome restaurants in your area?</span>
+						<span ng-switch-when="3">Want to become a delivery driver?</span>
+						<span class="single-line" ng-switch-when="4">Send us a txt...</span>
+						<span class="single-line" ng-switch-when="5">And lets do stuff!</span>
+						<span class="single-line" ng-switch-when="6"><i class="fa fa-cutlery"></i> <i class="fa fa-cutlery"></i> <i class="fa fa-cutlery"></i></span>
+						<span ng-switch-default class="restaurants-push-tagline">
+							<span ng-if="community_closed" class="small">
+								{{community_closed}}
+							</span>
+							<span ng-if="!community_closed && !openSoon"><b>Wahhhhhh!!!</b><br>No delivery is available</span>
+							<span ng-if="!community_closed && openSoon">Delivery available soon!!</span>
+						</span>
+					</div>
+					<div class="bubble-tail-spacer"></div>
+				</div>
+				<div class="restaurants-orange restaurants-orange-sad" ng-instant="pushMessage = (pushMessage > 6 ? 0 : (pushMessage + 1))" instant-pass-thru></div>
+			</div>
+
+			<div class="divider"></div>
+			<br>
+
+			<? /*
+			<div class="restaurants-tagline">
+				<h2><i class="fa fa-hand-o-right"></i>&nbsp;&nbsp;Choose a restaurant</h2>
+			</div>
+			*/?>
 		</div>
+
+		<div ng-if="image" class="community-image"></div>
+
+
+		<div class="divider"></div>
+	</div>
+	<div class="divider"></div>
+
+</div>
+
+<div ng-if="restaurants">
+	<div class="restaurants-items">
+
+	<span ng-repeat="restaurant in restaurants | limitTo:restaurantsToShow" class="restaurants-repeated">
+		<ng-include src="'assets/view/restaurants-box-restaurant.html'"></ng-include>
+	</span>
+	<div class="divider"></div>
+
+	<button class="button green restaurants-more" ng-if="restaurantsToShow < restaurants.length" ng-click="showMoreRestaurants()">
+		More awesome Restaurants
+	</button>
+
 	</div>
 </div>
+
+<div class="content-padding suggestion-footer" ng-if="config.suggestions && show_suggestions">
+	<p>Want something else delivered? <a href class="suggestion-text" ng-click="suggestion();"> Let us know!</a></p>
+</div>
+
+<ng-include src="'assets/view/restaurants-suggestion.html'"></ng-include>
