@@ -331,12 +331,16 @@ var Restaurant = function(id) {
 			if( self.loadingHours ){
 				return;
 			}
-			dateTime.reload();
 			self.loadingHours = true;
-			var url = App.service + 'restaurant/hours/' + self.id_restaurant;
+			var url = App.service + 'restaurant/hours/' + self.id_restaurant + '/gmt';
 			App.http.get( url, {
 				cache: false
 			} ).success( function ( hours ) {
+				var gmt = hours.gmt;
+				var hours = hours.hours;
+				if( gmt ){
+					dateTime.updateGMT( gmt );
+				}
 				self.loadingHours = false;
 				if( hours && hours.constructor === Array ){
 					self.cachedAt = now;

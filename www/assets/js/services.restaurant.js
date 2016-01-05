@@ -211,23 +211,27 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		}
 		var url = null;
 		if( service.position.pos().lat() && service.position.pos().lon() ){
-			url = App.service + 'restaurants/hours/?lat=' + service.position.pos().lat() + '&lon=' + service.position.pos().lon() + '&range=' + (service.position.range || 2 );
+			url = App.service + 'restaurants/hours-gmt/?lat=' + service.position.pos().lat() + '&lon=' + service.position.pos().lon() + '&range=' + (service.position.range || 2 );
 		} else {
 			var ids = [];
 			for ( var x in restaurants ) {
 				ids.push( restaurants[x].id_restaurant );
 			}
 			if( ids.length > 0 ){
-				url = App.service + 'restaurants/hours/' + ids.join( ',' );
+				url = App.service + 'restaurants/hours-gmt/' + ids.join( ',' );
 			}
 
 		}
-		dateTime.reload();
 		if( url ){
 			service.loadingHours = true;
 			$http.get( url, {
 				cache: false
 			}).success(function ( hours ) {
+				var gmt = hours.gmt;
+				var hours = hours.hours;
+				if( gmt ){
+					dateTime.updateGMT( gmt );
+				}
 				var now = ( Math.floor( new Date().getTime() / 1000 ) );
 				for( var x in hours ){
 					for ( var y in restaurants ) {

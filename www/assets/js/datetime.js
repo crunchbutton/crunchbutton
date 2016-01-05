@@ -5,13 +5,29 @@ var dateTime = {
 };
 
 dateTime.update = function(){
-	if( _gmtServer ){
+	if( _gmtServer && typeof _gmtServer == 'string' ){
 		var time = _gmtServer.split( '/' );
-		dateTime.now = new Date( Number(time[0]), Number(time[1]-1), Number(time[2]), Number(time[3]), Number(time[4]), ( Number(time[5]) + dateTime.timer ) ) ;
-		dateTime.timer++;
-		dateTime.gears = setTimeout( function(){ dateTime.update(); }, 1000 );
+		if( time.length == 6 ){
+			dateTime.now = new Date( Number(time[0]), Number(time[1]-1), Number(time[2]), Number(time[3]), Number(time[4]), ( Number(time[5]) + dateTime.timer ) ) ;
+			dateTime.timer++;
+			dateTime.gears = setTimeout( function(){ dateTime.update(); }, 1000 );
+		} else {
+			dateTime.reload();
+		}
 	} else {
 		dateTime.reload();
+	}
+}
+
+dateTime.updateGMT = function( gmt ){
+	if( gmt ){
+		_gmtServer = gmt;
+		dateTime.timer = 0;
+		if( dateTime.gears ){
+			clearTimeout( dateTime.gears );
+		}
+		dateTime.update();
+		App.rootScope.$broadcast( 'appResume', false );
 	}
 }
 
@@ -26,17 +42,17 @@ dateTime.restart = function(){
 // Update the gmt time based on server
 dateTime.reload = function(){
 	var url = App.service + 'gmt';
-	App.http.get( url, {
-		cache: false
-	} ).success( function ( json ) {
-		_gmtServer = json.gmt;
-		dateTime.timer = 0;
-		if( dateTime.gears ){
-			clearTimeout( dateTime.gears );
-		}
-		dateTime.update();
-		App.rootScope.$broadcast( 'appResume', false );
-	} ).error( function(){ window.location.reload(); } );
+	if( App.http && App.http.get ){
+		App.http.get( url, {
+			cache: false
+		} ).success( function ( json ) {
+			dateTime.updateGMT( json.gmt )
+		} ).error( function(){ window.location.reload(); } );
+	} else {
+		setTimeout( function(){
+			dateTime.reload();
+		}, 500 );
+	}
 }
 
 dateTime.toString = function(){
