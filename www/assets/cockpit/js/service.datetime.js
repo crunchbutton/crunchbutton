@@ -1,7 +1,7 @@
 
 NGApp.factory('DateTimeService', function(AccountService) {
 	var service = {
-		tzServer: 'America/Los_Angeles',
+		tzServer: 'UTC',
 		tzLocal: new Date().getTimezoneOffset(),
 
 		// convert a server time to local time
@@ -32,14 +32,14 @@ NGApp.factory('DateTimeService', function(AccountService) {
 });
 
 NGApp.filter('localtime', function(DateTimeService) {
-	return function(date) {
-		return DateTimeService.local(date).format('YYYY-MM-DD HH:mm:ss Z');
+	return function(date, format) {
+		return DateTimeService.local(date).format(format || 'YYYY-MM-DD HH:mm:ss Z');
 	};
 });
 
 NGApp.filter('servertime', function(DateTimeService) {
-	return function(date) {
-		return DateTimeService.server(date).format('YYYY-MM-DD HH:mm:ss Z');
+	return function(date, format) {
+		return DateTimeService.server(date).format(format || 'YYYY-MM-DD HH:mm:ss Z');
 	};
 });
 
