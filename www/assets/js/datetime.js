@@ -27,7 +27,6 @@ dateTime.updateGMT = function( gmt ){
 			clearTimeout( dateTime.gears );
 		}
 		dateTime.update();
-		App.rootScope.$broadcast( 'appResume', false );
 	}
 }
 
@@ -47,6 +46,7 @@ dateTime.reload = function(){
 			cache: false
 		} ).success( function ( json ) {
 			dateTime.updateGMT( json.gmt )
+			App.rootScope.$broadcast( 'appResume', false );
 		} ).error( function(){ window.location.reload(); } );
 	} else {
 		setTimeout( function(){
