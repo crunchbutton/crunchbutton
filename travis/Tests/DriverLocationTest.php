@@ -700,7 +700,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
 //        var_dump($stat);
         $tz = c::config()->timezone;
 //        print "The timezone $tz\n";
-        $this->assertEquals($tz, "America/Los_Angeles");
+        $this->assertEquals($tz, "UTC");
     }
 
     // Moving driver - less than 4 points - only take the EW average
