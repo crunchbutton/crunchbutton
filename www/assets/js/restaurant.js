@@ -203,7 +203,6 @@ var Restaurant = function(id) {
 		var now_time = now.getTime();
 		// loop to verify if it is open
 		self._open = false;
-
 		if( self.hours && self.hours.length > 0 ){
 			for( x in self.hours ){
 				self._hasHours = true;
@@ -333,10 +332,15 @@ var Restaurant = function(id) {
 				return;
 			}
 			self.loadingHours = true;
-			var url = App.service + 'restaurant/hours/' + self.id_restaurant;
+			var url = App.service + 'restaurant/hours/' + self.id_restaurant + '/gmt';
 			App.http.get( url, {
 				cache: false
 			} ).success( function ( hours ) {
+				var gmt = hours.gmt;
+				var hours = hours.hours;
+				if( gmt ){
+					dateTime.updateGMT( gmt );
+				}
 				self.loadingHours = false;
 				if( hours && hours.constructor === Array ){
 					self.cachedAt = now;

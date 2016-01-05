@@ -1,90 +1,118 @@
-<div class="account-container modal zoom-anim-dialog small-container mfp-hide">
-	<div ng-controller="AccountModalHeaderCtrl" modal-reset="resetModal()" class="header" ng-show="modal.header">
-		<h1 class="signin {{ modal.signin && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signin' )">Log In</h1>
-		<div class="divisor">|</div>
-		<h1 class="signup {{ modal.signup && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signup' )">Sign up</h1>
-		<div class="divider"></div>
-	</div>
-	<div ng-controller="AccountSignInCtrl" ng-show="modal.signin">
-		<div ng-show="!help.visible">
-			<form name="formSignin" ng-submit="account.signin()">
-				<input type="text" maxlength="250" name="email" class="signin-email" ng-enter="account.signin()" validate-login required placeholder="email or phone" tabindex="10" ng-model="account.form.email" />
-				<div class="divider"></div>
-				<input type="password" maxlength="250" name="password" class="signin-password" ng-enter="account.signin()" required placeholder="password" tabindex="10" ng-model="account.form.password" />
-				<div class="divider"></div>
-				
-				<div class="error">
-					<div ng-repeat="error in account.errors">
-						{{error}}
-					</div>
-				</div>
+<div class="account-container zoom-anim-dialog mfp-hide dialog mfp-hide">
 
-			</form>
-			<div class="divider"></div>
-			<a class="help-link" ng-click="help.show(true)">Password help?</a>
-			<button ng-click="account.signin();">Log in</button>
-			<div class="divider"></div>
-			<div facebook-signin-button title="Log in with Facebook"></div>
+
+	<div ng-controller="AccountSevenCtrl" modal-reset="resetModal()">
+
+		<div ng-if="tab == 'facebook'" class="dialog-padding account-modal">
+			<p ng-show="account.user">
+				We got your account right here! Link your account with facebook here so you never have to enter your info again!
+			</p>
+
+			<p ng-show="!account.user">
+				<b class="account-modal-bold">Get your Crunchbutton account!</b><br>
+				Log in or sign up using the same awesome button.
+			</p>
+
+			<div class="divider spacer-one-two"></div>
+
+			<div class="button-pushable">
+				<button class="button facebook" ng-click="facebook.auth()">
+					<span ng-if="!facebook.facebook.wait">Hop in using Facebook</span>
+					<span ng-if="facebook.facebook.wait">Just a sec
+						<div id="circleG">
+							<div id="circleG_1" class="circleG"></div>
+							<div id="circleG_2" class="circleG"></div>
+							<div id="circleG_3" class="circleG"></div>
+						</div>
+					</span>
+				</button>
+			</div>
+
+			<div class="no-auto-posting-message">No auto-posting, ever</div>
+
+			<div class="dialog-message dialog-message-error" ng-repeat="error in account.errors">{{error}}</div>
+
+			<span class="bottom-link cursor" ng-click="changeTab( 'form' )">Other Options</span>
 		</div>
-		<div ng-show="help.visible">
-			<form class="signin-help-form" name="formLoginHelp" novalidate>
-				
-				<h1>Password help?</h1>
-				<input type="text" maxlength="250" name="email" required  class="help-email" ng-enter="help.sendForm()" validate-login placeholder="email or phone" tabindex="10" ng-model="account.form.email">
-				<div class="divider"></div>
-				
-				<div class="error">
-					<div ng-repeat="error in help.errors">
-						{{error}}
+
+
+		<div ng-if="tab == 'form'">
+			<div class="dialog-padding account-modal">
+				<span ng-click="changeTab( 'facebook' )" class="back-link cursor"><span>&laquo;</span> BACK</span>
+				<p>Not a fan of facebook? Don’t worry. We won't tell anyone. <b>Log in</b> or <b>sign up</b> below.</p>
+
+				<div class="divider spacer-one-two"></div>
+
+				<form name="accountForm">
+					<div class="support-form-group form-group">
+						<input type="email" ng-focus="softKeyboardModal($event)" maxlength="250" ng-model="account.form.email" name="email" tabindex="10" placeholder="email address" class="form-input form-field" ng-enter="account.enter()">
 					</div>
+
+					<div class="support-form-group form-group">
+						<input type="password" ng-focus="softKeyboardModal($event)" class="form-input form-field" maxlength="250" ng-model="account.form.password" name="password" tabindex="11" placeholder="password" ng-enter="account.enter()">
+					</div>
+				</form>
+
+				<div class="dialog-message dialog-message-error" ng-repeat="error in account.errors">{{error}}</div>
+
+				<span class="help cursor" ng-click="changeTab( 'reset' )">Forgot Password</span>
+				<div class="divider"></div>
+			</div>
+			<div class="dialog-divider"></div>
+			<div class="dialog-padding dialog-bottom-buttons" ng-if="!support.thanks">
+				<div class="button-pushable" ng-if="!account.processing">
+					<button class="button account-submit lightorange" ng-click="account.enter()">Enter the cool kids club</button>
+				</div>
+				<div class="button-pushable" ng-if="account.processing">
+					<button class="button account-submit lightorange">
+						Just a sec
+						<div id="circleG">
+							<div id="circleG_1" class="circleG"></div>
+							<div id="circleG_2" class="circleG"></div>
+							<div id="circleG_3" class="circleG"></div>
+						</div>
+					</button>
 				</div>
 
-			</form>
-			<a class="help-link" ng-click="help.show(false)">Never mind</a>
-			<button ng-click="help.sendForm()">Reset</button>
-			<div class="divider"></div>
+			</div>
+		</div>
 
-			<div ng-show="help.success.visible" class="success">
-				You will receive a code to reset your password! It will expire in 24 hours.
-				<div ng-show="help.success.facebook.visible">
-					You can also try logging in with <span class="login-facebook">Facebook</span>.
+
+		<div ng-if="tab == 'reset'">
+			<div class="dialog-padding account-modal">
+				<span ng-click="changeTab('form')" class="back-link cursor"><span>&laquo;</span> BACK</span>
+
+				<div ng-show="!help.success.visible">
+					<p>Forgot your password? Let's get you a new one!</p>
+
+					<div class="divider spacer-one-onehalf"></div>
+
+					<form name="accountReset" class="form">
+						<div class="support-form-group form-group">
+							<input type="email"  ng-focus="softKeyboardModal($event)" maxlength="250" ng-model="account.form.email" name="email" tabindex="10" placeholder="email address" class="form-input form-field" ng-enter="help.sendForm()">
+						</div>
+					</form>
+				</div>
+
+				<div class="dialog-message dialog-message-error" ng-repeat="error in help.errors">{{error}}</div>
+				<div class="dialog-message dialog-message-success" ng-show="help.success.visible">
+					Please check your email or phone.
+					<br/>
+					You will receive a password reset link that will expire in 24 hours.
+				</div>
+			</div>
+
+			<div class="dialog-divider" ng-show="!help.success.visible"></div>
+			<div class="dialog-padding dialog-bottom-buttons" ng-show="!help.success.visible">
+				<div class="button-pushable" ng-show="!help.sendingHelpForm">
+					<button class="button account-submit lightorange" ng-click="help.sendForm()">Reset Password</button>
+				</div>
+				<div class="button-pushable" ng-show="help.sendingHelpForm">
+					<button class="button account-submit lightorange" disabled="disabled"><i class="fa fa-spinner fa-spin"></i> Sending</button>
 				</div>
 			</div>
 		</div>
-	</div>
-	<div ng-controller="AccountSignUpCtrl" ng-show="modal.signup">
-		<div class="signup-form-options" ng-show="!account.user.has_auth">
-			<form class="signin-form" name="formSignup" novalidate>
-				<input type="text" maxlength="250" name="email" class="signup-email" ng-enter="account.signup()" validate-login required placeholder="email or phone" tabindex="10" ng-model="account.form.email" />
-				<div class="divider"></div>
-				<input type="password" maxlength="250" name="password" class="signup-password" ng-enter="account.signup()" required placeholder="password" tabindex="10" ng-model="account.form.password" />
-				<div class="divider"></div>
 
-				<div class="error">
-					<div ng-repeat="error in account.errors">
-						{{error}}
-					</div>
-				</div>
-
-			</form>
-			<div class="divider"></div>
-			<button ng-click="account.signup();">Sign up</button>
-			<div class="divider"></div>
-			
-			<div facebook-signin-button title="Signup with Facebook"></div>
-		</div>
-		<div ng-show="account.user.has_auth">
-			<h1>Congratulations!</h1>
-			<div class="success">
-				You can now log in using <strong>{{account.email}}</strong>!
-			</div>
-		</div>
 	</div>
 
-	<div ng-controller="AccountFacebookCtrl" ng-show="modal.facebookLogin">
-		<div>
-			<h1>Log in with Facebook</h1>
-			<div facebook-signin-button title="Connect with Facebook"></div>
-		</div>
-	</div>
 </div>

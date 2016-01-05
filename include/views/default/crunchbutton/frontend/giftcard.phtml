@@ -1,56 +1,61 @@
-<div class="giftcard-container modal zoom-anim-dialog small-container mfp-hide" ng-controller="GiftCardCtrl">
+<div class="giftcard-container zoom-anim-dialog mfp-hide dialog mfp-hide" ng-controller="GiftCardCtrl">
 
-	<div ng-show="modal.intro">
-		<h1>Gift card</h1>
-		<div class="wait">Just a sec.</div>
+
+
+	<div ng-show="modal.intro" class="dialog-padding account-modal">
+		<p>Doin' stuff. Just a sec...</p>
 	</div>
 
 	<!-- Error -->
 	<div ng-show="modal.error && !modal.success">
-		<h1>Oops!</h1>
-		<div class="error" ng-show="modal.error == 'used'">
-			Sorry, this gift card was already used.
+		<div class="dialog-padding account-modal">
+			<div class="dialog-message dialog-message-error" ng-show="modal.error == 'used'">
+				Sorry, this gift card was already used.
+			</div>
+			<div class="dialog-message dialog-message-error" ng-show="modal.error == 'invalid'">
+				Sorry, this is an invalid gift card.
+			</div>
+			<div class="dialog-message dialog-message-error" ng-show="modal.error == 'not-eligible'">
+				Sorry, invite codes are for first time users only.
+			</div>
+			<div class="dialog-message dialog-message-error" ng-show="modal.error != 'used' && modal.error != 'invalid' && modal.error != 'not-eligible'">
+				Please try it again.
+			</div>
 		</div>
-		<div class="error" ng-show="modal.error == 'invalid'">
-			Sorry, this is an invalid gift card.
-		</div>
-		<div class="error" ng-show="modal.error == 'not-eligible'">
-			Sorry, invite codes are for first time users only.
-		</div>
-		<div class="error" ng-show="modal.error != 'used' && modal.error != 'invalid' && modal.error != 'not-eligible'">
-			Please try it again.
-		</div>
-
 	</div>
 
 	<!-- Success -->
 	<div ng-show="modal.success && !modal.error">
-		<div ng-if="giftcard.message">
-			<h1>Welcome to Crunchbutton!</h1>
+		<div class="dialog-padding account-modal">
+			<p>
+				<b>Congrats!</b>
+			</p>
+			<div class="divider spacer-one-onehalf"></div>
+			<p>
+
+				<span ng-show="modal.restaurant">
+					You just got a <b>${{giftcard.value}}</b> gift card to <b class="pointer" ng-click="giftcard.openRestaurant();">{{modal.restaurant.name}}</b>.
+				</span>
+				<span ng-show="!modal.restaurant">
+					<div ng-if="giftcard.message">
+						{{giftcard.message}}
+					</div>
+					<div ng-if="!giftcard.message">
+						You just got a <b>${{giftcard.value}}</b> gift card.
+					</div>
+				</span>
+
+				&nbsp;Go ahead and order some food!
+			</p>
 		</div>
-		<div ng-if="!giftcard.message">
-			<h1 ng-show="!user">Welcome!</h1>
-			<h1 ng-show="user">Congrats!</h1>
-		</div>
-		<div class="success" ng-show="modal.restaurant">
-			Congrats, you just got a <b>${{giftcard.value}}</b> gift card to <b class="pointer" ng-click="giftcard.openRestaurant();">{{modal.restaurant.name}}</b>.
-			<br/>
-			Go ahead and order some food!
-		</div>
-		<div class="success" ng-show="!modal.restaurant">
-			<div ng-if="giftcard.message">
-				{{giftcard.message}}
+
+		<div class="dialog-divider"></div>
+		<div class="dialog-padding dialog-bottom-buttons">
+			<div class="button-pushable">
+				<button ng-click="modal.close()" class="button green">Great</button>
 			</div>
-			<div ng-if="!giftcard.message">
-				Congrats, you just got a <b>${{giftcard.value}}</b> gift card.
-			</div>
-			<br/>
-			Go ahead and order some food!
 		</div>
-		<div class="bottom-links">
-			<span class="giftcard-later" ng-click="modal.close();">Great</span>
-		</div>
-		<div class="divider"></div>
 	</div>
+
 
 </div>

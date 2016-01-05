@@ -1321,8 +1321,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 			$query = 'SELECT DISTINCT(o.id_order) as id, o.* FROM `order` as o ' .
 				'inner join community as c using (id_community) ' .
-				'left outer join order_action as oa using (id_order) ' .
-				'left outer join order_priority as op using (id_order) where (oa.id_order is not null or ' .
+				'left outer join order_action as oa on o.delivery_status = oa.id_order_action ' .
+				'left outer join order_priority as op on op.id_order = o.id_order
+				where (oa.id_order is not null or ' .
 				'(op.id_order is null and ((c.delivery_logistics is null) or (o.date < ? and ' .
 				'c.delivery_logistics is not null)))  or (op.id_order is not null and op.priority_expiration < ?) ' .
 				'or (op.id_order is not null and op.priority_expiration >= ? and op.id_admin = ? '.

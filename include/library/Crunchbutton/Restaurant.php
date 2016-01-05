@@ -1571,6 +1571,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$out[ 'campus_cash_mask' ] = $this->campusCashMask();
 			$out[ 'campus_cash_delivery_on_campus_confirmation' ] = $this->campusCashDeliveryLocatedOnCampus();
 			$out[ 'campus_cash_default_payment' ] = $this->campusCashDefaultPaymentMethod();
+		} else {
+			$out[ 'campus_cash' ] = false;
 		}
 		return $out;
 	}

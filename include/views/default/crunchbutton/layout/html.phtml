@@ -1,10 +1,12 @@
 <?=$this->display('layout/html.top')?>
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.12/angular.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.12/angular-route.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.12/angular-animate.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.12/angular-resource.min.js"></script>
+<script src="//use.typekit.net/qeo8tnt.js"></script>
+<script>try{Typekit.load();}catch(e){}</script>
+<? $angular = '1.4.6'; ?>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/<?=$angular?>/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/<?=$angular?>/angular-route.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/<?=$angular?>/angular-animate.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/<?=$angular?>/angular-resource.min.js"></script>
 <script>
 window.twttr = ( function(d, s, id) {
 	var js, fjs = d.getElementsByTagName(s)[0], t = window.twttr || {};
@@ -19,12 +21,15 @@ window.twttr = ( function(d, s, id) {
 	} (document, "script", "twitter-wjs") ) ;
 </script>
 <!-- Payment stuff -->
-<script src="https://js.stripe.com/v2/"></script>
+<script type="text/javascript" src="//js.stripe.com/v2/"></script>
 
 <? if (c::config()->bundle) : ?>
-	<script src="/assets/js/bundle.js?v=<?=Deploy_Server::currentVersion()?>&s=app"></script>
+	<? $js = c::config()->site->config('s3-bundle')->val() ? 'https://'.c::config()->s3->buckets->build->cache.'/'.Deploy_Server::currentVersion().'/js/crunchbutton.js' : '/assets/js/bundle.js?v='.Deploy_Server::currentVersion().'&s=app' ?>
+	<script src="<?=$js?>"></script>
 <? else : ?>
 	<?=$this->display('bundle/js', ['set' => ['scripts' => ['app']]])?>
 <? endif ; ?>
 
 <?=$this->display('layout/html.bottom')?>
+
+<script src="//maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>

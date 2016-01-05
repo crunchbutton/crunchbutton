@@ -72,8 +72,16 @@ class Controller_api_restaurant_hours extends Crunchbutton_Controller_Rest {
 				break;
 
 			case 'pre-order':
-			// echo '<pre>';var_dump( $r->preOrderHours() );exit();
 				echo json_encode( $r->preOrderHours() );
+				break;
+
+			case 'gmt':
+				$no_utc = ( c::getPagePiece( 4 ) != 'regular' );
+				$hours = $r->hours_next_24_hours( $no_utc );
+				if( !$hours ){ $hours = []; }
+				$utc_str = gmdate( 'Y/n/d/H/i/s', time() );
+				$hours = [ 'hours' => $hours, 'gmt' => $utc_str ];
+				echo json_encode( $hours );exit;;
 				break;
 
 			// export the hours for the next 24 hours
