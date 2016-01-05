@@ -7,8 +7,8 @@ var dateTime = {
 dateTime.update = function(){
 	var time = _gmtServer.split( '/' );
 	dateTime.now = new Date( Number(time[0]), Number(time[1]-1), Number(time[2]), Number(time[3]), Number(time[4]), ( Number(time[5]) + dateTime.timer ) ) ;
-	dateTime.timer++; 
-	dateTime.gears = setTimeout( function(){ dateTime.update(); } ,1000);
+	dateTime.timer++;
+	dateTime.gears = setTimeout( function(){ dateTime.update(); }, 1000 );
 }
 
 // This method will be called by phonegap at the 'resume' event
@@ -28,10 +28,10 @@ dateTime.reload = function(){
 		_gmtServer = json.gmt;
 		dateTime.timer = 0;
 		if( dateTime.gears ){
-			clearTimeout( dateTime.gears );	
+			clearTimeout( dateTime.gears );
 		}
 		dateTime.update();
-		App.rootScope.$broadcast( 'appResume', false );	
+		App.rootScope.$broadcast( 'appResume', false );
 	} ).error( function(){ window.location.reload(); } );
 }
 

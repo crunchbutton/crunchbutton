@@ -1050,6 +1050,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	// update if the restaurant is closed or open every 35 seconds
 	var updateStatus = function(){
 		updateRestaurantStatus = $timeout( function(){
+			dateTime.reload();
 			$scope.restaurant.open();
 			$scope.restaurant.reloadHours( true, function(){
 				var open = $scope.restaurant._open;
