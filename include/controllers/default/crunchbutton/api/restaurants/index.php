@@ -9,13 +9,23 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 				$this->_hours();
 				break;
 
+			case 'hours-gmt':
+				$this->_hoursGMT();
+				break;
+
 			default:
 				$this->_byRange();
 				break;
 		}
 	}
 
-	private function _hours(){
+	private function _hoursGMT(){
+		$utc_str = gmdate( 'Y/n/d/H/i/s', time() );
+		$out = [ 'hours' => $this->_hours( true ), 'gmt' => $utc_str ];
+		echo json_encode( $out );exit;
+	}
+
+	private function _hours( $return = false ){
 		$lat = $this->request()[ 'lat' ];
 		$lon = $this->request()[ 'lon' ];
 		$range = $this->request()[ 'range' ];
@@ -46,6 +56,9 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			foreach( $restaurants as $restaurant ){
 				$out[] = $restaurant->timeInfo();
 			}
+		}
+		if( $return ){
+			return $out;
 		}
 		echo json_encode( $out );exit;
 	}
