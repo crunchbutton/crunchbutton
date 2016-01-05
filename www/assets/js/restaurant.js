@@ -319,7 +319,6 @@ var Restaurant = function(id) {
 
 	// Check the restaurant cache age and reload the hours if it is necessary
 	self.reloadHours = function( forceLoad, callback ){
-		dateTime.reload();
 		var load = false;
 		var now = ( Math.floor( new Date().getTime() / 1000 ) );
 		if( forceLoad ){
@@ -332,6 +331,7 @@ var Restaurant = function(id) {
 			if( self.loadingHours ){
 				return;
 			}
+			dateTime.reload();
 			self.loadingHours = true;
 			var url = App.service + 'restaurant/hours/' + self.id_restaurant;
 			App.http.get( url, {
