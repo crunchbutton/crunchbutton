@@ -203,7 +203,6 @@ var Restaurant = function(id) {
 		var now_time = now.getTime();
 		// loop to verify if it is open
 		self._open = false;
-
 		if( self.hours && self.hours.length > 0 ){
 			for( x in self.hours ){
 				self._hasHours = true;
@@ -320,6 +319,7 @@ var Restaurant = function(id) {
 
 	// Check the restaurant cache age and reload the hours if it is necessary
 	self.reloadHours = function( forceLoad, callback ){
+		dateTime.reload();
 		var load = false;
 		var now = ( Math.floor( new Date().getTime() / 1000 ) );
 		if( forceLoad ){

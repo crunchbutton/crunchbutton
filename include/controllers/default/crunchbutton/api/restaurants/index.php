@@ -16,7 +16,24 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 	}
 
 	private function _hours(){
-		$ids = explode( ',', c::getPagePiece( 3 ) );
+		$lat = $this->request()[ 'lat' ];
+		$lon = $this->request()[ 'lon' ];
+		$range = $this->request()[ 'range' ];
+
+		$ids = [];
+
+		if( $lat && $lon && $range ){
+			$restaurants = Restaurant::byRange([
+				'lat' => $_REQUEST['lat'],
+				'lon' => $_REQUEST['lon'],
+				'range' => $_REQUEST['range']
+			]);
+			foreach ($restaurants as $restaurant) {
+				$ids[] = $restaurant->id_restaurant;
+			}
+		} else {
+			$ids = explode( ',', c::getPagePiece( 3 ) );
+		}
 		$restaurants = [];
 		foreach( $ids as $id ){
 			$restaurant = Restaurant::o( $id );
