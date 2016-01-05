@@ -5,10 +5,14 @@ var dateTime = {
 };
 
 dateTime.update = function(){
-	var time = _gmtServer.split( '/' );
-	dateTime.now = new Date( Number(time[0]), Number(time[1]-1), Number(time[2]), Number(time[3]), Number(time[4]), ( Number(time[5]) + dateTime.timer ) ) ;
-	dateTime.timer++;
-	dateTime.gears = setTimeout( function(){ dateTime.update(); }, 1000 );
+	if( _gmtServer ){
+		var time = _gmtServer.split( '/' );
+		dateTime.now = new Date( Number(time[0]), Number(time[1]-1), Number(time[2]), Number(time[3]), Number(time[4]), ( Number(time[5]) + dateTime.timer ) ) ;
+		dateTime.timer++;
+		dateTime.gears = setTimeout( function(){ dateTime.update(); }, 1000 );
+	} else {
+		dateTime.reload();
+	}
 }
 
 // This method will be called by phonegap at the 'resume' event
