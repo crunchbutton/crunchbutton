@@ -1,8 +1,13 @@
-<div class="notification-alert-container zoom-anim-dialog small-container mfp-hide modal" ng-controller="NotificationAlertCtrl">
-	<h1 ng-bind="title" ng-show="title"></h1>
-	<p ng-bind-html-unsafe="message" class="small-message"></p>
-
-	<div class="divider dots"></div>
-	<button ng-click="complete()" class="ok-button">OK</button>
-	<div class="ok-button-pad"></div>
+<div class="notification-alert-container zoom-anim-dialog mfp-hide dialog" ng-controller="NotificationAlertCtrl">
+	<div class="dialog-padding">
+		<h1 ng-bind="title" ng-show="title"></h1>
+		<div ng-if="!icon || icon == 'sad'" class="dialog-egg animated-resize"></div>
+		<div ng-if="icon == 'happy'" class="location-gorillia animated-resize shake"></div>
+		<p ng-bind-html-unsafe="message"></p>
+		<div class="divider"></div>
+	</div>
+	<div class="dialog-divider"></div>
+	<div class="dialog-padding dialog-bottom-buttons">
+		<div class="button-pushable"><button class="button lightorange" ng-click="complete()">ok</button></div>
+	</div>
 </div>

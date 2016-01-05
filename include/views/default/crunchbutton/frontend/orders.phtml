@@ -1,79 +1,167 @@
-<div ng-show="!orders.list">
-	<div class="main-content-readable home-greeting">
-		<div class="home-welcome">
-			<h2>What great taste you have!</h2>
-			<br>
-			<div class="ajax-loader-teal"></div>
-			<br>
-		</div>
-	</div>
-</div>
+<div class="top-pad"></div>
 
-<div ng-show="orders.list" class="main-content-readable">
-	<div class="restaurant-item-title">PAST ORDERS</div>
+<div class="content-padding">
+	<div class="user-account-credit col-box">
 
-	<ul class="resturant-dishes resturant-dish-container your-orders">
-		<li ng-repeat="order in orders.list">
-			<span ng-click="orders.restaurant(order._restaurant_permalink)" class="dish-name order-restaurant">
-				{{order._restaurant_name}}
-			</span>
-			<span class="dish-price">
-				{{order.timeFormat}} ({{order._tz}})
-			</span>
-			<a ng-click="orders.receipt(order.id)" class="order-link" href="javascript:;">View Receipt</a>
-			<div class="divider"></div>
-		</li>
-	</ul>
-
-	<div>
-		<a href="#code"></a>
-		<div class="invite-code-container field-container" ng-show="referral.enabled">
-			<?php /* ?>
-			<div class="restaurant-item-title">Crunch Credit Invites</div>
-			<p>
-				For every NEW customer who orders with a credit card, we'll award you Crunch Credit.
-			</p>
-			<div ng-if="account.user.points">
-				You have {{account.user.points.total}} points.
-			</div>
-			<?php */ ?>
+		<div class="two-col">
 			<a id="credit"></a>
-			<div ng-if="!account.user.points.free_delivery_message && account.user.points.away_free_delivery">
-				0 &nbsp;<span class="points"><progress max="100" value="{{account.user.points.points_percent}}"></progress></span>&nbsp; {{account.user.points.free_delivery}}
-				<br/><br/>
 
+			<div ng-show="!account.user.points.free_delivery_message && account.user.points.away_free_delivery">
 				<p>
-					You are <b>{{account.user.points.away_free_delivery}}</b> points away from a <strong>free delivery</strong>.<br>
-					Earn points by ordering food, sharing your order, or referring friends.<br>
-					Get your friends to enter your code {{referral.invite_code}} in the Notes section of their first order, and you'll both get a FREE Delivery ;)
-					<br>
-					<b></b>
-				</p>
+					<span class="delivery-free">You are <b>{{account.user.points.away_free_delivery || 0}}</b> points away
+					<span class="hide-mobile"><br></span>
+					&nbsp;from a <b>free delivery</b>. </span><br> Earn points by ordering food, sharing your order, or referring friends.
+				</p><br/>
 			</div>
-			<div ng-if="account.user.points.free_delivery_message && account.user.points.free_delivery">
-				You have <strong>{{account.user.points.show}}</strong> points! The next delivery fee is on us.
+			<div ng-show="account.user.points.free_delivery_message && account.user.points.free_delivery">
+				<p><span class="delivery-free">You have <b>{{account.user.points.show}}</b> points!</span> <br><br>The next delivery fee is on us.</p>
 			</div>
 
 			<br>
+
 			<div class="divider"></div>
-			<div class="social-button twitter-button social-button-invite" ng-click="referral.twitter();">
-				<i class="fa fa-twitter"></i><span class="social-button-text">Tweet</span>
+
+			<div ng-show="referral.invite_code">
+				<p>
+					Get your friends to enter your referral code in the Notes section of their first order, and you'll both get a FREE Delivery ;)
+				</p>
+				<br><br>
+
 			</div>
-			<div class="social-button facebook-button social-button-invite" ng-click="referral.facebook();">
-				<i class="fa fa-facebook"></i><span class="social-button-text">Share</span>
+		</div>
+			<div class="two-col">
+
+				<div class="hide-desktop">
+
+					<a href="{{referral.sms}}">
+						<button class="button lightorange button-invite">
+							<i class="fa fa-comment"></i> <span>Invite Friends</span>
+						</button>
+					</a>
+
+					<br><br>
+					<p>Your code: <span class="referal-text-spacer"></span><b class="allow-select">{{referral.invite_code}}</b></p>
+					<div class="hide-mobile">
+						<br>
+						<p>Invite URL: <span class="referal-text-spacer"></span><input class="referal-text-box" type="text" ng-simulate-read-only="{{referral.cleaned_url()}}" value="http://{{referral.cleaned_url()}}"></p>
+					</div>
+
+
+
+				</div>
+
+				<div class="hide-mobile">
+					<div class="col-box">
+						<button class="button facebook button-refer" ng-click="referral.facebook('account')">
+							<i class="fa fa-facebook-square"></i> <span>Share</span>
+						</button>
+
+						<br><br>
+
+						<button class="button twitter button-refer" ng-click="referral.twitter('account')">
+							<i class="fa fa-twitter-square"></i> <span>Tweet</span>
+						</button>
+					</div>
+				</div>
+
+			<br><br>
+			<p class="hide-mobile">Your code: <span class="referal-text-spacer"></span><b>{{referral.invite_code}}</b></p>
+			<div class="hide-mobile">
+				<br>
+				<p>Invite URL: <span class="referal-text-spacer"></span><input class="referal-text-box" type="text" ng-simulate-read-only="{{referral.cleaned_url()}}" value="http://{{referral.cleaned_url()}}"></p>
 			</div>
-			<div class="divider"></div>
-			Invite URL: <input type="text" ng-simulate-read-only="{{referral.cleaned_url()}}" value="{{referral.cleaned_url()}}" />
-			<div class="divider"></div>
+
 		</div>
 	</div>
 
-	<div class="order-options">
 
-		<a ng-hide="account.user.has_auth" href="javascript:;" ng-click="modal.signupOpen();" class="create-an-account">Create an account</a>
+	<div ng-show="!orders.list">
+		<div class="stamp-loader">
+			<div class="stamp-loader-button"></div>
+			<div class="stamp-loader-words"></div>
+		</div>
+	</div>
 
-		<a ng-show="!account.user.facebook" href="javascript:;" ng-click="facebook()" class="signup-add-facebook-button" >Connect with Facebook</a>
-		<a href="javascript:;" ng-click="signout()" class="signout-button">Sign out</a>
+	<div class="divider"></div>
+	<br><br><br>
+	<div class="orders-oranges animated-resize"></div>
+
+	<div class="divider"></div>
+	<br><br><br>
+	<div class="user-account-credit col-box">
+		<div class="two-col">
+			<div class="col-box">
+				<div class="two-col">
+					<button class="button green button-logout" ng-click="profile()" ng-if="account.user.id_user">Your profile</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="divider"></div>
+	<br><br><br>
+	<div ng-show="orders.list">
+		<? /* You know, you can reorder any of your previous orders by taping on one of them, then reordering from the next page. Try it! */ ?>
+		<p><span class="account-your-orders">Your Orders</span><br><br></p>
+	</div>
+
+	<div ng-show="orders.list.length == 0">
+		<p>After you place orders, you'll see them all right here. </p>
+		<h4><a href="/food-delivery" ng-click="navigation.link('/food-delivery')">Place an order</a></h4>
+		<br /><br />
+	</div>
+
+	<div ng-show="orders.list && orders.list.length > 0">
+
+		<ul class="orders-list col-box">
+			<li ng-repeat="order in orders.list" class="order-item-wrap" ng-click="navigation.link('/order/' + order.id, 'push')">
+				<div class="order-item">
+					<div class="order-date">
+						<div class="order-month">{{order._date.getMonthNameShort()}}</div>
+						<div class="order-day">{{order._date.getDate().pad(2)}}</div>
+					</div>
+					<div class="order-details">
+						<div class="order-name" ng-click="$event.preventDefault(); $event.stopPropagation(); orders.restaurant(order._restaurant_permalink);">
+							{{order._restaurant_name}}
+						</div>
+						<div class="divider"></div>
+						<div class="order-summary">
+							{{order.summary}}
+						</div>
+					</div>
+
+					<div class="order-link fa fa-arrow-circle-right"></div>
+				</div>
+				<div class="divider"></div>
+			</li>
+		</ul>
+	</div>
+
+
+	<div ng-show="credit && credit > 0" class="gift-card-balance">
 		<div class="divider"></div>
+		<div class="bubble-tail bubble-tail-green bubble-animated noselect">
+			<div class="text" ng-switch="pushMessage">
+				You have a ${{credit}} gift card.
+			</div>
+			<div class="bubble-tail-spacer"></div>
+		</div>
+		<br>
+		<div class="gift-card-gorillia"></div>
+		<div class="divider"></div>
+	</div>
+
+	<div class="divider spacer-two-two"></div><br><br>
+
+	<div class="user-account-credit col-box">
+		<div class="two-col">
+			<div class="col-box">
+				<div class="two-col">
+					<button class="button lightorange button-logout" ng-click="signout()" ng-if="account.user.id_user">Log Out</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	</div>
 </div>

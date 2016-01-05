@@ -23,7 +23,7 @@
 
 		<div class="form-group">
 			<h4><span class="form-required">*</span> Last Name:</h4>
-
+			
 			<div class="textbox">
 				<div ng-if="errors.lastName">Please enter your last name:</div>
 				<input type="text" ng-model="apply.lastName" name="lastName" class="form-control form-control-large" >
@@ -32,7 +32,7 @@
 
 		<div class="form-group">
 			<h4><span class="form-required">*</span> Email:</h4>
-
+			
 			<div class="textbox">
 				<div ng-if="errors.email">Please enter your email:</div>
 				<input type="text" class="form-control form-control-large" ng-model="apply.email" name="email" >
@@ -41,15 +41,13 @@
 
 		<div class="form-group">
 			<h4><span class="form-required">*</span> What school are you near?</h4>
-
+			
 			<div class="textbox">
-				<div ng-if="errors.university || errors.otherUniversity">Please enter your nearest school:</div>
+				<div ng-if="errors.university">Please enter your nearest school:</div>
 				<select class="form-control form-control-large form-control form-control-select" ng-model="apply.university" name="university" >
-					<option></option>
+					<option></option> 
 					<option ng-repeat="community in communities | orderBy: 'name'" value="{{community.name}}">{{community.name}}</option>
-					<option ng-model="apply.university" value="Other">Other</option>
-					<input ng-click="apply.source='otherU'" ng-if="apply.university=='Other'" class="form-control form-control-small" type="text" ng-model="apply.otherUniversity" name="otherUniversity">
-
+					<option valie="Other">Other</option> 
 				</select>
 			</div>
 		</div>
@@ -62,8 +60,8 @@
 				<input type="tel" class="form-control form-control-large" ng-model="apply.number" name="number" >
 			</div>
 		</div>
-
-<!--		<div class="form-group"></div>-->
+		
+		<div class="form-group"></div>
 
 		<div class="form-group">
 			<h4><span class="form-required">*</span> What type of phone do you have?</h4>
@@ -87,22 +85,22 @@
 				<input type="radio" name="carrier" ng-model="apply.carrier" value="ATandT" id="apply-carrier-att"><label for="apply-carrier-att">AT&amp;T</label><br>
 				<input type="radio" name="carrier" ng-model="apply.carrier" value="Sprint" id="apply-carrier-sprint"><label for="apply-carrier-sprint">Sprint</label><br>
 				<input type="radio" name="carrier" ng-model="apply.carrier" value="T-Mobile" id="apply-carrier-tmobile"><label for="apply-carrier-tmobile">T-Mobile</label><br>
-				<input type="radio" name="carrier" ng-model="apply.carrier" value="Other" id="apply-carrier-other"><label for="apply-carrier-other">Other:&nbsp;&nbsp;</label>
-				<div ng-if="errors.otherCarrier">Please specify your carrier:&nbsp;</div>
+				<input type="radio" name="carrier" ng-model="apply.carrier" value="Other" id="apply-carrier-other"><label for="apply-carrier-other">Other:</label>
+				<div ng-if="errors.otherCarrier">Please specify your carrier:</div>
 				<input ng-click="apply.carrier='Other'" class="form-control form-control-small" type="text" name="otherCarrier" ng-model="apply.otherCarrier">
 			</div>
 		</div>
 
-<!--		<div class="form-group">-->
-<!--			<h4><span class="form-required">*</span> Car or bike?</h4>-->
-<!---->
-<!--			<div class="textbox">-->
-<!--				<div ng-if="errors.transport">Please enter your mode of transport:</div>-->
-<!--				<input type="radio" name="transport" ng-model="apply.transport" value="car" id="apply-trans-car"><label for="apply-trans-car">Car</label><br>-->
-<!--				<input type="radio" name="transport" ng-model="apply.transport" value="bike" id="apply-trans-bike"><label for="apply-trans-bike">Bike</label><br>-->
-<!--				<input type="radio" name="transport" ng-model="apply.transport" value="both" id="apply-trans-both"><label for="apply-trans-both">Both</label><br>-->
-<!--			</div>-->
-<!--		</div>-->
+		<div class="form-group">
+			<h4><span class="form-required">*</span> Car or bike?</h4>
+
+			<div class="textbox">
+				<div ng-if="errors.transport">Please enter your mode of transport:</div>
+				<input type="radio" name="transport" ng-model="apply.transport" value="car" id="apply-trans-car"><label for="apply-trans-car">Car</label><br>
+				<input type="radio" name="transport" ng-model="apply.transport" value="bike" id="apply-trans-bike"><label for="apply-trans-bike">Bike</label><br>
+				<input type="radio" name="transport" ng-model="apply.transport" value="both" id="apply-trans-both"><label for="apply-trans-both">Both</label><br>
+			</div>
+		</div>
 
 		<div class="form-group">
 			<h4><span class="form-required">*</span> How many hours per week are you available to provide delivery services?</h4>
@@ -144,14 +142,14 @@
 				<input type="radio" ng-model="apply.source" name="source" value="friend" id="apply-source-friend"><label for="apply-source-friend">Through a Friend</label><br>
 				<input type="radio" ng-model="apply.source" name="source" value="campus-marketing" id="apply-source-marketing"><label for="apply-source-marketing">Marketing on Campus</label><br>
 				<input type="radio" ng-model="apply.source" name="source" value="cb-website" id="apply-source-website"><label for="apply-source-website">Via Crunchbutton Website</label><br>
-				<input type="radio" ng-model="apply.source" name="source" value="other" id="apply-source-other"><label for="apply-source-other">Other:&nbsp;&nbsp;</label>
+				<input type="radio" ng-model="apply.source" name="source" value="other" id="apply-source-other"><label for="apply-source-other">Other:</label>
 				<div ng-if="errors.otherSource">Please specify how you found out about us:</div>
 				<input ng-click="apply.source='other'" class="form-control form-control-small" type="text" ng-model="apply.otherSource" name="otherSource">
 			</div>
 		</div>
 
-
-		<button class="button lightorange button-bottom" ng-click="post()">Submit</button>
-
+		
+		<button class="button lightorange button-bottom " ng-click="post()">Submit</button>
+		
 	</form>
 </div>

@@ -1,34 +1,16 @@
-<div class="restaurant-closed" ng-show="!open && order.loaded">
-	<div class="restaurant-closed-icon">
-		<i class="fa fa-clock-o"></i>
-	</div>
-	<div class="restaurant-closed-content">
-		<span class="restaurant-closed-title">
-			<span class="restaurant-closed-name">{{restaurant.name}}&nbsp;
-
-				<span ng-if="restaurant.open_for_business == '0'">
-					<span ng-if="restaurant.delivery">is temporarily unavailable for delivery.</span>
-					<span ng-if="!restaurant.delivery">is temporarily unavailable.</span>
-				</span>
-				<span ng-if="restaurant.open_for_business != '0'">
-					<span ng-if="restaurant.delivery">is currently unavailable for delivery.</span>
-					<span ng-if="!restaurant.delivery">is currently unavailable.</span>
-				</span>
-			</span>
-			<span class="restaurant-closed-generic">Currently not available!</span>
+<div class="restaurant-box" ng-show="( !open && !force_pre_order ) && order.loaded">
+	<div class="restaurant-box-inner">
+		<span class="restaurant-box-icon restaurant-box-align-top">
+			<i class="fa fa-clock-o"></i>
 		</span>
-		<span class="restaurant-closed-content">
-			<span ng-if="restaurant.open_for_business == '0'">
-				<span ng-if="restaurant.delivery">Delivery is usually available during the following hours</span>
-				<span ng-if="!restaurant.delivery">Pickup is usually available during the following hours</span>
-			</span>
-			<span ng-if="restaurant.open_for_business != '0'">
-				<span ng-if="restaurant.delivery">Delivery will be available:</span>
-				<span ng-if="!restaurant.delivery">It will be open during the following hours</span>
-			</span>
-<!--			&nbsp;(<span ng-bind="restaurant._tzabbr"></span>):--><br>
-			<span ng-bind-html-unsafe="restaurant.closedMessage() | nl2br"></span>
+		<span class="restaurant-box-content">
+			<div class="restaurant-box-title"><span ng-if="!restaurant._opensIn_formatted">Not </span>Available {{restaurant._opensIn_formatted}}</div>
+			<div class="restaurant-box-text">
+				<span ng-if="!restaurant.delivery_service">Hours of operation</span>
+				<span ng-if="restaurant.delivery_service">Hours we deliver</span>
+				&nbsp;(<span ng-bind="restaurant._tzabbr"></span>):<br>
+				<span ng-bind-html-unsafe="restaurant.closedMessage() | nl2br"></span>
+			</div>
 		</span>
 	</div>
-	<div class="divider"></div>
 </div>

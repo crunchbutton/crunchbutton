@@ -1,51 +1,45 @@
-<div ng-controller="SupportCtrl" class="support-container" ng-show="!App.isMobile()">
+<div class="support-container zoom-anim-dialog mfp-hide dialog" ng-controller="SupportCtrl">
+	<div class="dialog-padding">
+		<h1 ng-if="!support.error && !support.thanks">Send us a message</h1>
 
-	<div class="support-minimized" ng-show="support.minimized" ng-click="support.toggle();">
-		<div class="fa fa-comment-o support-icon"></div>
-		<div class="support-title">Contact us?</div>
+		<p ng-if="support.thanks && !support.error">Thanks, we'll get back to you as fast as we can.</p>
+		
+		<div class="dialog-message dialog-message-error" ng-if="support.error && !support.thanks">
+			<i class="fa fa-frown-o"></i>&nbsp;&nbsp;
+			<span ng-bind-html-unsafe="support.error"></span>
+		</div>
+
+		<div ng-if="!support.thanks">
+			<form>
+				<div class="support-form-group form-group">
+					<i class="fa fa-user support-form-icon form-icon form-field"></i>
+					<input type="text" maxlength="50" ng-model="support.form.name" name="support-name" tabindex="1" class="form-input support-form-input form-field" placeholder="name">
+				</div>
+
+				<div class="support-form-group form-group">
+					<i class="fa fa-phone support-form-icon form-icon form-field"></i>
+					<input type="tel" maxlength="30" ng-model="support.form.phone" name="support-phone" tabindex="2" ng-format-phone class="form-input support-form-input form-field" placeholder="phone number">
+				</div>
+
+				<div class="support-form-group form-group">
+					<i class="fa fa-bullhorn support-form-icon form-icon form-field"></i>
+					<textarea ng-autosize ng-model="support.form.message" class="form-input support-form-input form-field" name="support-message" tabindex="3" placeholder="message"></textarea>
+				</div>
+
+			</form>
+		</div>
+
 		<div class="divider"></div>
 	</div>
+	<div class="dialog-divider"></div>
 
-	<div class="support-maximized" ng-show="support.maximized">
-
-		<div class="support-maximized-header" ng-click="support.toggle();">
-			<div class="fa fa-comment-o support-icon"></div>
-			<div class="support-title">Question? Comment?</div>
-			<div class="divider"></div>
-		</div>
-
-		<div class="support-maximized-content">
-			<span ng-show="!support.thanks">
-				Text <a href="sms:+16467831444" target="_system">(646) 783-1444</a> or message us here:
-			</span>
-			<div ng-show="support.thanks">
-				Thanks, we'll get back to you as fast as we can.
-			</div>
-
-			<div class="dialog-message dialog-message-error" ng-show="support.error && !support.thanks">
-				<i class="fa fa-frown-o"></i>&nbsp;&nbsp;
-				<span ng-bind-html-unsafe="support.error"></span>
-			</div>
-
-			<div ng-show="!support.thanks">
-				<form name="formSupport">
-					<label>Name</label>
-					<input type="text" maxlength="50" ng-model="support.form.name" name="support-name"/>
-					<div class="divider"></div>
-					<label>Phone</label>
-					<input type="text" maxlength="30" ng-model="support.form.phone" name="support-phone" />
-					<div class="divider"></div>
-					<label>Message</label>
-					<textarea name="support-message" ng-model="support.form.message"></textarea>
-					<div class="divider"></div>
-					<button ng-show="!support.isSending" class="support-button" ng-click="support.send();">Send by sms</button>
-					<div class="divider"></div>
-					<i ng-show="support.isSending" class=" fa fa-spinner fa-spin"></i>
-				</form>				
-			</div>
-
-		</div>
-
+	<div class="dialog-padding dialog-bottom-buttons" ng-if="!support.thanks">
+		<button class="button lightorange pushable" ng-if="!support.isSending" ng-click="support.send();" tabindex="4">send</button>
+		<i ng-if="support.isSending" class=" fa fa-spinner fa-spin"></i>
+	</div>
+	
+	<div class="dialog-padding dialog-bottom-buttons" ng-if="support.thanks">
+		<button class="button lightorange pushable" ng-click="closePopup()">you're welcome</button>
 	</div>
 
 </div>

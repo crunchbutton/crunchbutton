@@ -11,7 +11,7 @@ class Controller_assets_view extends Cana_Controller {
 		} else {
 			$filePath = 'frontend/'.$file;
 		}
-		
+
 		if ($_REQUEST['theme']) {
 			c::config()->site->theme = preg_replace('/[^a-z]/','',$_REQUEST['theme']);
 			c::buildView(['layout' => c::config()->defaults->layout]);
@@ -22,12 +22,10 @@ class Controller_assets_view extends Cana_Controller {
 
 		if (file_exists(c::config()->dirs->view.'default/crunchbutton/'.$filePath.'.phtml')) {
 			//$filePath = 'frontend/'.$file;
-		} elseif (file_exists(c::config()->dirs->view.'default/seven/'.$filePath.'.phtml')) {
-			
+
 		} elseif(file_exists(c::config()->dirs->view.'default/crunchbutton/'.$file.'/index.phtml')) {
 			$filePath = $file.'/index';
-		} elseif (file_exists(c::config()->dirs->view.'default/seven/'.$file.'/index.phtml')) {
-			$filePath = $file.'/index';
+
 		} else {
 			$filePath = null;
 		}
@@ -39,7 +37,7 @@ class Controller_assets_view extends Cana_Controller {
 			c::view()->display($filePath, ['display' => true, 'filter' => false]);
 		}
 
-		
+
 		exit;
 	}
 }

@@ -73,9 +73,7 @@
 				</form>
 				<? endif ; ?>
 				<ul class="nav pull-right">
-					<li class="active"><a href="http://beta.crunchr.co" target="_blank"><i class="icon-home"></i> Beta</a></li>
-					<li class="active"><a href="http://staging.crunchr.co" target="_blank"><i class="icon-home"></i> Staging</a></li>
-					<li class="active"><a href="https://crunchbutton.com" target="_blank"><i class="icon-home"></i> Live</a></li>
+
 					<li class="active">
 						<a href="/support/" title="tickets waiting for an anwser">
 							<i class="icon-comments"></i> Support
@@ -96,17 +94,6 @@
 <!-- side nav -->
 <div class="primary-sidebar">
 	<ul class="nav nav-collapse collapse nav-collapse-primary">
-
-		<? if ( c::admin()->permission()->check( [ 'global','orders','orders-all','orders-list-page','orders-new-users'] ) ) : ?>
-			<li class="dark-nav <?=$this->page == 'orders' ? 'active' : ''?>">
-				<span class="glow"></span>
-
-				<a class="accordion-toggle" href="/orders">
-					<i class="icon-truck icon-2x"></i>
-					<span>Orders</span>
-				</a>
-			</li>
-		<? endif ; ?>
 
 		<? if ( c::admin()->permission()->check( [ 'global','restaurants-all','restaurants-list-page','restaurants-crud','restaurants-create'] ) ) : ?>
 			<li class="<?=$this->page == 'restaurants' ? 'active' : ''?>">
