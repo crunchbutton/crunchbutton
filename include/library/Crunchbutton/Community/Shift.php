@@ -21,7 +21,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	}
 
 	public function isVisible(){
-		return ( intval( $this->hidden ) == 0 );
+		return !$this->hidden;
 	}
 
 	public function isHidden(){

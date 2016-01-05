@@ -36,8 +36,15 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, ShiftScheduleService, C
 		ShiftScheduleService.loadShifts( $scope.options, function( json ){
 			if( json.communities ){
 				$scope.shifts = { communities: json.communities };
+				$scope.days = json.days;
 			}
 		} );
+	}
+
+	$scope.showPSTtz = false;
+
+	$scope.toggleTz = function(){
+		$scope.showPSTtz = !$scope.showPSTtz;
 	}
 
 	$scope.selectAllCommunities = function(){
