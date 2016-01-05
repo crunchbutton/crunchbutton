@@ -257,6 +257,9 @@ class Crunchbutton_App extends Cana_App {
 		header('X-Powered-By: '.$this->config()->powered);
 		header('X-Footprint: '.gethostname().'-'.$_SERVER['SERVER_NAME'].'-'.$db);
 
+		c::db()->exec("set time_zone = '".$this->config()->timezoneOffset."';");
+
+
 	}
 
 	public function defaultExceptionHandler($e) {
@@ -715,11 +718,6 @@ class Crunchbutton_App extends Cana_App {
 			]);
 		}
 		return $this->_s3;
-
-		/*
-		new Crunchbutton_S3;
-		S3::setAuth(c::config()->s3->key, c::config()->s3->secret);
-		*/
 	}
 
 	public function getIp() {

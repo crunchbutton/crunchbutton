@@ -131,7 +131,7 @@ class Controller_community extends Crunchbutton_Controller_Account {
 		foreach ( $communities as $community ) {
 			$orders[ $community->name ] = $community->getOrdersFromLastDaysByCommunity( $interval );
 		}
-		$today = new DateTime( $time, new DateTimeZone( 'America/Los_Angeles' ) );
+		$today = new DateTime( $time, new DateTimeZone(c::config()->timezone) );
 		for( $i = 0; $i <= $interval; $i++ ){
 			$days[] = $today->format( 'm/d/Y' );
 			$today->modify( '-1 day' );

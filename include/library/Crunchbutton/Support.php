@@ -712,7 +712,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 	public function makeACall(){
 
-		$dateTime = new DateTime( 'now', new DateTimeZone('America/Los_Angeles'));
+		$dateTime = new DateTime( 'now', new DateTimeZone(c::config()->timezone));
 		$hour = $dateTime->format( 'H' );
 
 		// Issue #1100 - Call David if CB receives a support after 1AM
