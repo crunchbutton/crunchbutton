@@ -4556,7 +4556,6 @@ table.receipt{
   margin: 5px 0 5px 0;
 }
 
-
 .cockpit1-wrapper {
 	height: 100vh;
 	width: 100%;
@@ -4571,3 +4570,61 @@ table.receipt{
 		.display-table-cell{
 			display: table-cell;
 		}
+
+.shift-schedule{}
+.shift-schedule .table-label{
+	width: 14.28%;
+}
+	.shift-schedule .table-label .date{
+		font-size: 1.3em;
+		margin-top: .5em;
+	}
+	.shift-schedule .table-label .weekday{
+
+	}
+	.shift-schedule .shift{
+		padding: .3em;
+		margin: .6em .3em;
+		border-radius: 2px;
+		font-size: .9em;
+		line-height: 1.5em;
+	}
+		.shift-schedule .period{
+			font-weight: bold;
+		}
+		.shift-schedule .shift-has-drivers{
+			background: #ebf5e6;
+			border: 1px solid #d6e9c6;
+			color: #468847;
+		}
+		.shift-schedule .shift-no-driver{
+			background: #ceb2b4;
+			border: 1px solid #eca49f;
+			color: #8c3533;
+		}
+		.shift-schedule .shift-hidden{
+			background: #769bae;
+			border: 1px solid #618193;
+			color: #536f7f;
+		}
+	.shift-schedule .button-container{
+		text-align: center;
+		margin: .4em;
+		font-size: .8em !important;
+	}
+	.shift-schedule .drivers{
+		margin: .5em 0;
+	}
+		.shift-schedule .drivers li{
+			line-height: 1.8em;
+			font-size: 1;
+		}
+	.shift-schedule .hide-shift{
+		font-size: .9em;
+		font-weight: bold;
+		cursor: pointer;
+	}
+		.shift-schedule .hide-shift input{
+			float: left;
+		}
+

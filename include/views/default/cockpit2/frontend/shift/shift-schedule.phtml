@@ -23,7 +23,7 @@
 					<div class="label">Communities:</div>
 					<div class="input">
 						<button ng-click="selectNoneCommunity();" class="button button-small button-empty button-border button-orange"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp;Select None</button>
-						<button ng-click="selectAllCommunities();" class="button button-small button-empty button-border button-green"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Select All</button>
+						<button ng-click="selectAllCommunities();" class="button button-small button-empty button-border button-blue"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Select All</button>
 						<br/>
 						<br/>
 					</div>
@@ -43,20 +43,70 @@
 					<br>
 					<div class="input">
 						<button name='refresh' ng-click='loadShifts()' class="button button-small button-empty button-border button-green"><i class="fa fa-refresh"></i>&nbsp;&nbsp;Load Shifts</button>
+						<button name='refresh' ng-click='toggleTz()' class="button button-small button-empty button-border button-blue">
+							<i class="fa fa-clock-o"></i>&nbsp;&nbsp;
+							<span ng-if="!showPSTtz">Show hours in PST timezone</span>
+							<span ng-if="showPSTtz">Show hours in community's timezone</span>
+							</button>
 					</div>
 				</li>
 			</ul>
 		</div>
 	</div>
 
+	<div ng-repeat="community in shifts.communities" class="shift-schedule">
+		<div class="support-box-wrap box-content2">
 
-	<table class="tb-grid tb-zebra" ng-if="shifts.communities">
-		<tbody ng-repeat="community in shifts.communities">
-			<tr ng-repeat="community in shifts.communities">
-				<td></td>
-			</tr>
-		</tbody>
-	</table>
+		<div class="support-box-wrap-header">
+			<h1>{{community.name}}</h1>
+			<div class="divider"></div>
+		</div>
+
+		<div class="no-box-content-color">
+			<table class="tb-grid tb-zebra" ng-if="days">
+				<thead>
+					<tr>
+						<th ng-repeat="day in days" class="table-label">
+							<div class="date">{{day.date}}</div>
+							<div class="weekday">{{day.weekday}}</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td ng-repeat="day in community.days">
+							<div ng-if="day.shifts.length">
+								<div ng-repeat="shift in day.shifts" class="shift" ng-class="{'shift-hidden':shift.hidden, 'shift-has-drivers': shift.drivers, 'shift-no-driver': !shift.drivers}">
+									<div>
+										<span title="Period"><i class="fa fa-clock-o"></i></span>
+										<span class="period" ng-if="!showPSTtz">{{shift.period}} <span class="tz">({{shift.tz}})</span></span>
+										<span class="period" ng-if="showPSTtz">{{shift.period_pst}} <span class="tz">(PST)</span></span>
+									</div>
+									<ul ng-if="shift.drivers" class="drivers">
+										<li ng-repeat="driver in shift.drivers">
+											<span title="Driver"><i class="fa fa-car"></i></span>
+											<span ng-if="driver.permanent" title="Permanent"><i class="fa fa-lock"></i></span>
+											<span ng-if="driver.first_week" title="First Week"><i class="fa fa-star"></i></span>
+											<span class="driver-name">{{driver.name}}</span>
+										</li>
+									</ul>
+									<span class="tag tag-green" ng-if="shift.recurring" title="It is a recurring event">Recurring</span>
+									<div class="hide-shift" ng-click="shift.hidden = !shift.hidden">
+										<input type="checkbox" ng-model="shift.hidden">
+										<span>&nbsp;Hide shift</span>
+										<div class="divider"></div>
+									</div>
+								</div>
+							</div>
+							<div class="button-container">
+								<button class="button button-small button-empty button-border button-blue"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Shift</button>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 
 
 	<div class="divider"></div>

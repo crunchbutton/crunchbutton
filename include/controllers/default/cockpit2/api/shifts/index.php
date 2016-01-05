@@ -33,6 +33,8 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 	private function _loadShifts(){
 
+		$out = [ 'days' => [] ];
+
 		$start = ( new DateTime( $this->request()['start'] ) );
 		$filterCommunities = $this->request()['communities'];
 		$filterCommunities = [ 92, 29 ];
@@ -53,6 +55,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 		$days = [];
 		for( $i = 0; $i <= 6; $i++ ){
 			$days[] = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+			$out[ 'days' ][ $firstDay->format( 'Ymd' ) ] = [ 'date' => $firstDay->format( 'M jS' ), 'weekday' => $firstDay->format( 'l' ) ];
 			$firstDay->modify( '+ 1 day' );
 		}
 
@@ -69,9 +72,9 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			if( $community->id_community ){
 				$shifts = [];
 				foreach( $days as $day ) {
-					$shifts[ $day->format( 'Ymd' ) ] = [];
+					$shifts[ $day->format( 'Ymd' ) ] = [ 'shifts' => [] ];
 				}
-				$communities[ $community->id_community ] = [ 'id_community' => $community->id_community, 'name' => $community->name, 'shifts' => $shifts ];
+				$communities[ $community->id_community ] = [ 'id_community' => $community->id_community, 'name' => $community->name, 'days' => $shifts ];
 			}
 		}
 
@@ -91,12 +94,10 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			$segments = Crunchbutton_Community_Shift::shiftsByDay( $day->format( 'Y-m-d' ) );
 			foreach( $segments as $segment ){
 				if( $communities[ $segment->id_community ] ){
-					$communities[ $segment->id_community ]['shifts'][ $day->format( 'Ymd' ) ][] = $this->_parseSegment( $segment );
+					$communities[ $segment->id_community ]['days'][ $day->format( 'Ymd' ) ][ 'shifts' ][] = $this->_parseSegment( $segment );
 				}
 			}
 		}
-
-		$out = [];
 
 		// prev/next links
 		$firstDay->modify( '- 2 week' );
@@ -159,7 +160,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			}
 
 			$_driver[ 'id_admin' ] = $driver->id_admin;
-			$_driver[ 'driver' ] = $driver->name;
+			$_driver[ 'name' ] = $driver->name;
 
 			$drivers[] = $_driver;
 		}
