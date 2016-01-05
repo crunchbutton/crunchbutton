@@ -1423,18 +1423,20 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$end = null;
 
 			$shift = Crunchbutton_Community_Shift::nextShiftByAdmin( $driver->id_admin, 1 );
-			$shift = $shift->get( 0 );
+			if ($shift) {
+				$shift = $shift->get( 0 );
 
-			if( $shift->id_community_shift ){
-				$shiftStart = $shift->dateStart();
+				if( $shift->id_community_shift ){
+					$shiftStart = $shift->dateStart();
 
-				if( $now > $shiftStart ){
-					$end = $shiftStart->format( 'Y-m-d H:i' );
-					// checking driver
-					$assignment = Crunchbutton_Admin_Shift_Assign::o( $shift->id_admin_shift_assign );
-					if( $assignment->id_community_shift ){
-						$assignment->confirmed = true;
-						$assignment->save();
+					if( $now > $shiftStart ){
+						$end = $shiftStart->format( 'Y-m-d H:i' );
+						// checking driver
+						$assignment = Crunchbutton_Admin_Shift_Assign::o( $shift->id_admin_shift_assign );
+						if( $assignment->id_community_shift ){
+							$assignment->confirmed = true;
+							$assignment->save();
+						}
 					}
 				}
 			}

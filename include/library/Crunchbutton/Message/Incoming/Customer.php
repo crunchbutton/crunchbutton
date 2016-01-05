@@ -40,7 +40,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 	public function status() {
 		if ($this->support->id_order) {
 			$response .= "\nOrder: #".$this->support->id_order;
-			$date = new DateTime($this->support->order()->date, new DateTimeZone('America/Los_Angeles'));
+			$date = new DateTime($this->support->order()->date, new DateTimeZone(c::config()->timezone));
 			$date->setTimeZone(new DateTimeZone($this->support->order()->restaurant()->timezone));
 			$response .= "\nOrdered @ ".$date->format('n/j g:iA T');
 
@@ -51,7 +51,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 				$response .= "\nStatus: ".$this->support->order()->status()->last()['status'];
 			}
 
-			$date = new DateTime($this->support->order()->status()->last()['date'], new DateTimeZone('America/Los_Angeles'));
+			$date = new DateTime($this->support->order()->status()->last()['date'], new DateTimeZone(c::config()->timezone));
 			$date->setTimeZone(new DateTimeZone($this->support->order()->restaurant()->timezone));
 			$response .= "\nUpdated @ ".$date->format('n/j g:iA T');
 		}

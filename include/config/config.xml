@@ -2,7 +2,8 @@
 <data version="1">
 	<viewfilter>true</viewfilter>
 	<bundle>false</bundle>
-	<timezone>America/Los_Angeles</timezone>
+	<timezone>UTC</timezone>
+	<timezoneOffset>+0:00</timezoneOffset>
 	<cache>
 		<default>file</default>
 		<redis>
