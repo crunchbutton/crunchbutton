@@ -972,17 +972,20 @@ NGApp.controller('LocationUnavailableCtrl', function ($scope, $http, $location, 
 /**
  * restaurant page
  */
+
 NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $rootScope, $timeout, $window, RestaurantService, OrderService, CreditService, GiftCardService, PositionsService, MainNavigationService, CreditCardService) {
 
-	$scope.$on( 'window-focus', function(e, data) {
-		$scope.restaurant.reloadHours( true, function( restaurant ){
-			$scope.restaurant = restaurant;
-			$scope.restaurant.open();
-			$scope.open = $scope.restaurant._open;
-			if (!$scope.$$phase){
-				$scope.$apply();
-			}
-		} );
+	var updateHoursOnFocus = $scope.$on( 'window-focus', function(e, data) {
+		if( OrderService.restaurant && OrderService.restaurant.id_restaurant && OrderService.restaurant.id_restaurant == $scope.restaurant.id_restaurant ){
+			$scope.restaurant.reloadHours( true, function( restaurant ){
+				$scope.restaurant = restaurant;
+				$scope.restaurant.open();
+				$scope.open = $scope.restaurant._open;
+				if (!$scope.$$phase){
+					$scope.$apply();
+				}
+			} );
+		}
 	});
 
 	var order = OrderService;
@@ -1049,20 +1052,23 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 	// update if the restaurant is closed or open every 35 seconds
 	var updateStatus = function(){
-		updateRestaurantStatus = $timeout( function(){
-			$scope.restaurant.open();
-			$scope.restaurant.reloadHours( true, function(){
-				var open = $scope.restaurant._open;
-				if ($scope.open != open) {
-					$scope.open = open;
-				}
-				if (!$scope.$$phase){
-					$scope.$apply();
-				}
-			} );
-			updateStatus();
-		}, 1000 * 60 );
+		if( OrderService.restaurant && OrderService.restaurant.id_restaurant && OrderService.restaurant.id_restaurant == $scope.restaurant.id_restaurant ){
+			updateRestaurantStatus = $timeout( function(){
+				$scope.restaurant.open();
+				$scope.restaurant.reloadHours( true, function(){
+					var open = $scope.restaurant._open;
+					if ($scope.open != open) {
+						$scope.open = open;
+					}
+					if (!$scope.$$phase){
+						$scope.$apply();
+					}
+				} );
+				updateStatus();
+			}, 1000 * 60 );
+		}
 	}
+	//
 
 	if (!App.minimalMode) {
 		$scope.$on( '$destroy', function(){
@@ -1072,6 +1078,9 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 			}
 			if( typeof( forceReloadTimer ) !== 'undefined' && forceReloadTimer ){
 				try{ $timeout.cancel( forceReloadTimer ); } catch(e){}
+			}
+			if( updateHoursOnFocus ){
+				updateHoursOnFocus();
 			}
 		} );
 
