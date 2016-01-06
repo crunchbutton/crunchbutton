@@ -114,10 +114,10 @@ class Controller_api_shifts_checkin extends Crunchbutton_Controller_RestAccount 
 
 			$s->confirmed = intval( $s->confirmed ) > 0 ? true : false;
 			$s->date = $shift->dateStart()->format( 'M jS Y' );
-			$s->period_sort = intval( $shift->dateStart( c::config()->timezone )->format( 'YmdHis' ) );
+			$s->period_sort = intval( $shift->dateStart( Community_Shift::CB_TIMEZONE )->format( 'YmdHis' ) );
 			$s->period = $shift->startEndToString() ;
 			$s->community_tz = $shift->dateStart()->format( 'T' );
-			$s->period_pst = $shift->startEndToString( c::config()->timezone );
+			$s->period_pst = $shift->startEndToString( Community_Shift::CB_TIMEZONE );
 
 			$data[] = $s;
 			$i++;
