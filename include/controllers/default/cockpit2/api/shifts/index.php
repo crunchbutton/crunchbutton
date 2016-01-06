@@ -91,9 +91,98 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _loadShift(){
+
 		$shift = Community_Shift::o( c::getPagePiece( 3 ) );
 		if( $shift->id_community_shift ){
+
 			$out = [];
+			$community = $shift->community();
+
+			$out[ 'community' ] = [ 'name' => $community->name, 'id_community' => $community->id_community, 'tz' => $community->timezone ];
+			$out[ 'segment' ] = [ 'start' => [ 'day' => $shift->dateStart()->format( 'M jS Y ' ), 'hour' => $shift->dateStart()->format( 'g:i A' ) ],
+													'end' => [ 'day' => $shift->dateEnd()->format( 'M jS Y ' ), 'hour' => $shift->dateEnd()->format( 'g:i A' ) ] ];
+			$out[ 'hidden' ] = $shift->isHidden();
+			$out[ 'recurring' ] = $shift->isRecurring();
+
+
+			$drivers = $shift->community()->getDriversOfCommunity();
+
+			$week = $shift->week();
+			$year = $shift->year();
+
+			$out[ 'drivers' ] = [];
+			$ranking = [];
+			$preferences = $shift->getAdminPreferences();
+			foreach( $preferences as $preference ){
+				$highestRanking = $preference->highestRankingByPeriod( $driver->id_admin, $firstDayOfWeek, $lastDayOfWeek );
+				$ranking[ $preference->id_admin ] = [ 'current' => -1, 'highest' => intval( $highestRanking ) ];
+				if( intval( $preference->ranking ) ){
+					$ranking[ $preference->id_admin ][ 'current' ] = intval( $preference->ranking );
+				}
+			}
+
+			$shift_date = new DateTime( $shift->dateStart()->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+
+			if( $shift_date->format( 'l' ) == 'Thursday' ){
+				$thursday = $shift_date;
+			} else {
+				$shift_date->modify( 'last thursday' );
+				$thursday = $shift_date;
+			}
+
+			$firstDayOfWeek = $thursday->format( 'Y-m-d' );
+			$thursday->modify( '+ 6 days' );
+			$lastDayOfWeek = $thursday->format( 'Y-m-d' );
+
+			$_drivers = [];
+
+			foreach( $drivers as $driver ){
+
+				$_driver = [ 'id_driver' => $driver->id_admin, 'name' => $driver->name, 'phone' => $driver->phone() ];
+
+				$payment_type = $driver->payment_type();
+				if( $payment_type->id_admin ){
+					$_driver[ 'salary' ] = $payment_type->payment_type;
+				}
+				$_driver[ 'pexcard' ] = $payment_type->using_pex;
+				$_driver[ 'orders_per_hour' ] = $driver->ordersPerHour();
+
+				Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $week, $year );
+				$driverShifts = Crunchbutton_Admin_Shift_Assign::shiftsByAdminPeriod( $driver->id_admin, $firstDayOfWeek, $lastDayOfWeek );
+				$_driver[ 'shifts_wants_to_work' ] = $driverShifts->count();
+				$_driver[ 'assigned' ] = ( Crunchbutton_Admin_Shift_Assign::adminHasShift( $driver->id_admin, $shift->id_community_shift ) ) ? true : false;
+				$_driver[ 'assigned_permanently' ] = ( Crunchbutton_Admin_Shift_Assign_Permanently::adminIsPermanently( $driver->id_admin, $shift->id_community_shift ) ) ? true : false;
+
+				$_driver[ 'ranking' ] = [ 'current' => -1, 'highest' => 0 ];
+				if( $ranking[ $driver->id_admin ] ){
+					$_driver[ 'ranking' ] = $ranking[ $driver->id_admin ];
+				}
+
+				$note = $driver->note();
+				$note_data = [];
+				if( $note->id_admin_note ){
+					$_driver[ 'notes' ] = $note->exports();
+				}
+
+				if( $_driver[ 'ranking' ][ 'current' ] > 0 ){
+					$_driver[ 'sort' ] = $_driver[ 'ranking' ][ 'current' ];
+				} else if( $_driver[ 'ranking' ][ 'current' ] == -1 ){
+					$_driver[ 'sort' ] = 0;
+				} else {
+					$_driver[ 'sort' ] = -1;
+				}
+				$_drivers[] = $_driver;
+			}
+
+			usort( $_drivers, function( $a, $b ) {
+				if( $a[ 'sort' ] == $b[ 'sort' ] ){
+					return $a[ 'name' ] > $b[ 'name' ];
+				}
+				return $a[ 'sort' ] < $b[ 'sort' ];
+			} );
+
+			$out[ 'drivers' ] = $_drivers;
+
 			echo json_encode( $out );exit;
 		} else {
 			$this->error( 404 );
@@ -134,7 +223,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 		$start = ( new DateTime( $this->request()['start'] ) );
 		$filterCommunities = $this->request()['communities'];
 		// @remove -- remove it before commit
-		$filterCommunities = [ 92, 29 ];
+		$filterCommunities = [ 92, 285 ];
 
 		$year = ( $this->request()['year'] ? $this->request()['year'] : $start->format( 'Y' ) );
 		$month = ( $this->request()['month'] ? $this->request()['month'] : $start->format( 'm' ) );
