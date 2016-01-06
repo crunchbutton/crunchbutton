@@ -23,59 +23,6 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 
 NGApp.controller( 'ShiftCtrl', function ( $scope ) {} );
 
-
-NGApp.controller('ShiftScheduleCtrl', function ( $scope, ShiftScheduleService, CommunityService ) {
-
-	$scope.options = { communities: [ 92 ] };
-
-	$scope.selectNoneCommunity = function(){
-		$scope.options.communities = [];
-	}
-
-	$scope.loadShifts = function(){
-		ShiftScheduleService.loadShifts( $scope.options, function( json ){
-			if( json.communities ){
-				$scope.shifts = { communities: json.communities };
-				$scope.days = json.days;
-			}
-		} );
-	}
-
-	$scope.showPSTtz = false;
-
-	$scope.toggleTz = function(){
-		$scope.showPSTtz = !$scope.showPSTtz;
-	}
-
-	$scope.selectAllCommunities = function(){
-		$scope.selectNoneCommunity();
-		for( x in $scope.communities ){
-			if( $scope.communities[ x ].id_community ){
-				$scope.options.communities.push( $scope.communities[ x ].id_community );
-			}
-		}
-	}
-	var start = function(){
-		ShiftScheduleService.weekStart( function( json ){
-			if( json.start ){
-				$scope.options.start = new Date( json.start );
-			} else {
-				$scope.options.start = new Date();
-			}
-		} );
-
-		if( !$scope.communities ){
-			CommunityService.listSimple( function( json ){
-				$scope.communities = json;
-			} );
-		}
-		$scope.loadShifts();
-	}
-
-	start();
-
-});
-
 NGApp.controller('ShiftChekinCtrl', function ( $scope, ShiftService, ViewListService, DriverShiftsService ) {
 	angular.extend( $scope, ViewListService );
 	$scope.view({
@@ -111,3 +58,105 @@ NGApp.controller('ShiftChekinCtrl', function ( $scope, ShiftService, ViewListSer
 		App.confirm( 'Confirm checkin?' , 'Checking', success, fail, null, true);
 	}
 });
+
+NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftScheduleService, CommunityService ) {
+
+	// @remove -- remove it before commit
+	$scope.options = { communities: [ 92 ] };
+
+	$scope.selectNoneCommunity = function(){
+		$scope.options.communities = [];
+	}
+
+	$scope.loadShifts = function(){
+		ShiftScheduleService.loadShifts( $scope.options, function( json ){
+			if( json.communities ){
+				$scope.shifts = { communities: json.communities };
+				$scope.days = json.days;
+			}
+		} );
+	}
+
+	$scope.showPSTtz = false;
+
+	$scope.toggleShowHideShift = function( shift ){
+		ShiftScheduleService.showHideShift( { id_community_shift: shift.id_community_shift }, function( json ){
+			if( json.error ){
+				App.alert( 'Ops, error!' );
+			}
+		} );
+	}
+
+	$scope.toggleTz = function(){
+		$scope.showPSTtz = !$scope.showPSTtz;
+	}
+
+	$scope.selectAllCommunities = function(){
+		$scope.selectNoneCommunity();
+		for( x in $scope.communities ){
+			if( $scope.communities[ x ].id_community ){
+				$scope.options.communities.push( $scope.communities[ x ].id_community );
+			}
+		}
+	}
+	var start = function(){
+		ShiftScheduleService.weekStart( function( json ){
+			if( json.start ){
+				$scope.options.start = new Date( json.start );
+			} else {
+				$scope.options.start = new Date();
+			}
+			$scope.loadShifts();
+		} );
+
+		if( !$scope.communities ){
+			CommunityService.listSimple( function( json ){
+				$scope.communities = json;
+			} );
+		}
+	}
+
+	$scope.addShift = function( id_community, name, date ){
+		var params = { community: { id_community: id_community, name: name }, date: date }
+		$rootScope.$broadcast( 'openAddShiftContainer', params );
+	}
+
+	$rootScope.$on( 'shiftAdded', function(e, data) {
+		$scope.loadShifts();
+	});
+
+	start();
+
+});
+
+NGApp.controller('ShiftScheduleAddShiftCtrl', function ( $scope, $rootScope, ShiftScheduleService ) {
+
+	$rootScope.$on( 'openAddShiftContainer', function( e, data ) {
+
+		$scope.loading = true;
+		$scope.shift = { id_community: data.community.id_community, date: data.date.day, community: data.community.name, date_formatted: data.date.formatted };
+		App.dialog.show( '.add-shift-dialog-container' );
+
+		$scope.loading = false;
+	});
+
+	$scope.formAddShiftSave = function(){
+
+		if( $scope.formAddShift.$invalid ){
+			$scope.formAddShiftSubmitted = true;
+			return;
+		}
+
+		$scope.isSavingAddShift = true;
+		ShiftScheduleService.addShift( $scope.shift, function( json ){
+			if( json.error ){
+				App.alert( 'Error saving: ' + json.error );
+				$scope.isSavingAddShift = false;
+			} else {
+				$rootScope.$broadcast( 'shiftAdded', json );
+				setTimeout( function(){ $rootScope.closePopup(); $scope.isSavingAddShift = false; }, 200 );
+			}
+		} );
+	}
+
+} );

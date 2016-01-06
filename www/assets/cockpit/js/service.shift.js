@@ -24,7 +24,9 @@ NGApp.factory('ShiftScheduleService', function(ResourceFactory, $routeParams, $r
 
 	var shift = ResourceFactory.createResource(App.service + 'shifts/:action', { action: '@action' }, {
 		'weekStart' : { method: 'GET', params : { action: 'week-start' } },
-		'loadShifts' : { method: 'POST', params : { action: 'load-shifts' } }
+		'loadShifts' : { method: 'POST', params : { action: 'load-shifts' } },
+		'showHideShift' : { method: 'POST', params : { action: 'show-hide-shift' } },
+		'addShift' : { method: 'POST', params : { action: 'add-shift' } },
 	});
 
 	service.weekStart = function( callback) {
@@ -35,6 +37,18 @@ NGApp.factory('ShiftScheduleService', function(ResourceFactory, $routeParams, $r
 
 	service.loadShifts = function( params, callback) {
 		shift.loadShifts( params, function( data ) {
+			callback(data);
+		});
+	}
+
+	service.showHideShift = function( params, callback) {
+		shift.showHideShift( params, function( data ) {
+			callback(data);
+		});
+	}
+
+	service.addShift = function( params, callback) {
+		shift.addShift( params, function( data ) {
 			callback(data);
 		});
 	}

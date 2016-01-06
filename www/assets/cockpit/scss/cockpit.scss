@@ -4603,9 +4603,8 @@ table.receipt{
 			color: #8c3533;
 		}
 		.shift-schedule .shift-hidden{
-			background: #769bae;
-			border: 1px solid #618193;
-			color: #536f7f;
+			opacity: 0.4;
+			filter: alpha(opacity=40); /* For IE8 and earlier */
 		}
 	.shift-schedule .button-container{
 		text-align: center;
@@ -4623,8 +4622,11 @@ table.receipt{
 		font-size: .9em;
 		font-weight: bold;
 		cursor: pointer;
+		display: block;
 	}
 		.shift-schedule .hide-shift input{
 			float: left;
 		}
-
+.add-shift-dialog-container{
+	width: 50em;
+}
