@@ -1,7 +1,7 @@
-<div class="add-shift-dialog-container zoom-anim-dialog mfp-hide dialog" ng-controller="ShiftScheduleAddShiftCtrl">
+<div class="edit-shift-dialog-container zoom-anim-dialog mfp-hide dialog" ng-controller="ShiftScheduleEditShiftCtrl">
 
 	<div>
-		<h1 class="title"><span>Add shift: Community {{shift.community}}</span></h1>
+		<h1 class="title"><span>Edit shift: Community {{shift.community}}</span></h1>
 
 		<div class="divider"></div>
 
@@ -9,7 +9,7 @@
 
 		<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
-		<ng-form name="formAddShift">
+		<ng-form name="formAddShift" ng-if="!loading">
 
 			<div class="ul-inputs">
 

@@ -121,7 +121,12 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftSchedu
 		$rootScope.$broadcast( 'openAddShiftContainer', params );
 	}
 
-	$rootScope.$on( 'shiftAdded', function(e, data) {
+	$scope.editShift = function( id_community_shift ){
+		var params = { id_community_shift: id_community_shift }
+		$rootScope.$broadcast( 'openEditShiftContainer', params );
+	}
+
+	$rootScope.$on( 'shiftsChanged', function(e, data) {
 		$scope.loadShifts();
 	});
 
@@ -129,12 +134,43 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftSchedu
 
 });
 
+NGApp.controller('ShiftScheduleEditShiftCtrl', function ( $scope, $rootScope, ShiftScheduleService ) {
+
+	$rootScope.$on( 'openEditShiftContainer', function( e, data ) {
+
+		$scope.loading = true;
+		console.log('data',data);
+		App.dialog.show( '.edit-shift-dialog-container' );
+	});
+
+	$scope.formAddShiftSave = function(){
+
+		if( $scope.formAddShift.$invalid ){
+			$scope.formAddShiftSubmitted = true;
+			return;
+		}
+
+		$scope.isSavingAddShift = true;
+		ShiftScheduleService.addShift( $scope.shift, function( json ){
+			if( json.error ){
+				App.alert( 'Error saving: ' + json.error );
+				$scope.isSavingAddShift = false;
+			} else {
+				$rootScope.$broadcast( 'shiftsChanged', json.id_community );
+				setTimeout( function(){ $rootScope.closePopup(); $scope.isSavingAddShift = false; }, 200 );
+			}
+		} );
+	}
+} );
+
 NGApp.controller('ShiftScheduleAddShiftCtrl', function ( $scope, $rootScope, ShiftScheduleService ) {
 
 	$rootScope.$on( 'openAddShiftContainer', function( e, data ) {
 
+		$scope.formAddShiftSubmitted = false;
+
 		$scope.loading = true;
-		$scope.shift = { id_community: data.community.id_community, date: data.date.day, community: data.community.name, date_formatted: data.date.formatted };
+		$scope.shift = { type: 'one-time-shift', id_community: data.community.id_community, date: data.date.day, community: data.community.name, date_formatted: data.date.formatted };
 		App.dialog.show( '.add-shift-dialog-container' );
 
 		$scope.loading = false;
@@ -153,7 +189,7 @@ NGApp.controller('ShiftScheduleAddShiftCtrl', function ( $scope, $rootScope, Shi
 				App.alert( 'Error saving: ' + json.error );
 				$scope.isSavingAddShift = false;
 			} else {
-				$rootScope.$broadcast( 'shiftAdded', json );
+				$rootScope.$broadcast( 'shiftsChanged', json.id_community );
 				setTimeout( function(){ $rootScope.closePopup(); $scope.isSavingAddShift = false; }, 200 );
 			}
 		} );
