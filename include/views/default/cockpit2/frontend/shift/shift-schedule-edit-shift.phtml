@@ -1,7 +1,7 @@
 <div class="edit-shift-dialog-container zoom-anim-dialog mfp-hide dialog" ng-controller="ShiftScheduleEditShiftCtrl">
 
 	<div>
-		<h1 class="title"><span>Edit shift: Community {{shift.community}}</span></h1>
+		<h1 class="title"><span>{{shift.community.name}}</span></h1>
 
 		<div class="divider"></div>
 
@@ -9,53 +9,66 @@
 
 		<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
-		<ng-form name="formAddShift" ng-if="!loading">
+		<div class="ul-inputs">
+			<ul ng-class="{'submitted':formEditShiftSubmitted}" class="ul-inputs">
+				<li class="li-input">
+					<div class="info">
+						<span class="label">From:</span>
+						{{shift.segment.start.day}}<strong>{{shift.segment.start.hour}}</strong>
+						&nbsp;&nbsp;<span class="label">To:</span>
+						{{shift.segment.end.day}}<strong>{{shift.segment.end.hour}}</strong>
+						({{shift.community.tz}})
+					</div>
+				</li>
+			</ul>
+		</div>
 
-			<div class="ul-inputs">
-
-				<ul ng-class="{'submitted':formAddShiftSubmitted}" class="ul-inputs">
-
-					<li class="li-input">
-						<div class="label">Date:</div>
-						<div class="input">
-							<strong>{{shift.date_formatted}}</strong>
-						</div>
-					</li>
-
-					<li class="li-input" ng-class="{'error':formAddShift.shiftHours.$invalid}">
-						<div class="label">Hours:</div>
-						<div class="input"><input type="text" name="shiftHours" ng-model="shift.hours" shift-hours-validation required placeholder="Hours" ></div>
-						<div class="box-error">
-							<small ng-show="formAddShift.shiftHours.$error.required">Required.</small>
-							<small ng-show="formAddShift.shiftHours.$error.shiftHoursValidation">Unable to figure out what this time means.</small>
-						</div>
-						<div class="notes">
-							e.g. “12 PM - 2:30 AM”
-						</div>
-					</li>
-
-					<li class="li-input" ng-class="{'error': formAddShift.shiftType.$invalid}" >
-						<div class="label">Type:</div>
-						<div class="input">
-							<select name="shiftType" ng-model="shift.type" required>
-								<option value="one-time-shift">One time shift</option>
-								<option value="repeat-every-week">Repeat every week</option>
-								<option value="repeat-every-day">Repeat every day moving forward</option>
-							</select>
-						</div>
-						<div class="box-error">
-							<small ng-show="formAddShift.shiftType.$error.required">Required.</small>
-						</div>
-					</li>
-
-					<li class="li-input" ng-show="!isSavingAddShift">
-						<button class="button button-empty button-border button-green button-full" ng-click="formAddShiftSave();"><span class="fa fa-save"></span>&nbsp;&nbsp;Save</button>
-					</li>
-					<li class="li-input" ng-show="isSavingAddShift">
-						<i class="fa fa-circle-o-notch fa-spin"></i>
-					</li>
-				</ul>
+		<div class="support-box-wrap box-content2">
+			<div class="box-content-table">
+				<div class="drivers">
+					<table class="tb-grid tb-zebra" ng-if="shift.drivers">
+						<thead>
+							<tr>
+								<th></th>
+								<th>Driver</th>
+								<th>Ranking</th>
+								<th>Shifts desired / <br>Assigned shifts</th>
+								<th ng-if="shift.recurring">Make it permanent</th>
+								<th>Notes</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="driver in shift.drivers">
+								<td>
+									<input type="checkbox" ng-model="driver.assigned">
+								</td>
+								<td>
+									{{driver.name}}
+									<div><a href ng-click="callText(driver.phone)">{{driver.phone | formatPhone}}</a></div>
+								</td>
+								<td>
+									<span class="tag tag-green" ng-if="driver.ranking.current == 1">Yes, definitely</span>
+									<span class="tag tag-blue" ng-if="driver.ranking.current > 1">I'm available</span>
+									<span class="tag tag-red" ng-if="driver.ranking.current == 0">Definitely not</span>
+									<span class="tag tag-grey" ng-if="driver.ranking.current == -1">Did not fill out</span>
+								</td>
+								<td>
+									<span ng-if="driver.ranking.highest">{{driver.ranking.highest}}</span>
+									<span ng-if="!driver.ranking.highest">-</span> /
+									{{driver.total_shifts}}
+								</td>
+								<td ng-if="shift.recurring"><input type="checkbox" ng-model="driver.assigned_permanently"></td>
+								<td>
+									<textarea>{{driver.notes.text}}</textarea>
+									<br>
+									<span class="listview-smaller">{{driver.notes.added_by}}</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
-		</ng-form>
+		</div>
+
 	</div>
 </div>
