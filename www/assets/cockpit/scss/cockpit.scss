@@ -1085,6 +1085,15 @@ input {
 	margin:.4em 0 .6em;
 }
 
+.ul-inputs .info{
+	color: #5d5f63;
+	font-size: 1em;
+	margin:.4em 0 .6em;
+}
+	.ul-inputs .info .label{
+		color: #999;
+	}
+
 	.ul-inputs .label-red{
 		color: red;
 	}
@@ -4633,3 +4642,16 @@ table.receipt{
 .edit-shift-dialog-container{
 	width: 80em;
 }
+.edit-shift-dialog-container .drivers{
+	max-height: 500px;
+	overflow: auto
+}
+.edit-shift-dialog-container .drivers td{
+	font-size: 1.1em;
+	line-height: 1.5em;
+}
+.edit-shift-dialog-container .drivers textarea{
+	width: 20em;
+	margin: 0;
+}
+

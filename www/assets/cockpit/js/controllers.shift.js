@@ -140,26 +140,26 @@ NGApp.controller('ShiftScheduleEditShiftCtrl', function ( $scope, $rootScope, Sh
 		$scope.loading = true;
 		ShiftScheduleService.loadShift( data, function( json ){
 			$scope.loading = false;
-			console.log('json',json);
+			$scope.shift = json;
 		} )
 		App.dialog.show( '.edit-shift-dialog-container' );
 	});
 
 	$scope.formAddShiftSave = function(){
 
-		if( $scope.formAddShift.$invalid ){
-			$scope.formAddShiftSubmitted = true;
+		if( $scope.formEditShift.$invalid ){
+			$scope.formEditShiftSubmitted = true;
 			return;
 		}
 
-		$scope.isSavingAddShift = true;
-		ShiftScheduleService.addShift( $scope.shift, function( json ){
+		$scope.isSavingEditShift = true;
+		ShiftScheduleService.saveSchedule( $scope.shift, function( json ){
 			if( json.error ){
 				App.alert( 'Error saving: ' + json.error );
-				$scope.isSavingAddShift = false;
+				$scope.isSavingEditShift = false;
 			} else {
 				$rootScope.$broadcast( 'shiftsChanged', json.id_community );
-				setTimeout( function(){ $rootScope.closePopup(); $scope.isSavingAddShift = false; }, 200 );
+				setTimeout( function(){ $rootScope.closePopup(); $scope.isSavingEditShift = false; }, 200 );
 			}
 		} );
 	}
