@@ -2,6 +2,8 @@
 
 class Crunchbutton_Community_Shift extends Cana_Table {
 
+	const CB_TIMEZONE = 'America/Los_Angeles'; // pst
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
@@ -69,11 +71,11 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 															'timezone' => $this->timezone(),
 															'timezone_abbr' => $this->timezoneAbbr() );
 
-		$out[ 'period_pst' ] = array( 'toString' => $this->startEndToString( c::config()->timezone ),
-																	'day_start' => $this->dateStart( c::config()->timezone )->format( 'M jS Y' ),
-																	'day_end' => $this->dateEnd( c::config()->timezone )->format( 'M jS Y' ),
-																	'date_start' => $this->dateStart( c::config()->timezone )->format( 'Y-m-d H:i:s' ),
-																	'date_end' => $this->dateEnd( c::config()->timezone )->format( 'Y-m-d H:i:s' ),
+		$out[ 'period_pst' ] = array( 'toString' => $this->startEndToString( Community_Shift::CB_TIMEZONE ),
+																	'day_start' => $this->dateStart( Community_Shift::CB_TIMEZONE )->format( 'M jS Y' ),
+																	'day_end' => $this->dateEnd( Community_Shift::CB_TIMEZONE )->format( 'M jS Y' ),
+																	'date_start' => $this->dateStart( Community_Shift::CB_TIMEZONE )->format( 'Y-m-d H:i:s' ),
+																	'date_end' => $this->dateEnd( Community_Shift::CB_TIMEZONE )->format( 'Y-m-d H:i:s' ),
 																	'timezone' => c::config()->timezone,
 																	'timezone_abbr' => 'PST' );
 		return $out;
