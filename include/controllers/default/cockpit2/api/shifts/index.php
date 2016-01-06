@@ -15,7 +15,90 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			case 'week-start':
 				$this->_weekStart();
 				break;
+			case 'show-hide-shift':
+				$this->_showHideShift();
+				break;
+			case 'add-shift':
+				$this->_addShift();
+				break;
 		}
+	}
+
+	private function _addShift(){
+		if( $this->method() == 'post' ){
+			$id_community = $this->request()[ 'id_community' ];
+			$date = $this->request()[ 'date' ];
+			$segments = $this->request()[ 'hours' ];
+			$type = $this->request()[ 'type' ];
+
+			switch ( $type ) {
+				case 'one-time-shift':
+					$recurring = false;
+					break;
+				case 'repeat-every-week':
+					$recurring = true;
+					break;
+				case 'repeat-every-day':
+					$recurring = true;
+					break;
+			}
+
+			$community = Crunchbutton_Community::o( $id_community );
+
+			$timezone = $community->timezone;
+
+			$date = DateTime::createFromFormat( 'Y-m-d H:i:s', $date . ' 00:00:00', new DateTimeZone( $timezone ) );
+
+			$day = $date->format( 'd' );
+			$month = $date->format( 'm' );
+			$year = $date->format( 'Y' );
+
+			if( !$id_community || !$day || !$month || !$year ){
+				echo json_encode( [ 'error' => 'invalid object' ] );
+				exit;
+			}
+
+			$hours = [];
+
+			if( $type == 'repeat-every-day' ){
+
+			} else {
+				// add just the hour for the day
+				$date_base = DateTime::createFromFormat( 'Y-m-d H:i:s', $year . '-' . $month . '-' . $day . ' 00:00:00', new DateTimeZone( $timezone ) );
+				$_hours = Crunchbutton_Admin_Hour::segmentToDate( $date_base, $segments, $timezone );
+				if( $_hours ){
+					$hours[] = [ 'start' => $_hours[ 'start' ], 'end' => $_hours[ 'end' ] ];
+				}
+			}
+
+			foreach( $hours as $hour ){
+				$shift = new Crunchbutton_Community_Shift();
+				$shift->id_community = $id_community;
+				$shift->date_start = $hour[ 'start' ];
+				$shift->date_end = $hour[ 'end' ];
+				$shift->recurring = $recurring;
+				$shift->active = 1;
+				if( $shift->date_start && $shift->date_end ){
+					$shift->save();
+				}
+			}
+			echo json_encode( [ 'success' => $shift->id_community ] );exit;
+		}
+		echo json_encode( [ 'error' => true ] );exit;
+	}
+
+	private function _showHideShift(){
+
+		if( $this->method() == 'post' ){
+			$id_community_shift = $this->request()[ 'id_community_shift' ];
+			$shift = Community_Shift::o( $id_community_shift );
+			if( $shift->id_community_shift ){
+				$shift->hidden = ( $shift->hidden ) ? 0 : 1;
+				$shift->save();
+				echo json_encode( [ 'success' => true ] );exit;
+			}
+		}
+		echo json_encode( [ 'error' => true ] );exit;
 	}
 
 	private function _weekStart(){
@@ -37,6 +120,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 		$start = ( new DateTime( $this->request()['start'] ) );
 		$filterCommunities = $this->request()['communities'];
+		// @remove -- remove it before commit
 		$filterCommunities = [ 92, 29 ];
 
 		$year = ( $this->request()['year'] ? $this->request()['year'] : $start->format( 'Y' ) );
@@ -72,7 +156,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			if( $community->id_community ){
 				$shifts = [];
 				foreach( $days as $day ) {
-					$shifts[ $day->format( 'Ymd' ) ] = [ 'shifts' => [] ];
+					$shifts[ $day->format( 'Ymd' ) ] = [ 'shifts' => [], 'date' => [ 'day' => $day->format( 'Y-m-d' ), 'formatted' => $day->format( 'M jS Y' ), 'tz' => $community->timezone ] ];
 				}
 				$communities[ $community->id_community ] = [ 'id_community' => $community->id_community, 'name' => $community->name, 'days' => $shifts ];
 			}
@@ -128,7 +212,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 						'period' => $segment->startEndToString(),
 						'tz' => $segment->timezoneAbbr(),
 						// 'full_date_pst' => $segment->fullDate( c::config()->timezone ),
-						'period_pst' => $segment->startEndToString( c::config()->timezone ),
+						'period_pst' => $segment->startEndToString( Community_Shift::CB_TIMEZONE ),
 		 				];
 
 		 if( $segment->isHidden() ){

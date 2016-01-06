@@ -76,7 +76,7 @@
 					<tr>
 						<td ng-repeat="day in community.days">
 							<div ng-if="day.shifts.length">
-								<div ng-repeat="shift in day.shifts" class="shift" ng-class="{'shift-hidden':shift.hidden, 'shift-has-drivers': shift.drivers, 'shift-no-driver': !shift.drivers}">
+								<div ng-repeat="shift in day.shifts" class="shift unselectable" ng-class="{'shift-hidden':shift.hidden, 'shift-has-drivers': shift.drivers, 'shift-no-driver': !shift.drivers}">
 									<div>
 										<span title="Period"><i class="fa fa-clock-o"></i></span>
 										<span class="period" ng-if="!showPSTtz">{{shift.period}} <span class="tz">({{shift.tz}})</span></span>
@@ -91,15 +91,16 @@
 										</li>
 									</ul>
 									<span class="tag tag-green" ng-if="shift.recurring" title="It is a recurring event">Recurring</span>
-									<div class="hide-shift" ng-click="shift.hidden = !shift.hidden">
-										<input type="checkbox" ng-model="shift.hidden">
+
+									<label class="hide-shift">
+										<input type="checkbox" ng-change="toggleShowHideShift( shift )" ng-model="shift.hidden">
 										<span>&nbsp;Hide shift</span>
-										<div class="divider"></div>
-									</div>
+									</label>
+									<div class="divider"></div>
 								</div>
 							</div>
 							<div class="button-container">
-								<button class="button button-small button-empty button-border button-blue"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Shift</button>
+								<button ng-click="addShift( community.id_community, community.name, day.date )" class="button button-small button-empty button-border button-blue"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Shift</button>
 							</div>
 						</td>
 					</tr>
@@ -108,7 +109,7 @@
 		</div>
 	</div>
 
-
 	<div class="divider"></div>
 
 </div>
+<ng-include src="'assets/view/shift-schedule-add-shift.html'"></ng-include>
