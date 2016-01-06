@@ -22,8 +22,9 @@ NGApp.factory('ShiftScheduleService', function(ResourceFactory, $routeParams, $r
 
 	var service = { checking: {} };
 
-	var shift = ResourceFactory.createResource(App.service + 'shifts/:action', { action: '@action' }, {
+	var shift = ResourceFactory.createResource(App.service + 'shifts/:action/:id_community_shift', { action: '@action', id_community_shift: '@id_community_shift' }, {
 		'weekStart' : { method: 'GET', params : { action: 'week-start' } },
+		'loadShift' : { method: 'GET', params : { action: 'load-shift' } },
 		'loadShifts' : { method: 'POST', params : { action: 'load-shifts' } },
 		'showHideShift' : { method: 'POST', params : { action: 'show-hide-shift' } },
 		'addShift' : { method: 'POST', params : { action: 'add-shift' } },
@@ -37,6 +38,12 @@ NGApp.factory('ShiftScheduleService', function(ResourceFactory, $routeParams, $r
 
 	service.loadShifts = function( params, callback) {
 		shift.loadShifts( params, function( data ) {
+			callback(data);
+		});
+	}
+
+	service.loadShift = function( params, callback) {
+		shift.loadShift( params, function( data ) {
 			callback(data);
 		});
 	}

@@ -137,9 +137,11 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftSchedu
 NGApp.controller('ShiftScheduleEditShiftCtrl', function ( $scope, $rootScope, ShiftScheduleService ) {
 
 	$rootScope.$on( 'openEditShiftContainer', function( e, data ) {
-
 		$scope.loading = true;
-		console.log('data',data);
+		ShiftScheduleService.loadShift( data, function( json ){
+			$scope.loading = false;
+			console.log('json',json);
+		} )
 		App.dialog.show( '.edit-shift-dialog-container' );
 	});
 
