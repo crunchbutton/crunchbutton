@@ -12,6 +12,9 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			case 'load-shifts':
 				$this->_loadShifts();
 				break;
+			case 'load-shift':
+				$this->_loadShift();
+				break;
 			case 'week-start':
 				$this->_weekStart();
 				break;
@@ -85,6 +88,16 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			echo json_encode( [ 'success' => $shift->id_community ] );exit;
 		}
 		echo json_encode( [ 'error' => true ] );exit;
+	}
+
+	private function _loadShift(){
+		$shift = Community_Shift::o( c::getPagePiece( 3 ) );
+		if( $shift->id_community_shift ){
+			$out = [];
+			echo json_encode( $out );exit;
+		} else {
+			$this->error( 404 );
+		}
 	}
 
 	private function _showHideShift(){

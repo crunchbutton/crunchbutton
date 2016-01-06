@@ -4603,8 +4603,8 @@ table.receipt{
 			color: #8c3533;
 		}
 		.shift-schedule .shift-hidden{
-			opacity: 0.4;
-			filter: alpha(opacity=40); /* For IE8 and earlier */
+			opacity: 0.3;
+			filter: alpha(opacity=30); /* For IE8 and earlier */
 		}
 	.shift-schedule .button-container{
 		text-align: center;
@@ -4629,4 +4629,7 @@ table.receipt{
 		}
 .add-shift-dialog-container{
 	width: 50em;
+}
+.edit-shift-dialog-container{
+	width: 80em;
 }
