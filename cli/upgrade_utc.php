@@ -13,7 +13,7 @@ echo "\x1B[44mStarging conversion...\x1B[0m\n";
 require_once '../include/crunchbutton.php';
 
 $t = c::db()->query('show tables');
-$ignore = ['session', 'log', 'analytics_event', 'admin_location', 'MergeCommunity'];
+$ignore = ['session', 'log', 'analytics_event', 'admin_location', 'MergeCommunity', 'community_shift'];
 $completed = file('/tmp/completed-utc-conversion');
 foreach ($completed as $k => $complete) {
 	$completed[$k] = trim($complete);
@@ -45,6 +45,36 @@ foreach ($tables as $table) {
 			$query = '
 				update `'.$table.'` set `'.$column->Field.'` = date_add(`'.$column->Field.'`, INTERVAL 7 hour)
 				where `'.$column->Field.'` < "2015-11-01 02:00:00"
+				and  `'.$column->Field.'` >= "2015-03-08 02:00:00"
+			';
+			c::db()->exec($query);
+			$query = '
+				update `'.$table.'` set `'.$column->Field.'` = date_add(`'.$column->Field.'`, INTERVAL 8 hour)
+				where `'.$column->Field.'` < "2015-03-08 02:00:00"
+				and  `'.$column->Field.'` >= "2014-11-02 02:00:00"
+			';
+			c::db()->exec($query);
+			$query = '
+				update `'.$table.'` set `'.$column->Field.'` = date_add(`'.$column->Field.'`, INTERVAL 7 hour)
+				where `'.$column->Field.'` < "2014-11-02 02:00:00"
+				and  `'.$column->Field.'` >= "2014-03-02 02:00:00"
+			';
+			c::db()->exec($query);
+			$query = '
+				update `'.$table.'` set `'.$column->Field.'` = date_add(`'.$column->Field.'`, INTERVAL 8 hour)
+				where `'.$column->Field.'` < "2014-03-02 02:00:00"
+				and  `'.$column->Field.'` >= "2013-11-03 02:00:00"
+			';
+			c::db()->exec($query);
+			$query = '
+				update `'.$table.'` set `'.$column->Field.'` = date_add(`'.$column->Field.'`, INTERVAL 7 hour)
+				where `'.$column->Field.'` < "2013-11-03 02:00:00"
+				and  `'.$column->Field.'` >= "2013-03-10 02:00:00"
+			';
+			c::db()->exec($query);
+			$query = '
+				update `'.$table.'` set `'.$column->Field.'` = date_add(`'.$column->Field.'`, INTERVAL 8 hour)
+				where `'.$column->Field.'` < "2013-03-10 02:00:00"
 			';
 			c::db()->exec($query);
 
