@@ -31,10 +31,10 @@ foreach ($schemaOnly as $t) {
 $cmd[] = 'rm '.$file;
 
 // schema
-$cmd[] = $dump.' -d --lock-tables=false -h 45.56.80.7 -u '.c::crypt()->decrypt($remote->user).' -p'.c::crypt()->decrypt($remote->pass).' '.$remote->db.' >> '.$file;
+$cmd[] = $dump.' -d --lock-tables=false -h _HOST_ -u '.c::crypt()->decrypt($remote->user).' -p'.c::crypt()->decrypt($remote->pass).' '.$remote->db.' >> '.$file;
 
 // data
-$cmd[] = $dump.' --no-create-info --skip-triggers --lock-tables=false '.$ignoreTables.' -h 45.56.80.7 -u '.c::crypt()->decrypt($remote->user).' -p'.c::crypt()->decrypt($remote->pass).' '.$remote->db.' >> '.$file;
+$cmd[] = $dump.' --no-create-info --skip-triggers --lock-tables=false '.$ignoreTables.' -h _HOST_ -u '.c::crypt()->decrypt($remote->user).' -p'.c::crypt()->decrypt($remote->pass).' '.$remote->db.' >> '.$file;
 
 //$cmd[] = $dump.' --no-create-info --skip-triggers -u '.$connect->user.' -p'.$connect->pass.' '.$connect->db.' config group site >> '.$file;
 // replace trigger creators
@@ -48,10 +48,11 @@ $cmd[] = 'mv '.$file.'tmp '.$file;
 $cmd[] = $mysql.' -u '.$local->user.' -p'.$local->pass.' '.$local->db.' < '.$file;
 
 // import into postgres
-$cmd[] = 'pgloader mysql://'.$local->user.':'.$local->pass.'@localhost:8889/'.$local->db.' postgresql:///metrics';
 /*
+$cmd[] = 'pgloader mysql://'.$local->user.':'.$local->pass.'@localhost:8889/'.$local->db.' postgresql:///metrics';
+
 // export postgres dump
-//PGPASSWORD=mypassword 
+//PGPASSWORD=mypassword
 $cmd[] = 'pg_dump -Fc --no-acl --no-owner -h localhost metrics -f crunchbutton.psql';
 
 // delete existing heroku db

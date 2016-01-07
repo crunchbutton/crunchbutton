@@ -161,7 +161,7 @@
 								<div class="notes">This is the number of minutes it takes before an order is ready for pickup if the driver calls the restaurant ahead of time or orders online. For fast food restaurants this is typically 0. For other types of restaurants, you can get this information by calling the restaurant and/or looking at the restaurant's website where it may give you the earliest pickup time when ordering online. This information is important for helping us to correctly route orders to drivers, so the more accurate you can get this number to be, the more you help us to serve more customers faster. Use the General Notes section if you have any other comments related to this.</div>
 							</li>
 
-						<li class="li-input">
+							<li class="li-input">
 								<div class="label">Service Time (minutes):</div>
 								<div class="input"><input type="text" name="restaurantServiceTime" ng-model="restaurant.service_time"></div>
 								<div class="notes">This is the number of minutes it takes once a driver has parked for him/her to pick up the food at the restaurant. Some restaurants don't allow you to order ahead, so this number may be higher for those restaurants. For a restaurant where the driver already ordered ahead of time and is just picking up, this is probably like 5 minutes. For other restaurants, it could be closer to 10-15 minutes or more if the driver has to wait in line. A Yelp review search might give you a sense of how bad lines are. Use whatever information you can obtain. This information is important for helping us to correctly route orders to drivers, so the more accurate you can get this number to be, the more you help us to serve more customers faster. We do understand that this can vary over time of day and day of week, but do your best. Use the General Notes section if you have any other comments related to this.</div>
@@ -180,11 +180,11 @@
 
 	</div>
 
-	<div class="support-box-wrap box-content2" ng-show="!loading" sticky-bottom="80">
+	<div ng-show="!loading" sticky-bottom="47">
 		<div class="no-box-content-color">
 			<ul class="ul-inputs">
 				<li class="li-input" ng-show="!isSaving">
-					<button class="button save" ng-click="save();">Save Delivery Info</button>
+					<button class="button-no-margin button save" ng-click="save();"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>
 				</li>
 				<li class="li-input" ng-show="isSaving">
 					<i class="fa fa-circle-o-notch fa-spin"></i>
