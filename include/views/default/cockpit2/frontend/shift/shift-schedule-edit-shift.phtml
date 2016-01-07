@@ -15,16 +15,16 @@
 		<div class="support-box-wrap box-content2">
 
 			<div class="box-content-table">
-
 				<h2>Schedule changes</h2>
 				<div class="log">
-					<table class="tb-grid tb-zebra" ng-if="shift.log">
+					<div ng-if="!shift.log.length">There is no schedule log.</div>
+					<table class="tb-grid tb-zebra" ng-if="shift.log.length">
 						<thead>
 							<tr>
 								<th>Driver</th>
 								<th>Action</th>
 								<th>Date</th>
-								<th>Admin</th>
+								<th>Changed by</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -55,6 +55,7 @@
 								&nbsp;&nbsp;<span class="label">To:</span>
 								{{shift.segment.end.day}}<strong>{{shift.segment.end.hour}}</strong>
 								({{shift.community.tz}})
+								<span class="tag tag-red" ng-if="shift.hidden">This shift is hidden from drivers!</span>
 								<span class="tag tag-green" ng-if="saved">Saved!</span>
 							</div>
 						</li>
