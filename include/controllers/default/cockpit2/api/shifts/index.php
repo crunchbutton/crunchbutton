@@ -215,11 +215,6 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			$segments = $this->request()[ 'period' ];
 			$change = $this->request()[ 'change' ];
 
-$id_community_shift = 109747;
-$segments = '1am - 2am';
-$change = 'all-recurring-shifts';
-$change = 'only-this-shift';
-
 			switch ( $change ) {
 				case 'only-this-shift':
 					$shift = Community_Shift::o( $id_community_shift );
@@ -228,28 +223,30 @@ $change = 'only-this-shift';
 						echo json_encode( [ 'success' => $shift->id_community ] );exit;
 					}
 					break;
+
 				case 'all-recurring-shifts':
 
 					$shift = Community_Shift::o( $id_community_shift );
 					if( $shift->id_community_shift ){
+
+						// update the current shift
+						$shift->updateHours( $segments );
+
+						$id_father = $shift->recurringId();
+						$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 						$community = $shift->community();
-						$date_base = DateTime::createFromFormat( 'Y-m-d H:i:s', $shift->dateStart()->format( 'Y-m-d' ) . ' 00:00:00', new DateTimeZone( $community->timezone ) );
-						$hour = Crunchbutton_Admin_Hour::segmentToDate( $date_base, $segments, $community->timezone );
-						if( $shift->date_start != $hour[ 'start' ] || $shift->date_end != $hour[ 'end' ] ){
-							$shift->date_start = $hour[ 'start' ];
-							$shift->date_end = $hour[ 'end' ];
-							if( $shift->date_start && $shift->date_end ){
-								$shift->save();
-								if( $shift->isRecurring() ){
-									Community_Shift_Recursivity::addIgnore( $shift->id_community_shift, $shift->dateStart()->format( 'Y-m-d' ) );
-								}
-							}
+						$now->setTimezone( new DateTimeZone( $community->timezone ) );
+
+						// get all the future recurrent events already created
+						$futureShifts = Crunchbutton_Community_Shift::q('SELECT * FROM community_shift WHERE id_community_shift_father = ? AND date_start >= ?', [$id_father, $now->format( 'Y-m-d' ) ]);
+						foreach( $futureShifts as $futureShift ){
+							$futureShift->updateHours( $segments );
 						}
+						// update the father
+						$father = Community_Shift::o( $id_father );
+						$father->updateHours( $segments );
 						echo json_encode( [ 'success' => $shift->id_community ] );exit;
 					}
-					break;
-				default:
-					# code...
 					break;
 			}
 
