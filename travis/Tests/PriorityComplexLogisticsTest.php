@@ -6,12 +6,15 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
     // TODO: Test that this works correctly for different time zones
     public static function setUpBeforeClass()
     {
+        $community_tz1 = 'America/Los_Angeles';
+        $community_tz2 = 'America/New_York';
+        $community_tz3 = 'America/New_York';
         $name = get_called_class();
         $hours = 6;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now = new DateTime('now', new DateTimeZone($community_tz1));
         $now->modify('- ' . $hours . ' hours');
         $useDateEarly = $now->format('Y-m-d H:i:s');
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now = new DateTime('now', new DateTimeZone($community_tz1));
         $now->modify('+ ' . $hours . ' hours');
         $useDateLater = $now->format('Y-m-d H:i:s');
 
@@ -24,7 +27,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'delivery_fee' => '1.5',
             'confirmation' => 0,
             'community' => 'test',
-            'timezone' => 'America/Los_Angeles',
+            'timezone' => $community_tz1,
             'open_for_business' => true,
             'delivery_service' => true,
             'loc_lat' => 34.0251,
@@ -42,7 +45,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'delivery_fee' => '1.5',
             'confirmation' => 0,
             'community' => 'test',
-            'timezone' => 'America/Los_Angeles',
+            'timezone' => $community_tz1,
             'open_for_business' => true,
             'delivery_service' => true,
             'loc_lat' => 34.0269,
@@ -60,7 +63,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'delivery_fee' => '1.5',
             'confirmation' => 0,
             'community' => 'test',
-            'timezone' => 'America/Los_Angeles',
+            'timezone' => $community_tz1,
             'open_for_business' => true,
             'delivery_service' => true,
             'loc_lat' => 34.017,
@@ -78,7 +81,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'delivery_fee' => '1.5',
             'confirmation' => 0,
             'community' => 'test',
-            'timezone' => 'America/Los_Angeles',
+            'timezone' => $community_tz1,
             'open_for_business' => true,
             'delivery_service' => true,
             'loc_lat' => 34.0261,
@@ -96,7 +99,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'delivery_fee' => '1.5',
             'confirmation' => 0,
             'community' => 'test',
-            'timezone' => 'America/New_York',
+            'timezone' => $community_tz2,
             'open_for_business' => true,
             'delivery_service' => true,
             'loc_lat' => 34.0266,
@@ -114,7 +117,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'delivery_fee' => '1.5',
             'confirmation' => 0,
             'community' => 'test',
-            'timezone' => 'America/New_York',
+            'timezone' => $community_tz2,
             'open_for_business' => true,
             'delivery_service' => true,
             'loc_lat' => 34.0175,
@@ -127,7 +130,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $c = new Community([
             'name' => $name . ' - ONE',
             'active' => 1,
-            'timezone' => 'America/Los_Angeles',
+            'timezone' => $community_tz1,
             'driver-group' => 'drivers-testlogistics',
             'range' => 2,
             'private' => 1,
@@ -140,7 +143,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $c2 = new Community([
             'name' => $name . ' - TWO',
             'active' => 1,
-            'timezone' => 'America/New_York',
+            'timezone' => $community_tz2,
             'driver_group' => 'drivers-testlogistics',
             'range' => 2,
             'private' => 1,
@@ -153,7 +156,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $c3 = new Community([
             'name' => $name . ' - THREE',
             'active' => 1,
-            'timezone' => 'America/New_York',
+            'timezone' => $community_tz3,
             'driver_group' => 'drivers-testlogistics',
             'range' => 2,
             'private' => 1,
@@ -259,7 +262,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'name' => $name . ' - ONE',
             'login' => null,
             'active' => 1,
-            'timezone' => 'America/Los_Angeles'
+            'timezone' => $community_tz1
         ]);
         $a1->save();
         $drivers[] = $a1;
@@ -276,7 +279,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'name' => $name . ' - TWO',
             'login' => null,
             'active' => 1,
-            'timezone' => 'America/Los_Angeles'
+            'timezone' => $community_tz1
         ]);
         $a2->save();
         $drivers[] = $a2;
@@ -293,7 +296,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'name' => $name . ' - THREE',
             'login' => null,
             'active' => 1,
-            'timezone' => 'America/Los_Angeles'
+            'timezone' => $community_tz1
         ]);
         $a3->save();
         $drivers[] = $a3;
@@ -561,9 +564,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
     public function testOLPTZConversionLosAngeles()
     {
+        $refTZ = 'America/Los_Angeles';
 
         $useDate = '2015-07-01 05:00:00';
-        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
+        $useDT = new DateTime($useDate, new DateTimeZone($refTZ)); // Should be PST
         $dow = $useDT->format('w');
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
@@ -586,9 +590,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
     public function testOLPTZConversionNewYork()
     {
-
+        $refTZ = 'America/Los_Angeles';
         $useDate = '2015-07-01 05:00:00';
-        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
+        $useDT = new DateTime($useDate, new DateTimeZone($refTZ)); // Should be PST
 //        var_dump($useDT);
         $dow = $useDT->format('w');
 
@@ -614,9 +618,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
     public function testOLSTZConversionLosAngeles()
     {
-
+        $refTZ = 'America/Los_Angeles';
         $useDate = '2015-07-01 05:00:00';
-        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
+        $useDT = new DateTime($useDate, new DateTimeZone($refTZ)); // Should be PST
         $dow = $useDT->format('w');
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
@@ -639,9 +643,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
     public function testOLSTZConversionNewYork()
     {
-
+        $refTZ = 'America/Los_Angeles';
         $useDate = '2015-07-01 05:00:00';
-        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
+        $useDT = new DateTime($useDate, new DateTimeZone($refTZ)); // Should be PST
 //        var_dump($useDT);
         $dow = $useDT->format('w');
 
@@ -668,9 +672,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
     public function testOLOTTZConversionLosAngeles()
     {
-
+        $refTZ = 'America/Los_Angeles';
         $useDate = '2015-07-01 05:00:00';
-        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
+        $useDT = new DateTime($useDate, new DateTimeZone($refTZ)); // Should be PST
         $dow = $useDT->format('w');
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
@@ -691,9 +695,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
     public function testOLOTTZConversionNewYork()
     {
-
+        $refTZ = 'America/Los_Angeles';
         $useDate = '2015-07-01 05:00:00';
-        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
+        $useDT = new DateTime($useDate, new DateTimeZone($refTZ)); // Should be PST
         $dow = $useDT->format('w');
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
@@ -716,9 +720,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
     public function testOLCSTZConversionLosAngeles()
     {
-
+        $refTZ = 'America/Los_Angeles';
         $useDate = '2015-07-01 05:00:00';
-        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
+        $useDT = new DateTime($useDate, new DateTimeZone($refTZ)); // Should be PST
         $dow = $useDT->format('w');
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
@@ -738,9 +742,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
     public function testOLCSTZConversionNewYork()
     {
-
+        $refTZ = 'America/Los_Angeles';
         $useDate = '2015-07-01 05:00:00';
-        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
+        $useDT = new DateTime($useDate, new DateTimeZone($refTZ)); // Should be PST
         $dow = $useDT->format('w');
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
@@ -835,9 +839,9 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
     public function testOLRTZConversionNewYork()
     {
-
+        $refTZ = 'America/Los_Angeles';
         $useDate = '2015-07-01 05:00:00';
-        $useDT = new DateTime($useDate, new DateTimeZone(c::config()->timezone)); // Should be PST
+        $useDT = new DateTime($useDate, new DateTimeZone($refTZ)); // Should be PST
         $dow = $useDT->format('w');
 
         $start = date("H:i:s", strtotime('2015-01-01 00:00:00'));
@@ -1838,6 +1842,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
         $o2->save();
@@ -1850,6 +1855,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $this->associateOrderActionToOrder($o2, $oa2);
 
         $o3 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
         $o3->save();
@@ -1862,6 +1868,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3->save();
+        $this->associateOrderActionToOrder($o3, $oa3);
 
         $numActions = Crunchbutton_Order_Priority::getNumDriverOrderActionsSince($minDtString, $this->driver1->id_admin);
         $oa1->delete();
@@ -1897,6 +1904,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
         $o2->save();
@@ -1909,6 +1917,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $this->associateOrderActionToOrder($o2, $oa2);
 
         $o3 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
         $o3->save();
@@ -1921,6 +1930,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3->save();
+        $this->associateOrderActionToOrder($o3, $oa3);
 
         $numActions = Crunchbutton_Order_Priority::getNumDriverOrderActionsSince($minDtString, $this->driver1->id_admin);
         $oa1->delete();
@@ -1956,6 +1966,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
         $o2->save();
@@ -1968,6 +1979,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $this->associateOrderActionToOrder($o2, $oa2);
 
         $o3 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
         $o3->save();
@@ -1980,6 +1992,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3->save();
+        $this->associateOrderActionToOrder($o3, $oa3);
 
         $numActions = Crunchbutton_Order_Priority::getNumDriverOrderActionsSince($minDtString, $this->driver1->id_admin);
         $oa1->delete();
@@ -2015,6 +2028,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $o2 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
         $o2->save();
@@ -2027,6 +2041,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $this->associateOrderActionToOrder($o2, $oa2);
 
         $o3 = $this->defaultOrder($this->user2, $this->restaurant1->id_restaurant, $useDate1, $this->community);
         $o3->save();
@@ -2039,6 +2054,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3->save();
+        $this->associateOrderActionToOrder($o3, $oa3);
 
         $numActions = Crunchbutton_Order_Priority::getNumDriverOrderActionsSince($minDtString, $this->driver1->id_admin);
         $oa1->delete();
@@ -2146,6 +2162,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
             $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
@@ -2215,6 +2232,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
             $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
@@ -2255,6 +2273,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $op1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
             $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH, 0, $useDate2, 0, 1);
@@ -4622,6 +4641,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -4752,6 +4772,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -4897,6 +4918,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -5034,6 +5056,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -5157,6 +5180,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -5280,6 +5304,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -5401,6 +5426,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -5522,6 +5548,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -5644,6 +5671,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -5765,6 +5793,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -5887,6 +5916,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -6008,6 +6038,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -6123,6 +6154,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -6238,6 +6270,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -6354,6 +6387,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -6469,6 +6503,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -6585,6 +6620,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -6700,6 +6736,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -6815,6 +6852,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -6930,6 +6968,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -7046,6 +7085,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -7161,6 +7201,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -7277,6 +7318,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -7389,6 +7431,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -7495,6 +7538,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -7602,6 +7646,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -7708,6 +7753,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -7814,6 +7860,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -7921,6 +7968,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -8027,6 +8075,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -8134,6 +8183,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -8250,6 +8300,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1a->save();
+        $this->associateOrderActionToOrder($o1a, $oa1a);
 
         $oa1b = new Order_Action([
             'id_order' => $o1b->id_order,
@@ -8259,6 +8310,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1b->save();
+        $this->associateOrderActionToOrder($o1b, $oa1b);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -8384,6 +8436,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1a->save();
+        $this->associateOrderActionToOrder($o1a, $oa1a);
 
         $oa1b = new Order_Action([
             'id_order' => $o1b->id_order,
@@ -8393,6 +8446,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1b->save();
+        $this->associateOrderActionToOrder($o1b, $oa1b);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -8514,6 +8568,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1a->save();
+        $this->associateOrderActionToOrder($o1a, $oa1a);
 
         $oa1b = new Order_Action([
             'id_order' => $o1b->id_order,
@@ -8523,6 +8578,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1b->save();
+        $this->associateOrderActionToOrder($o1b, $oa1b);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -8639,6 +8695,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1a->save();
+        $this->associateOrderActionToOrder($o1a, $oa1a);
 
         $oa1b = new Order_Action([
             'id_order' => $o1b->id_order,
@@ -8648,6 +8705,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1b->save();
+        $this->associateOrderActionToOrder($o1b, $oa1b);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -8765,6 +8823,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1a->save();
+        $this->associateOrderActionToOrder($o1a, $oa1a);
 
         $oa1b = new Order_Action([
             'id_order' => $o1b->id_order,
@@ -8774,6 +8833,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1b->save();
+        $this->associateOrderActionToOrder($o1b, $oa1b);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -8891,6 +8951,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1a->save();
+        $this->associateOrderActionToOrder($o1a, $oa1a);
 
         $oa1b = new Order_Action([
             'id_order' => $o1b->id_order,
@@ -8900,6 +8961,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1b->save();
+        $this->associateOrderActionToOrder($o1b, $oa1b);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -9025,6 +9087,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1a->save();
+        $this->associateOrderActionToOrder($o1a, $oa1a);
 
         $oa1b = new Order_Action([
             'id_order' => $o1b->id_order,
@@ -9034,6 +9097,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1b->save();
+        $this->associateOrderActionToOrder($o1b, $oa1b);
 
         $oa1c = new Order_Action([
             'id_order' => $o1c->id_order,
@@ -9043,6 +9107,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1c->save();
+        $this->associateOrderActionToOrder($o1c, $oa1c);
 
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
@@ -9170,6 +9235,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -9295,6 +9361,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -9417,6 +9484,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -9537,6 +9605,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -9658,6 +9727,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1a->save();
+        $this->associateOrderActionToOrder($o1a, $oa1a);
 
         $oa1b = new Order_Action([
             'id_order' => $o1b->id_order,
@@ -9667,6 +9737,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1b->save();
+        $this->associateOrderActionToOrder($o1b, $oa1b);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -9791,6 +9862,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -9911,6 +9983,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -10026,6 +10099,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -10163,6 +10237,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $oa2 = new Order_Action([
             'id_order' => $o3->id_order,
@@ -10172,6 +10247,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $this->associateOrderActionToOrder($o3, $oa2);
 
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
@@ -10306,6 +10382,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $oa2 = new Order_Action([
             'id_order' => $o3->id_order,
@@ -10315,6 +10392,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $this->associateOrderActionToOrder($o3, $oa2);
 
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
@@ -10449,6 +10527,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $oa2 = new Order_Action([
             'id_order' => $o3->id_order,
@@ -10458,6 +10537,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $this->associateOrderActionToOrder($o3, $oa2);
 
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
@@ -10591,6 +10671,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $oa2 = new Order_Action([
             'id_order' => $o3->id_order,
@@ -10600,6 +10681,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $this->associateOrderActionToOrder($o3, $oa2);
 
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
@@ -10733,6 +10815,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $oa2 = new Order_Action([
             'id_order' => $o3->id_order,
@@ -10742,6 +10825,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $this->associateOrderActionToOrder($o3, $oa2);
 
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
@@ -10876,6 +10960,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $oa2 = new Order_Action([
             'id_order' => $o3->id_order,
@@ -10885,6 +10970,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $this->associateOrderActionToOrder($o3, $oa2);
 
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
@@ -11027,6 +11113,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $oa2 = new Order_Action([
             'id_order' => $o3->id_order,
@@ -11036,6 +11123,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $this->associateOrderActionToOrder($o3, $oa2);
 
 
         $olc1 = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
@@ -11187,6 +11275,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $oa2 = new Order_Action([
             'id_order' => $o3->id_order,
@@ -11196,6 +11285,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $this->associateOrderActionToOrder($o3, $oa2);
 
 
         $olc1 = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
@@ -11331,6 +11421,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc1 = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc1->save();
@@ -11469,6 +11560,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1a->save();
+        $this->associateOrderActionToOrder($o1a, $oa1a);
 
         $oa1b = new Order_Action([
             'id_order' => $o1b->id_order,
@@ -11478,6 +11570,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1b->save();
+        $this->associateOrderActionToOrder($o1b, $oa1b);
 
         $olc1 = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc1->save();
@@ -11599,6 +11692,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -11706,6 +11800,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $this->associateOrderActionToOrder($o1, $oa1);
 
         $olc = $this->defaultOLC($this->restaurant3, $dow, $start, $end, $this->restaurant3->id_restaurant);
         $olc->save();
@@ -13876,6 +13971,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa20->save();
+        $this->associateOrderActionToOrder($o20, $oa20);
 
         $chipotle_lat = 34.0284;
         $chipotle_lon = -118.287;
@@ -14056,6 +14152,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa20->save();
+        $this->associateOrderActionToOrder($o20, $oa20);
 
         $chipotle_lat = 34.0284;
         $chipotle_lon = -118.287;
@@ -14426,6 +14523,8 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
                     'note' => ''
                 ]);
                 $oa->save();
+                $o->delivery_status = $oa->id_order_action;
+                $o->save();
             }
         }
         $og['o'] = $o;
@@ -14629,5 +14728,10 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         return $locs;
     }
 
+    public function associateOrderActionToOrder($order, $order_action)
+    {
+        $order->delivery_status = $order_action->id_order_action;
+        $order->save();
+    }
 
 }
