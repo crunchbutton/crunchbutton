@@ -4636,29 +4636,32 @@ table.receipt{
 		.shift-schedule .hide-shift input{
 			float: left;
 		}
+	.shift-schedule .buttons .button{
+		margin:.4em .4em 0 0;
+	}
 .add-shift-dialog-container{
 	width: 50em;
 }
-.edit-shift-dialog-container{
+.schedule-shift-dialog-container{
 	width: 80em;
 }
-.edit-shift-dialog-container .drivers{
+.schedule-shift-dialog-container .drivers{
 	max-height: 410px;
 	overflow: auto
 }
-.edit-shift-dialog-container .log{
+.schedule-shift-dialog-container .log{
 	max-height: 90px;
 	overflow: auto
 }
-	.edit-shift-dialog-container .log th, .edit-shift-dialog-container .log td{
+	.schedule-shift-dialog-container .log th, .schedule-shift-dialog-container .log td{
 		font-size: 1.1em;
 	}
 
-.edit-shift-dialog-container .drivers td{
+.schedule-shift-dialog-container .drivers td{
 	font-size: 1.1em;
 	line-height: 1.5em;
 }
-.edit-shift-dialog-container .drivers textarea{
+.schedule-shift-dialog-container .drivers textarea{
 	width: 20em;
 	margin: 0;
 }

@@ -399,6 +399,23 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			ORDER BY id_community_shift ASC ', [ $id_community, $now, $next ]);
 	}
 
+	public function updateHours( $segment ){
+		$community = $this->community();
+		$date_base = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->dateStart()->format( 'Y-m-d' ) . ' 00:00:00', new DateTimeZone( $community->timezone ) );
+		$hour = Crunchbutton_Admin_Hour::segmentToDate( $date_base, $segments, $community->timezone );
+		echo '<pre>';var_dump( $hour );exit();
+		if( $this->date_start != $hour[ 'start' ] || $this->date_end != $hour[ 'end' ] ){
+			$this->date_start = $hour[ 'start' ];
+			$this->date_end = $hour[ 'end' ];
+			if( $this->date_start && $this->date_end ){
+				$this->save();
+				if( $this->isRecurring() ){
+					Community_Shift_Recursivity::addIgnore( $this->id_community_shift, $this->dateStart()->format( 'Y-m-d' ) );
+				}
+			}
+		}
+	}
+
 	public function createRecurringEvent( $date ){
 		// Search for recurring events
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
@@ -428,6 +445,11 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				$date_base = DateTime::createFromFormat( 'Y-m-d H:i:s', $date . ' 00:00:00', new DateTimeZone( c::config()->timezone ) );
 				$hours = Crunchbutton_Admin_Hour::segmentToDate( $date_base, $shift->startEndToString(), $timezone );
 				if( $hours ){
+
+					if( Crunchbutton_Community_Shift_Recursivity::ignoreRecursivity( $shift->id_community_shift, $date ) ){
+						continue;
+					}
+
 					// Check if the recurring event was already created
 					$checkShift = Crunchbutton_Community_Shift::q('
 						SELECT * FROM community_shift
