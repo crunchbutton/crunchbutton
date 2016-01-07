@@ -655,7 +655,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
 
         c::db()->query('delete from admin_location where id_admin = ?',
             [$this->driver1->id_admin]);
-        $now = new DateTime('2015-06-30 18:13:25', new DateTimeZone(c::config()->timezone));
+        $now = new DateTime('2015-07-01 01:13:25', new DateTimeZone(c::config()->timezone));
         $date = $now->format('Y-m-d H:i:s');
         $ts = $now->getTimestamp();
         // For community center
@@ -708,7 +708,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
     {
         c::db()->query('delete from admin_location where id_admin = ?',
             [$this->driver1->id_admin]);
-        $now = new DateTime('2015-06-30 18:13:25', new DateTimeZone(c::config()->timezone));
+        $now = new DateTime('2015-07-01 01:13:25', new DateTimeZone(c::config()->timezone));
         $date = $now->format('Y-m-d H:i:s');
         $ts = $now->getTimestamp();
         // For community center
@@ -744,7 +744,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
     {
         c::db()->query('delete from admin_location where id_admin = ?',
             [$this->driver1->id_admin]);
-        $now = new DateTime('2015-06-30 18:13:25', new DateTimeZone(c::config()->timezone));
+        $now = new DateTime('2015-07-01 01:13:25', new DateTimeZone(c::config()->timezone));
         $date = $now->format('Y-m-d H:i:s');
         $ts = $now->getTimestamp();
         // For community center
