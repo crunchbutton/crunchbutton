@@ -15,6 +15,9 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			case 'shift':
 				$this->_loadShift();
 				break;
+			case 'log':
+				$this->_log();
+				break;
 			case 'week-start':
 				$this->_weekStart();
 				break;
@@ -183,6 +186,15 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 		echo json_encode( [ 'error' => true ] );exit;
 	}
 
+	private function _log(){
+		$shift = Community_Shift::o( c::getPagePiece( 3 ) );
+		if( $shift->id_community_shift ){
+			echo json_encode( $this->_shiftLog( $shift->id_community_shift ) );exit;
+		} else {
+			$this->error( 404 );
+		}
+	}
+
 	private function _loadShift(){
 
 		$shift = Community_Shift::o( c::getPagePiece( 3 ) );
@@ -264,6 +276,8 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 				$_drivers[] = $_driver;
 			}
 
+			$out[ 'log' ] = $this->_shiftLog( $shift->id_community_shift );
+
 			usort( $_drivers, function( $a, $b ) {
 				if( $a[ 'sort' ] == $b[ 'sort' ] ){
 					return $a[ 'name' ] > $b[ 'name' ];
@@ -272,24 +286,28 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			} );
 
 			$out[ 'drivers' ] = $_drivers;
-			$out[ 'log' ] = [];
-			$logs = Crunchbutton_Admin_Shift_Assign_Log::logByShift( $shift->id_community_shift );
-			if( $logs ){
-				foreach( $logs as $log ){
-					$log = $log->exports();
-					unset( $log[ 'id' ] );
-					unset( $log[ 'id_admin_shift_assign_log' ] );
-					unset( $log[ 'id_community_shift' ] );
-					unset( $log[ 'id_driver' ] );
-					unset( $log[ 'id_admin' ] );
-					$out[ 'log' ][] = $log;
-				}
-			}
 
 			echo json_encode( $out );exit;
 		} else {
 			$this->error( 404 );
 		}
+	}
+
+	private function _shiftLog( $id_community_shift ){
+		$out = [];
+		$logs = Crunchbutton_Admin_Shift_Assign_Log::logByShift( $id_community_shift );
+		if( $logs ){
+			foreach( $logs as $log ){
+				$log = $log->exports();
+				unset( $log[ 'id' ] );
+				unset( $log[ 'id_admin_shift_assign_log' ] );
+				unset( $log[ 'id_community_shift' ] );
+				unset( $log[ 'id_driver' ] );
+				unset( $log[ 'id_admin' ] );
+				$out[] = $log;
+			}
+		}
+		return $out;
 	}
 
 	private function _showHideShift(){

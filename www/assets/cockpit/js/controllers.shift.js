@@ -145,6 +145,13 @@ NGApp.controller('ShiftScheduleEditShiftCtrl', function ( $scope, $rootScope, Sh
 		App.dialog.show( '.edit-shift-dialog-container' );
 	});
 
+	loadShiftLog = function(){
+		var params = { id_community_shift: $scope.shift.id_community_shift };
+		ShiftScheduleService.loadShiftLog( params, function( json ){
+			$scope.shift.log = json;
+		} );
+	}
+
 	$scope.assignDriver = function( driver ){
 		if( driver.assigned_permanently ){
 			driver.assigned_permanently = false;
@@ -169,6 +176,7 @@ NGApp.controller('ShiftScheduleEditShiftCtrl', function ( $scope, $rootScope, Sh
 				App.alert( 'Error saving: ' + json.error );
 			} else {
 				$scope.saved = true;
+				loadShiftLog();
 				setTimeout( function() { $scope.saved = false; }, 500 );
 				$rootScope.$broadcast( 'shiftsChanged', json.id_community );
 			}

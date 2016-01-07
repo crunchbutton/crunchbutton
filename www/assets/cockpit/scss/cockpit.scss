@@ -4643,13 +4643,16 @@ table.receipt{
 	width: 80em;
 }
 .edit-shift-dialog-container .drivers{
-	max-height: 420px;
+	max-height: 410px;
 	overflow: auto
 }
 .edit-shift-dialog-container .log{
-	max-height: 80px;
+	max-height: 90px;
 	overflow: auto
 }
+	.edit-shift-dialog-container .log th, .edit-shift-dialog-container .log td{
+		font-size: 1em;
+	}
 
 .edit-shift-dialog-container .drivers td{
 	font-size: 1.1em;

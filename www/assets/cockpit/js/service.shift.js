@@ -25,6 +25,7 @@ NGApp.factory('ShiftScheduleService', function(ResourceFactory, $routeParams, $r
 	var shift = ResourceFactory.createResource(App.service + 'shifts/:action/:id_community_shift', { action: '@action', id_community_shift: '@id_community_shift' }, {
 		'weekStart' : { method: 'GET', params : { action: 'week-start' } },
 		'loadShift' : { method: 'GET', params : { action: 'shift' } },
+		'loadShiftLog' : { method: 'GET', params : { action: 'log' }, isArray: true },
 		'loadShifts' : { method: 'POST', params : { action: 'shifts' } },
 		'showHideShift' : { method: 'POST', params : { action: 'show-hide-shift' } },
 		'assignDriver' : { method: 'POST', params : { action: 'assign-driver' } },
@@ -45,6 +46,12 @@ NGApp.factory('ShiftScheduleService', function(ResourceFactory, $routeParams, $r
 
 	service.loadShift = function( params, callback) {
 		shift.loadShift( params, function( data ) {
+			callback(data);
+		});
+	}
+
+	service.loadShiftLog = function( params, callback) {
+		shift.loadShiftLog( params, function( data ) {
 			callback(data);
 		});
 	}
