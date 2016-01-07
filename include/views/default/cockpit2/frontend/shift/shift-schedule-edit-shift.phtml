@@ -96,9 +96,10 @@
 								</td>
 								<td ng-if="shift.recurring"><input ng-change="assignDriverPermanently( driver )" type="checkbox" ng-model="driver.assigned_permanently"></td>
 								<td>
-									<textarea>{{driver.notes.text}}</textarea>
+									<textarea ng-model="driver.notes_text"></textarea>
 									<br>
-									<span class="listview-smaller">{{driver.notes.added_by}}</span>
+									<button name='refresh' ng-click='saveDriverNote( driver )' class="button button-small button-empty button-border button-green"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save Notes</button>
+									<span class="tag tag-green" ng-if="driver.notes_saved">Saved!</span>
 								</td>
 							</tr>
 						</tbody>
