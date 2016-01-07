@@ -1333,9 +1333,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 //			print "The query params: $nowString, $nowString, $admin->id_admin, $op, $interval\n";
 
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-			if( $admin->timezone ){
-				$now->setTimezone( new DateTimeZone( $admin->timezone ) );
-			}
 			$now->modify( '+ 6 hours' );
 			$preorder_date = $now->format( 'Y-m-d H:i:s' );
 
