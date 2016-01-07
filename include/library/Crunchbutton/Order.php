@@ -1308,6 +1308,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			// TODO: Hardwired constant here - not ideal
 			$now->modify( '- 1 minutes' );
 			$interval1Min = $now->format( 'Y-m-d H:i:s' );
+			$now->modify( '+ 1 minutes' );
+
+			$now->modify( '+ 6 hours' );
+			$preorder_date = $now->format( 'Y-m-d H:i:s' );
 
 
 			if (!$admin) {
@@ -1332,12 +1336,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 //			$op = Crunchbutton_Order_Priority::PRIORITY_LOW;
 //			print "The query params: $nowString, $nowString, $admin->id_admin, $op, $interval\n";
 
-			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-			if( $admin->timezone ){
-				$now->setTimezone( new DateTimeZone( $admin->timezone ) );
-			}
-			$now->modify( '+ 6 hours' );
-			$preorder_date = $now->format( 'Y-m-d H:i:s' );
 
 			return Order::q($query, [$interval1Min, $nowString, $nowString, $admin->id_admin,
 				Crunchbutton_Order_Priority::PRIORITY_LOW, $interval, $preorder_date]);
