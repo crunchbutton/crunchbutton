@@ -145,24 +145,31 @@ NGApp.controller('ShiftScheduleEditShiftCtrl', function ( $scope, $rootScope, Sh
 		App.dialog.show( '.edit-shift-dialog-container' );
 	});
 
-	$scope.formAddShiftSave = function(){
-
-		if( $scope.formEditShift.$invalid ){
-			$scope.formEditShiftSubmitted = true;
-			return;
+	$scope.assignDriver = function( driver ){
+		if( driver.assigned_permanently ){
+			driver.assigned_permanently = false;
 		}
+		updateShiftAssignment( driver );
+	}
 
-		$scope.isSavingEditShift = true;
-		ShiftScheduleService.saveSchedule( $scope.shift, function( json ){
+	$scope.assignDriverPermanently = function( driver ){
+		if( driver.assigned_permanently ){
+			driver.assigned = true;
+		}
+		updateShiftAssignment( driver );
+	}
+
+	var updateShiftAssignment = function( driver ){
+		var params = { id_admin: driver.id_admin, id_community_shift: $scope.shift.id_community_shift, assigned: driver.assigned, permanent: driver.assigned_permanently };
+		ShiftScheduleService.assignDriver( params, function( json ){
 			if( json.error ){
 				App.alert( 'Error saving: ' + json.error );
-				$scope.isSavingEditShift = false;
 			} else {
 				$rootScope.$broadcast( 'shiftsChanged', json.id_community );
-				setTimeout( function(){ $rootScope.closePopup(); $scope.isSavingEditShift = false; }, 200 );
 			}
 		} );
 	}
+
 } );
 
 NGApp.controller('ShiftScheduleAddShiftCtrl', function ( $scope, $rootScope, ShiftScheduleService ) {
