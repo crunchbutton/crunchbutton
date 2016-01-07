@@ -10,6 +10,16 @@ class Crunchbutton_Admin_Shift_Assign_Log extends Cana_Table {
 			->load($id);
 	}
 
+	public static function logByShift( $id_community_shift ){
+		return Crunchbutton_Admin_Shift_Assign_Log::q( 'SELECT
+																											asal.id_admin_shift_assign_log, asal.date, a1.name AS driver, a2.name AS admin, asal.assigned
+																											FROM admin_shift_assign_log asal
+																												INNER JOIN admin a1 ON a1.id_admin = asal.id_driver
+																												INNER JOIN admin a2 ON a2.id_admin = asal.id_admin
+																											WHERE id_community_shift = ?
+																											ORDER BY id_admin_shift_assign_log DESC', [ $id_community_shift ] );
+	}
+
 	public function admin(){
 		if( !$this->_admin ){
 			$this->_admin = Admin::o( $this->id_admin );

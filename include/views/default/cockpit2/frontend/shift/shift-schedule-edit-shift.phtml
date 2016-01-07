@@ -1,7 +1,9 @@
 <div class="edit-shift-dialog-container zoom-anim-dialog mfp-hide dialog" ng-controller="ShiftScheduleEditShiftCtrl">
 
 	<div>
-		<h1 ng-if="!loading" class="title"><span>{{shift.community.name}}</span></h1>
+		<h1 ng-if="!loading" class="title">
+			<span>{{shift.community.name}}</span>
+		</h1>
 		<h1 ng-if="loading" class="title"><span>Loading</span></h1>
 
 		<div class="divider"></div>
@@ -10,22 +12,55 @@
 
 		<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
-		<div class="ul-inputs">
-			<ul ng-class="{'submitted':formEditShiftSubmitted}" class="ul-inputs">
-				<li class="li-input">
-					<div class="info">
-						<span class="label">From:</span>
-						{{shift.segment.start.day}}<strong>{{shift.segment.start.hour}}</strong>
-						&nbsp;&nbsp;<span class="label">To:</span>
-						{{shift.segment.end.day}}<strong>{{shift.segment.end.hour}}</strong>
-						({{shift.community.tz}})
-					</div>
-				</li>
-			</ul>
-		</div>
-
 		<div class="support-box-wrap box-content2">
+
 			<div class="box-content-table">
+
+				<h2>Schedule changes</h2>
+				<div class="log">
+					<table class="tb-grid tb-zebra" ng-if="shift.log">
+						<thead>
+							<tr>
+								<th>Driver</th>
+								<th>Action</th>
+								<th>Date</th>
+								<th>Admin</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="log in shift.log">
+								<td>{{log.driver}}</td>
+								<td>
+									<span class="tag tag-green" ng-if="log.assigned">Assigned</span>
+									<span class="tag tag-red" ng-if="!log.assigned">Removed</span>
+								</td>
+								<td>{{log.date | localtime:'MM/DD @ h:mm a'}}</td>
+								<td>{{log.admin}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="support-box-wrap box-content2">
+
+			<div class="box-content-table">
+
+				<div class="ul-inputs">
+					<ul ng-class="{'submitted':formEditShiftSubmitted}" class="ul-inputs">
+						<li class="li-input">
+							<div class="info">
+								<span class="label">From:</span>
+								{{shift.segment.start.day}}<strong>{{shift.segment.start.hour}}</strong>
+								&nbsp;&nbsp;<span class="label">To:</span>
+								{{shift.segment.end.day}}<strong>{{shift.segment.end.hour}}</strong>
+								({{shift.community.tz}})
+								<span class="tag tag-green" ng-if="saved">Saved!</span>
+							</div>
+						</li>
+					</ul>
+				</div>
+
 				<div class="drivers">
 					<table class="tb-grid tb-zebra" ng-if="shift.drivers">
 						<thead>
@@ -70,6 +105,5 @@
 				</div>
 			</div>
 		</div>
-
 	</div>
 </div>
