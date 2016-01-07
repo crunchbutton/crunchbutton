@@ -30,7 +30,23 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			case 'assign-driver':
 				$this->_assignDriver();
 				break;
+			case 'save-driver-note':
+				$this->_saveDriverNote();
+				break;
 		}
+	}
+
+	private function _saveDriverNote(){
+		if( $this->method() == 'post' ){
+			$id_admin = $this->request()[ 'id_admin' ];
+			$notes = $this->request()[ 'notes' ];
+			$driver = Admin::o( $id_admin );
+			if( $driver->id_admin ){
+				$driver->addNote( $notes );
+			}
+			echo json_encode( [ 'success' => true ] );exit;
+		}
+		$this->error( 404 );
 	}
 
 	private function _assignDriver(){
@@ -76,7 +92,9 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 					$assignment->delete();
 				}
 			}
+			echo json_encode( [ 'success' => true ] );exit;
 		}
+		$this->error( 404 );
 	}
 
 	private function _removePermanency( $shift, $id_admin ){
@@ -264,6 +282,9 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 				$note_data = [];
 				if( $note->id_admin_note ){
 					$_driver[ 'notes' ] = $note->exports();
+					$_driver[ 'notes_text' ] = $_driver[ 'notes' ][ 'text' ];
+				} else {
+					$_driver[ 'notes_text' ] = '';
 				}
 
 				if( $_driver[ 'ranking' ][ 'current' ] > 0 ){
