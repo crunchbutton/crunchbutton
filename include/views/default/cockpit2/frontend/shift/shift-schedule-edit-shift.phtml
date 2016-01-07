@@ -1,7 +1,8 @@
 <div class="edit-shift-dialog-container zoom-anim-dialog mfp-hide dialog" ng-controller="ShiftScheduleEditShiftCtrl">
 
 	<div>
-		<h1 class="title"><span>{{shift.community.name}}</span></h1>
+		<h1 ng-if="!loading" class="title"><span>{{shift.community.name}}</span></h1>
+		<h1 ng-if="loading" class="title"><span>Loading</span></h1>
 
 		<div class="divider"></div>
 
@@ -40,11 +41,11 @@
 						<tbody>
 							<tr ng-repeat="driver in shift.drivers">
 								<td>
-									<input type="checkbox" ng-model="driver.assigned">
+									<input type="checkbox" ng-change="assignDriver( driver )" ng-model="driver.assigned">
 								</td>
 								<td>
 									{{driver.name}}
-									<div><a href ng-click="callText(driver.phone)">{{driver.phone | formatPhone}}</a></div>
+									<div>{{driver.phone | formatPhone}}</div>
 								</td>
 								<td>
 									<span class="tag tag-green" ng-if="driver.ranking.current == 1">Yes, definitely</span>
@@ -57,7 +58,7 @@
 									<span ng-if="!driver.ranking.highest">-</span> /
 									{{driver.total_shifts}}
 								</td>
-								<td ng-if="shift.recurring"><input type="checkbox" ng-model="driver.assigned_permanently"></td>
+								<td ng-if="shift.recurring"><input ng-change="assignDriverPermanently( driver )" type="checkbox" ng-model="driver.assigned_permanently"></td>
 								<td>
 									<textarea>{{driver.notes.text}}</textarea>
 									<br>

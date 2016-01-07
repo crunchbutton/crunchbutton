@@ -24,10 +24,83 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			case 'add-shift':
 				$this->_addShift();
 				break;
+			case 'assignDriver':
+				$this->_assignDriver();
+				break;
+		}
+	}
+
+	private function _assignDriver(){
+		if( $this->method() == 'post' ){
+			$id_community_shift = $this->request()[ 'id_community_shift' ];
+			$id_admin = $this->request()[ 'id_admin' ];
+			$permanent = $this->request()[ 'permanent' ];
+			$assigned = $this->request()[ 'assigned' ];
+
+			// assign shift or change the permanency
+			if( $assigned ){
+				$assignment = Crunchbutton_Admin_Shift_Assign::q( "SELECT * FROM admin_shift_assign WHERE id_admin = " . $id_admin . " AND id_community_shift = " . $id_community_shift . " LIMIT 1" );
+				if( !$assignment->id_admin_shift_assign ){
+					Crunchbutton_Admin_Shift_Assign::assignAdminToShift( $id_admin, $id_community_shift, $permanent );
+				}
+				$shift = $assignment->shift();
+				if( $permanent ){
+					// add permanency
+					if( !$assignment->isPermanent() ){
+						Crunchbutton_Admin_Shift_Assign_Permanently::addDriver( $id_admin, $id_community_shift );
+					}
+				} else {
+					// remove permanency
+					if( $assignment->isPermanent() ){
+						$this->_removePermanency( $shift, $id_admin );
+					}
+				}
+			} else {
+				$assignment = Crunchbutton_Admin_Shift_Assign::q( "SELECT * FROM admin_shift_assign WHERE id_admin = " . $id_admin . " AND id_community_shift = " . $id_community_shift . " LIMIT 1" );
+				if( $assignment->id_community_shift ){
+					$shift = $assignment->shift();
+					// prevent the shift to be added again
+					Crunchbutton_Admin_Shift_Assign_Permanently_Removed::add( $shift->id_community_shift, $id_admin );
+					$assignment->delete();
+				}
+			}
+		}
+	}
+
+	private function _removePermanency( $shift, $id_admin ){
+
+		$id_father = $shift->id_community_shift_father;
+		if( !$id_father && $shift->recurring ){
+			$id_father = $shift->id_community_shift;
+		}
+
+		if( $id_father ){
+			$id_admin = $id_admin;
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			// Remove permanency
+			Crunchbutton_Admin_Shift_Assign_Permanently::removeByAdminShiftFather( $id_admin, $id_father );
+
+			// Remove next shifts assignments for the permanency
+			$remove_assignment_after = ( $now->format( 'YmdHis' ) > $shift->dateEnd()->format( 'YmdHis' ) ? $now : $shift->dateEnd() ) ;
+
+			$assignments = Crunchbutton_Admin_Shift_Assign::q('
+				SELECT asa.* FROM admin_shift_assign asa
+				INNER JOIN community_shift cs
+					ON cs.id_community_shift = asa.id_community_shift
+					AND cs.id_community_shift_father = ?
+				WHERE cs.date_start > ?
+					AND asa.id_admin = ?
+					AND asa.warned = false
+			', [$id_father, $remove_assignment_after->format( 'Y-m-d' ), $id_admin]);
+
+			foreach( $assignments as $assignment ){
+				$assignment->delete();
+			}
 		}
 	}
 
 	private function _addShift(){
+
 		if( $this->method() == 'post' ){
 			$id_community = $this->request()[ 'id_community' ];
 			$date = $this->request()[ 'date' ];
@@ -95,7 +168,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 		$shift = Community_Shift::o( c::getPagePiece( 3 ) );
 		if( $shift->id_community_shift ){
 
-			$out = [];
+			$out = [ 'id_community_shift' => $shift->id_community_shift ];
 			$community = $shift->community();
 
 			$out[ 'community' ] = [ 'name' => $community->name, 'id_community' => $community->id_community, 'tz' => $community->timezone ];
