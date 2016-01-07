@@ -156,6 +156,9 @@ NGApp.controller('ShiftScheduleEditShiftCtrl', function ( $scope, $rootScope, Sh
 		if( driver.assigned_permanently ){
 			driver.assigned = true;
 		}
+		if( !driver.assigned_permanently && $scope.shift.shift_remove_permanency ){
+			driver.assigned = false;
+		}
 		updateShiftAssignment( driver );
 	}
 
@@ -165,6 +168,8 @@ NGApp.controller('ShiftScheduleEditShiftCtrl', function ( $scope, $rootScope, Sh
 			if( json.error ){
 				App.alert( 'Error saving: ' + json.error );
 			} else {
+				$scope.saved = true;
+				setTimeout( function() { $scope.saved = false; }, 500 );
 				$rootScope.$broadcast( 'shiftsChanged', json.id_community );
 			}
 		} );
