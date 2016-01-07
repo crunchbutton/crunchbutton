@@ -30,6 +30,7 @@ NGApp.factory('ShiftScheduleService', function(ResourceFactory, $routeParams, $r
 		'showHideShift' : { method: 'POST', params : { action: 'show-hide-shift' } },
 		'assignDriver' : { method: 'POST', params : { action: 'assign-driver' } },
 		'addShift' : { method: 'POST', params : { action: 'add-shift' } },
+		'editShift' : { method: 'POST', params : { action: 'edit-shift' } },
 		'saveDriverNote' : { method: 'POST', params : { action: 'save-driver-note' } },
 	});
 
@@ -71,6 +72,12 @@ NGApp.factory('ShiftScheduleService', function(ResourceFactory, $routeParams, $r
 
 	service.assignDriver = function( params, callback) {
 		shift.assignDriver( params, function( data ) {
+			callback(data);
+		});
+	}
+
+	service.editShift = function( params, callback) {
+		shift.editShift( params, function( data ) {
 			callback(data);
 		});
 	}

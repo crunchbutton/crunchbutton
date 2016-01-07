@@ -77,11 +77,9 @@
 						<td ng-repeat="day in community.days">
 							<div ng-if="day.shifts.length">
 								<div ng-repeat="shift in day.shifts" class="shift unselectable" ng-class="{'shift-hidden':shift.hidden, 'shift-has-drivers': shift.drivers, 'shift-no-driver': !shift.drivers}">
-									<div class="clickable" ng-click="editShift( shift.id_community_shift );">
-										<span title="Period"><i class="fa fa-clock-o"></i></span>
-										<span class="period" ng-if="!showPSTtz">{{shift.period}} <span class="tz">({{shift.tz}})</span></span>
-										<span class="period" ng-if="showPSTtz">{{shift.period_pst}} <span class="tz">(PST)</span></span>
-									</div>
+									<span title="Period"><i class="fa fa-clock-o"></i></span>
+									<span class="period" ng-if="!showPSTtz">{{shift.period}} <span class="tz">({{shift.tz}})</span></span>
+									<span class="period" ng-if="showPSTtz">{{shift.period_pst}} <span class="tz">(PST)</span></span>
 									<ul ng-if="shift.drivers" class="drivers">
 										<li ng-repeat="driver in shift.drivers">
 											<span title="Driver"><i class="fa fa-car"></i></span>
@@ -90,13 +88,18 @@
 											<span class="driver-name">{{driver.name}}</span>
 										</li>
 									</ul>
+									<br ng-if="!shift.drivers">
 									<span class="tag tag-green" ng-if="shift.recurring" title="It is a recurring event">Recurring</span>
 
-									<label class="hide-shift">
-										<input type="checkbox" ng-change="toggleShowHideShift( shift )" ng-model="shift.hidden">
-										<span>&nbsp;Hide shift</span>
-									</label>
-									<div class="divider"></div>
+									<div class="buttons">
+
+										<button title="Schedule" class="button button-empty button-border button-blue button-small" ng-click="scheduleShift( shift.id_community_shift );"><span class="fa fa-calendar"></span></button>
+
+										<button title="Edit" class="button button-empty button-border button-blue button-small" ng-click="editShift( shift.id_community_shift );"><span class="fa fa-pencil-square-o"></span></button>
+
+										<button title="Hide / Show" class="button button-empty button-border button-blue button-small" ng-click="toggleShowHideShift( shift );"><span class="fa fa fa-eye-slash"></span></button>
+
+									</div>
 								</div>
 							</div>
 							<div class="button-container">
@@ -113,4 +116,5 @@
 
 </div>
 <ng-include src="'assets/view/shift-schedule-add-shift.html'"></ng-include>
+<ng-include src="'assets/view/shift-schedule-schedule-shift.html'"></ng-include>
 <ng-include src="'assets/view/shift-schedule-edit-shift.html'"></ng-include>

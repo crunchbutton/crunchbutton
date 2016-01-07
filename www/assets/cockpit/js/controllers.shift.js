@@ -80,6 +80,7 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftSchedu
 	$scope.showPSTtz = false;
 
 	$scope.toggleShowHideShift = function( shift ){
+		shift.hidden = !shift.hidden;
 		ShiftScheduleService.showHideShift( { id_community_shift: shift.id_community_shift }, function( json ){
 			if( json.error ){
 				App.alert( 'Ops, error!' );
@@ -121,6 +122,11 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftSchedu
 		$rootScope.$broadcast( 'openAddShiftContainer', params );
 	}
 
+	$scope.scheduleShift = function( id_community_shift ){
+		var params = { id_community_shift: id_community_shift }
+		$rootScope.$broadcast( 'openScheduleShiftContainer', params );
+	}
+
 	$scope.editShift = function( id_community_shift ){
 		var params = { id_community_shift: id_community_shift }
 		$rootScope.$broadcast( 'openEditShiftContainer', params );
@@ -135,14 +141,50 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftSchedu
 });
 
 NGApp.controller('ShiftScheduleEditShiftCtrl', function ( $scope, $rootScope, ShiftScheduleService ) {
-
 	$rootScope.$on( 'openEditShiftContainer', function( e, data ) {
 		$scope.loading = true;
+		$scope.shift = null;
+		data.ignore_log = false;
+		$scope.shift = null;
+		ShiftScheduleService.loadShift( data, function( json ){
+			$scope.loading = false;
+			$scope.shift = json;
+			$scope.shift.change = 'only-this-shift';
+		} )
+		App.dialog.show( '.edit-shift-dialog-container' );
+	});
+
+	$scope.formEditShiftSave = function(){
+
+		if( $scope.formEditShift.$invalid ){
+			$scope.formEditShiftSubmitted = true;
+			return;
+		}
+
+		$scope.isSavingEditShift = true;
+		ShiftScheduleService.editShift( $scope.shift, function( json ){
+			if( json.error ){
+				App.alert( 'Error saving: ' + json.error );
+				$scope.isSavingEditShift = false;
+			} else {
+				$rootScope.$broadcast( 'shiftsChanged', json.id_community );
+				setTimeout( function(){ $rootScope.closePopup(); $scope.isSavingEditShift = false; }, 200 );
+			}
+		} );
+	}
+
+} );
+
+NGApp.controller('ShiftScheduleScheduleShiftCtrl', function ( $scope, $rootScope, ShiftScheduleService ) {
+
+	$rootScope.$on( 'openScheduleShiftContainer', function( e, data ) {
+		$scope.loading = true;
+		$scope.shift = null;
 		ShiftScheduleService.loadShift( data, function( json ){
 			$scope.loading = false;
 			$scope.shift = json;
 		} )
-		App.dialog.show( '.edit-shift-dialog-container' );
+		App.dialog.show( '.schedule-shift-dialog-container' );
 	});
 
 	loadShiftLog = function(){

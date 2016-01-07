@@ -27,6 +27,9 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			case 'add-shift':
 				$this->_addShift();
 				break;
+			case 'edit-shift':
+				$this->_editShift();
+				break;
 			case 'assign-driver':
 				$this->_assignDriver();
 				break;
@@ -204,6 +207,58 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 		echo json_encode( [ 'error' => true ] );exit;
 	}
 
+	private function _editShift(){
+
+		if( true || $this->method() == 'post' ){
+
+			$id_community_shift = $this->request()[ 'id_community_shift' ];
+			$segments = $this->request()[ 'period' ];
+			$change = $this->request()[ 'change' ];
+
+$id_community_shift = 109747;
+$segments = '1am - 2am';
+$change = 'all-recurring-shifts';
+$change = 'only-this-shift';
+
+			switch ( $change ) {
+				case 'only-this-shift':
+					$shift = Community_Shift::o( $id_community_shift );
+					if( $shift->id_community_shift ){
+						$shift->updateHours( $segments );
+						echo json_encode( [ 'success' => $shift->id_community ] );exit;
+					}
+					break;
+				case 'all-recurring-shifts':
+
+					$shift = Community_Shift::o( $id_community_shift );
+					if( $shift->id_community_shift ){
+						$community = $shift->community();
+						$date_base = DateTime::createFromFormat( 'Y-m-d H:i:s', $shift->dateStart()->format( 'Y-m-d' ) . ' 00:00:00', new DateTimeZone( $community->timezone ) );
+						$hour = Crunchbutton_Admin_Hour::segmentToDate( $date_base, $segments, $community->timezone );
+						if( $shift->date_start != $hour[ 'start' ] || $shift->date_end != $hour[ 'end' ] ){
+							$shift->date_start = $hour[ 'start' ];
+							$shift->date_end = $hour[ 'end' ];
+							if( $shift->date_start && $shift->date_end ){
+								$shift->save();
+								if( $shift->isRecurring() ){
+									Community_Shift_Recursivity::addIgnore( $shift->id_community_shift, $shift->dateStart()->format( 'Y-m-d' ) );
+								}
+							}
+						}
+						echo json_encode( [ 'success' => $shift->id_community ] );exit;
+					}
+					break;
+				default:
+					# code...
+					break;
+			}
+
+
+		} else {
+			$this->error( 404 );
+		}
+	}
+
 	private function _log(){
 		$shift = Community_Shift::o( c::getPagePiece( 3 ) );
 		if( $shift->id_community_shift ){
@@ -226,7 +281,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 													'end' => [ 'day' => $shift->dateEnd()->format( 'M jS Y ' ), 'hour' => $shift->dateEnd()->format( 'g:i A' ) ] ];
 			$out[ 'hidden' ] = $shift->isHidden();
 			$out[ 'recurring' ] = $shift->isRecurring();
-
+			$out[ 'period' ] = $shift->startEndToString();
 
 			$drivers = $shift->community()->getDriversOfCommunity();
 
@@ -234,6 +289,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			$year = $shift->year();
 
 			$out[ 'drivers' ] = [];
+
 			$ranking = [];
 			$preferences = $shift->getAdminPreferences();
 			foreach( $preferences as $preference ){
@@ -297,7 +353,9 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 				$_drivers[] = $_driver;
 			}
 
-			$out[ 'log' ] = $this->_shiftLog( $shift->id_community_shift );
+			if( !$this->request()[ 'ignore_log' ] ){
+				$out[ 'log' ] = $this->_shiftLog( $shift->id_community_shift );
+			}
 
 			usort( $_drivers, function( $a, $b ) {
 				if( $a[ 'sort' ] == $b[ 'sort' ] ){
@@ -473,6 +531,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 		$lastDayOfWeek = $segment->lastDayOfWeek()->format( 'Y-m-d' );
 
 		$drivers = [];
+
 		foreach( $_drivers as $driver ){
 
 			$_driver = [];
