@@ -1335,7 +1335,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				'and ' . $where . ' ORDER BY o.id_order';
 //			$op = Crunchbutton_Order_Priority::PRIORITY_LOW;
 //			print "The query params: $nowString, $nowString, $admin->id_admin, $op, $interval\n";
-			
+
 			return Order::q($query, [$interval1Min, $nowString, $nowString, $admin->id_admin,
 				Crunchbutton_Order_Priority::PRIORITY_LOW, $interval, $preorder_date]);
 
