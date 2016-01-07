@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Community_Shift extends Cana_Table {
+class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 
 	const CB_TIMEZONE = 'America/Los_Angeles'; // pst
 
@@ -402,8 +402,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	public function updateHours( $segment ){
 		$community = $this->community();
 		$date_base = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->dateStart()->format( 'Y-m-d' ) . ' 00:00:00', new DateTimeZone( $community->timezone ) );
-		$hour = Crunchbutton_Admin_Hour::segmentToDate( $date_base, $segments, $community->timezone );
-		echo '<pre>';var_dump( $hour );exit();
+		$hour = Crunchbutton_Admin_Hour::segmentToDate( $date_base, $segment, $community->timezone );
 		if( $this->date_start != $hour[ 'start' ] || $this->date_end != $hour[ 'end' ] ){
 			$this->date_start = $hour[ 'start' ];
 			$this->date_end = $hour[ 'end' ];
