@@ -758,6 +758,7 @@ NGApp.directive( 'stickyBottom', function ( $document ) {
 					var top = canvas + scrollTop - el_height;
 					top = top + 'px';
 					angular.element(elem).css( 'top', top );
+					angular.element(elem).addClass('sticky-bottom')
 				};
 
 				angular.element(window).on('resize', setHeight);

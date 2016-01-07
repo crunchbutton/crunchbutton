@@ -202,15 +202,15 @@
 								<div class="notes">Automagically calculated.</div>
 							</li>
 							<!--
-							<li class="li-input" ng-class="{'error':form.restaurantHowFarFromCommunity.$invalid}">
-								<div class="label">How far from community:</div>
-								<div class="input"><input type="text" readonly="readonly" name="restaurantHowFarFromCommunity" ng-model="restaurant.how_far"></div>
-								<div class="box-error">
-									<small ng-show="form.restaurantHowFarFromCommunity.$error.required">Required.</small>
-								</div>
-								<div class="notes">Automagically calculated.</div>
-							</li>
-							-->
+<li class="li-input" ng-class="{'error':form.restaurantHowFarFromCommunity.$invalid}">
+<div class="label">How far from community:</div>
+<div class="input"><input type="text" readonly="readonly" name="restaurantHowFarFromCommunity" ng-model="restaurant.how_far"></div>
+<div class="box-error">
+<small ng-show="form.restaurantHowFarFromCommunity.$error.required">Required.</small>
+</div>
+<div class="notes">Automagically calculated.</div>
+</li>
+-->
 						</ul>
 
 					</div>
@@ -311,11 +311,11 @@
 
 	</div>
 
-	<div class="support-box-wrap box-content2" ng-show="!loading" sticky-bottom="80">
+	<div ng-show="!loading" sticky-bottom="47">
 		<div class="no-box-content-color">
 			<ul class="ul-inputs">
 				<li class="li-input" ng-show="!isSaving">
-					<button class="button save" ng-click="save();">Save Basic Info</button>
+					<button class="button-no-margin button save" ng-click="save();"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>
 				</li>
 				<li class="li-input" ng-show="isSaving">
 					<i class="fa fa-circle-o-notch fa-spin"></i>
