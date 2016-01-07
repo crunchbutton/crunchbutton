@@ -5,9 +5,9 @@
 				<th></th>
 				<th>Restaurant</th>
 				<th>Contact</th>
-				<th class="tb-center">Orders / Last</th>
+				<th class="tb-center">Orders</th>
 				<th class="tb-small">Status</th>
-				<th class="tb-small">Payment Method</th>
+				<th class="tb-small">Payment</th>
 				<th ng-if="current_page == 'community'">Notes to Drivers</th>
 				<th class="tb-small"></th>
 			</tr>
@@ -22,7 +22,7 @@
 					<span class="listview-bold">{{restaurant.name}}</span><br>
 					<span ng-if="!community">
 						<span class="staff-community-repeat listview-smaller" ng-repeat="community in restaurant.communities">
-							<a href="/community/{{community.permalink}}">{{community.name}}</a>
+							<a href="/community/{{community.permalink}}" class="truncate-small">{{community.name}}</a>
 						</span>
 					</span>
 					<br>
@@ -71,17 +71,8 @@
 					</div> <button class="button button-small button-empty button-green" title="Edit notes to driver" ng-click="notes_to_driver_edit(restaurant.id_restaurant);"><i class="fa fa-pencil"></i></button>
 				</td>
 				<td nowrap class="tb-v-center">
-
-					<a href="/restaurant/edit/{{restaurant.permalink}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
-
 					<a href="/restaurant/{{restaurant.permalink}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
-
-					<div>
-						<br>
-						<a href="/restaurant/payment-info/{{restaurant.permalink}}"><button class="button button-small button-empty button-green"><i class="fa fa-money"></i>&nbsp;&nbsp;Pay Info</button></a>
-
-						<button ng-if="current_page == 'community'" ng-click="restaurantForceCloseContainer(restaurant.permalink);" class="button button-small button-empty button-green"><i class="fa fa-gear"></i>&nbsp;&nbsp;Open/Close</button>
-					</div>
+					<button ng-if="current_page == 'community'" ng-click="restaurantForceCloseContainer(restaurant.permalink);" class="button button-small button-empty button-green"><i class="fa fa-gear"></i>&nbsp;&nbsp;Open/Close</button>
 				</td>
 			</tr>
 		</tbody>
