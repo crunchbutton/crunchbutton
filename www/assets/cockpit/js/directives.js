@@ -777,15 +777,34 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 			restrict: 'A',
 
 			link: function ( scope, elem, attrs, ctrl ) {
+				var processing = false;
 
-				var process = function(){
+				var process = function() {
 
-					setTimeout( function(){
+					setTimeout(function() {
+						if (processing) {
+							return;
+						}
+						processing = true;
 
-						var table = angular.element( elem );
+						var table = angular.element(elem);
+						var thead = table.find('thead');
+						var tbody = table.find('tbody');
+						/*
+						var sticky = table.find('sticky-tbody');
+						console.log(sticky);
 
-						var thead = table.find( 'thead' );
-						var tbody = table.find( 'tbody' );
+						if (!sticky.length) {
+							var bodyContainer = $('<div class="sticky-tbody"></div>').append(tbody.clone());
+							console.log(bodyContainer);
+							tbody.replaceWith(bodyContainer.get(0));
+							tbody = bodyContainer;
+						} else {
+							return;
+						}
+*/
+
+						//tbody.css('display', 'table-row-group');
 
 						table.css( 'width', '100%' );
 						tbody.css( 'width', '100%' );
@@ -813,52 +832,22 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 						var theadLine = angular.element(thead).find( 'tr' )[ 0 ];
 						var theadColumns = angular.element(theadLine).find( 'th' );
 
-						var totalWidth = 0;
-
-						var totalValidColumns = 0;
-
-						for( i = 0; i < tbodyColumns.length; i++ ){
-							var td = angular.element( tbodyColumns[ i ] );
-							td.width( 'auto' );
-							totalWidth += td.width();
-							if( td.width() > 0 ){
-								totalValidColumns++;
-							}
-						}
-
-						var widthToAdd = 0;
-						var widthLeft = tableWidth - totalWidth;
-						totalValidColumns--;
-						if( totalValidColumns ){
-							widthToAdd = ( widthLeft / totalValidColumns );
-						}
-
-						for( i=0; i < tbodyColumns.length; i++ ){
-							var td = angular.element( tbodyColumns[ i ] );
-							if( i > 0 && td.width() > 0 ){
-								td.width( td.width() + widthToAdd );
-							}
-						}
-
-						for( i=0; i<tbodyColumns.length; i++ ){
-							var th = angular.element( theadColumns[ i ] );
-							var td = angular.element( tbodyColumns[ i ] );
-							th.width( td.width() );
-						}
-
-						var docHeight = angular.element(document).innerHeight();
+						tbodyColumns.each(function(i, el){
+							angular.element(theadColumns.get(i)).width(angular.element(el).width());
+						});
 
 						var windowHeight = angular.element(window).height();
 						var theadHeight = thead.height();
-						var tbodyHeight = ( windowHeight - ( theadHeight + 270 ) + 'px' );
+						var tbodyHeight = ( windowHeight - ( theadHeight + 170 ) + 'px' );
 
 						thead.css( 'display', 'block' );
-						thead.css( 'width', tableWidth );
-
 						tbody.css( 'display', 'block' );
-						tbody.css( 'width', tableWidth );
+
 						tbody.css( 'overflow-y', 'scroll' );
 						tbody.css( 'height', tbodyHeight );
+						//tbody.css( 'width', '100%' );
+
+						processing = false;
 
 					}, 100 );
 				}

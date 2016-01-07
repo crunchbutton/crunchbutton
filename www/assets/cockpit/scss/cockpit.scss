@@ -730,6 +730,10 @@ p {
 		z-index: 2;
 		width: 222px;
 		padding-top: 52px;
+		overflow-y: scroll;
+		-webkit-overflow-scrolling: touch;
+		height: 100%;
+		box-sizing: border-box;
 	}
 
 	.nav-top {
@@ -3623,6 +3627,9 @@ input[type="checkbox"].switch + div:before {
 
 .box-content-table {
 	padding: 0;
+	margin: 0;
+	width: calc(100% + 24px);
+	margin-left: -11px;
 }
 
 .box-content-table table {
@@ -4190,6 +4197,10 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 .tag.tag-grey {
 	background: #666;
 }
+.tag.tag-empty.tag-grey {
+	border: 1px solid #666;
+	color: #666;
+}
 .tag.tag-lightgrey {
 	background: #bbb;
 }
@@ -4201,6 +4212,11 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 }
 .tag.tag-yellow {
 	background: #999900;
+}
+
+.tag.tag-empty {
+	padding: .1em .3em .1em .3em;
+	background: none;
 }
 
 
@@ -4594,4 +4610,27 @@ table.receipt{
 .sticky-bottom .button {
 	padding-right: 3em;
 	padding-left: 3em;
+}
+
+
+.truncate-small {
+	max-width: 15em;
+	text-overflow: ellipsis;
+	display: inline-block;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.sticky-tbody tbody {
+	height: 100%;
+	width: 100%;
+	display: table;
+}
+
+.box-content-table thead, .box-content-table tbody {
+	display: block;
+}
+
+.box-content-table tbody {
+	overflow-y: scroll;
 }

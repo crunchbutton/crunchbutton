@@ -1,17 +1,18 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
-	<h1 class="title left"><i class="fa fa-car"></i>Orders</h1>
+	<? /*
 	<div class="box-filter" ng-show="regularList">
 		<button class="button orange" ng-class="{ 'inactive' : query.view=='list' }" ng-click="query.view = 'map'">Map</button>
 		<button class="button orange" ng-class="{ 'inactive' : query.view=='map' }" ng-click="query.view = 'list'">List</button>
 	</div>
 	<div class="divider"></div>
+	*/ ?>
 
 	<div class="box-content2 box-content-table">
 		<table>
 			<tr>
-				<td colspan="8"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
+				<td colspan="6"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1" placeholder="Search orders"></td>
 				<td><i title="More options" class="fa fa-search-plus link no-underline" ng-class="{'orange':show_more_options}" ng-click="moreOptions()"></i></td>
 			</tr>
 			<tr ng-if="show_more_options">
@@ -27,8 +28,6 @@
 				<td>
 					<select ng-model="query.type" ng-options="type.value as type.label for type in types"></select>
 				</td>
-				<td></td>
-				<td></td>
 				<td></td>
 			</tr>
 			<tr ng-if="show_more_options && showSearchByPlaces">
@@ -62,11 +61,14 @@
 					</ui-select>
 					<a ng-show="query.driver" ng-click="query.driver=null" href=""><button class="button button-small button-empty button-green"><i class="fa fa-trash-o"></i></button></a>
 				</td>
-				<th>Orders displayed</th>
+				<td></td>
+			</tr>
+			<tr ng-if="show_more_options">
+				<th>Display</th>
 				<td>
-					<select ng-model="query.limit" ng-options="limit.value as limit.label for limit in limits"></select>
+					<select ng-model="query.limit" ng-options="limit.value as limit.label for limit in limits"></select> per page
 				</td>
-				<td>
+				<td colspan="4">
 					<a href="" ng-click="exports()"><button class="button button-small button-empty button-green"><i class="fa fa-download"></i>&nbsp;&nbsp;Export</button></a>
 				</td>
 			</tr>
@@ -77,7 +79,16 @@
 
 	<ng-include src="'assets/view/listview-campus-manager-orders.html'" ng-show="query.view=='list' && campusManagerList"></ng-include>
 	<ng-include src="'assets/view/listview-orders.html'" ng-show="query.view=='list' && regularList"></ng-include>
-	<ng-include src="'assets/view/listview-paging.html'" ng-show="query.view=='list'"></ng-include>
 
+
+	<div sticky-bottom="47">
+		<div class="no-box-content-color">
+			<ng-include src="'assets/view/listview-paging.html'" ng-show="query.view=='list'"></ng-include>
+		</div>
+	</div>
+
+
+	<? /*
 	<ng-include src="'assets/view/mapview-orders.html'" ng-show="query.view=='map'"></ng-include>
+	*/ ?>
 </div>

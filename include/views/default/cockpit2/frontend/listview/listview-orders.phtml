@@ -21,7 +21,8 @@
 				</td>
 				<td nowrap="">
 					<?php /* Date */ ?>
-					{{order.date | localtime:'MM/DD @ h:mm a'}}
+					<span class="listview-smaller"><strong>{{order.date | localtime:'MM/DD'}}</strong><br>
+					{{order.date | localtime:'h:mm a'}}</span>
 					<?php /* Date */ ?>
 				</td>
 				<td ng-if="!restaurant">
@@ -31,7 +32,7 @@
 						<a href="/community/{{order._community_permalink}}" ng-if="!community" class="no-underline">{{order._community_name}}</a>
 					</span>
 					<div ng-if="order.formal_relationship">
-						<span class="tag tag-grey">Formal Relationship</span>
+						<span class="tag tag-empty tag-grey">Formal</span>
 					</div>
 					<? /* Restaurant */ ?>
 				</td>
