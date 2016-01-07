@@ -6,12 +6,13 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
     // TODO: Test that this works correctly for different time zones
     public static function setUpBeforeClass()
     {
+        $community_tz1 = 'America/Los_Angeles';
         $name = get_called_class();
         $hours = 2;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now = new DateTime('now', new DateTimeZone($community_tz1));
         $now->modify('- ' . $hours . ' hours');
         $useDateEarly = $now->format('Y-m-d H:i:s');
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now = new DateTime('now', new DateTimeZone($community_tz1));
         $now->modify('+ ' . $hours . ' hours');
         $useDateLater = $now->format('Y-m-d H:i:s');
 
@@ -23,7 +24,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'delivery_fee' => '1.5',
             'confirmation' => 0,
             'community' => 'test',
-            'timezone' => 'America/Los_Angeles',
+            'timezone' => $community_tz1,
             'open_for_business' => true,
             'delivery_service' => true
         ]);
@@ -38,7 +39,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'delivery_fee' => '1.5',
             'confirmation' => 0,
             'community' => 'test',
-            'timezone' => 'America/Los_Angeles',
+            'timezone' => $community_tz1,
             'open_for_business' => true,
             'delivery_service' => true
         ]);
@@ -53,7 +54,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'delivery_fee' => '1.5',
             'confirmation' => 0,
             'community' => 'test',
-            'timezone' => 'America/Los_Angeles',
+            'timezone' => $community_tz1,
             'open_for_business' => true,
             'delivery_service' => true
         ]);
@@ -68,7 +69,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'delivery_fee' => '1.5',
             'confirmation' => 0,
             'community' => 'test',
-            'timezone' => 'America/Los_Angeles',
+            'timezone' => $community_tz1,
             'open_for_business' => true,
             'delivery_service' => true
         ]);
@@ -83,7 +84,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'delivery_fee' => '1.5',
             'confirmation' => 0,
             'community' => 'test',
-            'timezone' => 'America/Los_Angeles',
+            'timezone' => $community_tz1,
             'open_for_business' => true,
             'delivery_service' => true
         ]);
@@ -98,7 +99,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'delivery_fee' => '1.5',
             'confirmation' => 0,
             'community' => 'test',
-            'timezone' => 'America/Los_Angeles',
+            'timezone' => $community_tz1,
             'open_for_business' => true,
             'delivery_service' => true
         ]);
@@ -108,7 +109,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $c = new Community([
             'name' => $name,
             'active' => 1,
-            'timezone' => 'America/Los_Angeles',
+            'timezone' => $community_tz1,
             'driver-group' => 'drivers-testlogistics',
             'range' => 2,
             'private' => 1,
@@ -191,7 +192,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'name' => $name . ' - ONE',
             'login' => null,
             'active' => 1,
-            'timezone' => 'America/Los_Angeles'
+            'timezone' => $community_tz1
         ]);
         $a1->save();
         $drivers[] = $a1;
@@ -208,7 +209,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'name' => $name . ' - TWO',
             'login' => null,
             'active' => 1,
-            'timezone' => 'America/Los_Angeles'
+            'timezone' => $community_tz1
         ]);
         $a2->save();
         $drivers[] = $a2;
@@ -225,7 +226,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'name' => $name . ' - THREE',
             'login' => null,
             'active' => 1,
-            'timezone' => 'America/Los_Angeles'
+            'timezone' => $community_tz1
         ]);
         $a3->save();
         $drivers[] = $a3;
@@ -711,7 +712,6 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
     public function testGetDriversToNotify()
     {
         $useDate = date('Y-m-d H:i:s');
-
         $o1 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate, $this->community);
         $o1->save();
 
@@ -1416,7 +1416,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
-
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
         $pR1D1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
             $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH,
             0, $laterDate);
@@ -1492,7 +1493,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
-
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
         $pR1D1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
             $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH,
             0, $laterDate);
@@ -1576,6 +1578,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
 
         $pR1D1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
             $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH,
@@ -1661,6 +1665,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
 
         $pR1D1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
             $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH,
@@ -1740,6 +1746,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
 
         $pR1D1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
             $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH,
@@ -1824,6 +1832,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
 
         $pR1D1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
             $useDate1, Crunchbutton_Order_Priority::PRIORITY_HIGH,
@@ -1918,6 +1928,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
 
         $o2 = $this->defaultOrder($this->user, $this->restaurant1->id_restaurant, $useDate2, $this->community);
         $o2->save();
@@ -1930,6 +1942,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $o2->delivery_status = $oa2->id_order_action;
+        $o2->save();
 
         $ops = [];
 
@@ -2048,6 +2062,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
                 'note' => ''
             ]);
             $oa1->save();
+            $o1->delivery_status = $oa1->id_order_action;
+            $o1->save();
             $oas[] = $oa1;
 
             $pR1D1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
@@ -2142,6 +2158,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
                 'note' => ''
             ]);
             $oa1->save();
+            $o1->delivery_status = $oa1->id_order_action;
+            $o1->save();
             $oas[] = $oa1;
 
             $pR1D1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
@@ -2244,6 +2262,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
                 'note' => ''
             ]);
             $oa1->save();
+            $o1->delivery_status = $oa1->id_order_action;
+            $o1->save();
             $oas[] = $oa1;
 
             $pR1D1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
@@ -2371,6 +2391,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
                 'note' => ''
             ]);
             $oa1->save();
+            $o1->delivery_status = $oa1->id_order_action;
+            $o1->save();
             $oas[] = $oa1;
 
             $pR1D1 = $this->defaultOrderPriority($o1, $this->restaurant1, $this->driver1,
@@ -2491,6 +2513,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
         $oas[] = $oa1;
 
 
@@ -2506,6 +2530,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $o2->delivery_status = $oa2->id_order_action;
+        $o2->save();
         $oas[] = $oa2;
 
         $o3 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
@@ -2520,6 +2546,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3->save();
+        $o3->delivery_status = $oa3->id_order_action;
+        $o3->save();
         $oas[] = $oa3;
 
         $o4 = $this->defaultOrder($this->user, $r1Id, $useDate2, $this->community);
@@ -2590,6 +2618,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
         $oas[] = $oa1;
 
 
@@ -2605,6 +2635,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $o2->delivery_status = $oa2->id_order_action;
+        $o2->save();
         $oas[] = $oa2;
 
         $o3 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
@@ -2619,6 +2651,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3->save();
+        $o3->delivery_status = $oa3->id_order_action;
+        $o3->save();
         $oas[] = $oa3;
 
         $o4 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
@@ -2633,6 +2667,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4->save();
+        $o4->delivery_status = $oa4->id_order_action;
+        $o4->save();
         $oas[] = $oa4;
 
         $o5 = $this->defaultOrder($this->user, $r1Id, $useDate2, $this->community);
@@ -2707,6 +2743,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
         $oas[] = $oa1;
 
 
@@ -2722,6 +2760,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $o2->delivery_status = $oa2->id_order_action;
+        $o2->save();
         $oas[] = $oa2;
 
         $o3 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
@@ -2736,6 +2776,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3->save();
+        $o3->delivery_status = $oa3->id_order_action;
+        $o3->save();
         $oas[] = $oa3;
 
         $o4 = $this->defaultOrder($this->user, $r1Id, $useDate1, $this->community);
@@ -2750,6 +2792,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4->save();
+        $o4->delivery_status = $oa4->id_order_action;
+        $o4->save();
         $oas[] = $oa4;
 
         $o5 = $this->defaultOrder($this->user, $r2Id, $useDate2, $this->community);
@@ -2823,6 +2867,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
         $oas[] = $oa1;
 
 
@@ -2838,6 +2884,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $o2->delivery_status = $oa2->id_order_action;
+        $o2->save();
         $oas[] = $oa2;
 
         $o3 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
@@ -2852,6 +2900,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3->save();
+        $o3->delivery_status = $oa3->id_order_action;
+        $o3->save();
         $oas[] = $oa3;
 
         $o4 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
@@ -2866,6 +2916,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4->save();
+        $o4->delivery_status = $oa4->id_order_action;
+        $o4->save();
         $oas[] = $oa4;
 
         $o5 = $this->defaultOrder($this->user, $r3Id, $useDate2, $this->community);
@@ -2942,6 +2994,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
         $oas[] = $oa1;
 
 
@@ -2957,6 +3011,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $o2->delivery_status = $oa2->id_order_action;
+        $o2->save();
         $oas[] = $oa2;
 
         $o3 = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -2971,6 +3027,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3->save();
+        $o3->delivery_status = $oa3->id_order_action;
+        $o3->save();
         $oas[] = $oa3;
 
         $o4 = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
@@ -2985,6 +3043,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4->save();
+        $o4->delivery_status = $oa4->id_order_action;
+        $o4->save();
         $oas[] = $oa4;
 
         $o2b = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
@@ -2999,6 +3059,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2b->save();
+        $o2b->delivery_status = $oa2b->id_order_action;
+        $o2b->save();
+
         $oas[] = $oa2b;
 
         $o3b = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -3013,6 +3076,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3b->save();
+        $o3b->delivery_status = $oa3b->id_order_action;
+        $o3b->save();
         $oas[] = $oa3b;
 
         $o4b = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
@@ -3027,6 +3092,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4b->save();
+        $o4b->delivery_status = $oa4b->id_order_action;
+        $o4b->save();
         $oas[] = $oa4b;
 
         $o5b = $this->defaultOrder($this->user, $r5Id, $useDate1, $this->community);
@@ -3041,6 +3108,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa5b->save();
+        $o5b->delivery_status = $oa5b->id_order_action;
+        $o5b->save();
         $oas[] = $oa5b;
 
         $o6 = $this->defaultOrder($this->user, $r6Id, $useDate2, $this->community);
@@ -3117,6 +3186,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
         $oas[] = $oa1;
 
 
@@ -3132,6 +3203,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $o2->delivery_status = $oa2->id_order_action;
+        $o2->save();
         $oas[] = $oa2;
 
         $o3 = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -3146,6 +3219,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3->save();
+        $o3->delivery_status = $oa3->id_order_action;
+        $o3->save();
         $oas[] = $oa3;
 
         $o4 = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
@@ -3160,6 +3235,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4->save();
+        $o4->delivery_status = $oa4->id_order_action;
+        $o4->save();
         $oas[] = $oa4;
 
         $o2b = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
@@ -3174,6 +3251,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2b->save();
+        $o2b->delivery_status = $oa2b->id_order_action;
+        $o2b->save();
         $oas[] = $oa2b;
 
         $o3b = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -3188,6 +3267,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3b->save();
+        $o3->delivery_status = $oa3b->id_order_action;
+        $o3->save();
         $oas[] = $oa3b;
 
         $o4b = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
@@ -3202,6 +3283,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4b->save();
+        $o4b->delivery_status = $oa4b->id_order_action;
+        $o4b->save();
         $oas[] = $oa4b;
 
         $o5b = $this->defaultOrder($this->user, $r5Id, $useDate1, $this->community);
@@ -3216,6 +3299,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa5b->save();
+        $o5b->delivery_status = $oa5b->id_order_action;
+        $o5b->save();
         $oas[] = $oa5b;
 
         $o1b = $this->defaultOrder($this->user, $r1Id, $useDate2, $this->community);
@@ -3291,6 +3376,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
         $oas[] = $oa1;
 
 
@@ -3306,6 +3393,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $o2->delivery_status = $oa2->id_order_action;
+        $o2->save();
         $oas[] = $oa2;
 
         $o3 = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -3320,6 +3409,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3->save();
+        $o3->delivery_status = $oa3->id_order_action;
+        $o3->save();
         $oas[] = $oa3;
 
         $o4 = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
@@ -3334,6 +3425,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4->save();
+        $o4->delivery_status = $oa4->id_order_action;
+        $o4->save();
         $oas[] = $oa4;
 
         $o2b = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
@@ -3348,6 +3441,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2b->save();
+        $o2b->delivery_status = $oa2b->id_order_action;
+        $o2b->save();
         $oas[] = $oa2b;
 
         $o3b = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -3362,6 +3457,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3b->save();
+        $o3b->delivery_status = $oa3b->id_order_action;
+        $o3b->save();
         $oas[] = $oa3b;
 
         $o4b = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
@@ -3376,6 +3473,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4b->save();
+        $o4b->delivery_status = $oa4b->id_order_action;
+        $o4b->save();
         $oas[] = $oa4b;
 
         $o5b = $this->defaultOrder($this->user, $r5Id, $useDate1, $this->community);
@@ -3390,6 +3489,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa5b->save();
+        $o5b->delivery_status = $oa5b->id_order_action;
+        $o5b->save();
         $oas[] = $oa5b;
 
         $o2c = $this->defaultOrder($this->user, $r2Id, $useDate2, $this->community);
@@ -3465,6 +3566,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
         $oas[] = $oa1;
 
 
@@ -3480,6 +3583,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $o2->delivery_status = $oa2->id_order_action;
+        $o2->save();
         $oas[] = $oa2;
 
         $o3 = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -3494,6 +3599,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3->save();
+        $o3->delivery_status = $oa3->id_order_action;
+        $o3->save();
         $oas[] = $oa3;
 
         $o4 = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
@@ -3508,6 +3615,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4->save();
+        $o4->delivery_status = $oa4->id_order_action;
+        $o4->save();
         $oas[] = $oa4;
 
         $o2b = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
@@ -3522,6 +3631,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2b->save();
+        $o2b->delivery_status = $oa2b->id_order_action;
+        $o2b->save();
         $oas[] = $oa2b;
 
         $o3b = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -3536,6 +3647,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3b->save();
+        $o3b->delivery_status = $oa3b->id_order_action;
+        $o3b->save();
         $oas[] = $oa3b;
 
         $o4b = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
@@ -3550,6 +3663,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4b->save();
+        $o4b->delivery_status = $oa4b->id_order_action;
+        $o4b->save();
         $oas[] = $oa4b;
 
         $o5b = $this->defaultOrder($this->user, $r5Id, $useDate1, $this->community);
@@ -3564,6 +3679,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa5b->save();
+        $o5b->delivery_status = $oa5b->id_order_action;
+        $o5b->save();
         $oas[] = $oa5b;
 
         $o2c = $this->defaultOrder($this->user, $r2Id, $useDate2, $this->community);
@@ -3638,6 +3755,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
         $oas[] = $oa1;
 
 
@@ -3653,6 +3772,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $o2->delivery_status = $oa2->id_order_action;
+        $o2->save();
         $oas[] = $oa2;
 
         $o3 = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -3667,6 +3788,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3->save();
+        $o3->delivery_status = $oa3->id_order_action;
+        $o3->save();
         $oas[] = $oa3;
 
         $o4 = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
@@ -3681,6 +3804,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4->save();
+        $o4->delivery_status = $oa4->id_order_action;
+        $o4->save();
         $oas[] = $oa4;
 
         $o2b = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
@@ -3695,6 +3820,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2b->save();
+        $o2b->delivery_status = $oa2b->id_order_action;
+        $o2b->save();
         $oas[] = $oa2b;
 
         $o3b = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -3709,6 +3836,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3b->save();
+        $o3b->delivery_status = $oa3b->id_order_action;
+        $o3b->save();
         $oas[] = $oa3b;
 
         $o4b = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
@@ -3723,6 +3852,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4b->save();
+        $o4b->delivery_status = $oa4b->id_order_action;
+        $o4b->save();
         $oas[] = $oa4b;
 
         $o5b = $this->defaultOrder($this->user, $r5Id, $useDate1, $this->community);
@@ -3737,6 +3868,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa5b->save();
+        $o5b->delivery_status = $oa5b->id_order_action;
+        $o5b->save();
         $oas[] = $oa5b;
 
         $o2c = $this->defaultOrder($this->user, $r2Id, $useDate2, $this->community);
@@ -3810,6 +3943,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
         $oas[] = $oa1;
 
 
@@ -3825,6 +3960,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $o2->delivery_status = $oa2->id_order_action;
+        $o2->save();
         $oas[] = $oa2;
 
         $o3 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
@@ -3839,6 +3976,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3->save();
+        $o3->delivery_status = $oa3->id_order_action;
+        $o3->save();
         $oas[] = $oa3;
 
         $o4 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
@@ -3853,6 +3992,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4->save();
+        $o4->delivery_status = $oa4->id_order_action;
+        $o4->save();
         $oas[] = $oa4;
 
         $o5 = $this->defaultOrder($this->user, $r3Id, $useDate2, $this->community);
@@ -3927,6 +4068,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
         $oas[] = $oa1;
 
 
@@ -3942,6 +4085,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $o2->delivery_status = $oa2->id_order_action;
+        $o2->save();
         $oas[] = $oa2;
 
         $o3 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
@@ -3956,6 +4101,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3->save();
+        $o3->delivery_status = $oa3->id_order_action;
+        $o3->save();
         $oas[] = $oa3;
 
         $o5 = $this->defaultOrder($this->user, $r3Id, $useDate2, $this->community);
@@ -4033,6 +4180,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
         $oas[] = $oa1;
 
 
@@ -4048,6 +4197,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $o2->delivery_status = $oa2->id_order_action;
+        $o2->save();
         $oas[] = $oa2;
 
         $o3 = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -4062,6 +4213,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3->save();
+        $o3->delivery_status = $oa3->id_order_action;
+        $o3->save();
         $oas[] = $oa3;
 
         $o4 = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
@@ -4076,6 +4229,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4->save();
+        $o4->delivery_status = $oa4->id_order_action;
+        $o4->save();
         $oas[] = $oa4;
 
         $o2b = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
@@ -4090,6 +4245,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2b->save();
+        $o2b->delivery_status = $oa2b->id_order_action;
+        $o2b->save();
         $oas[] = $oa2b;
 
         $o3b = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -4104,6 +4261,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3b->save();
+        $o3b->delivery_status = $oa3b->id_order_action;
+        $o3b->save();
         $oas[] = $oa3b;
 
         $o4b = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
@@ -4118,6 +4277,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4b->save();
+        $o4b->delivery_status = $oa4b->id_order_action;
+        $o4b->save();
         $oas[] = $oa4b;
 
         $o2c = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
@@ -4132,6 +4293,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2c->save();
+        $o2c->delivery_status = $oa2c->id_order_action;
+        $o2c->save();
         $oas[] = $oa2c;
 
         $o3c = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -4146,6 +4309,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3c->save();
+        $o3c->delivery_status = $oa3c->id_order_action;
+        $o3c->save();
         $oas[] = $oa3c;
 
         $o6 = $this->defaultOrder($this->user, $r2Id, $useDate2, $this->community);
@@ -4223,8 +4388,9 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
         $oas[] = $oa1;
-
 
         $o2 = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
         $o2->save();
@@ -4238,6 +4404,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $o2->delivery_status = $oa2->id_order_action;
+        $o2->save();
         $oas[] = $oa2;
 
         $o3 = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -4252,6 +4420,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3->save();
+        $o3->delivery_status = $oa3->id_order_action;
+        $o3->save();
         $oas[] = $oa3;
 
         $o2b = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
@@ -4266,6 +4436,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2b->save();
+        $o2b->delivery_status = $oa2b->id_order_action;
+        $o2b->save();
         $oas[] = $oa2b;
 
         $o3b = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -4280,6 +4452,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3b->save();
+        $o3b->delivery_status = $oa3b->id_order_action;
+        $o3b->save();
         $oas[] = $oa3b;
 
         $o4b = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
@@ -4294,6 +4468,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4b->save();
+        $o4b->delivery_status = $oa4b->id_order_action;
+        $o4b->save();
         $oas[] = $oa4b;
 
         $o2c = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
@@ -4308,6 +4484,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2c->save();
+        $o2c->delivery_status = $oa2c->id_order_action;
+        $o2c->save();
         $oas[] = $oa2c;
 
         $o3c = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -4322,6 +4500,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3c->save();
+        $o3c->delivery_status = $oa3c->id_order_action;
+        $o3c->save();
         $oas[] = $oa3c;
 
         $o6 = $this->defaultOrder($this->user, $r2Id, $useDate2, $this->community);
@@ -4398,6 +4578,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
         $oas[] = $oa1;
 
 
@@ -4413,6 +4595,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $o2->delivery_status = $oa3->id_order_action;
+        $o2->save();
         $oas[] = $oa2;
 
         $o3 = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -4427,6 +4611,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3->save();
+        $o3->delivery_status = $oa3->id_order_action;
+        $o3->save();
         $oas[] = $oa3;
 
         $o4 = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
@@ -4441,6 +4627,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4->save();
+        $o4->delivery_status = $oa4->id_order_action;
+        $o4->save();
         $oas[] = $oa4;
 
         $o2b = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
@@ -4455,6 +4643,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2b->save();
+        $o2b->delivery_status = $oa2b->id_order_action;
+        $o2b->save();
         $oas[] = $oa2b;
 
         $o3b = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -4469,6 +4659,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3b->save();
+        $o3b->delivery_status = $oa3b->id_order_action;
+        $o3b->save();
         $oas[] = $oa3b;
 
         $o4b = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
@@ -4483,6 +4675,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4b->save();
+        $o4b->delivery_status = $oa4b->id_order_action;
+        $o4b->save();
         $oas[] = $oa4b;
 
         $o5b = $this->defaultOrder($this->user, $r5Id, $useDate1, $this->community);
@@ -4497,6 +4691,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa5b->save();
+        $o5b->delivery_status = $oa5b->id_order_action;
+        $o5b->save();
         $oas[] = $oa5b;
 
         $o2c = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
@@ -4511,6 +4707,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2c->save();
+        $o2c->delivery_status = $oa2c->id_order_action;
+        $o2c->save();
         $oas[] = $oa2c;
 
         $o3c = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -4525,6 +4723,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3c->save();
+        $o3c->delivery_status = $oa3c->id_order_action;
+        $o3c->save();
         $oas[] = $oa3c;
 
         $o4c = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
@@ -4539,6 +4739,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4c->save();
+        $o4c->delivery_status = $oa4c->id_order_action;
+        $o4c->save();
         $oas[] = $oa4c;
 
         $o5c = $this->defaultOrder($this->user, $r5Id, $useDate1, $this->community);
@@ -4553,6 +4755,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa5c->save();
+        $o5c->delivery_status = $oa5c->id_order_action;
+        $o5c->save();
         $oas[] = $oa5c;
 
         $o2d = $this->defaultOrder($this->user, $r2Id, $useDate2, $this->community);
@@ -4623,6 +4827,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa1->save();
+        $o1->delivery_status = $oa1->id_order_action;
+        $o1->save();
         $oas[] = $oa1;
 
 
@@ -4638,6 +4844,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2->save();
+        $o2->delivery_status = $oa2->id_order_action;
+        $o2->save();
         $oas[] = $oa2;
 
         $o3 = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -4652,6 +4860,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3->save();
+        $o3->delivery_status = $oa3->id_order_action;
+        $o3->save();
         $oas[] = $oa3;
 
         $o4 = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
@@ -4666,6 +4876,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4->save();
+        $o4->delivery_status = $oa4->id_order_action;
+        $o4->save();
         $oas[] = $oa4;
 
         $o2b = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
@@ -4680,6 +4892,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2b->save();
+        $o2b->delivery_status = $oa2b->id_order_action;
+        $o2b->save();
         $oas[] = $oa2b;
 
         $o3b = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -4694,6 +4908,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3b->save();
+        $o3b->delivery_status = $oa3b->id_order_action;
+        $o3b->save();
         $oas[] = $oa3b;
 
         $o4b = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
@@ -4708,6 +4924,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4b->save();
+        $o4b->delivery_status = $oa4b->id_order_action;
+        $o4b->save();
         $oas[] = $oa4b;
 
         $o5b = $this->defaultOrder($this->user, $r5Id, $useDate1, $this->community);
@@ -4722,6 +4940,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa5b->save();
+        $o5b->delivery_status = $oa5b->id_order_action;
+        $o5b->save();
         $oas[] = $oa5b;
 
         $o2c = $this->defaultOrder($this->user, $r2Id, $useDate1, $this->community);
@@ -4736,6 +4956,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa2c->save();
+        $o2c->delivery_status = $oa2c->id_order_action;
+        $o2c->save();
         $oas[] = $oa2c;
 
         $o3c = $this->defaultOrder($this->user, $r3Id, $useDate1, $this->community);
@@ -4750,6 +4972,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa3c->save();
+        $o3c->delivery_status = $oa3c->id_order_action;
+        $o3c->save();
         $oas[] = $oa3c;
 
         $o4c = $this->defaultOrder($this->user, $r4Id, $useDate1, $this->community);
@@ -4764,6 +4988,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa4c->save();
+        $o4c->delivery_status = $oa4c->id_order_action;
+        $o4c->save();
         $oas[] = $oa4c;
 
         $o5c = $this->defaultOrder($this->user, $r5Id, $useDate1, $this->community);
@@ -4778,6 +5004,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
             'note' => ''
         ]);
         $oa5c->save();
+        $o5c->delivery_status = $oa5c->id_order_action;
+        $o5c->save();
         $oas[] = $oa5c;
 
         $o6 = $this->defaultOrder($this->user, $r2Id, $useDate2, $this->community);
@@ -4916,6 +5144,8 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
                     'note' => ''
                 ]);
                 $oa->save();
+                $o->delivery_status = $oa->id_order_action;
+                $o->save();
             }
         }
         $og['o'] = $o;
