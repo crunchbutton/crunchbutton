@@ -61,8 +61,7 @@ NGApp.controller('ShiftChekinCtrl', function ( $scope, ShiftService, ViewListSer
 
 NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftScheduleService, CommunityService ) {
 
-	// @remove -- remove it before commit
-	$scope.options = { communities: [ 92 ] };
+	$scope.options = { communities: [] };
 
 	$scope.selectNoneCommunity = function(){
 		$scope.options.communities = [];
