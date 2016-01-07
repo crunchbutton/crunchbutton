@@ -419,8 +419,6 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 		$start = ( new DateTime( $this->request()['start'] ) );
 		$filterCommunities = $this->request()['communities'];
-		// @remove -- remove it before commit
-		$filterCommunities = [ 92, 285 ];
 
 		$year = ( $this->request()['year'] ? $this->request()['year'] : $start->format( 'Y' ) );
 		$month = ( $this->request()['month'] ? $this->request()['month'] : $start->format( 'm' ) );
