@@ -43,9 +43,7 @@
 			</div>
 		</div>
 		<div class="support-box-wrap box-content2">
-
 			<div class="box-content-table">
-
 				<div class="ul-inputs">
 					<ul ng-class="{'submitted':formEditShiftSubmitted}" class="ul-inputs">
 						<li class="li-input">
@@ -57,6 +55,7 @@
 								({{shift.community.tz}})
 								<span class="tag tag-red" ng-if="shift.hidden">This shift is hidden from drivers!</span>
 								<span class="tag tag-green" ng-if="saved">Saved!</span>
+								<span class="tag tag-red" ng-if="!shift.editable">Ready only!</span>
 							</div>
 						</li>
 					</ul>
@@ -77,7 +76,7 @@
 						<tbody>
 							<tr ng-repeat="driver in shift.drivers">
 								<td>
-									<input type="checkbox" ng-change="assignDriver( driver )" ng-model="driver.assigned">
+									<input type="checkbox" ng-disabled="!shift.editable" ng-change="assignDriver( driver )" ng-model="driver.assigned">
 								</td>
 								<td>
 									{{driver.name}}
@@ -94,7 +93,7 @@
 									<span ng-if="!driver.ranking.highest">-</span> /
 									{{driver.total_shifts}}
 								</td>
-								<td ng-if="shift.recurring"><input ng-change="assignDriverPermanently( driver )" type="checkbox" ng-model="driver.assigned_permanently"></td>
+								<td ng-if="shift.recurring"><input ng-change="assignDriverPermanently( driver )" ng-disabled="!shift.editable" type="checkbox" ng-model="driver.assigned_permanently"></td>
 								<td>
 									<textarea ng-model="driver.notes_text"></textarea>
 									<br>
