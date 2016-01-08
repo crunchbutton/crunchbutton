@@ -1,12 +1,10 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
-	<h1 class="title"><i class="fa fa-bullhorn"></i>Suggestions</h1>
-
-	<div class="box-content2 box-content-table">
+	<div class="box-content2 box-content-table box-search-bar table-sticky-dependant">
 		<table>
 			<tr>
-				<td colspan="4"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
+				<td colspan="4"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1" placeholder="Search suggestions"></td>
 			</tr>
 			<tr>
 				<th>Type</th>
@@ -23,6 +21,10 @@
 
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 	<ng-include src="'assets/view/listview-suggestions.html'"></ng-include>
-	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+	<div sticky-bottom="47" class="table-sticky-dependant" ng-show="pages > 1 || more">
+		<div class="no-box-content-color">
+			<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+		</div>
+	</div>
 
 </div>
