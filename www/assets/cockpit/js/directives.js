@@ -807,9 +807,6 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 
 						//tbody.css('display', 'table-row-group');
 
-						table.css( 'width', '100%' );
-						tbody.css( 'width', '100%' );
-						thead.css( 'width', '100%' );
 
 						if( App.isNarrowScreen() ){
 							thead.css( 'display', 'inherit' );
@@ -844,10 +841,6 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 						});
 						var tbodyHeight = ( windowHeight - (theadHeight + 130) + 'px' );
 
-						thead.css( 'display', 'block' );
-						tbody.css( 'display', 'block' );
-
-						tbody.css( 'overflow-y', 'scroll' );
 						tbody.css( 'height', tbodyHeight );
 						//tbody.css( 'width', '100%' );
 

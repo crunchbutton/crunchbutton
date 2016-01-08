@@ -4642,4 +4642,10 @@ table.receipt{
 	}
 }
 
+.sticky-header .thead, .sticky-header .tbody {
+	display: block;
+}
 
+.sticky-header .tbody {
+	overflow-y: scroll;
+}
