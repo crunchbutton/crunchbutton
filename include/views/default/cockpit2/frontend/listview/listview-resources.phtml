@@ -1,6 +1,6 @@
 <div class="box-content2 box-content-table">
-	<table class="tb-zebra" sticky-header>
-		<thead>
+	<div sticky-header>
+		<table class="thead">
 			<tr>
 				<th>Resource</th>
 				<th class="tb-center">Communities</th>
@@ -10,41 +10,43 @@
 				<th nowrap="tb-center">Active</th>
 				<th class="tb-small"></th>
 			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="resource in resources track by $index" ng-init="$last ? ngRepeatFinished() : null" ng-attr-tabindex="{{$index+1}}" tab-select="/resource/{{resource.id_resource}}">
-				<td class="tb-v-center" nowrap="">
-					<span class="listview-bold">{{resource.name}}</span>
-					<br><a target="_system" href="{{resource.path}}">{{resource.file}}</a>
-				</td>
-				<td class="tb-v-center">
-					<span class="tag tag-red" ng-if="resource.all">All</span>
-					<span class="listview-smaller" ng-if="!resource.all">
-						<span ng-repeat="community in resource.communities" class="staff-community-repeat">
-							<a href="/community/{{community.id_community}}">{{community.name}}</a>
+		</table>
+		<div class="tbody">
+			<table class="tb-zebra">
+				<tr ng-repeat="resource in resources track by $index" ng-init="$last ? ngRepeatFinished() : null" ng-attr-tabindex="{{$index+1}}" tab-select="/resource/{{resource.id_resource}}">
+					<td class="tb-v-center" nowrap="">
+						<span class="listview-bold">{{resource.name}}</span>
+						<br><a target="_system" href="{{resource.path}}">{{resource.file}}</a>
+					</td>
+					<td class="tb-v-center">
+						<span class="tag tag-red" ng-if="resource.all">All</span>
+						<span class="listview-smaller" ng-if="!resource.all">
+							<span ng-repeat="community in resource.communities" class="staff-community-repeat">
+								<a href="/community/{{community.id_community}}">{{community.name}}</a>
+							</span>
 						</span>
-					</span>
-				</td>
-				<td nowrap class="tb-center tb-v-center">
-					<span class="tag tag-green" ng-if="resource.page">Yes</span>
-					<span class="tag tag-red" ng-if="!resource.page">No</span>
-				</td>
-				<td nowrap class="tb-center tb-v-center">
-					<span class="tag tag-green" ng-if="resource.side">Yes</span>
-					<span class="tag tag-red" ng-if="!resource.side">No</span>
-				</td>
-				<td nowrap class="tb-center tb-v-center">
-					<span class="tag tag-green" ng-if="resource.order_page">Yes</span>
-					<span class="tag tag-red" ng-if="!resource.order_page">No</span>
-				</td>
-				<td nowrap class="tb-center tb-v-center">
-					<span class="tag tag-green" ng-if="resource.active">Active</span>
-					<span class="tag tag-red" ng-if="!resource.active">Inactive</span>
-				</td>
-				<td nowrap class="tb-v-center">
-					<a href="/community/resource/{{resource.id_resource}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+					</td>
+					<td nowrap class="tb-center tb-v-center">
+						<span class="tag tag-green" ng-if="resource.page">Yes</span>
+						<span class="tag tag-red" ng-if="!resource.page">No</span>
+					</td>
+					<td nowrap class="tb-center tb-v-center">
+						<span class="tag tag-green" ng-if="resource.side">Yes</span>
+						<span class="tag tag-red" ng-if="!resource.side">No</span>
+					</td>
+					<td nowrap class="tb-center tb-v-center">
+						<span class="tag tag-green" ng-if="resource.order_page">Yes</span>
+						<span class="tag tag-red" ng-if="!resource.order_page">No</span>
+					</td>
+					<td nowrap class="tb-center tb-v-center">
+						<span class="tag tag-green" ng-if="resource.active">Active</span>
+						<span class="tag tag-red" ng-if="!resource.active">Inactive</span>
+					</td>
+					<td nowrap class="tb-v-center">
+						<a href="/community/resource/{{resource.id_resource}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
 </div>

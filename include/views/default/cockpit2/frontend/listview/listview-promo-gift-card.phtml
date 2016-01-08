@@ -1,8 +1,7 @@
 <div class="box-content2 box-content-table">
-	<table class="tb-zebra" sticky-header>
-		<thead>
+	<div sticky-header>
+		<table class="thead">
 			<tr>
-				<th></th>
 				<th>Code</th>
 				<th>Value</th>
 				<th>Info</th>
@@ -10,28 +9,31 @@
 				<th>Status</th>
 				<th class="tb-small"></th>
 			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="promo in promos track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/promo/gift-card/{{promo.id_promo}}" ng-init="$last ? ngRepeatFinished() : null">
-				<td>#{{promo.id_promo}}</td>
-				<td>{{promo.code}}</td>
-				<td>${{promo.value | number:2}}</td>
-				<td>
-					<a ng-if="promo.id_user" href="/customer/{{promo.id_user}}">{{promo.user}}</a>
-					<div ng-if="promo.phone"><a href ng-click="callText(promo.phone)">{{promo.phone}}</a></div>
-					<div class="listview-smaller" ng-bind-html="promo.note" ng-if="promo.note"></div>
-				</td>
-				<td><a ng-if="promo.login" href="/staff/{{promo.login}}">{{promo.admin}}</a>&nbsp;</td>
-				<td nowrap class="tb-center tb-v-center">
-					<span class="tag tag-green" ng-if="promo.active">Active</span>
-					<span class="tag tag-red" ng-if="!promo.active">Inactive</span>
+		</table>
+		<div class="tbody">
 
-					<span class="tag tag-red" ng-if="promo.redeemed">Redeemed</span>
-					<span class="tag tag-green" ng-if="!promo.redeemed">Not Redeemed</span>
-				</td>
-				<td nowrap class="tb-v-center">
-				</td>
-			</tr>
-		</tbody>
-	</table>
+			<table class="tb-zebra">
+				<tr ng-repeat="promo in promos track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/promo/gift-card/{{promo.id_promo}}" ng-init="$last ? ngRepeatFinished() : null">
+					<td>#{{promo.id_promo}}</td>
+					<td>{{promo.code}}</td>
+					<td>${{promo.value | number:2}}</td>
+					<td>
+						<a ng-if="promo.id_user" href="/customer/{{promo.id_user}}">{{promo.user}}</a>
+						<div ng-if="promo.phone"><a href ng-click="callText(promo.phone)">{{promo.phone}}</a></div>
+						<div class="listview-smaller" ng-bind-html="promo.note" ng-if="promo.note"></div>
+					</td>
+					<td><a ng-if="promo.login" href="/staff/{{promo.login}}">{{promo.admin}}</a>&nbsp;</td>
+					<td nowrap class="tb-center tb-v-center">
+						<span class="tag tag-green" ng-if="promo.active">Active</span>
+						<span class="tag tag-red" ng-if="!promo.active">Inactive</span>
+
+						<span class="tag tag-red" ng-if="promo.redeemed">Redeemed</span>
+						<span class="tag tag-green" ng-if="!promo.redeemed">Not Redeemed</span>
+					</td>
+					<td nowrap class="tb-v-center">
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
 </div>
