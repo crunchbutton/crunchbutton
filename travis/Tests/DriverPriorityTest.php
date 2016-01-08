@@ -397,7 +397,6 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
         $orders = [];
         $allops = [];
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-
         $chipotle_lat = 34.0284;
         $chipotle_lon = -118.287;
 
@@ -1763,6 +1762,8 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
                     'note' => ''
                 ]);
                 $oa->save();
+                $o->delivery_status = $oa->id_order_action;
+                $o->save();
             }
         }
         $og['o'] = $o;

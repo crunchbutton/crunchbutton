@@ -4580,6 +4580,29 @@ table.receipt{
 			display: table-cell;
 		}
 
+.sticky-bottom {
+	text-align: right;
+	background: rgba(255,255,255,.7);
+	border-top: 1px solid #e7eaec;
+	width: calc(100% + 24px);
+	box-sizing: border-box;
+	margin-left: -11px;
+	pointer-events: none;
+}
+
+.sticky-bottom button {
+	pointer-events:all !important;
+}
+
+.li-input .button.button-no-margin {
+	margin-right: 0;
+}
+
+.sticky-bottom .button {
+	padding-right: 3em;
+	padding-left: 3em;
+}
+
 .shift-schedule{}
 .shift-schedule .table-label{
 	width: 14.28%;
@@ -4670,4 +4693,3 @@ table.receipt{
 	font-size: 1.2em !important;
 	margin-top: 1em;
 }
-
