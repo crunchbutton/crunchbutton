@@ -2,21 +2,21 @@
 
 <div class="content-padding">
 
-	<div class="page-title-wrap">
-		<h1 class="title"><i class="fa fa-automobile"></i>Driver Onboarding</h1>
-		<div class="page-title-nav">
-			<a href="/drivers/onboarding/docs"><button class="button button-green nav-button-grey"><i class="fa fa-briefcase"></i><span>Documents</span></button></a>
-			<a href="/drivers/onboarding/new"><button class="button button-green nav-button-green"><i class="fa fa-plus"></i><span>Add Driver</span></button></a>
-			<a href="/staff/notes"><button class="button button-green nav-button-green"><i class="fa fa-file"></i> Notes</button></a>
-		</div>
-	</div>
-	<div class="divider"></div>
-
-	<div class="box-content2 box-content-table">
+	<div class="box-content2 box-content-table box-search-bar table-sticky-dependant">
 		<table>
 			<tr>
-				<td colspan="8"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
-				<td><i title="More options" class="fa fa-search-plus link no-underline" ng-class="{'orange':show_more_options}" ng-click="moreOptions()"></i></td>
+				<td colspan="6">
+					<div title="More options" class="search-bar-options" ng-class="{'orange':show_more_options}" ng-click="moreOptions()">
+						<i class="fa" ng-class="{'fa-search':show_more_options, 'fa-search-plus':!show_more_options}"></i>
+					</div>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1" placeholder="Search drivers">
+				</td>
+				<td colspan="3" class="search-title-nav">
+					<div class="page-title-nav">
+						<a href="/drivers/onboarding/docs"><button class="button button-green nav-button-grey"><i class="fa fa-briefcase"></i><span>Documents</span></button></a>
+						<a href="/drivers/onboarding/new"><button class="button button-green nav-button-green"><i class="fa fa-plus"></i><span>Add Driver</span></button></a>
+						<a href="/staff/notes"><button class="button button-green nav-button-green"><i class="fa fa-file"></i><span>Notes</span></button></a>
+					</div>
+				</td>
 			</tr>
 			<tr ng-if="show_more_options">
 				<th>Community</th>
@@ -147,15 +147,7 @@
 						<span class="tag tag-red" ng-if="!driver.sent_all_docs">Missing</span>
 					</td>
 					<td nowrap class="tb-v-center">
-						<div>
-							<a href="/staff/{{driver.login}}/payinfo"><button class="button button-small button-empty button-green"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;Pay Info</button></a>
-						</div>
-						<div style="margin:2px;">
-							<a href="/drivers/onboarding/{{driver.id_admin}}"><button class="button button-small button-empty button-green"><i class="fa fa-car"></i>&nbsp;&nbsp;Driver</button></a>
-						</div>
-						<div>
-							<a href="/staff/{{driver.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
-						</div>
+						<a href="/staff/{{driver.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-car"></i>&nbsp;&nbsp;View</button></a>
 					</td>
 				</tr>
 			</tbody>

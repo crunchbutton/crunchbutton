@@ -4193,7 +4193,7 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 }
 
 .box-search-bar .page-title-nav {
-	font-size: .6em;
+	font-size: .75em;
 }
 
 .listview-smaller {
@@ -4588,7 +4588,7 @@ table.receipt{
 }
 
 @media screen and (min-width: $desktopWidth) {
-	.page-orders  {
+	.page-orders, .page-restaurants {
 		overflow: hidden;
 	}
 }
@@ -4604,5 +4604,10 @@ table.receipt{
 .search-bar-options {
 	display: inline-block;
 	cursor: pointer;
-	-webkit-touch-callout: none; -webkit-user-select: none;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+}
+
+.box-content-table table tr > td.search-title-nav {
+	padding: .55em;
 }
