@@ -25,7 +25,7 @@ if (function_exists('php_sapi_name') && php_sapi_name() == 'cli-server') {
 	$file = substr($_SERVER['SCRIPT_NAME'],1);
 	$allowed = ['scss','php'];
 	if (file_exists($file) && !in_array($path['extension'], $allowed)) {
-		
+
 		$info = @trim(explode(':',exec('file --mime-type '.$file))[1]);
 
 		header('Content-Type: '.$info);
@@ -54,7 +54,7 @@ if (!$_REQUEST['__url']) {
 }
 
 if (isset($_GET['__host'])) {
-	setcookie('__host', $_GET['__host'], 0, '/');
+	setcookie('__host', $_GET['__host'], time()+60*60*24, '/');
 	$_COOKIE['__host'] = $_GET['__host'];
 }
 
