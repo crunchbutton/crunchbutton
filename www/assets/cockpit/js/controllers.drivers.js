@@ -789,6 +789,8 @@ NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location,
 				} );
 			}
 		}
+
+		$rootScope.$broadcast('search-toggle');
 	}
 
 	var limits = [];
