@@ -67,11 +67,15 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftSchedu
 		$scope.options.communities = [];
 	}
 
+	$scope.loaded = false;
+
 	$scope.loadShifts = function(){
+		$scope.loaded = false;
 		ShiftScheduleService.loadShifts( $scope.options, function( json ){
 			if( json.communities ){
 				$scope.shifts = { communities: json.communities };
 				$scope.days = json.days;
+				$scope.loaded = true;
 			}
 		} );
 	}
@@ -87,6 +91,20 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftSchedu
 		} );
 	}
 
+	$scope.previousWeek = function(){
+		var prev = new Date();
+		prev.setDate( $scope.options.start.getDate() - 7 );
+		$scope.options.start = prev;
+		$scope.loadShifts();
+	}
+
+	$scope.nextWeek = function(){
+		var next = new Date();
+		next.setDate( $scope.options.start.getDate() + 7 );
+		$scope.options.start = next;
+		$scope.loadShifts();
+	}
+
 	$scope.toggleTz = function(){
 		$scope.showPSTtz = !$scope.showPSTtz;
 	}
@@ -99,6 +117,7 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftSchedu
 			}
 		}
 	}
+
 	var start = function(){
 		ShiftScheduleService.weekStart( function( json ){
 			if( json.start ){
@@ -106,7 +125,6 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftSchedu
 			} else {
 				$scope.options.start = new Date();
 			}
-			$scope.loadShifts();
 		} );
 
 		if( !$scope.communities ){
@@ -114,6 +132,7 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftSchedu
 				$scope.communities = json;
 			} );
 		}
+		// $scope.loadShifts();
 	}
 
 	$scope.addShift = function( id_community, name, date ){

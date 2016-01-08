@@ -43,11 +43,13 @@
 					<br>
 					<div class="input">
 						<button name='refresh' ng-click='loadShifts()' class="button button-small button-empty button-border button-green"><i class="fa fa-refresh"></i>&nbsp;&nbsp;Load Shifts</button>
-						<button name='refresh' ng-click='toggleTz()' class="button button-small button-empty button-border button-blue">
-							<i class="fa fa-clock-o"></i>&nbsp;&nbsp;
-							<span ng-if="!showPSTtz">Show hours in PST timezone</span>
-							<span ng-if="showPSTtz">Show hours in community's timezone</span>
+						<span ng-if="loaded">
+							<button name='refresh' ng-click='toggleTz()' class="button button-small button-empty button-border button-blue">
+								<i class="fa fa-clock-o"></i>&nbsp;&nbsp;
+								<span ng-if="!showPSTtz">Show hours in PST timezone</span>
+								<span ng-if="showPSTtz">Show hours in community's timezone</span>
 							</button>
+						</span>
 					</div>
 				</li>
 			</ul>
@@ -61,19 +63,22 @@
 			<h1>{{community.name}}</h1>
 			<div class="divider"></div>
 		</div>
-
+		<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': !loaded}"></div>
 		<div class="no-box-content-color">
 			<table class="tb-grid tb-zebra" ng-if="days">
 				<thead>
 					<tr>
+						<th><i class="fa fa-arrow-left schedule-shift-navigation" ng-click="previousWeek()"></i></th>
 						<th ng-repeat="day in days" class="table-label">
 							<div class="date">{{day.date}}</div>
 							<div class="weekday">{{day.weekday}}</div>
 						</th>
+						<th><i class="fa fa-arrow-right schedule-shift-navigation" ng-click="nextWeek()"></i></th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
+						<td></td>
 						<td ng-repeat="day in community.days">
 							<div ng-if="day.shifts.length">
 								<div ng-repeat="shift in day.shifts" class="shift unselectable" ng-class="{'shift-hidden':shift.hidden, 'shift-has-drivers': shift.drivers, 'shift-no-driver': !shift.drivers}">
@@ -106,6 +111,7 @@
 								<button ng-click="addShift( community.id_community, community.name, day.date )" class="button button-small button-empty button-border button-blue"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Shift</button>
 							</div>
 						</td>
+						<td></td>
 					</tr>
 				</tbody>
 			</table>
