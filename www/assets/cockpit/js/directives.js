@@ -837,8 +837,11 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 						});
 
 						var windowHeight = angular.element(window).height();
-						var theadHeight = thead.height();
-						var tbodyHeight = ( windowHeight - ( theadHeight + 180 ) + 'px' );
+						var theadHeight = 0;
+						$('.table-sticky-dependant').each(function(i, el) {
+							theadHeight += $(el).height();
+						});
+						var tbodyHeight = ( windowHeight - (theadHeight + 127) + 'px' );
 
 						thead.css( 'display', 'block' );
 						tbody.css( 'display', 'block' );
@@ -853,6 +856,10 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 				}
 
 				$rootScope.$on( 'ng-repeat-finished', function(e, data) {
+					justDoIt();
+				});
+
+				$rootScope.$on( 'search-toggle', function(e, data) {
 					justDoIt();
 				});
 
