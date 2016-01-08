@@ -838,7 +838,7 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 
 						var windowHeight = angular.element(window).height();
 						var theadHeight = thead.height();
-						var tbodyHeight = ( windowHeight - ( theadHeight + 170 ) + 'px' );
+						var tbodyHeight = ( windowHeight - ( theadHeight + 180 ) + 'px' );
 
 						thead.css( 'display', 'block' );
 						tbody.css( 'display', 'block' );
