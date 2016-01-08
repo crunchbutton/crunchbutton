@@ -423,101 +423,96 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 	private function _loadShifts(){
 
-		$out = [ 'days' => [] ];
-		$start = $this->request()['start'];
-		// $start = '2016-02-07T15:42:41.624Z';
-		$start = explode( 'T', $start );
-		$start = new DateTime( $start[ 0 ] . ' 00:00:00', new DateTimeZone( c::config()->timezone  ) );
+		if( $this->request()['start'] && $this->request()['communities'] ){
+			$out = [ 'days' => [] ];
+			$start = $this->request()['start'];
+			$start = explode( 'T', $start );
+			$start = new DateTime( $start[ 0 ] . ' 00:00:00', new DateTimeZone( c::config()->timezone  ) );
 
-		$filterCommunities = $this->request()['communities'];
+			$filterCommunities = $this->request()['communities'];
 
-		$year = ( $this->request()['year'] ? $this->request()['year'] : $start->format( 'Y' ) );
-		$month = ( $this->request()['month'] ? $this->request()['month'] : $start->format( 'm' ) );
-		$day = ( $this->request()['day'] ? $this->request()['day'] : $start->format( 'd' ) );
+			$year = ( $this->request()['year'] ? $this->request()['year'] : $start->format( 'Y' ) );
+			$month = ( $this->request()['month'] ? $this->request()['month'] : $start->format( 'm' ) );
+			$day = ( $this->request()['day'] ? $this->request()['day'] : $start->format( 'd' ) );
 
-		if( $year == $start->format( 'Y' ) && $month == $start->format( 'm' ) && $day == $start->format( 'd' ) ){
-			$current = true;
-		} else {
-			$current = false;
-		}
+			if( $year == $start->format( 'Y' ) && $month == $start->format( 'm' ) && $day == $start->format( 'd' ) ){
+				$current = true;
+			} else {
+				$current = false;
+			}
 
-		// Start week on thursday
-		$firstDay = new DateTime( $year . '-' . $month . '-' . $day, new DateTimeZone( c::config()->timezone  ) );
+			$firstDay = new DateTime( $year . '-' . $month . '-' . $day, new DateTimeZone( c::config()->timezone  ) );
 
-		$days = [];
-		for( $i = 0; $i <= 6; $i++ ){
-			$days[] = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
-			$out[ 'days' ][ $firstDay->format( 'Ymd' ) ] = [ 'date' => $firstDay->format( 'M jS' ), 'weekday' => $firstDay->format( 'l' ) ];
-			$firstDay->modify( '+ 1 day' );
-		}
+			$days = [];
+			for( $i = 0; $i <= 6; $i++ ){
+				$days[] = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+				$out[ 'days' ][ $firstDay->format( 'Ymd' ) ] = [ 'date' => $firstDay->format( 'M jS' ), 'weekday' => $firstDay->format( 'l' ) ];
+				$firstDay->modify( '+ 1 day' );
+			}
 
-		// prev/next links
-		$firstDay->modify( '- 2 week' );
-		$link_prev_day = $firstDay->format( 'Y/m/d' );
-		$firstDay->modify( '+ 2 week' );
-		$link_next_day = $firstDay->format( 'Y/m/d' );
+			$communities = [];
 
-		$communities = [];
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 
-		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-
-		foreach( $filterCommunities as $community ) {
-			$community = Community::o( $community );
-			if( $community->id_community ){
-				$shifts = [];
-				foreach( $days as $day ) {
-					if( intval( $now->format( 'Ymd' ) ) <= intval( $day->format( 'Ymd' ) ) ){
-						$editable = true;
-					} else {
-						$editable = false;
+			foreach( $filterCommunities as $community ) {
+				$community = Community::o( $community );
+				if( $community->id_community ){
+					$shifts = [];
+					foreach( $days as $day ) {
+						if( intval( $now->format( 'Ymd' ) ) <= intval( $day->format( 'Ymd' ) ) ){
+							$editable = true;
+						} else {
+							$editable = false;
+						}
+						$shifts[ $day->format( 'Ymd' ) ] = [ 'shifts' => [], 'editable' => $editable, 'date' => [ 'day' => $day->format( 'Y-m-d' ), 'formatted' => $day->format( 'M jS Y' ), 'tz' => $community->timezone ] ];
 					}
-					$shifts[ $day->format( 'Ymd' ) ] = [ 'shifts' => [], 'editable' => $editable, 'date' => [ 'day' => $day->format( 'Y-m-d' ), 'formatted' => $day->format( 'M jS Y' ), 'tz' => $community->timezone ] ];
-				}
-				$communities[ $community->id_community ] = [ 'id_community' => $community->id_community, 'name' => $community->name, 'days' => $shifts ];
-			}
-		}
-
-		usort( $communities, function( $a, $b ) {
-			return $a[ 'name' ] > $b[ 'name' ];
-		} );
-
-		$_communities = [];
-
-		foreach( $communities as $community ){
-			$_communities[ $community[ 'id_community' ] ] = $community;
-		}
-
-		$communities = $_communities;
-
-		foreach( $days as $day ) {
-			$segments = Crunchbutton_Community_Shift::shiftsByDay( $day->format( 'Y-m-d' ) );
-			foreach( $segments as $segment ){
-				if( $communities[ $segment->id_community ] ){
-					$communities[ $segment->id_community ]['days'][ $day->format( 'Ymd' ) ][ 'shifts' ][] = $this->_parseSegment( $segment );
+					$communities[ $community->id_community ] = [ 'id_community' => $community->id_community, 'name' => $community->name, 'days' => $shifts ];
 				}
 			}
+
+			usort( $communities, function( $a, $b ) {
+				return $a[ 'name' ] > $b[ 'name' ];
+			} );
+
+			$_communities = [];
+
+			foreach( $communities as $community ){
+				$_communities[ $community[ 'id_community' ] ] = $community;
+			}
+
+			$communities = $_communities;
+
+			foreach( $days as $day ) {
+				$segments = Crunchbutton_Community_Shift::shiftsByDay( $day->format( 'Y-m-d' ) );
+				foreach( $segments as $segment ){
+					if( $communities[ $segment->id_community ] ){
+						$communities[ $segment->id_community ]['days'][ $day->format( 'Ymd' ) ][ 'shifts' ][] = $this->_parseSegment( $segment );
+					}
+				}
+			}
+
+			// prev/next links
+			$firstDay->modify( '- 2 week' );
+			$out[ 'prev' ] = $firstDay->format( 'Y/m/d' );
+			$firstDay->modify( '+ 2 week' );
+			$out[ 'next' ] = $firstDay->format( 'Y/m/d' );
+
+			$firstDay->modify( '-1 day' );
+			$to = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+			$firstDay->modify( '-6 day' );
+			$from = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+			$out[ 'period' ] = [ 'to' => $to->format( 'M jS Y' ), 'from' => $from->format( 'M jS Y' ) ];
+
+			$out[ 'year' ] = $year;
+			$out[ 'month' ] = $month;
+			$out[ 'day' ] = $day;
+			$out[ 'current' ] = $current;
+			$out[ 'now' ] = $_now;
+			$out[ 'communities' ] = $communities;
+
+			echo json_encode( $out );exit;
 		}
-
-		// prev/next links
-		$firstDay->modify( '- 2 week' );
-		$out[ 'prev' ] = $firstDay->format( 'Y/m/d' );
-		$firstDay->modify( '+ 2 week' );
-		$out[ 'next' ] = $firstDay->format( 'Y/m/d' );
-
-		$firstDay->modify( '-1 day' );
-		$to = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
-		$firstDay->modify( '-6 day' );
-		$from = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
-		$out[ 'period' ] = [ 'to' => $to->format( 'M jS Y' ), 'from' => $from->format( 'M jS Y' ) ];
-
-		$out[ 'year' ] = $year;
-		$out[ 'month' ] = $month;
-		$out[ 'day' ] = $day;
-		$out[ 'current' ] = $current;
-		$out[ 'now' ] = $_now;
-		$out[ 'communities' ] = $communities;
-
-		echo json_encode( $out );exit;
+		$this->error( 404 );
 	}
 
 	private function _parseSegment( $segment ){
