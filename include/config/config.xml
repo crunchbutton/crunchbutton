@@ -300,10 +300,10 @@
 	</google>
 	<optimizer>
 		<live>
-			<url>***REMOVED***</url>
+			<url>_URL_</url>
 		</live>
 		<dev>
-			<url>***REMOVED***</url>
+			<url>_URL_</url>
 		</dev>
 	</optimizer>
 	<lob>
