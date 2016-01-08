@@ -2,15 +2,13 @@
 
 <div class="content-padding">
 
-	<h1 class="title"><i class="fa fa-bank"></i>Settlement<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
-
-	<div class="box-content2 box-content-table">
+	<div class="box-content2 box-content-table box-search-bar table-sticky-dependant">
 		<table>
 			<tr>
-				<td colspan="8">
-					<i class="fa fa-search"></i>&nbsp;&nbsp;<input ng-readonly="query.id_driver" type="text" ng-model="query.search" id="search" tabindex="1"></td>
-				<td>
-					<td><i title="More options" class="fa fa-search-plus link no-underline" ng-class="{'orange':show_more_options}" ng-click="show_more_options=!show_more_options"></i></td>
+				<td colspan="5">
+					<div title="More options" class="search-bar-options" ng-class="{'orange':show_more_options}" ng-click="showMoreOptions()">
+						<i class="fa" ng-class="{'fa-search':show_more_options, 'fa-search-plus':!show_more_options}"></i>
+					</div>&nbsp;&nbsp;<input type="text" ng-readonly="query.id_driver" ng-model="query.search" id="search" tabindex="1" placeholder="Search settlement">
 				</td>
 			</tr>
 			<tr ng-if="show_more_options">
@@ -41,102 +39,11 @@
 	</div>
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
-
-	<div ng-if="count">
-
-		<div class="box-content2 box-content-table">
-			<table class="tb-zebra" sticky-header>
-				<thead>
-					<tr>
-						<th>ID</th>
-						<th>Name</th>
-						<th>Notes / Log</th>
-						<th>Payment Status</th>
-						<th>Amount</th>
-						<th>Date</th>
-						<th>Schedule Status</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="payment in payments" ng-init="$last ? ngRepeatFinished() : null">
-						<td>
-							<a ng-if="payment.id_driver" href="/settlement/drivers/scheduled/{{payment.id_payment_schedule}}">
-								{{payment.id_payment_schedule}}
-							</span>
-							<a ng-if="payment.id_restaurant" href="/settlement/restaurants/scheduled/{{payment.id_payment_schedule}}">
-								{{payment.id_payment_schedule}}
-							</span>
-						</td>
-
-						<td>
-							{{payment.name}}
-							<div>
-
-								<span class="tag tag-orange" ng-if="payment.type == 'driver'">Driver</span>
-								<span class="tag tag-purple" ng-if="payment.type == 'restaurant'">Restaurant</span>
-
-								<span ng-if="payment.type == 'driver'">
-									<span class="tag tag-green" ng-if="payment.pay_type == 'payment'">Payment</span>
-									<span class="tag tag-orange" ng-if="payment.pay_type == 'reimbursement'">Reimbursement</span>
-
-									<span class="tag tag-blue" ng-if="payment.payment_type == 'orders'">Commission</span>
-									<span class="tag tag-purple" ng-if="payment.payment_type == 'hours'">Hourly with tips</span>
-									<span class="tag tag-orange" ng-if="payment.payment_type == 'hours_without_tips'">Hourly without tips</span>
-									<span class="tag tag-yellow" ng-if="payment.payment_type == 'making_whole'">Making whole</span>
-									<span class="tag tag-grey" ng-if="!payment || !payment.payment_type || payment.payment_type == '-' ">Payment Type Missing</span>
-
-								</span>
-							</div>
-						</td>
-						<td>
-							<span class="listview-smaller">{{payment.note}}</span>
-							<div>
-								<!-- <span class="tag tag-darkgreen" ng-if="payment.arbritary">Arbritary</span> -->
-								<span class="tag tag-lightblue" ng-if="payment.check">Check</span>
-								<span ng-if="payment.status != 'done' && payment.log" class="tag tag-lightgrey">{{payment.log}}</span>
-							</div>
-							<div ng-if="payment.range_date" class="listview-smaller">
-								{{payment.range_date}}
-							</div>
-						</td>
-						<td>
-								<span class="tag tag-orange" ng-if="payment.payment_status == 'pending'">Pending</span>
-								<span class="tag tag-red" ng-if="payment.payment_status == 'canceled'">Canceled</span>
-								<span class="tag tag-black" ng-if="payment.payment_status == 'failed'">Failed</span>
-								<span class="tag tag-green" ng-if="payment.payment_status == 'succeeded'">Succeeded</span>
-								<span class="tag tag-black" ng-if="payment.payment_status == 'reversed'">Reversed</span>
-
-								<button ng-if="!payment.check && payment.id_payment && payment.payment_status != 'succeeded' && payment.payment_status != 'reversed'" title="Check payment status" ng-click="payment_status( payment.id_payment );" class="button button-small button-empty button-green"><i class="fa fa-refresh" ng-class="{'fa-spin': balancedRefresh == payment.id_payment}"></i></button>
-								&nbsp;
-						</td>
-						<td>$ {{payment.amount | formatPrice}}</td>
-						<td>
-							<span class="listview-smaller">
-								{{payment.date | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}&nbsp;
-							</span>
-						</td>
-						<td>
-								<span class="tag tag-red" ng-if="payment.status == 'scheduled'">Scheduled</span>
-								<span class="tag tag-red" ng-if="payment.status == 'processing'">Processing</span>
-								<span class="tag tag-green" ng-if="payment.status == 'done'">Done</span>
-								<span class="tag tag-black" ng-if="payment.status == 'error'">Error</span>
-								<span class="tag tag-lightgrey" ng-if="payment.status == 'deleted'">Deleted</span>
-								<span class="tag tag-blue" ng-if="payment.status == 'archived'">Archived</span>
-								&nbsp;
-						</td>
-						<td nowrap class="tb-v-center">
-							<div ng-if="payment.status != 'done'">
-								<button ng-if="payment.status != 'archived'" title="Archive" ng-click="archive( payment.id_payment_schedule );" class="button button-small button-empty button-green"><i class="fa fa-archive"></i></button>
-								<button ng-if="payment.status != 'deleted'" title="Delete" ng-click="delete( payment.id_payment_schedule );" class="button button-small button-empty button-green"><i class="fa fa-trash"></i></button>
-							</div>
-					</td>
-					</tr>
-				</tbody>
-			</table>
+	<ng-include src="'assets/view/listview-settlement.html'"></ng-include>
+	<div sticky-bottom="47" class="table-sticky-dependant" ng-show="pages > 1 || more">
+		<div class="no-box-content-color">
+			<ng-include src="'assets/view/listview-paging.html'"></ng-include>
 		</div>
-		<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
-		<ng-include src="'assets/view/listview-paging.html'"></ng-include>
-		<div class="divider"></div>
 	</div>
+
 </div>
