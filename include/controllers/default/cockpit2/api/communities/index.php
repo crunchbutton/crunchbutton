@@ -34,9 +34,7 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 			FROM community
 			LEFT JOIN restaurant_community ON community.id_community=restaurant_community.id_community
 			LEFT JOIN restaurant ON restaurant_community.id_restaurant=restaurant.id_restaurant
-			LEFT JOIN `order` ON restaurant.id_restaurant=`order`.id_order
 			LEFT JOIN `community_alias` ON community_alias.id_community = community.id_community
-
 			WHERE
 				community.name IS NOT NULL
 		';
@@ -111,8 +109,7 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 		$data = [];
 		$r = c::db()->query(str_replace('-WILD-','
 			community.*,
-			(SELECT `order`.date FROM `order` WHERE `order`.id_community = community.id_community order by `order`.date desc limit 1) as _order_date,
-			COUNT(`restaurant`.id_restaurant) restaurants
+			COUNT(distinct `restaurant`.id_restaurant) restaurants
 		', $q), $keys);
 
 
@@ -149,11 +146,42 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 			if( $note ){
 				$s->note = $note->exports();
 			}
+			$closed = c::db()->get('
+				select * from community_change_set ccs
+				left join community_change cc ON ccs.id_community_change_set = cc.id_community_change_set
+				left join admin a on a.id_admin=ccs.id_admin
+				where
+					ccs.id_community=?
+					and ( cc.field = ? OR cc.field = ? OR cc.field = ? )
+					AND cc.new_value = true
+					order by timestamp desc
+					limit 1
+			', [$community->id_community, 'close_all_restaurants', 'close_3rd_party_delivery_restaurants', 'is_auto_closed'])->get(0);
+
+			if ($closed) {
+				$closedAt = new DateTime($closed->timestamp, new DateTimeZone(c::config()->timezone));
+				$name = $closed->id_admin ? $closed->name : Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN )->name;
+				$s->closedLog = [
+					'closed_at' => $closedAt->format('M jS Y g:i:s A T'),
+					'closed_by' => $name,
+					'note' => Community::closedNote($closed->id_community_change_set, $closed->field)
+				];
+				if ($closed->field == 'close_all_restaurants' ){
+					$s->closedLog[ 'type' ] = Crunchbutton_Community::TITLE_CLOSE_ALL_RESTAURANTS;
+				} elseif ( $closed->field == 'close_3rd_party_delivery_restaurants' ){
+					$s->closedLog[ 'type' ] = Crunchbutton_Community::TITLE_CLOSE_3RD_PARY_RESTAURANTS;
+				} elseif ( $closed->field == 'is_auto_closed' ){
+					$s->closedLog[ 'type' ] = Crunchbutton_Community::TITLE_CLOSE_AUTO_CLOSED;
+				}
+			}
+
+//
+
 
 
 			// pull up community closed log
 			// @todo seems to take a little longer. need to clean this up
-			$s->closedLog = $community->closedSince()[0];
+			//$s->closedLog = $community->closedSince()[0];
 
 //			$data[] = $out;
 			$data[] = $s;
