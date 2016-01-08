@@ -1,6 +1,6 @@
 <div class="box-content2 box-content-table">
-	<table class="tb-zebra" sticky-header>
-		<thead>
+	<div sticky-header>
+		<table class="thead">
 			<tr>
 				<th>Driver</th>
 				<th>Community</th>
@@ -11,37 +11,39 @@
 				<th class="tb-small tb-center">Called</th>
 				<th class="tb-small tb-center">Confirmed</th>
 			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="s in shifts track by $index" ng-attr-tabindex="{{$index+4}}" ng-init="$last ? ngRepeatFinished() : null">
-				<td nowrap="">
-					<a href="/staff/{{s.login}}">{{s.driver}}</a>
-					<br><a href ng-click="callText(s.phone)" class="listview-smaller">{{s.phone | formatPhone}}</a>
-				</td>
-				<td>
-					<a href="/community/{{s.community_permalink}}"><span class="listview-bold">{{s.community}}</span></a>
-				</td>
-				<td>
-					<span class="listview-bold">{{s.date}}</span>
-				</td>
-				<td>
-					<span class="listview-bold">{{s.period_pst}} (PDT)</span>
-				</td>
-				<td>{{s.period}} ({{s.community_tz}})</td>
-				<td nowrap class="tb-center tb-v-center">
-					<span class="tag tag-green" ng-if="s.text">Yes</span>
-					<span class="tag tag-lightgrey" ng-if="!s.text">No</span>
-				</td>
-				<td nowrap class="tb-center tb-v-center">
-					<span class="tag tag-green" ng-if="s.call">Yes</span>
-					<span class="tag tag-lightgrey" ng-if="!s.call">No</span>
-				</td>
+		</table>
+		<div class="tbody">
+			<table class="tb-zebra">
+				<tr ng-repeat="s in shifts track by $index" ng-attr-tabindex="{{$index+4}}" ng-init="$last ? ngRepeatFinished() : null">
+					<td nowrap="">
+						<a href="/staff/{{s.login}}">{{s.driver}}</a>
+						<br><a href ng-click="callText(s.phone)" class="listview-smaller">{{s.phone | formatPhone}}</a>
+					</td>
+					<td>
+						<a href="/community/{{s.community_permalink}}"><span class="listview-bold">{{s.community}}</span></a>
+					</td>
+					<td>
+						<span class="listview-bold">{{s.date}}</span>
+					</td>
+					<td>
+						<span class="listview-bold">{{s.period_pst}} (PDT)</span>
+					</td>
+					<td>{{s.period}} ({{s.community_tz}})</td>
+					<td nowrap class="tb-center tb-v-center">
+						<span class="tag tag-green" ng-if="s.text">Yes</span>
+						<span class="tag tag-lightgrey" ng-if="!s.text">No</span>
+					</td>
+					<td nowrap class="tb-center tb-v-center">
+						<span class="tag tag-green" ng-if="s.call">Yes</span>
+						<span class="tag tag-lightgrey" ng-if="!s.call">No</span>
+					</td>
 
-				<td nowrap class="tb-center tb-v-center">
-					<span class="tag tag-red link no-underline" ng-if="!s.confirmed" ng-click="shift_checkin( s.id_admin_shift_assign )">Not confirmed</span>
-					<span class="tag tag-green" ng-if="s.confirmed">Checked in</span>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+					<td nowrap class="tb-center tb-v-center">
+						<span class="tag tag-red link no-underline" ng-if="!s.confirmed" ng-click="shift_checkin( s.id_admin_shift_assign )">Not confirmed</span>
+						<span class="tag tag-green" ng-if="s.confirmed">Checked in</span>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
 </div>

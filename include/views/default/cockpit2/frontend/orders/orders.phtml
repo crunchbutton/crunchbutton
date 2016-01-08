@@ -84,9 +84,9 @@
 	<ng-include src="'assets/view/listview-orders.html'" ng-show="query.view=='list' && regularList"></ng-include>
 
 
-	<div sticky-bottom="47" class="table-sticky-dependant">
+	<div sticky-bottom="47" class="table-sticky-dependant" ng-show="query.view == 'list' && (pages > 1 || more)">
 		<div class="no-box-content-color">
-			<ng-include src="'assets/view/listview-paging.html'" ng-show="query.view=='list'"></ng-include>
+			<ng-include src="'assets/view/listview-paging.html'"></ng-include>
 		</div>
 	</div>
 
