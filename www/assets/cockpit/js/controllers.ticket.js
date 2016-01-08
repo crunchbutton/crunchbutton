@@ -67,6 +67,7 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, TicketSe
 				} );
 			}
 		}
+		$rootScope.$broadcast('search-toggle');
 	}
 
 });
