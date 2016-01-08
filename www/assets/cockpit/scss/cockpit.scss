@@ -3627,9 +3627,6 @@ input[type="checkbox"].switch + div:before {
 
 .box-content-table {
 	padding: 0;
-	margin: 0;
-	width: calc(100% + 24px);
-	margin-left: -11px;
 }
 
 .box-content-table table {
@@ -4592,10 +4589,9 @@ table.receipt{
 .sticky-bottom {
 	text-align: right;
 	background: rgba(255,255,255,.7);
-	border-top: 1px solid #e7eaec;
-	width: calc(100% + 24px);
+	border-top: 3px solid #e7eaec;
+	width: 100%;
 	box-sizing: border-box;
-	margin-left: -11px;
 	pointer-events: none;
 }
 
@@ -4627,10 +4623,15 @@ table.receipt{
 	display: table;
 }
 
-.box-content-table thead, .box-content-table tbody {
-	display: block;
+.box-content-listview tbody {
+	overflow-y: scroll;
 }
 
-.box-content-table tbody {
-	overflow-y: scroll;
+.box-content-listview {
+	margin: 0;
+	width: 100%;
+}
+
+.box-search-bar {
+	
 }
