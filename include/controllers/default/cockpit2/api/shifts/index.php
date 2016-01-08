@@ -36,7 +36,35 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			case 'save-driver-note':
 				$this->_saveDriverNote();
 				break;
+			case 'remove-shift':
+				$this->_removeShift();
+				break;
+			case 'remove-recurring-shift':
+				$this->_removeRecurringShift();
+				break;
 		}
+	}
+
+	private function _removeShift(){
+		if( $this->method() == 'post' ){
+			$id_community_shift = $this->request()[ 'id_community_shift' ];
+			if( $id_community_shift ){
+				Crunchbutton_Community_Shift::remove( $id_community_shift );
+			}
+			echo json_encode( [ 'success' => true ] );exit;
+		}
+		$this->error( 404 );
+	}
+
+	private function _removeRecurringShift(){
+		if( $this->method() == 'post' ){
+			$id_community_shift = $this->request()[ 'id_community_shift' ];
+			if( $id_community_shift ){
+				Crunchbutton_Community_Shift::removeRecurring( $id_community_shift );
+			}
+			echo json_encode( [ 'success' => true ] );exit;
+		}
+		$this->error( 404 );
 	}
 
 	private function _saveDriverNote(){
@@ -322,6 +350,8 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 				$out[ 'shift_remove_permanency' ] = true;
 			}
 
+			$_drivers_assigned = [];
+
 			$_drivers = [];
 
 			foreach( $drivers as $driver ){
@@ -333,6 +363,10 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 				$_driver[ 'total_shifts' ] = $driverShifts->count();
 				$_driver[ 'assigned' ] = ( Crunchbutton_Admin_Shift_Assign::adminHasShift( $driver->id_admin, $shift->id_community_shift ) ) ? true : false;
 				$_driver[ 'assigned_permanently' ] = ( Crunchbutton_Admin_Shift_Assign_Permanently::adminIsPermanently( $driver->id_admin, $shift->id_community_shift ) ) ? true : false;
+
+				if( $_driver[ 'assigned' ] ){
+					$_drivers_assigned[] = $driver->name;
+				}
 
 				$_driver[ 'ranking' ] = [ 'current' => -1, 'highest' => 0 ];
 				if( $ranking[ $driver->id_admin ] ){
@@ -356,6 +390,11 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 					$_driver[ 'sort' ] = -1;
 				}
 				$_drivers[] = $_driver;
+			}
+
+			if( count( $_drivers_assigned ) ){
+				$_drivers_assigned = join( $_drivers_assigned, ', ' );
+				$out[ 'drivers_assigned' ] = $_drivers_assigned;
 			}
 
 			if( !$this->request()[ 'ignore_log' ] ){
@@ -516,14 +555,10 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _parseSegment( $segment ){
-		$out = [
-						'id_community_shift' => $segment->id_community_shift,
-						// 'full_date' => $segment->fullDate(),
-						'period' => $segment->startEndToString(),
-						'tz' => $segment->timezoneAbbr(),
-						// 'full_date_pst' => $segment->fullDate( c::config()->timezone ),
-						'period_pst' => $segment->startEndToString( Community_Shift::CB_TIMEZONE ),
-		 				];
+		$out = [	'id_community_shift' => $segment->id_community_shift,
+							'period' => $segment->startEndToString(),
+							'tz' => $segment->timezoneAbbr(),
+							'period_pst' => $segment->startEndToString( Community_Shift::CB_TIMEZONE ) ];
 
 		 if( $segment->isHidden() ){
 		 	$out[ 'hidden' ] = true;
@@ -565,5 +600,4 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 		}
 		return $out;
 	}
-
 }

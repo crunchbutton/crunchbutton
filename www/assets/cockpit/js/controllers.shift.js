@@ -125,6 +125,9 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftSchedu
 			} else {
 				$scope.options.start = new Date();
 			}
+			// @remove -- remove it before commit
+			// $scope.options.communities = [ 92 ];
+			// $scope.loadShifts();
 		} );
 
 		if( !$scope.communities ){
@@ -158,6 +161,7 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftSchedu
 });
 
 NGApp.controller('ShiftScheduleEditShiftCtrl', function ( $scope, $rootScope, ShiftScheduleService ) {
+
 	$rootScope.$on( 'openEditShiftContainer', function( e, data ) {
 		$scope.loading = true;
 		$scope.shift = null;
@@ -188,6 +192,49 @@ NGApp.controller('ShiftScheduleEditShiftCtrl', function ( $scope, $rootScope, Sh
 				setTimeout( function(){ $rootScope.closePopup(); $scope.isSavingEditShift = false; }, 200 );
 			}
 		} );
+	}
+
+	var confirmFail = function(){
+		setTimeout( function() {
+			if( $scope.shift.id_community_shift ){
+				var params = { id_community_shift: $scope.shift.id_community_shift }
+				$rootScope.$broadcast( 'openEditShiftContainer', params );
+			}
+		}, 400 );
+	}
+
+	$scope.removeShift = function(){
+		if( $scope.shift.id_community_shift ){
+			var success = function(){
+				var params = { id_community_shift: $scope.shift.id_community_shift }
+				ShiftScheduleService.removeShift( params, function( json ){
+					if( json.error ){
+						App.alert( 'Error deleting: ' + json.error );
+					} else {
+						$rootScope.$broadcast( 'shiftsChanged', json.id_community );
+						setTimeout( function(){ $rootScope.closePopup(); }, 200 );
+					}
+				} );
+			}
+			App.confirm( 'Confirm delete this shift?', 'Confirm', success, confirmFail, 'Yes,No', true );
+		}
+	}
+
+	$scope.removeRecurringShift = function(){
+		if( $scope.shift.id_community_shift ){
+			var success = function(){
+				var params = { id_community_shift: $scope.shift.id_community_shift }
+				ShiftScheduleService.removeRecurringShift( params, function( json ){
+					if( json.error ){
+						App.alert( 'Error deleting: ' + json.error );
+					} else {
+						$rootScope.$broadcast( 'shiftsChanged', json.id_community );
+						setTimeout( function(){ $rootScope.closePopup(); }, 200 );
+					}
+				} );
+			}
+			App.confirm( 'Confirm delete all recurring shifts?', 'Confirm', success, confirmFail, 'Yes,No', true );
+		}
 	}
 
 } );
