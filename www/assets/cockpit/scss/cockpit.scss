@@ -3648,7 +3648,7 @@ input[type="checkbox"].switch + div:before {
 	width: 90%;
 }
 
-.box-content-table > table > tbody > tr > td, .box-content-table > table > tbody > tr > th, .box-content-table > table > thead > tr > th {
+.box-content-table table tr > td, .box-content-table table tr > th{
 	font-size: 1.2em;
 	padding: .7em;
 	border-bottom: 1px solid #eeeeee;
@@ -3656,37 +3656,37 @@ input[type="checkbox"].switch + div:before {
 	vertical-align: top;
 }
 
-.box-content-table > table > tbody > tr:first-child > * {
+.box-content-table table .tbody > tr:first-child > * {
 	padding-top: .8em;
 }
-.box-content-table > table > tbody > tr:last-child > * {
+.box-content-table table .tbody > tr:last-child > * {
 	padding-bottom: .8em;
 	border-bottom: none;
 }
-.box-content-table > table > tbody > tr > *:first-child {
+.box-content-table table .tbody > tr > *:first-child {
 	padding-left: 1.1em;
 }
-.box-content-table > table > tbody > tr > *:last-child {
+.box-content-table table .tbody > tr > *:last-child {
 	padding-right: 1.1em;
 }
-.box-content-table > table > tbody > tr > *:last-child:not(:first-child) {
+.box-content-table table .tbody > tr > *:last-child:not(:first-child) {
 	text-align: right;
 }
 
-.box-content-table > table > tbody > tr > td.tb-image-row {
+.box-content-table table .tbody > tr > td.tb-image-row {
 	padding-left: .7em;
 	width: 1px;
 	vertical-align: middle;
 }
 
-.box-content-table > table > tbody > tr:focus {
+.box-content-table table .tbody > tr:focus {
 	background: #bbede9;
 }
-.box-content-table > table > tbody > tr:focus > td {
+.box-content-table table .tbody > tr:focus > td {
 	border-bottom: 1px solid #b3e0de;
 }
 
-.box-content-table > table > tbody > tr > th, .box-content-table > table > thead > tr > th {
+.box-content-table table tr > th {
 	font-weight: bold;
 	text-align: left;
 }
@@ -4635,3 +4635,11 @@ table.receipt{
 .box-search-bar {
 	margin-bottom: 1.4em;
 }
+
+@media screen and (min-width: $desktopWidth) {
+	.page-orders  {
+		overflow: hidden;
+	}
+}
+
+

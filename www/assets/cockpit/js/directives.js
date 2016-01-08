@@ -788,8 +788,9 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 						processing = true;
 
 						var table = angular.element(elem);
-						var thead = table.find('thead');
-						var tbody = table.find('tbody');
+						table.addClass('sticky-header');
+						var thead = table.find('.thead');
+						var tbody = table.find('.tbody');
 						/*
 						var sticky = table.find('sticky-tbody');
 						console.log(sticky);
@@ -841,7 +842,7 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 						$('.table-sticky-dependant').each(function(i, el) {
 							theadHeight += $(el).height();
 						});
-						var tbodyHeight = ( windowHeight - (theadHeight + 127) + 'px' );
+						var tbodyHeight = ( windowHeight - (theadHeight + 130) + 'px' );
 
 						thead.css( 'display', 'block' );
 						tbody.css( 'display', 'block' );

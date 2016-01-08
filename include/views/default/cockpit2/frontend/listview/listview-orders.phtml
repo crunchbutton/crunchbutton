@@ -1,6 +1,6 @@
 <div class="box-content2 box-content-table box-content-listview">
-	<table class="tb-zebra" sticky-header>
-		<thead>
+	<div sticky-header>
+		<table class="thead">
 			<tr>
 				<th>Info</th>
 				<th>Date</th>
@@ -11,85 +11,87 @@
 				<th class="tb-small">Status</th>
 				<th class="tb-small"></th>
 			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="order in orders track by $index" ng-class="{ 'delivery_it_self': order.delivery_it_self }" ng-attr-tabindex="{{$index+1}}" tab-select="/order/{{order.id_order}}" ng-init="$last ? ngRepeatFinished() : null">
-				<td>
-					<?php /* Info */ ?>
-						<a href="/order/{{order.id_order}}">{{order.id_order}}</a>
-					<?php /* Info */ ?>
-				</td>
-				<td nowrap="">
-					<?php /* Date */ ?>
-					<span class="listview-smaller"><strong>{{order.date | localtime:'MM/DD'}}</strong><br>
-					{{order.date | localtime:'h:mm a'}}</span>
-					<?php /* Date */ ?>
-				</td>
-				<td ng-if="!restaurant">
-					<? /* Restaurant */ ?>
-					<span class="listview-smaller">
-						<a href="/restaurant/{{order._restaurant_permalink}}">{{order._restaurant_name}}</a><br>
-						<a href="/community/{{order._community_permalink}}" ng-if="!community" class="no-underline">{{order._community_name}}</a>
-					</span>
-					<div ng-if="order.formal_relationship">
-						<span class="tag tag-empty tag-grey">Formal</span>
-					</div>
-					<? /* Restaurant */ ?>
-				</td>
-				<td>
-					<?php /* Customer */ ?>
-						<a href="/customer/{{order.id_user}}">{{order.name}}</a><br>
-						<a href ng-click="callText(order.phone)" class="listview-smaller">{{order.phone | formatPhone}}</a>
-					<?php /* Customer */ ?>
-					<div>
-						<span class="tag tag-purple" ng-if="order.pay_type == 'cash'">Cash</span>
-						<span class="tag tag-green" ng-if="order.pay_type == 'card' && !order.campus_cash">Card</span>
-						<span class="tag tag-blue" ng-if="order.pay_type == 'card' && order.campus_cash">Campus Cash<span ng-if="!order.campus_cash_charged"> - Not Charged!</span></span>
-					</div>
-				</td>
-				<td>
-					<?php /* Order */ ?>
-					<span class="listview-smaller">
-							<div class="display-table">
-								<div class="display-table-row">
-									<div class="display-table-cell">Sub:</div>
-									<div class="display-table-cell">${{order.price + order.delivery_fee + order.delivery_service_markup_value + (order.price * (order.service_fee/100)) | number:2}}</div>
-								</div>
-								<div class="display-table-row">
-									<div class="display-table-cell"><strong>Tot:</strong></div>
-									<div class="display-table-cell"><strong>${{order.final_price_plus_delivery_markup | number:2}}</strong></div>
-								</div>
-							</div>
-					</span>
-					<?php /* Order */ ?>
-				</td>
-				<td>
-					<?php /* Driver */ ?>
-
-						<a href="/staff/{{order.status.driver.id_admin}}">{{order.status.driver.name}}</a><br>
-						<a href ng-click="callText(order.status.driver.phone)" class="listview-smaller">{{order.status.driver.phone | formatPhone}}</a>
-						<span class="tag tag-blue" ng-if="order.pay_type == 'card' && order.campus_cash">Campus Cash<span ng-if="!order.campus_cash_charged"> - Not Charged!</span></span>
-						<div ng-if="order.vehicle">
-
-							<span class="tag tag-green" ng-if="order.vehicle=='car'">Car</span>
-							<span class="tag tag-red" ng-if="order.vehicle!='car'">{{order.vehicle}}</span>
+		</table>
+		<div class="tbody">
+			<table class="tb-zebra">
+				<tr ng-repeat="order in orders track by $index" ng-class="{ 'delivery_it_self': order.delivery_it_self }" ng-attr-tabindex="{{$index+1}}" tab-select="/order/{{order.id_order}}" ng-init="$last ? ngRepeatFinished() : null">
+					<td>
+						<?php /* Info */ ?>
+							<a href="/order/{{order.id_order}}">{{order.id_order}}</a>
+						<?php /* Info */ ?>
+					</td>
+					<td nowrap="">
+						<?php /* Date */ ?>
+						<span class="listview-smaller"><strong>{{order.date | localtime:'MM/DD'}}</strong><br>
+						{{order.date | localtime:'h:mm a'}}</span>
+						<?php /* Date */ ?>
+					</td>
+					<td ng-if="!restaurant">
+						<? /* Restaurant */ ?>
+						<span class="listview-smaller">
+							<a href="/restaurant/{{order._restaurant_permalink}}">{{order._restaurant_name}}</a><br>
+							<a href="/community/{{order._community_permalink}}" ng-if="!community" class="no-underline">{{order._community_name}}</a>
+						</span>
+						<div ng-if="order.formal_relationship">
+							<span class="tag tag-empty tag-grey">Formal</span>
 						</div>
-					<?php /* Driver */ ?>
-				</td>
-				<td class="tb-v-center" nowrap="">
-					<ng-include src="'assets/view/orders-order-status.html'"></ng-include>
+						<? /* Restaurant */ ?>
+					</td>
+					<td>
+						<?php /* Customer */ ?>
+							<a href="/customer/{{order.id_user}}">{{order.name}}</a><br>
+							<a href ng-click="callText(order.phone)" class="listview-smaller">{{order.phone | formatPhone}}</a>
+						<?php /* Customer */ ?>
+						<div>
+							<span class="tag tag-purple" ng-if="order.pay_type == 'cash'">Cash</span>
+							<span class="tag tag-green" ng-if="order.pay_type == 'card' && !order.campus_cash">Card</span>
+							<span class="tag tag-blue" ng-if="order.pay_type == 'card' && order.campus_cash">Campus Cash<span ng-if="!order.campus_cash_charged"> - Not Charged!</span></span>
+						</div>
+					</td>
+					<td>
+						<?php /* Order */ ?>
+						<span class="listview-smaller">
+								<div class="display-table">
+									<div class="display-table-row">
+										<div class="display-table-cell">Sub:</div>
+										<div class="display-table-cell">${{order.price + order.delivery_fee + order.delivery_service_markup_value + (order.price * (order.service_fee/100)) | number:2}}</div>
+									</div>
+									<div class="display-table-row">
+										<div class="display-table-cell"><strong>Tot:</strong></div>
+										<div class="display-table-cell"><strong>${{order.final_price_plus_delivery_markup | number:2}}</strong></div>
+									</div>
+								</div>
+						</span>
+						<?php /* Order */ ?>
+					</td>
+					<td>
+						<?php /* Driver */ ?>
 
-					<br>
-					<div ng-if="order.preordered">
-					<span class="tag tag-purple">Pre ordered</span>
-						to {{order.date_delivery | timestamp | date:'MM/dd @ h:mm a'}}
-					</div>
-				</td>
-				<td nowrap class="tb-v-center">
-					<a href="" ng-click="ticket(order.id_order)"><button class="button button-small button-empty button-green"><i class="fa fa-comment"></i>&nbsp;&nbsp;Ticket</button></a>
-					<a href="/order/{{order.id_order}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+							<a href="/staff/{{order.status.driver.id_admin}}">{{order.status.driver.name}}</a><br>
+							<a href ng-click="callText(order.status.driver.phone)" class="listview-smaller">{{order.status.driver.phone | formatPhone}}</a>
+							<span class="tag tag-blue" ng-if="order.pay_type == 'card' && order.campus_cash">Campus Cash<span ng-if="!order.campus_cash_charged"> - Not Charged!</span></span>
+							<div ng-if="order.vehicle">
+
+								<span class="tag tag-green" ng-if="order.vehicle=='car'">Car</span>
+								<span class="tag tag-red" ng-if="order.vehicle!='car'">{{order.vehicle}}</span>
+							</div>
+						<?php /* Driver */ ?>
+					</td>
+					<td class="tb-v-center" nowrap="">
+						<ng-include src="'assets/view/orders-order-status.html'"></ng-include>
+
+						<br>
+						<div ng-if="order.preordered">
+						<span class="tag tag-purple">Pre ordered</span>
+							to {{order.date_delivery | timestamp | date:'MM/dd @ h:mm a'}}
+						</div>
+					</td>
+					<td nowrap class="tb-v-center">
+						<a href="" ng-click="ticket(order.id_order)"><button class="button button-small button-empty button-green"><i class="fa fa-comment"></i>&nbsp;&nbsp;Ticket</button></a>
+						<a href="/order/{{order.id_order}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
 </div>
