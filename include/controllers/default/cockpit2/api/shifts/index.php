@@ -268,6 +268,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 	private function _loadShift(){
 
 		$shift = Community_Shift::o( c::getPagePiece( 3 ) );
+
 		if( $shift->id_community_shift ){
 
 			$out = [ 'id_community_shift' => $shift->id_community_shift ];
@@ -295,6 +296,13 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 				if( intval( $preference->ranking ) ){
 					$ranking[ $preference->id_admin ][ 'current' ] = intval( $preference->ranking );
 				}
+			}
+
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			if( $now > $shift->dateEnd( c::config()->timezone ) ){
+				$out[ 'editable' ] = false;
+			} else {
+				$out[ 'editable' ] = true;
 			}
 
 			$shift_date = new DateTime( $shift->dateStart()->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
@@ -416,12 +424,12 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 	private function _loadShifts(){
 
 		$out = [ 'days' => [] ];
+		$start = $this->request()['start'];
+		// $start = '2016-02-07T15:42:41.624Z';
+		$start = explode( 'T', $start );
+		$start = new DateTime( $start[ 0 ] . ' 00:00:00', new DateTimeZone( c::config()->timezone  ) );
 
-		$start = ( new DateTime( $this->request()['start'] ) );
 		$filterCommunities = $this->request()['communities'];
-
-		// @remove -- remove it before commit
-		// $filterCommunities = [ 92 ];
 
 		$year = ( $this->request()['year'] ? $this->request()['year'] : $start->format( 'Y' ) );
 		$month = ( $this->request()['month'] ? $this->request()['month'] : $start->format( 'm' ) );
@@ -451,12 +459,19 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 		$communities = [];
 
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+
 		foreach( $filterCommunities as $community ) {
 			$community = Community::o( $community );
 			if( $community->id_community ){
 				$shifts = [];
 				foreach( $days as $day ) {
-					$shifts[ $day->format( 'Ymd' ) ] = [ 'shifts' => [], 'date' => [ 'day' => $day->format( 'Y-m-d' ), 'formatted' => $day->format( 'M jS Y' ), 'tz' => $community->timezone ] ];
+					if( intval( $now->format( 'Ymd' ) ) <= intval( $day->format( 'Ymd' ) ) ){
+						$editable = true;
+					} else {
+						$editable = false;
+					}
+					$shifts[ $day->format( 'Ymd' ) ] = [ 'shifts' => [], 'editable' => $editable, 'date' => [ 'day' => $day->format( 'Y-m-d' ), 'formatted' => $day->format( 'M jS Y' ), 'tz' => $community->timezone ] ];
 				}
 				$communities[ $community->id_community ] = [ 'id_community' => $community->id_community, 'name' => $community->name, 'days' => $shifts ];
 			}

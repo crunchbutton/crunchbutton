@@ -1,6 +1,7 @@
 <div class="edit-shift-dialog-container zoom-anim-dialog mfp-hide dialog" ng-controller="ShiftScheduleEditShiftCtrl">
 
 	<div>
+
 		<h1 class="title"><span>Edit shift: {{shift.community.name}}</span></h1>
 
 		<div class="divider"></div>
@@ -24,7 +25,7 @@
 
 					<li class="li-input" ng-class="{'error':formEditShift.shiftHours.$invalid}">
 						<div class="label">Hours:</div>
-						<div class="input"><input type="text" name="shiftHours" ng-model="shift.period" shift-hours-validation required placeholder="Hours" ></div>
+						<div class="input"><input type="text" ng-disabled="!shift.editable"name="shiftHours" ng-model="shift.period" shift-hours-validation required placeholder="Hours" ></div>
 						<div class="box-error">
 							<small ng-show="formEditShift.shiftHours.$error.required">Required.</small>
 							<small ng-show="formEditShift.shiftHours.$error.shiftHoursValidation">Unable to figure out what this time means.</small>
@@ -34,7 +35,7 @@
 						</div>
 					</li>
 
-					<li class="li-input" ng-if="shift.recurring" ng-class="{'error': formEditShift.shiftChange.$invalid}" >
+					<li class="li-input" ng-if="shift.recurring" ng-disabled="!shift.editable" ng-class="{'error': formEditShift.shiftChange.$invalid}" >
 						<div class="label">Change:</div>
 						<div class="input">
 							<select name="shiftChange" ng-model="shift.change" required>
@@ -48,7 +49,8 @@
 					</li>
 
 					<li class="li-input" ng-show="!isSavingAddShift">
-						<button class="button button-empty button-border button-green button-full" ng-click="formEditShiftSave();"><span class="fa fa-save"></span>&nbsp;&nbsp;Save</button>
+						<span class="tag tag-red" ng-if="!shift.editable">Ready only!</span>
+						<button ng-if="shift.editable" class="button button-empty button-border button-green button-full" ng-click="formEditShiftSave();"><span class="fa fa-save"></span>&nbsp;&nbsp;Save</button>
 					</li>
 					<li class="li-input" ng-show="isSavingAddShift">
 						<i class="fa fa-circle-o-notch fa-spin"></i>

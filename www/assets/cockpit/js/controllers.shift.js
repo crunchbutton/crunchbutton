@@ -92,15 +92,15 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftSchedu
 	}
 
 	$scope.previousWeek = function(){
-		var prev = new Date();
-		prev.setDate( $scope.options.start.getDate() - 7 );
+		var prev = new Date( $scope.options.start );
+		prev.setDate( prev.getDate() - 7 );
 		$scope.options.start = prev;
 		$scope.loadShifts();
 	}
 
 	$scope.nextWeek = function(){
-		var next = new Date();
-		next.setDate( $scope.options.start.getDate() + 7 );
+		var next = new Date( $scope.options.start );
+		next.setDate( next.getDate() + 7 );
 		$scope.options.start = next;
 		$scope.loadShifts();
 	}
@@ -132,7 +132,6 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftSchedu
 				$scope.communities = json;
 			} );
 		}
-		// $scope.loadShifts();
 	}
 
 	$scope.addShift = function( id_community, name, date ){

@@ -107,7 +107,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="button-container">
+							<div class="button-container" ng-if="day.editable">
 								<button ng-click="addShift( community.id_community, community.name, day.date )" class="button button-small button-empty button-border button-blue"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Shift</button>
 							</div>
 						</td>
