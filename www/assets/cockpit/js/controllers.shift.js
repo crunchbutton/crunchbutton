@@ -125,9 +125,6 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftSchedu
 			} else {
 				$scope.options.start = new Date();
 			}
-			// @remove -- remove it before commit
-			// $scope.options.communities = [ 92 ];
-			// $scope.loadShifts();
 		} );
 
 		if( !$scope.communities ){
