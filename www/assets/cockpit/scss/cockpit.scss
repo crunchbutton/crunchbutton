@@ -4177,19 +4177,23 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 	float: left;
 }
 
-.page-title-wrap .page-title-nav {
+.page-title-nav {
 	float: right;
 }
 
-.page-title-wrap .page-title-nav button {
+.page-title-nav button {
 	padding: .2em .5em .2em .5em;
 	width: auto;
 	text-transform: none;
 }
-.page-title-wrap .page-title-nav button span {
+.page-title-nav button span {
 	font-size: .9em;
 	vertical-align: top;
 	margin-left: .5em;
+}
+
+.box-search-bar .page-title-nav {
+	font-size: .6em;
 }
 
 .listview-smaller {
@@ -4595,4 +4599,10 @@ table.receipt{
 
 .sticky-header .tbody {
 	overflow-y: scroll;
+}
+
+.search-bar-options {
+	display: inline-block;
+	cursor: pointer;
+	-webkit-touch-callout: none; -webkit-user-select: none;
 }
