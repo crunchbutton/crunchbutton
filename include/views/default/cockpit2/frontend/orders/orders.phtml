@@ -9,7 +9,7 @@
 	<div class="divider"></div>
 	*/ ?>
 
-	<div class="box-content2 box-content-table box-search-bar">
+	<div class="box-content2 box-content-table box-search-bar table-sticky-dependant">
 		<table>
 			<tr>
 				<td colspan="6"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1" placeholder="Search orders"></td>
@@ -81,7 +81,7 @@
 	<ng-include src="'assets/view/listview-orders.html'" ng-show="query.view=='list' && regularList"></ng-include>
 
 
-	<div sticky-bottom="47">
+	<div sticky-bottom="47" class="table-sticky-dependant">
 		<div class="no-box-content-color">
 			<ng-include src="'assets/view/listview-paging.html'" ng-show="query.view=='list'"></ng-include>
 		</div>
