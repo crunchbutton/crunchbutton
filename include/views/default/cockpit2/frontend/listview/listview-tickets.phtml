@@ -1,60 +1,62 @@
 <div class="box-content2 box-content-table">
-	<table class="tb-zebra" sticky-header>
-		<thead>
+	<div sticky-header>
+		<table class="thead">
 			<tr>
 				<th>Contact</th>
 				<th>Message</th>
-				<th nowrap class="tb-center">Last Reply</th>
+				<th nowrap class="tb-center">Last</th>
 				<th class="tb-small tb-center">Type</th>
 				<th class="tb-small tb-center">Status</th>
 				<th class="tb-small"></th>
 			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="ticket in lotsoftickets" ng-init="$last ? ngRepeatFinished() : null">
-				<td nowrap>
-					<span ng-if="ticket.type == 'WARNING'">
-						<i>System</i>
-					</span>
-					<span ng-if="ticket.type != 'WARNING'">
-						<a href="/customer/{{ticket.id_user}}" ng-if="ticket.id_user">{{ticket.name}}</a>
-						<span ng-if="!ticket.id_user">{{ticket.name}}</span>
-						<br><a href ng-click="callText(ticket.phone)" class="listview-smaller">{{ticket.phone | formatPhone}}</a>
-					</span>
-				</td>
-				<td>
-					<span class="listview-smaller">
-						<i ng-if="ticket.timestamp_client">{{ticket.timestamp_client * 1000| date:'EEE MM/dd @ h:mm a'}}</i>
-						<i ng-if="!ticket.timestamp_client"><i>Unknown</i></i>
-						<br>
-						<span ng-class="{ 'text-danger': ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply', 'text-muted': ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply' }" >
-							<span ng-bind-html="ticket.message_client"></span>
+		</table>
+		<div class="tbody">
+			<table class="tb-zebra">
+				<tr ng-repeat="ticket in lotsoftickets" ng-init="$last ? ngRepeatFinished() : null">
+					<td nowrap>
+						<span ng-if="ticket.type == 'WARNING'">
+							<i>System</i>
 						</span>
-					</span>
-				</td>
-				<td class="tb-v-center tb-center">
-					<span class="tag tag-red" ng-if="ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply'">{{ticket.last_reply}}</span>
-					<span class="tag tag-green" ng-if="ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply'">{{ticket.last_reply}}</span>
-				</td>
-				<td class="tb-v-center tb-center">
-					<span class="tag tag-purple" ng-if="ticket.type == 'WARNING'">System</span>
-					<span ng-if="ticket.type != 'WARNING'">
-						<span class="tag tag-blue" ng-if="ticket.id_user">Customer</span>
-						<span class="tag tag-orange" ng-if="ticket.id_admin_from">Driver</span>
-						<span class="tag tag-grey" ng-if="!ticket.id_user && !ticket.id_admin_from">Unknown</span>
-					</span>
-				</td>
-				<td class="tb-v-center tb-center">
-					<span class="tag tag-green" ng-if="ticket.status == 'open'">Open</span>
-					<span class="tag tag-red" ng-if="ticket.status != 'open'">Closed</span>
-				</td>
-				<td nowrap class="tb-v-center">
-					<button ng-if="ticket.status == 'open'" ng-click="closeTicket(ticket.id_support);" class="button button-small button-empty button-green"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;Close</button>
-					<a href="/ticket/{{ticket.id_support}}"><button class="button button-small button-empty button-green">
-					<i class="fa fa-eye"></i>
-					&nbsp;&nbsp;View</button></a>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+						<span ng-if="ticket.type != 'WARNING'">
+							<a href="/customer/{{ticket.id_user}}" ng-if="ticket.id_user">{{ticket.name}}</a>
+							<span ng-if="!ticket.id_user">{{ticket.name}}</span>
+							<br><a href ng-click="callText(ticket.phone)" class="listview-smaller">{{ticket.phone | formatPhone}}</a>
+						</span>
+					</td>
+					<td>
+						<span class="listview-smaller">
+							<i ng-if="ticket.timestamp_client">{{ticket.timestamp_client * 1000| date:'EEE MM/dd @ h:mm a'}}</i>
+							<i ng-if="!ticket.timestamp_client"><i>Unknown</i></i>
+							<br>
+							<span ng-class="{ 'text-danger': ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply', 'text-muted': ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply' }" >
+								<span ng-bind-html="ticket.message_client"></span>
+							</span>
+						</span>
+					</td>
+					<td class="tb-v-center tb-center">
+						<span class="tag tag-empty tag-red" ng-if="ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply'">{{ticket.last_reply}}</span>
+						<span class="tag tag-empty tag-green" ng-if="ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply'">{{ticket.last_reply}}</span>
+					</td>
+					<td class="tb-v-center tb-center">
+						<span class="tag tag-purple" ng-if="ticket.type == 'WARNING'">System</span>
+						<span ng-if="ticket.type != 'WARNING'">
+							<span class="tag tag-blue" ng-if="ticket.id_user && !ticket.id_admin_from">Customer</span>
+							<span class="tag tag-orange" ng-if="ticket.id_admin_from">Driver</span>
+							<span class="tag tag-grey" ng-if="!ticket.id_user && !ticket.id_admin_from">Unknown</span>
+						</span>
+					</td>
+					<td class="tb-v-center tb-center">
+						<span class="tag tag-empty tag-green" ng-if="ticket.status == 'open'">Open</span>
+						<span class="tag tag-empty tag-red" ng-if="ticket.status != 'open'">Closed</span>
+					</td>
+					<td nowrap class="tb-v-center">
+						<button ng-if="ticket.status == 'open'" ng-click="closeTicket(ticket.id_support);" class="button button-small button-empty button-green"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;Close</button>
+						<a href="/ticket/{{ticket.id_support}}"><button class="button button-small button-empty button-green">
+						<i class="fa fa-eye"></i>
+						&nbsp;&nbsp;View</button></a>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
 </div>
