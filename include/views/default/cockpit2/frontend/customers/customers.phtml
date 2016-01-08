@@ -1,18 +1,20 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
-	<h1 class="title"><i class="fa fa-smile-o"></i>Customers</h1>
-
-	<div class="box-content2 box-content-table">
+	<div class="box-content2 box-content-table box-search-bar table-sticky-dependant">
 		<table>
 			<tr>
-				<td><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
+				<td><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1" placeholder="Search Customers"></td>
 			</tr>
 		</table>
 	</div>
-	
+
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
 	<ng-include src="'assets/view/listview-customers.html'"></ng-include>
-	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+	<div sticky-bottom="47" class="table-sticky-dependant">
+		<div class="no-box-content-color">
+			<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+		</div>
+	</div>
 </div>
