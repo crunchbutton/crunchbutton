@@ -1,6 +1,6 @@
 <div class="box-content2 box-content-table">
-	<table class="tb-zebra" sticky-header>
-		<thead>
+	<div sticky-header>
+		<table class="thead">
 			<tr>
 				<th></th>
 				<th>Restaurant</th>
@@ -11,72 +11,74 @@
 				<th ng-if="current_page == 'community'">Notes to Drivers</th>
 				<th class="tb-small"></th>
 			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="restaurant in restaurants track by $index" ng-class="{ 'delivery_it_self': restaurant.delivery_it_self }" ng-attr-tabindex="{{$index+1}}" ng-init="$last ? ngRepeatFinished() : null" tab-select="/restaurant/{{restaurant.permalink}}">
-				<td class="tb-image-row">
-				<a href="/restaurant/{{restaurant.permalink}}">
-					<div class="customer-image-crop" img-list-view-src="restaurant.images.thumb" img-null="restaurant-image-null"></div>
-				</a></td>
-				<td>
-					<span class="listview-bold">{{restaurant.name}}</span><br>
-					<span ng-if="!community">
-						<span class="staff-community-repeat listview-smaller" ng-repeat="community in restaurant.communities">
-							<a href="/community/{{community.permalink}}" class="truncate-small">{{community.name}}</a>
+		</table>
+		<div class="tbody">
+			<table class="tb-zebra">
+				<tr ng-repeat="restaurant in restaurants track by $index" ng-class="{ 'delivery_it_self': restaurant.delivery_it_self }" ng-attr-tabindex="{{$index+1}}" ng-init="$last ? ngRepeatFinished() : null" tab-select="/restaurant/{{restaurant.permalink}}">
+					<td class="tb-image-row">
+					<a href="/restaurant/{{restaurant.permalink}}">
+						<div class="customer-image-crop" img-list-view-src="restaurant.images.thumb" img-null="restaurant-image-null"></div>
+					</a></td>
+					<td>
+						<span class="listview-bold">{{restaurant.name}}</span><br>
+						<span ng-if="!community">
+							<span class="staff-community-repeat listview-smaller" ng-repeat="community in restaurant.communities">
+								<a href="/community/{{community.permalink}}" class="truncate-small">{{community.name}}</a>
+							</span>
 						</span>
-					</span>
-					<br>
-					<span class="tag tag-orange" ng-if="restaurant.delivery && restaurant.delivery_service">3rd</span>
-					<span class="tag tag-blue" ng-if="restaurant.delivery && !restaurant.delivery_service">1st</span>
-					<span class="tag tag-lightgrey" ng-if="restaurant.takeout && !restaurant.delivery">Takeout</span>
-					<span class="tag tag-lightgrey" ng-if="!restaurant.takeout && !restaurant.delivery">None</span>
-				</td>
-				<td>
-					<span class="listview-smaller">
-						<a href ng-click="callText(restaurant.phone)">{{restaurant.phone | formatPhone}}</a>
-					</span>
-					<br>
-					<span class="listview-smaller">
-						{{restaurant.address | formatAddress}}
-					</span>
-				</td>
-				<td class="tb-center">
-					<a href="/orders?restaurant={{restaurant.id_restaurant}}" ng-if="restaurant.orders != '0'">{{restaurant.orders}}</a>
-					<span ng-if="restaurant.orders == '0'">0</span>
-					<br>
-					<span ng-if="restaurant._order_date" class="listview-smaller"><span am-time-ago="restaurant._order_date | localtime | timestamp"></span></span>
-				</td>
-				<td class="tb-center" nowrap="nowrap">
-					<span class="tag tag-green" ng-if="restaurant.active">Active</span>
-					<span class="tag tag-red" ng-if="!restaurant.active">Inactive</span>
+						<br>
+						<span class="tag tag-orange" ng-if="restaurant.delivery && restaurant.delivery_service">3rd</span>
+						<span class="tag tag-blue" ng-if="restaurant.delivery && !restaurant.delivery_service">1st</span>
+						<span class="tag tag-lightgrey" ng-if="restaurant.takeout && !restaurant.delivery">Takeout</span>
+						<span class="tag tag-lightgrey" ng-if="!restaurant.takeout && !restaurant.delivery">None</span>
+					</td>
+					<td>
+						<span class="listview-smaller">
+							<a href ng-click="callText(restaurant.phone)">{{restaurant.phone | formatPhone}}</a>
+						</span>
+						<br>
+						<span class="listview-smaller">
+							{{restaurant.address | formatAddress}}
+						</span>
+					</td>
+					<td class="tb-center">
+						<a href="/orders?restaurant={{restaurant.id_restaurant}}" ng-if="restaurant.orders != '0'">{{restaurant.orders}}</a>
+						<span ng-if="restaurant.orders == '0'">0</span>
+						<br>
+						<span ng-if="restaurant._order_date" class="listview-smaller"><span am-time-ago="restaurant._order_date | localtime | timestamp"></span></span>
+					</td>
+					<td class="tb-center" nowrap="nowrap">
+						<span class="tag tag-green" ng-if="restaurant.active">Active</span>
+						<span class="tag tag-red" ng-if="!restaurant.active">Inactive</span>
 
-					<br>
+						<br>
 
-					<span class="tag tag-red" ng-if="!restaurant.open_for_business">Closed</span>
-						<span ng-if="restaurant.open_for_business">
-						<span class="tag tag-green" ng-if="restaurant.open">Open</span>
-						<span class="tag tag-red" ng-if="!restaurant.open">Closed</span>
-					</span>
+						<span class="tag tag-red" ng-if="!restaurant.open_for_business">Closed</span>
+							<span ng-if="restaurant.open_for_business">
+							<span class="tag tag-green" ng-if="restaurant.open">Open</span>
+							<span class="tag tag-red" ng-if="!restaurant.open">Closed</span>
+						</span>
 
-				</td>
-				<td class="tb-center tb-v-center" nowrap="nowrap">
-					<span class="tag tag-orange" ng-if="restaurant.payment_method && restaurant.payment_method == 'check'">Check</span>
-					<span class="tag tag-purple" ng-if="restaurant.payment_method && restaurant.payment_method == 'deposit'">Deposit</span>
-					<span class="tag tag-blue" ng-if="restaurant.payment_method && restaurant.payment_method == 'no payment'">Does Not Need Payment</span>
-					<span class="tag tag-black" ng-if="!restaurant.payment_method || restaurant.payment_method == ''">Empty</span>
-				</td>
-				<td ng-if="current_page == 'community'" class="tb-small">
-					<div class="listview-text-block" ng-if="restaurant.notes_to_driver">
-						{{restaurant.notes_to_driver}}
-					</div> <button class="button button-small button-empty button-green" title="Edit notes to driver" ng-click="notes_to_driver_edit(restaurant.id_restaurant);"><i class="fa fa-pencil"></i></button>
-				</td>
-				<td nowrap class="tb-v-center">
-					<a href="/restaurant/{{restaurant.permalink}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
-					<button ng-if="current_page == 'community'" ng-click="restaurantForceCloseContainer(restaurant.permalink);" class="button button-small button-empty button-green"><i class="fa fa-gear"></i>&nbsp;&nbsp;Open/Close</button>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+					</td>
+					<td class="tb-center tb-v-center" nowrap="nowrap">
+						<span class="tag tag-orange" ng-if="restaurant.payment_method && restaurant.payment_method == 'check'">Check</span>
+						<span class="tag tag-purple" ng-if="restaurant.payment_method && restaurant.payment_method == 'deposit'">Deposit</span>
+						<span class="tag tag-blue" ng-if="restaurant.payment_method && restaurant.payment_method == 'no payment'">Does Not Need Payment</span>
+						<span class="tag tag-black" ng-if="!restaurant.payment_method || restaurant.payment_method == ''">Empty</span>
+					</td>
+					<td ng-if="current_page == 'community'" class="tb-small">
+						<div class="listview-text-block" ng-if="restaurant.notes_to_driver">
+							{{restaurant.notes_to_driver}}
+						</div> <button class="button button-small button-empty button-green" title="Edit notes to driver" ng-click="notes_to_driver_edit(restaurant.id_restaurant);"><i class="fa fa-pencil"></i></button>
+					</td>
+					<td nowrap class="tb-v-center">
+						<a href="/restaurant/{{restaurant.permalink}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+						<button ng-if="current_page == 'community'" ng-click="restaurantForceCloseContainer(restaurant.permalink);" class="button button-small button-empty button-green"><i class="fa fa-gear"></i>&nbsp;&nbsp;Open/Close</button>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
 </div>
 <ng-include src="'assets/view/restaurants-force-close-form.html'"></ng-include>
 <div class="notes-to-drivers-container zoom-anim-dialog mfp-hide dialog">
