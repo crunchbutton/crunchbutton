@@ -73,7 +73,7 @@
 					<li class="li-input">
 						<button class="button button-empty button-border button-blue button-full" ng-click="removeShift();"><span class="fa fa-trash"></span>&nbsp;&nbsp;Delete just this shift</button>
 					</li>
-					<li class="li-input">
+					<li class="li-input" ng-if="shift.recurring">
 						<button class="button button-empty button-border button-red button-full" ng-click="removeRecurringShift();"><span class="fa fa-trash"></span>&nbsp;&nbsp;Delete all recurring</button>
 					</li>
 				</ul>
