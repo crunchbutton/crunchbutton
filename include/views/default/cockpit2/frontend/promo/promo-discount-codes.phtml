@@ -1,21 +1,18 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
-
-	<div class="page-title-wrap">
-		<h1 class="title left"><i class="fa fa-minus-circle"></i><span>Discount Code</span></h1>
-		<div class="page-title-nav">
-			<a href="/promo/discount-code/"><button class="button button-green nav-button-green"><i class="fa fa-plus"></i><span>Add Discount Code</span></button></a>
-		</div>
-	</div>
-	<div class="divider"></div>
-
-	<div class="box-content2 box-content-table">
+	<div class="box-content2 box-content-table box-search-bar table-sticky-dependant">
 		<table>
 			<tr>
-				<td colspan="2"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
+				<td colspan="2">
+					<i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1" placeholder="Search codes">
+				</td>
+				<td>
+					<div class="page-title-nav">
+						<a href="/promo/discount-code/"><button class="button button-green nav-button-green"><i class="fa fa-plus"></i><span>Add Discount Code</span></button></a>
+					</div>
+				</td>
 			</tr>
-
 			<tr>
 				<th>Community</th>
 				<td>
@@ -28,5 +25,9 @@
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
 	<ng-include src="'assets/view/listview-promo-discount-code.html'"></ng-include>
-	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+	<div sticky-bottom="47" class="table-sticky-dependant">
+		<div class="no-box-content-color">
+			<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+		</div>
+	</div>
 </div>
