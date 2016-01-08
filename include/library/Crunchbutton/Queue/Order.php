@@ -6,8 +6,8 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 
 		$debug_dt = new DateTime('now', new DateTimeZone(c::config()->timezone));
 		$debugDtString0 = $debug_dt->format('Y-m-d H:i:s');
-
-		if( !$this->order()->preordered ){
+		$preordered = $this->order()->preordered;
+		if( !$preordered ){
 			// send customer a receipt in 30 seconds
 			$q = Queue::create([
 				'type' => Crunchbutton_Queue::TYPE_ORDER_RECEIPT,
