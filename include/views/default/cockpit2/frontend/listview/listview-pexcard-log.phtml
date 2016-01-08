@@ -1,34 +1,36 @@
-<div class="box-content2 box-content-table">
-	<table class="tb-zebra" sticky-header>
-		<thead>
+<div class="box-content2 box-content-table box-content-listview">
+	<div sticky-header>
+		<table class="thead">
 			<tr>
 				<th>#</th>
 				<th>Driver</th>
-				<th>Card Serial / Last Four</th>
+				<th>Serial&nbsp;/&nbsp;4</th>
 				<th>Date</th>
 				<th>Type</th>
-				<th>Amount</th>
-				<th class="tb-center">Order</th>
-				<th class="tb-center">Shift</th>
-				<th class="tb-center">Arbritary</th>
+				<th>Amt</th>
+				<th class="tb-center" title="Order">O</th>
+				<th class="tb-center" title="Shift">S</th>
+				<th class="tb-center" title="Arbritary">A</th>
 				<th>Action</th>
 				<th>Note</th>
 			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="l in logs track by $index" ng-attr-tabindex="{{$index+4}}" tab-select="/staff/{{l.login}}" ng-init="$last ? ngRepeatFinished() : null">
-				<td><a href="/pexcard/log/{{l.id_pexcard_action}}">{{l.id_pexcard_action}}</a></td>
-				<td><a href="/staff/{{l.login}}">{{l.driver}}</a></td>
-				<td><a href="/pexcard/card/{{l.card_serial}}">{{l.card_serial}} / {{l.last_four}}</a></td>
-				<td>{{l.date}}</td>
-				<td>{{l.type}}</td>
-				<td positive-or-negative-color="{{l.amount}}">${{l.amount | formatPrice}}</td>
-				<td class="tb-center"><span ng-if="l.id_order"><i class="fa fa-check"></i></span></td>
-				<td class="tb-center"><span ng-if="l.id_admin_shift_assign"><i class="fa fa-check"></i></span></td>
-				<td class="tb-center"><span ng-if="l.id_admin"><i class="fa fa-check"></i></span></td>
-				<td>{{l.action}}</td>
-				<td>{{l.note}}</td>
-			</tr>
-		</tbody>
-	</table>
+		</table>
+		<div class="tbody">
+			<table class="tb-zebra">
+				<tr ng-repeat="l in logs track by $index" ng-attr-tabindex="{{$index+4}}" tab-select="/staff/{{l.login}}" ng-init="$last ? ngRepeatFinished() : null">
+					<td><a href="/pexcard/log/{{l.id_pexcard_action}}">{{l.id_pexcard_action}}</a></td>
+					<td><a href="/staff/{{l.login}}">{{l.driver}}</a></td>
+					<td><a href="/pexcard/card/{{l.card_serial}}">{{l.card_serial}} / {{l.last_four}}</a></td>
+					<td>{{l.date}}</td>
+					<td>{{l.type}}</td>
+					<td positive-or-negative-color="{{l.amount}}">${{l.amount | formatPrice}}</td>
+					<td class="tb-center"><span ng-if="l.id_order"><i class="fa fa-check"></i></span></td>
+					<td class="tb-center"><span ng-if="l.id_admin_shift_assign"><i class="fa fa-check"></i></span></td>
+					<td class="tb-center"><span ng-if="l.id_admin"><i class="fa fa-check"></i></span></td>
+					<td>{{l.action}}</td>
+					<td>{{l.note}}</td>
+				</tr>
+			</table>
+		</div>
+	</div>
 </div>
