@@ -21,7 +21,7 @@ $buttonRed: #eb5667;
 
 @import 'border';
 @import 'button';
-
+@import 'tags';
 
 
 
@@ -4165,59 +4165,6 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 	width: 6em !important;
 	padding: .2em .4em .2em .4em;
 }
-
-.tag {
-	@include box-border-radius();
-	font-size: .8em;
-	color: #fff;
-	padding: .2em .4em .2em .4em;
-}
-
-.tag.tag-green {
-	background: #1ab394;
-}
-.tag.tag-darkgreen {
-	background: #006633;
-}
-.tag.tag-red {
-	background: #eb5667;
-}
-.tag.tag-orange {
-	background: #f19161;
-}
-.tag.tag-blue {
-	background: $buttonBlue;
-}
-.tag.tag-lightblue {
-	background: #0099cc;
-}
-.tag.tag-grey {
-	background: #666;
-}
-.tag.tag-empty.tag-grey {
-	border: 1px solid #666;
-	color: #666;
-}
-.tag.tag-lightgrey {
-	background: #bbb;
-}
-.tag.tag-purple {
-	background: #c855b6;
-}
-.tag.tag-black {
-	background: #000;
-}
-.tag.tag-yellow {
-	background: #999900;
-}
-
-.tag.tag-empty {
-	padding: .1em .3em .1em .3em;
-	background: none;
-}
-
-
-
 
 .nav-button-green {
 	background: #1ab394;

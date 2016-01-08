@@ -43,9 +43,9 @@
 							<a href ng-click="callText(order.phone)" class="listview-smaller">{{order.phone | formatPhone}}</a>
 						<?php /* Customer */ ?>
 						<div>
-							<span class="tag tag-purple" ng-if="order.pay_type == 'cash'">Cash</span>
-							<span class="tag tag-green" ng-if="order.pay_type == 'card' && !order.campus_cash">Card</span>
-							<span class="tag tag-blue" ng-if="order.pay_type == 'card' && order.campus_cash">Campus Cash<span ng-if="!order.campus_cash_charged"> - Not Charged!</span></span>
+							<span class="tag tag-empty tag-purple" ng-if="order.pay_type == 'cash'">Cash</span>
+							<span class="tag tag-empty tag-green" ng-if="order.pay_type == 'card' && !order.campus_cash">Card</span>
+							<span class="tag tag-empty tag-blue" ng-if="order.pay_type == 'card' && order.campus_cash">Campus Cash<span ng-if="!order.campus_cash_charged"> - Not Charged!</span></span>
 						</div>
 					</td>
 					<td>
@@ -72,8 +72,8 @@
 							<span class="tag tag-blue" ng-if="order.pay_type == 'card' && order.campus_cash">Campus Cash<span ng-if="!order.campus_cash_charged"> - Not Charged!</span></span>
 							<div ng-if="order.vehicle">
 
-								<span class="tag tag-green" ng-if="order.vehicle=='car'">Car</span>
-								<span class="tag tag-red" ng-if="order.vehicle!='car'">{{order.vehicle}}</span>
+								<span class="tag tag-empty tag-green" ng-if="order.vehicle=='car'">Car</span>
+								<span class="tag tag-empty tag-red" ng-if="order.vehicle!='car'">{{order.vehicle}}</span>
 							</div>
 						<?php /* Driver */ ?>
 					</td>
