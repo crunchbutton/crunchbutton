@@ -89,15 +89,15 @@
 							</label>
 						</span>
 					</td>
-					<td class="tb-center tb-v-center">
+					<td class="tb-center tb-v-center tb-small">
 						<span class="tag tag-green" ng-if="driver.status.payment">OK</span>
 						<span class="tag tag-red" ng-if="!driver.status.payment">Missing</span>
 					</td>
-					<td class="tb-center tb-v-center">
+					<td class="tb-center tb-v-center tb-small">
 						<span class="tag tag-green" ng-if="driver.sent_all_docs">OK</span>
 						<span class="tag tag-red" ng-if="!driver.sent_all_docs">Missing</span>
 					</td>
-					<td nowrap class="tb-v-center">
+					<td nowrap class="tb-v-center tb-right">
 						<a href="/staff/{{driver.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-car"></i>&nbsp;&nbsp;View</button></a>
 					</td>
 				</tr>

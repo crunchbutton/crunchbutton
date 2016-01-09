@@ -38,16 +38,16 @@
 						<span class="tag tag-empty tag-green" ng-if="ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply'">{{ticket.last_reply}}</span>
 					</td>
 					<td class="tb-v-center tb-center">
-						<span class="tag tag-purple" ng-if="ticket.type == 'WARNING'">System</span>
+						<span class="tag tag-empty tag-purple" ng-if="ticket.type == 'WARNING'">System</span>
 						<span ng-if="ticket.type != 'WARNING'">
-							<span class="tag tag-blue" ng-if="ticket.id_user && !ticket.id_admin_from">Customer</span>
-							<span class="tag tag-orange" ng-if="ticket.id_admin_from">Driver</span>
-							<span class="tag tag-grey" ng-if="!ticket.id_user && !ticket.id_admin_from">Unknown</span>
+							<span class="tag tag-empty tag-blue" ng-if="ticket.id_user && !ticket.id_admin_from">Customer</span>
+							<span class="tag tag-empty tag-orange" ng-if="ticket.id_admin_from">Driver</span>
+							<span class="tag tag-empty tag-grey" ng-if="!ticket.id_user && !ticket.id_admin_from">Unknown</span>
 						</span>
 					</td>
 					<td class="tb-v-center tb-center">
-						<span class="tag tag-empty tag-green" ng-if="ticket.status == 'open'">Open</span>
-						<span class="tag tag-empty tag-red" ng-if="ticket.status != 'open'">Closed</span>
+						<span class="tag tag-green" ng-if="ticket.status == 'open'">Open</span>
+						<span class="tag tag-red" ng-if="ticket.status != 'open'">Closed</span>
 					</td>
 					<td nowrap class="tb-v-center">
 						<button ng-if="ticket.status == 'open'" ng-click="closeTicket(ticket.id_support);" class="button button-small button-empty button-green"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;Close</button>
