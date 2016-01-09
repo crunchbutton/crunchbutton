@@ -313,7 +313,7 @@
 			</div>
 
 			<div ng-if="menu.toggle=='admin'">
-
+<? /*
 				<a href="/deploy" ng-click="instant()" class="menu-link" ng-if="(account.user.permissions.GLOBAL || account.user.permissions['SERVER-DEPLOY'] || account.user.permissions['SERVER-DEPLOY-ADMIN']) && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'deploy' || navigation.page == 'deploy-server' || navigation.page == 'deploy-version')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
@@ -322,6 +322,7 @@
 						</tr>
 					</table>
 				</a>
+				*/ ?>
 
 				<a href="/communities" ng-click="instant()" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'communities' || navigation.page == 'community')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
