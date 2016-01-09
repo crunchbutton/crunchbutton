@@ -2777,11 +2777,16 @@ canvas.chart {
 .tripple-cols {
 	-webkit-column-count: 3;
 	-webkit-column-gap: 15px;
-	@include gpu();
+	/*@include gpu();*/
 	float: left;
 	clear: both;
 	margin-bottom: 1em;
 	width: 100%;
+}
+
+.tripple-cols > * {
+	-webkit-column-break-inside: avoid;
+	-webkit-column-break-after: always;
 }
 
 .quadruple-cols {
@@ -4719,4 +4724,12 @@ ui-tabs {
 	clear: both;
 	min-height: 100vh;
 	display: block
+}
+
+a.button {
+	text-decoration: none;
+	display: inline-block;
+	align-items: flex-start;
+	text-align: center;
+	line-height: normal;
 }
