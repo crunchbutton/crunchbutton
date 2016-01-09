@@ -8,166 +8,174 @@
 
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
-	<div>
+	<div class="support-boxes">
 
-		<div class="support-boxes-column">
-
-			<div class="support-box-wrap">
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
 				<h1>Basic Info</h1>
-				<div class="box-content-color">
-					<table class="field-container">
-						<tr class="field-row">
-							<td class="field-key">Driver</td>
-							<td class="field-value"><a href="/staff/{{action.login}}">{{action.driver}}</a></td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Card Serial</td>
-							<td class="field-value"><a href="/pexcard/card/{{action.card_serial}}">{{action.card_serial}}</a></td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Last Four</td>
-							<td class="field-value"><a href="/pexcard/card/{{action.card_serial}}">{{action.last_four}}</a></td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Amount</td>
-							<td class="field-value" positive-or-negative-color="{{action.amount}}">${{action.amount | formatPrice}}</td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Type</td>
-							<td class="field-value">{{action.type}}</td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Action</td>
-							<td class="field-value">{{action.action}}</td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Date</td>
-							<td class="field-value">{{action.date_formated}}</td>
-						</tr>
-						<tr class="field-row" ng-if="action.status_date_formated">
-							<td class="field-key">Transaction finished date</td>
-							<td class="field-value">{{action.status_date_formated}}</td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Tries</td>
-							<td class="field-value">{{action.tries}}</td>
-						</tr>
-						<tr class="field-row" ng-if="action.note">
-							<td class="field-key">Note</td>
-							<td class="field-value">{{action.note}}</td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Status</td>
-							<td class="field-value">{{action.status}}</td>
-						</tr>
-					</table>
-				</div>
+				<div class="divider"></div>
 			</div>
+			<div class="no-box-content-color">
+				<table class="field-container">
+					<tr class="field-row">
+						<td class="field-key">Driver</td>
+						<td class="field-value"><a href="/staff/{{action.login}}">{{action.driver}}</a></td>
+					</tr>
+					<tr class="field-row">
+						<td class="field-key">Card Serial</td>
+						<td class="field-value"><a href="/pexcard/card/{{action.card_serial}}">{{action.card_serial}}</a></td>
+					</tr>
+					<tr class="field-row">
+						<td class="field-key">Last Four</td>
+						<td class="field-value"><a href="/pexcard/card/{{action.card_serial}}">{{action.last_four}}</a></td>
+					</tr>
+					<tr class="field-row">
+						<td class="field-key">Amount</td>
+						<td class="field-value" positive-or-negative-color="{{action.amount}}">${{action.amount | formatPrice}}</td>
+					</tr>
+					<tr class="field-row">
+						<td class="field-key">Type</td>
+						<td class="field-value">{{action.type}}</td>
+					</tr>
+					<tr class="field-row">
+						<td class="field-key">Action</td>
+						<td class="field-value">{{action.action}}</td>
+					</tr>
+					<tr class="field-row">
+						<td class="field-key">Date</td>
+						<td class="field-value">{{action.date_formated}}</td>
+					</tr>
+					<tr class="field-row" ng-if="action.status_date_formated">
+						<td class="field-key">Transaction finished date</td>
+						<td class="field-value">{{action.status_date_formated}}</td>
+					</tr>
+					<tr class="field-row">
+						<td class="field-key">Tries</td>
+						<td class="field-value">{{action.tries}}</td>
+					</tr>
+					<tr class="field-row" ng-if="action.note">
+						<td class="field-key">Note</td>
+						<td class="field-value">{{action.note}}</td>
+					</tr>
+					<tr class="field-row">
+						<td class="field-key">Status</td>
+						<td class="field-value">{{action.status}}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
 
-			<div ng-if="action.id_order" class="support-box-wrap">
+		<div ng-if="action.id_order" class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
 				<h1>Order <a href="/order/{{action.id_order}}">#{{action.id_order}}</a></h1>
-				<div class="box-content-color">
-					<table class="field-container">
-						<tr class="field-row">
-							<td class="field-key">Restaurant</td>
-							<td class="field-value">{{action.order.restaurant}}</td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Customer</td>
-							<td class="field-value">{{action.order.customer}}</td>
-						</tr>
-					</table>
-				</div>
+				<div class="divider"></div>
 			</div>
+			<div class="no-box-content-color">
+				<table class="field-container">
+					<tr class="field-row">
+						<td class="field-key">Restaurant</td>
+						<td class="field-value">{{action.order.restaurant}}</td>
+					</tr>
+					<tr class="field-row">
+						<td class="field-key">Customer</td>
+						<td class="field-value">{{action.order.customer}}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
 
-			<div ng-if="action.id_admin_shift_assign" class="support-box-wrap">
+		<div ng-if="action.id_admin_shift_assign" class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
 				<h1>Shift</h1>
-				<div class="box-content-color">
-					<table class="field-container">
-						<tr class="field-row">
-							<td class="field-key">Community</td>
-							<td class="field-value">{{action.shift.community}}</td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Shift Started</td>
-							<td class="field-value">{{action.shift.period.start}}</td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Shift Finished</td>
-							<td class="field-value">{{action.shift.period.end}}</td>
-						</tr>
-					</table>
-				</div>
+				<div class="divider"></div>
 			</div>
+			<div class="no-box-content-color">
+				<table class="field-container">
+					<tr class="field-row">
+						<td class="field-key">Community</td>
+						<td class="field-value">{{action.shift.community}}</td>
+					</tr>
+					<tr class="field-row">
+						<td class="field-key">Shift Started</td>
+						<td class="field-value">{{action.shift.period.start}}</td>
+					</tr>
+					<tr class="field-row">
+						<td class="field-key">Shift Finished</td>
+						<td class="field-value">{{action.shift.period.end}}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
 
-			<div ng-if="action.id_admin" class="support-box-wrap">
+		<div ng-if="action.id_admin" class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
 				<h1>Admin</h1>
-				<div class="box-content-color">
-					<table class="field-container">
-						<tr class="field-row">
-							<td class="field-key">Name</td>
-							<td class="field-value"><a href="/staff/{{action.admin.login}}">{{action.admin.name}}</a></td>
-						</tr>
-					</table>
-				</div>
+				<div class="divider"></div>
 			</div>
-
+			<div class="no-box-content-color">
+				<table class="field-container">
+					<tr class="field-row">
+						<td class="field-key">Name</td>
+						<td class="field-value"><a href="/staff/{{action.admin.login}}">{{action.admin.name}}</a></td>
+					</tr>
+				</table>
+			</div>
 		</div>
 
-		<div class="support-boxes-column">
-
-			<div class="support-box-wrap" ng-if="action.response">
+		<div class="support-box-wrap box-content2" ng-if="action.response">
+			<div class="support-box-wrap-header">
 				<h1>Response</h1>
-				<div class="box-content-color">
-					<table class="field-container">
-						<tr class="field-row">
-							<td class="field-key">Pex Card ID</td>
-							<td class="field-value">{{action.response.id}}</td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">First Name</td>
-							<td class="field-value">{{action.response.firstName}}</td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Last Name</td>
-							<td class="field-value">{{action.response.lastName}}</td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Ledger Balance</td>
-							<td class="field-value" positive-or-negative-color="{{action.response.ledgerBalance}}">${{action.response.ledgerBalance | formatPrice}}</td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Available Balance</td>
-							<td class="field-value" positive-or-negative-color="{{action.response.availableBalance}}">${{action.response.availableBalance | formatPrice}}</td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Status</td>
-							<td class="field-value">{{action.response.status}}</td>
-						</tr>
-						<tr class="field-row">
-							<td class="field-key">Business ID</td>
-							<td class="field-value">{{action.response.businessId}}</td>
-						</tr>
-						<tbody ng-repeat="card in action.response.cards">
-							<tr class="field-row">
-								<td class="field-key">Card ID</td>
-								<td class="field-value">{{card.id}}</td>
-							</tr>
-							<tr class="field-row">
-								<td class="field-key">Card Number</td>
-								<td class="field-value">{{card.cardNumber}}</td>
-							</tr>
-							<tr class="field-row">
-								<td class="field-key">Card Status</td>
-								<td class="field-value">{{card.status}}</td>
-							</tr>
-						</tbody>
-
-					</table>
-				</div>
+				<div class="divider"></div>
 			</div>
+			<div class="no-box-content-color">
+				<table class="field-container">
+					<tr class="field-row">
+						<td class="field-key">Pex Card ID</td>
+						<td class="field-value">{{action.response.id}}</td>
+					</tr>
+					<tr class="field-row">
+						<td class="field-key">First Name</td>
+						<td class="field-value">{{action.response.firstName}}</td>
+					</tr>
+					<tr class="field-row">
+						<td class="field-key">Last Name</td>
+						<td class="field-value">{{action.response.lastName}}</td>
+					</tr>
+					<tr class="field-row">
+						<td class="field-key">Ledger Balance</td>
+						<td class="field-value" positive-or-negative-color="{{action.response.ledgerBalance}}">${{action.response.ledgerBalance | formatPrice}}</td>
+					</tr>
+					<tr class="field-row">
+						<td class="field-key">Available Balance</td>
+						<td class="field-value" positive-or-negative-color="{{action.response.availableBalance}}">${{action.response.availableBalance | formatPrice}}</td>
+					</tr>
+					<tr class="field-row">
+						<td class="field-key">Status</td>
+						<td class="field-value">{{action.response.status}}</td>
+					</tr>
+					<tr class="field-row">
+						<td class="field-key">Business ID</td>
+						<td class="field-value">{{action.response.businessId}}</td>
+					</tr>
+					<tbody ng-repeat="card in action.response.cards">
+						<tr class="field-row">
+							<td class="field-key">Card ID</td>
+							<td class="field-value">{{card.id}}</td>
+						</tr>
+						<tr class="field-row">
+							<td class="field-key">Card Number</td>
+							<td class="field-value">{{card.cardNumber}}</td>
+						</tr>
+						<tr class="field-row">
+							<td class="field-key">Card Status</td>
+							<td class="field-value">{{card.status}}</td>
+						</tr>
+					</tbody>
 
+				</table>
+			</div>
 		</div>
+
 	</div>
 
 </div>

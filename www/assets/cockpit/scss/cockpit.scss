@@ -2633,21 +2633,14 @@ b, strong{ font-weight: bold; }
 	.support-box-wrap {
 		display: inline-block;
 		width: 100%;
-		-webkit-column-fill: balance;
+		-webkit-column-break-after: always;
+		break-after: always;
 	}
 	.support-boxes {
 		-webkit-column-count: 2;
 		-webkit-column-gap: 15px;
-		-webkit-column-fill: balance;
-	}
-	.support-boxes-column {
-		width: 49%;
-		box-sizing: border-box;
-		display: inline-block;
-		vertical-align: top;
-	}
-	.support-boxes-column:first-child {
-		padding-right: 15px;
+		column-count: 2;
+		column-gap: 15px;
 	}
 }
 
@@ -2751,7 +2744,7 @@ canvas.chart {
 
 
 .field-container .field-row {
-	font-size: 1.2em;
+	font-size: 1.19em;
 	display: table-row;
 }
 .field-container .field-note{
@@ -4440,8 +4433,12 @@ h1.title.box-title {
 	pointer-events: none;
 }
 
-.sticky-bottom button {
+.sticky-bottom * {
 	pointer-events:all !important;
+}
+
+.show-more-links {
+	padding-top: 1.4em;
 }
 
 .li-input .button.button-no-margin {
