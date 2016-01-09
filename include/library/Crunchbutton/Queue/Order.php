@@ -133,20 +133,21 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 		}
 
 		// Send non-scheduled community drivers orders. #7281
-		$community = $this->order()->community();
-		if( $community && $community->notify_non_shift_drivers && $community->notify_non_shift_drivers_min ){
+		if( $this->order()->restaurant()->delivery_service ){
+			$community = $this->order()->community();
+			if( $community && $community->notify_non_shift_drivers && $community->notify_non_shift_drivers_min ){
 
-			if( $this->order()->preordered ){
-				$seconds = 45 * 60;
-			} else {
-				$seconds = $community->notify_non_shift_drivers_min * 60;
+				if( $this->order()->preordered ){
+					$seconds = 45 * 60;
+				} else {
+					$seconds = $community->notify_non_shift_drivers_min * 60;
+				}
+				$q = Queue::create([
+					'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_DRIVER_HELPOUT,
+					'id_order' => $this->order()->id_order,
+					'seconds' => $seconds
+				]);
 			}
-
-			$q = Queue::create([
-				'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_DRIVER_HELPOUT,
-				'id_order' => $this->order()->id_order,
-				'seconds' => $seconds
-			]);
 		}
 
 		// replaces Crunchbutton_Cron_Job_OrderRules
