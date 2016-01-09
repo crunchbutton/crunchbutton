@@ -480,17 +480,17 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			reloadOnSearch: false
 		})
 		.when('/drivers/onboarding/docs', {
-			action: 'drivers-onboarding',
+			action: 'drivers-onboarding-docs',
 			controller: 'DriversOnboardingDocsCtrl',
 			templateUrl: 'assets/view/drivers-onboarding-docs.html'
 		})
 		.when('/drivers/onboarding/new', {
-			action: 'drivers-onboarding',
+			action: 'drivers-onboarding-new',
 			controller: 'DriversOnboardingFormCtrl',
 			templateUrl: 'assets/view/drivers-onboarding-form.html'
 		})
 		.when('/drivers/onboarding/:id', {
-			action: 'drivers-onboarding',
+			action: 'drivers-onboarding-edit',
 			controller: 'DriversOnboardingFormCtrl',
 			templateUrl: 'assets/view/drivers-onboarding-form.html'
 		})
