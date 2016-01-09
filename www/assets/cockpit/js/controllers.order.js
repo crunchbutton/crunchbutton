@@ -103,6 +103,7 @@ NGApp.controller('OrdersCtrl', function ($rootScope, $scope, $location, OrderSer
 				$scope.orders = d.results;
 				$scope.complete(d);
 				draw();
+				$rootScope.$broadcast('tab-loaded');
 			});
 			if( ( $scope.query.community || $scope.query.restaurant || $scope.query.driver ) && !$scope.show_more_options ){
 				$scope.moreOptions();
