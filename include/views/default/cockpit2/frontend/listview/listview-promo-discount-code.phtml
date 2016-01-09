@@ -2,7 +2,7 @@
 	<div sticky-header>
 		<table class="thead">
 			<tr>
-				<th></th>
+				<th>Id</th>
 				<th>Code</th>
 				<th>Value</th>
 				<th>Community</th>
@@ -20,12 +20,12 @@
 					<td>#{{promo.id_promo}}</td>
 					<td>{{promo.code}}</td>
 					<td>
-						<span class="tag tag-blue" ng-if="promo.delivery_fee">Delivery fee</span>
+						<span class="tag tag-empty tag-blue" ng-if="promo.delivery_fee">Delivery fee</span>
 						<span ng-if="!promo.delivery_fee">${{promo.value}}</span>
 					</td>
 					<td>
-						<span class="tag tag-red" ng-if="!promo.community">All</span>
-						<span class="tag tag-lightgrey" ng-if="promo.community">{{promo.community}}</span>
+						<span class="tag tag-empty tag-red" ng-if="!promo.community">All</span>
+						<span class="tag tag-empty tag-lightgrey" ng-if="promo.community">{{promo.community}}</span>
 					</td>
 					<td>{{promo.date_start}}</td>
 					<td>{{promo.date_end}}</td>

@@ -2,12 +2,13 @@
 	<div sticky-header>
 		<table class="thead">
 			<tr>
+				<th>Id</th>
 				<th>Code</th>
 				<th>Value</th>
 				<th>Info</th>
-				<th>Created By</th>
-				<th>Status</th>
-				<th class="tb-small"></th>
+				<th class="tb-small">Created By</th>
+				<th class="tb-small">Active</th>
+				<th class="tb-small tb-right">Redemed</th>
 			</tr>
 		</table>
 		<div class="tbody">
@@ -26,11 +27,10 @@
 					<td nowrap class="tb-center tb-v-center">
 						<span class="tag tag-green" ng-if="promo.active">Active</span>
 						<span class="tag tag-red" ng-if="!promo.active">Inactive</span>
-
-						<span class="tag tag-red" ng-if="promo.redeemed">Redeemed</span>
-						<span class="tag tag-green" ng-if="!promo.redeemed">Not Redeemed</span>
 					</td>
-					<td nowrap class="tb-v-center">
+					<td nowrap class="tb-right tb-v-center">
+						<span class="tag tag-orange" ng-if="promo.redeemed">Redeemed</span>
+						<span class="tag tag-purple" ng-if="!promo.redeemed">Nope</span>
 					</td>
 				</tr>
 			</table>

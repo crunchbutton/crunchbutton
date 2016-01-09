@@ -1,5 +1,5 @@
 
-NGApp.factory('ViewListService', function($location, $timeout) {
+NGApp.factory('ViewListService', function($rootScope, $location, $timeout) {
 
 	var service = {};
 
@@ -32,19 +32,19 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 			}
 
 			timeoutPromise = $timeout(function(){
-													if (previous == getQuery()) {
-														return;
-													}
+				if (previous == getQuery()) {
+					return;
+				}
 
-													if (!previous) {
-														$location.search(scope.query).replace();
-													} else {
-														$location.search(scope.query);
-													}
+				if (!previous) {
+					$location.search(scope.query).replace();
+				} else {
+					$location.search(scope.query);
+				}
 
-													previous = getQuery();
-													update();
-											}, 10 );
+				previous = getQuery();
+				update();
+			}, 10 );
 		};
 
 		// @todo: this breaks linking to pages
@@ -106,6 +106,7 @@ NGApp.factory('ViewListService', function($location, $timeout) {
 		var updater = function(){};
 
 		scope.update = function(fn) {
+			$rootScope.$broadcast('listview-content-loaded');
 			if (fn) {
 				updater = fn;
 			} else {
