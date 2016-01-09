@@ -560,6 +560,7 @@ NGApp.directive('uiTabs', function ( $compile, $timeout ) {
 					controller.loaded = true;
 					return;
 				}
+				
 				App.scrollTop($(element).offset().top - 55);
 			});
 
@@ -821,22 +822,6 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 						table.addClass('sticky-header');
 						var thead = table.find('.thead');
 						var tbody = table.find('.tbody');
-						/*
-						var sticky = table.find('sticky-tbody');
-						console.log(sticky);
-
-						if (!sticky.length) {
-							var bodyContainer = $('<div class="sticky-tbody"></div>').append(tbody.clone());
-							console.log(bodyContainer);
-							tbody.replaceWith(bodyContainer.get(0));
-							tbody = bodyContainer;
-						} else {
-							return;
-						}
-*/
-
-						//tbody.css('display', 'table-row-group');
-
 
 						if( App.isNarrowScreen() ){
 							thead.css( 'display', 'inherit' );
@@ -872,12 +857,15 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 						var tbodyHeight = ( windowHeight - (theadHeight + 130) + 'px' );
 
 						tbody.css( 'height', tbodyHeight );
-						//tbody.css( 'width', '100%' );
 
 						processing = false;
 
 					}, 100 );
 				}
+
+				$rootScope.$on( 'sticky-header-content-loaded', function(e, data) {
+					justDoIt();
+				});
 
 				$rootScope.$on( 'ng-repeat-finished', function(e, data) {
 					justDoIt();
