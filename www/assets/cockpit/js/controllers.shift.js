@@ -12,7 +12,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			templateUrl: 'assets/view/shift.html',
 			reloadOnSearch: false
 		})
-		.when('/shifts/schedule', {
+		.when('/shifts/schedule/:permalink?', {
 			action: 'shift-schedule',
 			controller: 'ShiftScheduleCtrl',
 			templateUrl: 'assets/view/shift-schedule.html',
@@ -59,9 +59,13 @@ NGApp.controller('ShiftChekinCtrl', function ( $scope, ShiftService, ViewListSer
 	}
 });
 
-NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftScheduleService, CommunityService ) {
+NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, $routeParams, ShiftScheduleService, CommunityService ) {
 
 	$scope.options = { communities: [] };
+
+	if( $routeParams.permalink ){
+		$scope.options.communities.push( $routeParams.permalink );
+	}
 
 	$scope.selectNoneCommunity = function(){
 		$scope.options.communities = [];
@@ -112,8 +116,8 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftSchedu
 	$scope.selectAllCommunities = function(){
 		$scope.selectNoneCommunity();
 		for( x in $scope.communities ){
-			if( $scope.communities[ x ].id_community ){
-				$scope.options.communities.push( $scope.communities[ x ].id_community );
+			if( $scope.communities[ x ].permalink ){
+				$scope.options.communities.push( $scope.communities[ x ].permalink );
 			}
 		}
 	}
@@ -125,10 +129,15 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, ShiftSchedu
 			} else {
 				$scope.options.start = new Date();
 			}
+
+			if( $scope.options.communities.length ){
+				$scope.loadShifts();
+			}
+
 		} );
 
 		if( !$scope.communities ){
-			CommunityService.listSimple( function( json ){
+			CommunityService.listPermalink( function( json ){
 				$scope.communities = json;
 			} );
 		}

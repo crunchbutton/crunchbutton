@@ -494,7 +494,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 
 			foreach( $filterCommunities as $community ) {
-				$community = Community::o( $community );
+				$community = Community::permalink( $community );
 				if( $community->id_community ){
 					$shifts = [];
 					foreach( $days as $day ) {

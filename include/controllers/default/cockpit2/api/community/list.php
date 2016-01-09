@@ -10,8 +10,16 @@ class Controller_api_community_list extends Crunchbutton_Controller_Rest {
 			case 'get':
 
 				switch ( c::getPagePiece( 3 ) ) {
-					// other lists can be added here!
-
+					case 'permalink':
+						$communities = Crunchbutton_Community::active();
+						$export = [];
+						foreach( $communities as $community ){
+							if( $community->name && $community->permalink ){
+								$export[] = array( 'permalink' => $community->permalink, 'name' => $community->name );
+							}
+						}
+						echo json_encode( $export );
+						break;
 					// Simple list returns just the name and id
 					case 'simple':
 					default:
