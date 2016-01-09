@@ -890,9 +890,13 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 					justDoIt();
 				});
 
+				scope.$on( 'menu-toggle', function(e, data) {
+					justDoIt();
+				});
+
 				var justDoIt = function(){
 					process();
-					// just to make sure
+					// just to make sure & to process after css animations
 					setTimeout( function(){ process(); }, 200 );
 				}
 
