@@ -32,7 +32,7 @@
 							<span class="listview-bold">{{community.closedLog.type}}</span> {{community.closedLog.note}}
 						</span>
 						<span class="listview-smaller" ng-if="community.note && community.note.text">
-							Last Note: {{community.note.text}} <br>({{community.note.added_by}})
+							Last Note<span ng-if="community.note.added_by"> by {{community.note.added_by}}</span>: {{community.note.text}}
 						</span>
 
 						<? /*
@@ -65,7 +65,7 @@
 						<span class="tag tag-red" ng-if="community.close_3rd_party_delivery_restaurants">Closed</span>
 						<span class="tag tag-green" ng-if="!community.close_3rd_party_delivery_restaurants">Open</span>
 					</td>
-					<td nowrap class="tb-v-center">
+					<td nowrap class="tb-v-center tb-right">
 						<div>
 							<a href ng-click="openClosingTimeContainer( community.permalink )"><button class="button button-small button-small button-empty button-green"><i class="fa fa-power-off"></i>&nbsp;&nbsp;Switch</button></a>
 							<a href="/community/{{community.permalink || community.id_community}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>

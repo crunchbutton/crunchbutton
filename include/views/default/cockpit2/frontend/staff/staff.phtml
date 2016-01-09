@@ -67,7 +67,7 @@
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
 	<ng-include src="'assets/view/listview-staff.html'"></ng-include>
-	<div sticky-bottom="47" class="table-sticky-dependant" ng-show="pages > 1 || more">
+	<div sticky-bottom="47" class="table-sticky-dependant" ng-show="pages > 1 || more || query.page > 1">
 		<div class="no-box-content-color">
 			<ng-include src="'assets/view/listview-paging.html'"></ng-include>
 		</div>
