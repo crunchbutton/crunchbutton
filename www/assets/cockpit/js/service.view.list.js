@@ -106,7 +106,6 @@ NGApp.factory('ViewListService', function($rootScope, $location, $timeout) {
 		var updater = function(){};
 
 		scope.update = function(fn) {
-			$rootScope.$broadcast('listview-content-loaded');
 			if (fn) {
 				updater = fn;
 			} else {
@@ -135,6 +134,8 @@ NGApp.factory('ViewListService', function($rootScope, $location, $timeout) {
 			setTimeout( function(){
 				scope.ngRepeatFinished();
 			}, 500 );
+
+			$rootScope.$broadcast('listview-content-loaded');
 
 		};
 

@@ -867,7 +867,7 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 				}
 
 				var end = $rootScope.$on( 'listview-content-loaded', function(e, data) {
-					angular.element(elem).scrollTop = 0;
+					angular.element(elem).find('.tbody').scrollTop(0);
 				});
 
 				scope.$on('$destroy', function() {

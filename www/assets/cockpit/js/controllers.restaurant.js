@@ -430,11 +430,9 @@ NGApp.controller('RestaurantsCtrl', function ($rootScope, $scope, RestaurantServ
 			RestaurantService.list( $scope.query, function(d) {
 				$scope.restaurants = d.results;
 				$scope.complete(d);
-
-					if( ( $scope.query.community || $scope.query.payment_method ) && !$scope.show_more_options ){
-						$scope.moreOptions();
-					}
-
+				if( ( $scope.query.community || $scope.query.payment_method ) && !$scope.show_more_options ){
+					$scope.moreOptions();
+				}
 			});
 		}
 	});
