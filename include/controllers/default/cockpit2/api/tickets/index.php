@@ -66,7 +66,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			$keys[] = $admin;
 		}
 
-		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
+		if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
 			// only display support to their number
 			$phone = preg_replace('/[^0-9]/','', c::admin()->phone);
 			$q .= ' AND s.phone=?';
