@@ -11,12 +11,15 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
     // TODO: Test that this works correctly for different time zones
     public static function setUpBeforeClass()
     {
+        $community_tz1 = 'America/Los_Angeles';
+        $community_tz2 = 'America/New_York';
+        $community_tz3 = 'America/New_York';
         $name = get_called_class();
         $hours = 2;
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now = new DateTime('now', new DateTimeZone($community_tz1));
         $now->modify('- ' . $hours . ' hours');
         $useDateEarly = $now->format('Y-m-d H:i:s');
-        $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+        $now = new DateTime('now', new DateTimeZone($community_tz1));
         $now->modify('+ ' . $hours . ' hours');
         $useDateLater = $now->format('Y-m-d H:i:s');
 
@@ -42,7 +45,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
             'delivery_fee' => '1.5',
             'confirmation' => 0,
             'community' => 'test',
-            'timezone' => 'America/Los_Angeles',
+            'timezone' => $community_tz1,
             'open_for_business' => true,
             'delivery_service' => true,
             'loc_lat' => 34.0251,
@@ -60,7 +63,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
             'delivery_fee' => '1.5',
             'confirmation' => 0,
             'community' => 'test',
-            'timezone' => 'America/Los_Angeles',
+            'timezone' => $community_tz1,
             'open_for_business' => true,
             'delivery_service' => true,
             'loc_lat' => 34.0269,
@@ -78,7 +81,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
             'delivery_fee' => '1.5',
             'confirmation' => 0,
             'community' => 'test',
-            'timezone' => 'America/Los_Angeles',
+            'timezone' => $community_tz1,
             'open_for_business' => true,
             'delivery_service' => true,
             'loc_lat' => 34.017,
@@ -96,7 +99,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
             'delivery_fee' => '1.5',
             'confirmation' => 0,
             'community' => 'test',
-            'timezone' => 'America/Los_Angeles',
+            'timezone' => $community_tz1,
             'open_for_business' => true,
             'delivery_service' => true,
             'loc_lat' => 34.0261,
@@ -114,7 +117,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
             'delivery_fee' => '1.5',
             'confirmation' => 0,
             'community' => 'test',
-            'timezone' => 'America/New_York',
+            'timezone' => $community_tz2,
             'open_for_business' => true,
             'delivery_service' => true,
             'loc_lat' => 34.0266,
@@ -132,7 +135,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
             'delivery_fee' => '1.5',
             'confirmation' => 0,
             'community' => 'test',
-            'timezone' => 'America/New_York',
+            'timezone' => $community_tz2,
             'open_for_business' => true,
             'delivery_service' => true,
             'loc_lat' => 34.0175,
@@ -145,7 +148,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $c = new Community([
             'name' => $name . ' - ONE',
             'active' => 1,
-            'timezone' => 'America/Los_Angeles',
+            'timezone' => $community_tz1,
             'driver-group' => 'drivers-testlogistics',
             'range' => 2,
             'private' => 1,
@@ -158,7 +161,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $c2 = new Community([
             'name' => $name . ' - TWO',
             'active' => 1,
-            'timezone' => 'America/New_York',
+            'timezone' => $community_tz2,
             'driver_group' => 'drivers-testlogistics',
             'range' => 2,
             'private' => 1,
@@ -171,7 +174,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $c3 = new Community([
             'name' => $name . ' - THREE',
             'active' => 1,
-            'timezone' => 'America/New_York',
+            'timezone' => $community_tz3,
             'driver_group' => 'drivers-testlogistics',
             'range' => 2,
             'private' => 1,
@@ -277,7 +280,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
             'name' => $name . ' - ONE',
             'login' => null,
             'active' => 1,
-            'timezone' => 'America/Los_Angeles',
+            'timezone' => $community_tz1,
             'id_phone' => intval($p1id)
         ]);
         $a1->save();
@@ -295,7 +298,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
             'name' => $name . ' - TWO',
             'login' => null,
             'active' => 1,
-            'timezone' => 'America/Los_Angeles',
+            'timezone' => $community_tz1,
             'id_phone' => $p2id
         ]);
         $a2->save();
@@ -313,7 +316,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
             'name' => $name . ' - THREE',
             'login' => null,
             'active' => 0,
-            'timezone' => 'America/Los_Angeles'
+            'timezone' => $community_tz1
         ]);
         $a3->save();
         $drivers[] = $a3;
@@ -330,7 +333,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
             'name' => $name . ' - FOUR',
             'login' => null,
             'active' => 0,
-            'timezone' => 'America/Los_Angeles'
+            'timezone' => $community_tz1
         ]);
         $a4->save();
         $drivers[] = $a4;
@@ -1474,6 +1477,8 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
                     'note' => ''
                 ]);
                 $oa->save();
+                $o->delivery_status = $oa->id_order_action;
+                $o->save();
             }
         }
         $og['o'] = $o;

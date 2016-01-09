@@ -1,0 +1,126 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="title"><i class="fa fa-calendar"></i>Schedule Shifts<div class="title-loader" ng-if="loading"></h1>
+
+	<div class="support-box-wrap box-content2">
+
+		<div class="support-box-wrap-header">
+			<h1>Options</h1>
+			<div class="divider"></div>
+		</div>
+
+		<div class="no-box-content-color">
+
+			<ul class="ul-inputs">
+				<li class="li-input" ng-if="options.start">
+					<div class="label">Starting at:</div>
+					<div class="input"><input type="date" name="dateStart" ng-model="options.start" ></div>
+				</li>
+
+				<li class="li-input" ng-if="communities.length">
+					<div class="label">Communities:</div>
+					<div class="input">
+						<button ng-click="selectNoneCommunity();" class="button button-small button-empty button-border button-orange"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp;Select None</button>
+						<button ng-click="selectAllCommunities();" class="button button-small button-empty button-border button-blue"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Select All</button>
+						<br/>
+						<br/>
+					</div>
+
+					<div class="input">
+						<ui-select multiple ng-model="options.communities" theme="select2" close-on-select="true" title="Select a community">
+							<ui-select-match placeholder="Select a community...">{{$item.name}}</ui-select-match>
+							<ui-select-choices repeat="community.id_community as community in communities | propsFilter: {name: $select.search}">
+								{{community.name}}
+							</ui-select-choices>
+						</ui-select>
+
+					</div>
+				</li>
+
+				<li class="li-input" ng-if="options.communities.length">
+					<br>
+					<div class="input">
+						<button name='refresh' ng-click='loadShifts()' class="button button-small button-empty button-border button-green"><i class="fa fa-refresh"></i>&nbsp;&nbsp;Load Shifts</button>
+						<span ng-if="loaded">
+							<button name='refresh' ng-click='toggleTz()' class="button button-small button-empty button-border button-blue">
+								<i class="fa fa-clock-o"></i>&nbsp;&nbsp;
+								<span ng-if="!showPSTtz">Show hours in PST timezone</span>
+								<span ng-if="showPSTtz">Show hours in community's timezone</span>
+							</button>
+						</span>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div ng-repeat="community in shifts.communities" class="shift-schedule">
+		<div class="support-box-wrap box-content2">
+
+		<div class="support-box-wrap-header">
+			<h1>{{community.name}}</h1>
+			<div class="divider"></div>
+		</div>
+		<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': !loaded}"></div>
+		<div class="no-box-content-color">
+			<table class="tb-grid tb-zebra" ng-if="days">
+				<thead>
+					<tr>
+						<th><i class="fa fa-arrow-left schedule-shift-navigation" ng-click="previousWeek()"></i></th>
+						<th ng-repeat="day in days" class="table-label">
+							<div class="date">{{day.date}}</div>
+							<div class="weekday">{{day.weekday}}</div>
+						</th>
+						<th><i class="fa fa-arrow-right schedule-shift-navigation" ng-click="nextWeek()"></i></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td></td>
+						<td ng-repeat="day in community.days">
+							<div ng-if="day.shifts.length">
+								<div ng-repeat="shift in day.shifts" class="shift unselectable" ng-class="{'shift-hidden':shift.hidden, 'shift-has-drivers': shift.drivers, 'shift-no-driver': !shift.drivers}">
+									<span title="Period"><i class="fa fa-clock-o"></i></span>
+									<span class="period" ng-if="!showPSTtz">{{shift.period}} <span class="tz">({{shift.tz}})</span></span>
+									<span class="period" ng-if="showPSTtz">{{shift.period_pst}} <span class="tz">(PST)</span></span>
+									<ul ng-if="shift.drivers" class="drivers">
+										<li ng-repeat="driver in shift.drivers">
+											<span title="Driver"><i class="fa fa-car"></i></span>
+											<span ng-if="driver.permanent" title="Permanent"><i class="fa fa-lock"></i></span>
+											<span ng-if="driver.first_week" title="First Week"><i class="fa fa-star"></i></span>
+											<span class="driver-name">{{driver.name}}</span>
+										</li>
+									</ul>
+									<br ng-if="!shift.drivers">
+									<span class="tag tag-green" ng-if="shift.recurring" title="It is a recurring event">Recurring</span>
+
+									<div class="buttons">
+
+										<button title="Schedule" class="button button-empty button-border button-blue button-small" ng-click="scheduleShift( shift.id_community_shift );"><span class="fa fa-calendar"></span></button>
+
+										<button title="Edit" class="button button-empty button-border button-blue button-small" ng-click="editShift( shift.id_community_shift );"><span class="fa fa-pencil-square-o"></span></button>
+
+										<button title="Hide / Show" class="button button-empty button-border button-blue button-small" ng-click="toggleShowHideShift( shift );"><span class="fa fa fa-eye-slash"></span></button>
+
+									</div>
+								</div>
+							</div>
+							<div class="button-container" ng-if="day.editable">
+								<button ng-click="addShift( community.id_community, community.name, day.date )" class="button button-small button-empty button-border button-blue"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Shift</button>
+							</div>
+						</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="divider"></div>
+
+</div>
+<ng-include src="'assets/view/shift-schedule-add-shift.html'"></ng-include>
+<ng-include src="'assets/view/shift-schedule-schedule-shift.html'"></ng-include>
+<ng-include src="'assets/view/shift-schedule-edit-shift.html'"></ng-include>

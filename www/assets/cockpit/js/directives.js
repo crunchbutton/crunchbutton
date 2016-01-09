@@ -677,6 +677,26 @@ NGApp.directive( 'permalinkValidation', function () {
 	};
 });
 
+NGApp.directive( 'shiftHoursValidation', function () {
+	return {
+			require: 'ngModel',
+			link: function(scope, elem, attr, ngModel) {
+				scope.$watch( attr.ngModel, function() { validate(); } );
+				var validate = function() {
+					var val = elem.val();
+					var isValid = false;
+					if( val ){
+						segment = val.replace( /\(.*?\)/g, '' );
+						if( /^ *(\d+)(?:\:(\d+))? *(am|pm) *(?:to|-) *(\d+)(?:\:(\d+))? *(am|pm) *$/i.exec( segment ) ) {
+							isValid = true;
+						}
+					}
+					ngModel.$setValidity( 'shiftHoursValidation', isValid );
+				};
+			}
+	};
+});
+
 NGApp.directive( 'restaurantHoursValidation', function () {
 	return {
 			require: 'ngModel',
