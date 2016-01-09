@@ -3,10 +3,10 @@
 		<table class="thead">
 			<tr>
 				<th>Resource</th>
-				<th class="tb-center">Communities</th>
-				<th nowrap="tb-center">Menu</th>
-				<th nowrap="tb-center">Resources</th>
-				<th nowrap="tb-center">Order</th>
+				<th>Communities</th>
+				<th nowrap="tb-center" title="Display in Menu">Mnu</th>
+				<th nowrap="tb-center" title="Display on Resources Page">Res</th>
+				<th nowrap="tb-center" title="Display on Order page">Odr</th>
 				<th nowrap="tb-center">Active</th>
 				<th class="tb-small"></th>
 			</tr>
@@ -26,23 +26,23 @@
 							</span>
 						</span>
 					</td>
-					<td nowrap class="tb-center tb-v-center">
+					<td nowrap class="tb-center tb-v-center tb-small">
 						<span class="tag tag-green" ng-if="resource.page">Yes</span>
 						<span class="tag tag-red" ng-if="!resource.page">No</span>
 					</td>
-					<td nowrap class="tb-center tb-v-center">
+					<td nowrap class="tb-center tb-v-center tb-small">
 						<span class="tag tag-green" ng-if="resource.side">Yes</span>
 						<span class="tag tag-red" ng-if="!resource.side">No</span>
 					</td>
-					<td nowrap class="tb-center tb-v-center">
+					<td nowrap class="tb-center tb-v-center tb-small">
 						<span class="tag tag-green" ng-if="resource.order_page">Yes</span>
 						<span class="tag tag-red" ng-if="!resource.order_page">No</span>
 					</td>
-					<td nowrap class="tb-center tb-v-center">
+					<td nowrap class="tb-center tb-v-center tb-small">
 						<span class="tag tag-green" ng-if="resource.active">Active</span>
 						<span class="tag tag-red" ng-if="!resource.active">Inactive</span>
 					</td>
-					<td nowrap class="tb-v-center">
+					<td nowrap class="tb-v-center tb-right">
 						<a href="/community/resource/{{resource.id_resource}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
 					</td>
 				</tr>

@@ -46,20 +46,20 @@
 
 						</div>
 					</td>
-					<td nowrap class="tb-center tb-v-center">
+					<td nowrap class="tb-center tb-v-center tb-small">
 						<span class="tag tag-green" ng-if="s.verified">Verified</span>
-						<span class="tag tag-red" ng-if="!s.verified">Non-verified</span>
+						<span class="tag tag-red" ng-if="!s.verified">Unverified</span>
 					</td>
 					<td nowrap class="tb-center tb-v-center" ng-if="query.working != 'all'">
-						<span class="tag tag-purple" ng-if="s.working_today && !s.working">Today</span>
+						<span class="tag tag-purple" ng-if= tb-small"s.working_today && !s.working">Today</span>
 						<span class="tag tag-orange" ng-if="s.working">Now</span>
 						<span class="tag tag-lightgrey" ng-if="!s.working_today && !s.working">No</span>
 					</td>
-					<td nowrap class="tb-center tb-v-center">
+					<td nowrap class="tb-center tb-v-center tb-small">
 						<span class="tag tag-empty tag-grey" ng-if="s.pexcard && s.pexcard.card_serial">{{s.pexcard.card_serial}}</span>
 						<span class="tag tag-empty tag-lightgrey" ng-if="!s.pexcard || !s.pexcard.card_serial">None</span>
 					</td>
-					<td nowrap class="tb-v-center">
+					<td nowrap class="tb-v-center tb-right">
 						<a href="/staff/{{s.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 					</td>
 				</tr>
