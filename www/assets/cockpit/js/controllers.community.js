@@ -451,6 +451,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		OrderService.list( { community: $scope.community.id_community, limit: 5}, function(d) {
 			$scope.orders = d.results;
 			$scope.loadingOrders = false;
+			$rootScope.$broadcast('tab-loaded');
 		} );
 	}
 
@@ -462,6 +463,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		RestaurantService.list( { community: $scope.community.id_community, limit: 50 }, function(d) {
 			$scope.restaurants = d.results;
 			$scope.loadingRestaurants = false;
+			$rootScope.$broadcast('tab-loaded');
 		});
 	}
 
@@ -475,6 +477,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		StaffService.list( { community: $scope.community.id_community, limit: 50, type: 'driver', 'working': 'force','send_text':'all'}, function(data) {
 			$scope.staff = data.results;
 			$scope.loadingStaff = false;
+			$rootScope.$broadcast('tab-loaded');
 		});
 	}
 
@@ -484,6 +487,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		CommunityService.alias.list( $routeParams.id, function( json ){
 			$scope.aliases = json;
 			$scope.loadingAliases = false;
+			$rootScope.$broadcast('tab-loaded');
 		} );
 	}
 
@@ -493,6 +497,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		CommunityService.closelog.list( $routeParams.id, function( json ){
 			$scope.closelogs = json;
 			$scope.loadingLogs = false;
+			$rootScope.$broadcast('tab-loaded');
 		} );
 	}
 
@@ -501,6 +506,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		CommunityService.notes.list( { community: $scope.community.id_community }, function( json ){
 			$scope.notes = json.results;
 			$scope.loadingNotes = false;
+			$rootScope.$broadcast('tab-loaded');
 		} );
 	}
 
@@ -516,6 +522,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 		DriverService.byCommunity( $scope.community.id_community, function( data ){
 			$scope.drivers = data;
 			$scope.loadDrivers = false;
+			$rootScope.$broadcast('tab-loaded');
 		} );
 	}
 
