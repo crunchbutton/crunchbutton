@@ -227,7 +227,7 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 
 });
 
-NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService, CommunityService) {
+NGApp.controller('StaffCtrl', function ($rootScope, $scope, StaffService, ViewListService, CommunityService) {
 
 	angular.extend( $scope, ViewListService );
 
@@ -263,6 +263,7 @@ NGApp.controller('StaffCtrl', function ($scope, StaffService, ViewListService, C
 				} );
 			}
 		}
+		$rootScope.$broadcast('search-toggle');
 	}
 
 	$scope.$watch( 'query.community', function( newValue, oldValue, scope ) {

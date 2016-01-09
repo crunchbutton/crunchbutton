@@ -68,6 +68,12 @@
 						<div class="field-key">Inactive since</div>
 						<div class="field-value">{{staff.date_terminated_formatted}}</div>
 					</div>
+					<div class="field-row">
+						<div class="field-key">Address</div>
+						<div class="field-value">
+							{{staff.address}}
+						</div>
+					</div>
 				</div>
 
 				<br><br>
@@ -84,6 +90,104 @@
 			</div>
 
 		</div>
+
+
+
+		<div class="support-box-wrap box-content2" ng-if="staff.isMarketingRep || staff.isDriver">
+			<div class="support-box-wrap-header">
+				<h1>
+					<span ng-if="staff.isDriver">Driver Info</span>
+					<span ng-if="staff.isMarketingRep">Brand Representative</span>
+				</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a ng-if="staff.isDriver" href="/drivers/onboarding/{{staff.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-automobile"></i>&nbsp;&nbsp;Edit Driver</button></a>
+						<a ng-if="staff.isMarketingRep" href="/staff/marketing/{{staff.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-paper-plane-o"></i></i>&nbsp;&nbsp;Edit Brand Representative</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row" ng-if="staff.isDriver">
+						<div class="field-key">Communities</div>
+						<div class="field-value">
+							<span class="staff-community-repeat" ng-repeat="community in staff.communities">
+								{{community}}
+							</span>
+							&nbsp;&nbsp;&nbsp;&nbsp;<span class="link orange" ng-click="assignCommunities()"><i class="fa fa-plus-circle"></i></span>
+						</div>
+					</div>
+					<div class="field-row" ng-if="staff.isDriver">
+						<div class="field-key">Vehicle</div>
+						<div class="field-value">
+							<span class="tag tag-orange" ng-if="staff.vehicle == 'car'">Car</span>
+							<span class="tag tag-purple" ng-if="staff.vehicle == 'bike'">Bike</span>
+							<span class="tag tag-darkgreen" ng-if="staff.vehicle == 'rollerblades'">Rollerblades</span>
+							<span class="tag tag-lightblue" ng-if="staff.vehicle == 'rickshaw'">Rickshaw</span>
+							<span class="tag tag-yellow" ng-if="staff.vehicle == 'skateboard'">Skateboard</span>
+							<span class="tag tag-grey" ng-if="!staff.vehicle">None</span>
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Is Community Manager</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="staff.isCampusManager">Yes</span>
+							<span class="tag tag-red" ng-if="!staff.isCampusManager">No</span>
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Referral Code</div>
+						<div class="field-value">
+							{{staff.invite_code}}
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">How much per referral</div>
+						<div class="field-value">
+							${{staff.referral_admin_credit | formatPrice}}
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Activations</div>
+						<div class="field-value">
+							{{staff.referral_total || 0}}
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Activations in past week</div>
+						<div class="field-value">
+							{{staff.referral_total_last_week || 0}}
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Credit amount to customer</div>
+						<div class="field-value">
+							${{staff.referral_customer_credit | formatPrice}}
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Notify off schedule</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="staff.down_to_help_out">Yes</span>
+							<span class="tag tag-red" ng-if="!staff.down_to_help_out">No</span>
+						</div>
+					</div>
+					<div class="field-row" ng-if="staff.down_to_help_out">
+						<div class="field-key">Notify off for today</div>
+						<div class="field-value">
+							<label class="switch-wrap">
+								<input type="checkbox" ng-change="change_down_to_help_notifications();" class="switch" ng-model="staff.down_to_help_out_turn_off_notifications"/><div></div>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+
 
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
@@ -155,102 +259,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="support-box-wrap box-content2" ng-if="staff.isMarketingRep || staff.isDriver">
-			<div class="support-box-wrap-header">
-				<h1 ng-if="staff.isDriver">Driver Info</h1>
-				<h1 ng-if="staff.isMarketingRep">Brand Representative</h1>
-				<div class="support-box-header-actions-wrap">
-					<div class="support-box-header-actions">
-						<a ng-if="staff.isDriver" href="/drivers/onboarding/{{staff.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-automobile"></i>&nbsp;&nbsp;Edit Driver</button></a>
-						<a ng-if="staff.isMarketingRep" href="/staff/marketing/{{staff.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-paper-plane-o"></i></i>&nbsp;&nbsp;Edit Brand Representative</button></a>
-					</div>
-				</div>
-				<div class="divider"></div>
-			</div>
 
-			<div class="no-box-content-color">
-				<div class="field-container">
-					<div class="field-row" ng-if="staff.isDriver">
-						<div class="field-key">Communities</div>
-						<div class="field-value">
-							<span class="staff-community-repeat" ng-repeat="community in staff.communities">
-								{{community}}
-							</span>
-							&nbsp;&nbsp;&nbsp;&nbsp;<span class="link orange" ng-click="assignCommunities()"><i class="fa fa-plus-circle"></i></span>
-						</div>
-					</div>
-					<div class="field-row" ng-if="staff.isDriver">
-						<div class="field-key">Vehicle</div>
-						<div class="field-value">
-							<span class="tag tag-orange" ng-if="staff.vehicle == 'car'">Car</span>
-							<span class="tag tag-purple" ng-if="staff.vehicle == 'bike'">Bike</span>
-							<span class="tag tag-darkgreen" ng-if="staff.vehicle == 'rollerblades'">Rollerblades</span>
-							<span class="tag tag-lightblue" ng-if="staff.vehicle == 'rickshaw'">Rickshaw</span>
-							<span class="tag tag-yellow" ng-if="staff.vehicle == 'skateboard'">Skateboard</span>
-							<span class="tag tag-grey" ng-if="!staff.vehicle">None</span>
-						</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Is Community Manager</div>
-						<div class="field-value">
-							<span class="tag tag-green" ng-if="staff.isCampusManager">Yes</span>
-							<span class="tag tag-red" ng-if="!staff.isCampusManager">No</span>
-						</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Referral Code</div>
-						<div class="field-value">
-							{{staff.invite_code}}
-						</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">How much per referral</div>
-						<div class="field-value">
-							${{staff.referral_admin_credit | formatPrice}}
-						</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Activations</div>
-						<div class="field-value">
-							{{staff.referral_total || 0}}
-						</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Activations in past week</div>
-						<div class="field-value">
-							{{staff.referral_total_last_week || 0}}
-						</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Credit amount to customer</div>
-						<div class="field-value">
-							${{staff.referral_customer_credit | formatPrice}}
-						</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Address</div>
-						<div class="field-value">
-							{{staff.address}}
-						</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Send notifications when driver is not scheduled?</div>
-						<div class="field-value">
-							<span class="tag tag-green" ng-if="staff.down_to_help_out">Yes</span>
-							<span class="tag tag-red" ng-if="!staff.down_to_help_out">No</span>
-						</div>
-					</div>
-					<div class="field-row" ng-if="staff.down_to_help_out">
-						<div class="field-key">Turn off notifications for today</div>
-						<div class="field-value">
-							<label class="switch-wrap">
-								<input type="checkbox" ng-change="change_down_to_help_notifications();" class="switch" ng-model="staff.down_to_help_out_turn_off_notifications"/><div></div>
-							</label>
-						</div>
-					</div>
-				</div>
-			</div>
 		</div>
 
 		<div class="support-box-wrap box-content2">

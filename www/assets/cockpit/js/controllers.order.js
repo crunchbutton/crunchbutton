@@ -26,7 +26,7 @@ NGApp.controller('OrdersCampusManagerCtrl', function($scope, $controller) {
 	$scope.showSearchByPlaces = false;
 });
 
-NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewListService, SocketService, MapService, TicketService, RestaurantService, CommunityService, DriverService) {
+NGApp.controller('OrdersCtrl', function ($rootScope, $scope, $location, OrderService, ViewListService, SocketService, MapService, TicketService, RestaurantService, CommunityService, DriverService) {
 
 	$scope.regularList = true;
 	$scope.showSearchByPlaces = true;
@@ -143,6 +143,8 @@ NGApp.controller('OrdersCtrl', function ($scope, $location, OrderService, ViewLi
 				} );
 			}
 		}
+
+		$rootScope.$broadcast('search-toggle');
 	}
 
 	var options = [];

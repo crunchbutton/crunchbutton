@@ -135,23 +135,11 @@
 			</div>
 		</div>
 	</div>
-
-
-	<div class="support-box-wrap box-content2">
-		<div class="support-box-wrap-header">
-			<h1>Location</h1>
-			<div class="support-box-header-actions-wrap">
-				<div class="support-box-header-actions">
-					<span class="tag tag-red">BETA</span>
-				</div>
-			</div>
-			<div class="divider"></div>
-		</div>
-
-		<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}"></map>
+	<div class="page-title-nav">
+		<a href="/orders?restaurant={{restaurant.id_restaurant}}"><button class="button button-green nav-button-green">View all orders</button></a>
 	</div>
-
 	<h1 class="title"><i class="fa fa-car"></i>Orders</h1>
+
 
 	<div class="bar-loader bar-loader-title" ng-class="{'bar-loader-loading': loadingOrders}"></div>
 	<div class="box-content2 box-content-table">
@@ -192,6 +180,22 @@
 	</table>
 
 	<div class="divider"></div>
+
+	<? /*
+	<div class="support-box-wrap box-content2">
+		<div class="support-box-wrap-header">
+			<h1>Location</h1>
+			<div class="support-box-header-actions-wrap">
+				<div class="support-box-header-actions">
+					<span class="tag tag-red">BETA</span>
+				</div>
+			</div>
+			<div class="divider"></div>
+		</div>
+
+		<map zoom="12" center="false" class="maps-map" map-type-control="false" style="height: 230px;" options="{streetViewControl: false}"></map>
+	</div>
+	*/ ?>
 
 
 </div>

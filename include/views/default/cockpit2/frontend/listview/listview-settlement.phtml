@@ -1,0 +1,95 @@
+<div ng-if="count">
+	<div class="box-content2 box-content-table">
+		<div sticky-header>
+			<table class="thead">
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Notes</th>
+					<th>Pay</th>
+					<th>Amt</th>
+					<th>Date</th>
+					<th>Sch</th>
+					<th></th>
+				</tr>
+			</table>
+			<div class="tbody">
+				<table class="tb-zebra">
+					<tr ng-repeat="payment in payments" ng-init="$last ? ngRepeatFinished() : null">
+						<td>
+							<a ng-if="payment.id_driver" href="/settlement/drivers/scheduled/{{payment.id_payment_schedule}}">
+								{{payment.id_payment_schedule}}
+								</span>
+							<a ng-if="payment.id_restaurant" href="/settlement/restaurants/scheduled/{{payment.id_payment_schedule}}">
+								{{payment.id_payment_schedule}}
+								</span>
+						</td>
+
+						<td>
+							{{payment.name}}
+							<div>
+
+								<span class="tag tag-empty tag-orange" ng-if="payment.type == 'driver'">Driver</span>
+								<span class="tag tag-empty tag-purple" ng-if="payment.type == 'restaurant'">Restaurant</span>
+
+								<span ng-if="payment.type == 'driver'">
+									<span class="tag tag-empty tag-green" ng-if="payment.pay_type == 'payment'">Payment</span>
+									<span class="tag tag-empty tag-orange" ng-if="payment.pay_type == 'reimbursement'">Reimbursement</span>
+
+									<span class="tag tag-empty tag-blue" ng-if="payment.payment_type == 'orders'">Commission</span>
+									<span class="tag tag-empty tag-purple" ng-if="payment.payment_type == 'hours'">Hourly with tips</span>
+									<span class="tag tag-empty tag-orange" ng-if="payment.payment_type == 'hours_without_tips'">Hourly without tips</span>
+									<span class="tag tag-empty tag-yellow" ng-if="payment.payment_type == 'making_whole'">Making whole</span>
+									<span class="tag tag-empty tag-grey" ng-if="!payment || !payment.payment_type || payment.payment_type == '-' ">Missing</span>
+
+								</span>
+							</div>
+						</td>
+						<td>
+							<span class="listview-smaller">{{payment.note}}</span>
+							<div>
+								<!-- <span class="tag tag-darkgreen" ng-if="payment.arbritary">Arbritary</span> -->
+								<span class="tag tag-empty tag-lightblue" ng-if="payment.check">Check</span>
+								<span ng-if="payment.status != 'done' && payment.log" class="tag tag-lightgrey">{{payment.log}}</span>
+							</div>
+							<div ng-if="payment.range_date" class="listview-smaller">
+								{{payment.range_date}}
+							</div>
+						</td>
+						<td>
+							<span class="tag tag-orange" ng-if="payment.payment_status == 'pending'">Pending</span>
+							<span class="tag tag-red" ng-if="payment.payment_status == 'canceled'">Canceled</span>
+							<span class="tag tag-black" ng-if="payment.payment_status == 'failed'">Failed</span>
+							<span class="tag tag-green" ng-if="payment.payment_status == 'succeeded'">Succeeded</span>
+							<span class="tag tag-black" ng-if="payment.payment_status == 'reversed'">Reversed</span>
+
+							<button ng-if="!payment.check && payment.id_payment && payment.payment_status != 'succeeded' && payment.payment_status != 'reversed'" title="Check payment status" ng-click="payment_status( payment.id_payment );" class="button button-small button-empty button-green"><i class="fa fa-refresh" ng-class="{'fa-spin': balancedRefresh == payment.id_payment}"></i></button>
+							&nbsp;
+						</td>
+						<td>$ {{payment.amount | formatPrice}}</td>
+						<td>
+							<span class="listview-smaller">
+								{{payment.date | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}&nbsp;
+							</span>
+						</td>
+						<td>
+							<span class="tag tag-red" ng-if="payment.status == 'scheduled'">Scheduled</span>
+							<span class="tag tag-red" ng-if="payment.status == 'processing'">Processing</span>
+							<span class="tag tag-green" ng-if="payment.status == 'done'">Done</span>
+							<span class="tag tag-black" ng-if="payment.status == 'error'">Error</span>
+							<span class="tag tag-lightgrey" ng-if="payment.status == 'deleted'">Deleted</span>
+							<span class="tag tag-blue" ng-if="payment.status == 'archived'">Archived</span>
+							&nbsp;
+						</td>
+						<td nowrap class="tb-v-center">
+							<div ng-if="payment.status != 'done'">
+								<button ng-if="payment.status != 'archived'" title="Archive" ng-click="archive( payment.id_payment_schedule );" class="button button-small button-empty button-green"><i class="fa fa-archive"></i></button>
+								<button ng-if="payment.status != 'deleted'" title="Delete" ng-click="delete( payment.id_payment_schedule );" class="button button-small button-empty button-green"><i class="fa fa-trash"></i></button>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

@@ -6,7 +6,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			templateUrl: 'assets/view/tools.html'
 		})
 		.when('/tools/eta', {
-			action: 'tools',
+			action: 'tools-eta',
 			controller: 'ToolsETACtrl',
 			templateUrl: 'assets/view/tools-eta.html'
 		});

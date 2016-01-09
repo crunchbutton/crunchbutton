@@ -629,7 +629,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				} else if ( $force_close->field == 'close_3rd_party_delivery_restaurants' ){
 					$output[ 'type' ] = 'Close 3rd Party Delivery Restaurants';
 				}
-				$output[ 'note' ] = $this->_closedNote( $force_close->id_community_change_set, $force_close->field );
+				$output[ 'note' ] = $this->closedNote( $force_close->id_community_change_set, $force_close->field );
 				$open = $this->_openedAt( $closed_at->format( 'Y-m-d H:i:s' ), $force_close->field );
 				if( !$open ){
 					$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
@@ -721,7 +721,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				$output[ 'type' ] = Crunchbutton_Community::TITLE_CLOSE_AUTO_CLOSED;
 			}
 
-			$output[ 'note' ] = $this->_closedNote( $force_close->id_community_change_set, $force_close->field );
+			$output[ 'note' ] = $this->closedNote( $force_close->id_community_change_set, $force_close->field );
 
 			$open = $this->_openedAt( $closed_at->format( 'Y-m-d H:i:s' ), $force_close->field );
 
@@ -764,17 +764,17 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return $out;
 	}
 
-	private function _closedNote( $id_community_change_set, $field ){
+	public static function closedNote( $id_community_change_set, $field ){
 		$field = ( $field == 'is_auto_closed' ? 'close_3rd_party_delivery_restaurants' : $field );
 		$field = $field . '_note';
 		$note = Crunchbutton_Community_Changeset::q('
 			SELECT
 			ccs.*, cc.field, cc.new_value FROM community_change cc
-			INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = ?
+			INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set
 			AND cc.field = ?
 			AND ccs.id_community_change_set = ?
 			ORDER BY cc.id_community_change DESC LIMIT 1
-		',[$this->id_community, $field, $id_community_change_set])->get(0);
+		',[$field, $id_community_change_set])->get(0);
 		if( $note->new_value ){
 			return $note->new_value;
 		}

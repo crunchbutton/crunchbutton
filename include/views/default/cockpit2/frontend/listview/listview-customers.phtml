@@ -1,6 +1,6 @@
-<div class="box-content2 box-content-table">
-	<table class="tb-zebra" sticky-header>
-		<thead>
+<div class="box-content2 box-content-table box-content-listview">
+	<div sticky-header>
+		<table class="thead">
 			<tr>
 				<th></th>
 				<th><a ng-click="sort('name')">Customer</a></th>
@@ -9,30 +9,31 @@
 				<th>Stripe</th>
 				<th></th>
 			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="customer in customers track by $index" ng-attr-tabindex="{{$index+1}}" ng-init="$last ? ngRepeatFinished() : null" tab-select="/customer/{{customer.id_user}}">
-				<td class="tb-image-row"><a href="/customer/{{customer.id_user}}">
-					<div class="customer-image-crop" img-list-view-src="customer.image" img-path="" img-null="customer-image-null"></div>
-				</a></td>
-				<td>
-					<span class="listview-bold">{{customer.name}}</span>
-					<br><span class="listview-smaller"><a href ng-click="callText(customer.phone)">{{customer.phone | formatPhone}}</a></span>
-				</td>
-				<td>
-					<a href="/community/{{customer._id_community}}">{{customer._community_name}}</a>
-					<br><span class="listview-smaller">{{customer.address}}</span>
-				</td>
-				<td><span ng-if="customer._order_date">{{customer._order_date | timestamp | date:'EEE MM/dd @ h:mm a'}}</span></td>
-				<td nowrap class="tb-center tb-v-center">
-					<span class="tag tag-green" ng-if="customer._stripe_id">Yes</span>
-					<span class="tag tag-red" ng-if="!customer._stripe_id">No</span>
-				</td>
-				<td nowrap class="tb-v-center">
-					<a href="/orders?phone={{customer.phone}}"><button class="button button-small button-empty button-green"><i class="fa fa-phone"></i>&nbsp;&nbsp;Orders</button></a>
-					<a href="/customer/{{customer.id_user}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+		</table>
+		<div class="tbody">
+			<table class="tb-zebra">
+				<tr ng-repeat="customer in customers track by $index" ng-attr-tabindex="{{$index+1}}" ng-init="$last ? ngRepeatFinished() : null" tab-select="/customer/{{customer.id_user}}">
+					<td class="tb-image-row"><a href="/customer/{{customer.id_user}}">
+						<div class="customer-image-crop" img-list-view-src="customer.image" img-path="" img-null="customer-image-null"></div>
+					</a></td>
+					<td>
+						<span class="listview-bold">{{customer.name}}</span>
+						<br><span class="listview-smaller"><a href ng-click="callText(customer.phone)">{{customer.phone | formatPhone}}</a></span>
+					</td>
+					<td>
+						<a href="/community/{{customer._id_community}}">{{customer._community_name}}</a>
+						<br><span class="listview-smaller">{{customer.address}}</span>
+					</td>
+					<td><span ng-if="customer._order_date">{{customer._order_date | timestamp | date:'EEE MM/dd @ h:mm a'}}</span></td>
+					<td nowrap class="tb-center tb-v-center">
+						<span class="tag tag-green" ng-if="customer._stripe_id">Yes</span>
+						<span class="tag tag-red" ng-if="!customer._stripe_id">No</span>
+					</td>
+					<td nowrap class="tb-v-center">
+						<a href="/customer/{{customer.id_user}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
 </div>

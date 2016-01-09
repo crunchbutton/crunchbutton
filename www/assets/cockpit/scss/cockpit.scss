@@ -21,7 +21,7 @@ $buttonRed: #eb5667;
 
 @import 'border';
 @import 'button';
-
+@import 'tags';
 
 
 
@@ -730,6 +730,10 @@ p {
 		z-index: 2;
 		width: 222px;
 		padding-top: 52px;
+		overflow-y: scroll;
+		-webkit-overflow-scrolling: touch;
+		height: 100%;
+		box-sizing: border-box;
 	}
 
 	.nav-top {
@@ -3653,7 +3657,7 @@ input[type="checkbox"].switch + div:before {
 	width: 90%;
 }
 
-.box-content-table > table > tbody > tr > td, .box-content-table > table > tbody > tr > th, .box-content-table > table > thead > tr > th {
+.box-content-table table tr > td, .box-content-table table tr > th{
 	font-size: 1.2em;
 	padding: .7em;
 	border-bottom: 1px solid #eeeeee;
@@ -3661,37 +3665,37 @@ input[type="checkbox"].switch + div:before {
 	vertical-align: top;
 }
 
-.box-content-table > table > tbody > tr:first-child > * {
+.box-content-table table .tbody > tr:first-child > * {
 	padding-top: .8em;
 }
-.box-content-table > table > tbody > tr:last-child > * {
+.box-content-table table .tbody > tr:last-child > * {
 	padding-bottom: .8em;
 	border-bottom: none;
 }
-.box-content-table > table > tbody > tr > *:first-child {
+.box-content-table table .tbody > tr > *:first-child {
 	padding-left: 1.1em;
 }
-.box-content-table > table > tbody > tr > *:last-child {
+.box-content-table table .tbody > tr > *:last-child {
 	padding-right: 1.1em;
 }
-.box-content-table > table > tbody > tr > *:last-child:not(:first-child) {
+.box-content-table table .tbody > tr > *:last-child:not(:first-child) {
 	text-align: right;
 }
 
-.box-content-table > table > tbody > tr > td.tb-image-row {
+.box-content-table table .tbody > tr > td.tb-image-row {
 	padding-left: .7em;
 	width: 1px;
 	vertical-align: middle;
 }
 
-.box-content-table > table > tbody > tr:focus {
+.box-content-table table .tbody > tr:focus {
 	background: #bbede9;
 }
-.box-content-table > table > tbody > tr:focus > td {
+.box-content-table table .tbody > tr:focus > td {
 	border-bottom: 1px solid #b3e0de;
 }
 
-.box-content-table > table > tbody > tr > th, .box-content-table > table > thead > tr > th {
+.box-content-table table tr > th {
 	font-weight: bold;
 	text-align: left;
 }
@@ -4171,50 +4175,6 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 	padding: .2em .4em .2em .4em;
 }
 
-.tag {
-	@include box-border-radius();
-	font-size: .8em;
-	color: #fff;
-	padding: .2em .4em .2em .4em;
-}
-
-.tag.tag-green {
-	background: #1ab394;
-}
-.tag.tag-darkgreen {
-	background: #006633;
-}
-.tag.tag-red {
-	background: #eb5667;
-}
-.tag.tag-orange {
-	background: #f19161;
-}
-.tag.tag-blue {
-	background: $buttonBlue;
-}
-.tag.tag-lightblue {
-	background: #0099cc;
-}
-.tag.tag-grey {
-	background: #666;
-}
-.tag.tag-lightgrey {
-	background: #bbb;
-}
-.tag.tag-purple {
-	background: #c855b6;
-}
-.tag.tag-black {
-	background: #000;
-}
-.tag.tag-yellow {
-	background: #999900;
-}
-
-
-
-
 .nav-button-green {
 	background: #1ab394;
 }
@@ -4226,19 +4186,23 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 	float: left;
 }
 
-.page-title-wrap .page-title-nav {
+.page-title-nav {
 	float: right;
 }
 
-.page-title-wrap .page-title-nav button {
+.page-title-nav button {
 	padding: .2em .5em .2em .5em;
 	width: auto;
 	text-transform: none;
 }
-.page-title-wrap .page-title-nav button span {
+.page-title-nav button span {
 	font-size: .9em;
 	vertical-align: top;
 	margin-left: .5em;
+}
+
+.box-search-bar .page-title-nav {
+	font-size: .75em;
 }
 
 .listview-smaller {
@@ -4467,6 +4431,82 @@ h1.title.box-title {
 
 
 
+.sticky-bottom {
+	text-align: right;
+	background: rgba(255,255,255,.7);
+	border-top: 3px solid #e7eaec;
+	width: 100%;
+	box-sizing: border-box;
+	pointer-events: none;
+}
+
+.sticky-bottom button {
+	pointer-events:all !important;
+}
+
+.li-input .button.button-no-margin {
+	margin-right: 0;
+}
+
+.sticky-bottom .button {
+	padding-right: 3em;
+	padding-left: 3em;
+}
+
+.truncate-small {
+	max-width: 15em;
+	text-overflow: ellipsis;
+	display: inline-block;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.sticky-tbody tbody {
+	height: 100%;
+	width: 100%;
+	display: table;
+}
+
+.box-content-listview tbody {
+	overflow-y: scroll;
+}
+
+.box-content-listview {
+	margin: 0;
+	width: 100%;
+}
+
+.box-search-bar {
+	margin-bottom: 1.4em;
+}
+
+@media screen and (min-width: $desktopWidth) {
+	.page-orders, .page-restaurants, .page-drivers-onboarding, .page-customers, .page-promo, .page-resources, .page-shift, .page-staff, .page-suggestions, .page-tickets, .page-settlement-list, .page-tools-eta, .page-communities {
+		overflow: hidden;
+	}
+}
+
+.sticky-header .thead, .sticky-header .tbody {
+	display: block;
+}
+
+.sticky-header .tbody {
+	overflow-y: scroll;
+}
+
+.search-bar-options {
+	display: inline-block;
+	cursor: pointer;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+}
+
+.box-content-table table tr > td.search-title-nav {
+	padding: .55em;
+}
+
+
+
 @media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px)  {
 
 	/* Force table to not be like tables anymore */
@@ -4580,28 +4620,6 @@ table.receipt{
 			display: table-cell;
 		}
 
-.sticky-bottom {
-	text-align: right;
-	background: rgba(255,255,255,.7);
-	border-top: 1px solid #e7eaec;
-	width: calc(100% + 24px);
-	box-sizing: border-box;
-	margin-left: -11px;
-	pointer-events: none;
-}
-
-.sticky-bottom button {
-	pointer-events:all !important;
-}
-
-.li-input .button.button-no-margin {
-	margin-right: 0;
-}
-
-.sticky-bottom .button {
-	padding-right: 3em;
-	padding-left: 3em;
-}
 
 .shift-schedule{}
 .shift-schedule .table-label{
