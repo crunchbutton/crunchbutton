@@ -77,7 +77,7 @@
 							</div>
 						<?php /* Driver */ ?>
 					</td>
-					<td class="tb-v-center" nowrap="">
+					<td class="tb-v-center tb-small" nowrap="">
 						<ng-include src="'assets/view/orders-order-status.html'"></ng-include>
 
 						<br>
@@ -86,7 +86,7 @@
 							to {{order.date_delivery | timestamp | date:'MM/dd @ h:mm a'}}
 						</div>
 					</td>
-					<td nowrap class="tb-v-center">
+					<td nowrap class="tb-v-center tb-right">
 						<a href="" ng-click="ticket(order.id_order)"><button class="button button-small button-empty button-green"><i class="fa fa-comment"></i>&nbsp;&nbsp;Ticket</button></a>
 						<a href="/order/{{order.id_order}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 					</td>

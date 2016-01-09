@@ -4493,6 +4493,7 @@ h1.title.box-title {
 
 .sticky-header .tbody {
 	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 }
 
 .search-bar-options {
