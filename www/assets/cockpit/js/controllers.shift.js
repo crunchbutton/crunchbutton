@@ -1,7 +1,7 @@
 NGApp.config(['$routeProvider', function($routeProvider) {
 	$routeProvider
 		.when('/shifts/checkin', {
-			action: 'shift',
+			action: 'shift-checkin',
 			controller: 'ShiftChekinCtrl',
 			templateUrl: 'assets/view/shift-checkin.html',
 			reloadOnSearch: false
@@ -13,7 +13,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			reloadOnSearch: false
 		})
 		.when('/shifts/schedule', {
-			action: 'shift',
+			action: 'shift-schedule',
 			controller: 'ShiftScheduleCtrl',
 			templateUrl: 'assets/view/shift-schedule.html',
 			reloadOnSearch: false

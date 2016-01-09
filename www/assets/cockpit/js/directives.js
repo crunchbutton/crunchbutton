@@ -555,13 +555,16 @@ NGApp.directive('uiTabs', function ( $compile, $timeout ) {
 		},
 		link: function (scope, element, attrs, controller) {
 
-			controller.rootScope.$on('tab-loaded', function() {
+			var end = controller.rootScope.$on('tab-loaded', function() {
 				if (!controller.loaded) {
 					controller.loaded = true;
 					return;
 				}
-				
 				App.scrollTop($(element).offset().top - 55);
+			});
+
+			scope.$on('$destroy', function() {
+				end();
 			});
 
 			scope.$watch( controller.getTabs, function ( tab ) {
