@@ -512,47 +512,56 @@ NGApp.directive('uiTabs', function ( $compile, $timeout ) {
 	return {
 		restrict: 'E',
 		scope: true,
-		controller: function ( $scope ) {
+		controller: function ( $scope, $rootScope ) {
 
-				var current = null;
-				var tabs = [];
-				var preloadTimer = 300;
+			var current = null;
+			var tabs = [];
+			var preloadTimer = 300;
 
-				this.getTabs = function () {
-						return tabs;
-				};
-				this.addTab = function ( tab ) {
-					if( tab.default ){
-						this.setCurrent( tab );
-					} else {
-						if( tab.preload ){
-							// pre load tab content
-							var those = this;
-							$timeout( function(){ those.loadContent( tab, true ); }, preloadTimer );
-							preloadTimer += preloadTimer;
-						}
+			this.getTabs = function () {
+					return tabs;
+			};
+			this.addTab = function ( tab ) {
+				if( tab.default ){
+					this.setCurrent( tab );
+				} else {
+					if( tab.preload ){
+						// pre load tab content
+						var those = this;
+						$timeout( function(){ those.loadContent( tab, true ); }, preloadTimer );
+						preloadTimer += preloadTimer;
 					}
-					tabs.push( tab );
-				};
-				this.loadContent = function( tab, force ){
-					if( tab.method && ( !tab.method_called || force ) ){
-						try{
-							eval( '$scope.' + tab.method + '()' );
-							tab.method_called = true;
-						} catch(e){
-							console.log( 'ui-tabs:error: ', e );
-						}
+				}
+				tabs.push( tab );
+			};
+			this.loadContent = function( tab, force ){
+				if( tab.method && ( !tab.method_called || force ) ){
+					try{
+						eval( '$scope.' + tab.method + '()' );
+						tab.method_called = true;
+					} catch(e){
+						console.log( 'ui-tabs:error: ', e );
 					}
-				};
-				this.setCurrent = function( tab ){
-					current = tab;
-					this.loadContent( tab );
 				}
-				this.getCurrent = function(){
-					return current;
-				}
+			};
+			this.setCurrent = function( tab ){
+				current = tab;
+				this.loadContent( tab );
+			}
+			this.getCurrent = function(){
+				return current;
+			}
+			this.rootScope = $rootScope;
 		},
 		link: function (scope, element, attrs, controller) {
+
+			controller.rootScope.$on('tab-loaded', function() {
+				if (!controller.loaded) {
+					controller.loaded = true;
+					return;
+				}
+				App.scrollTop($(element).offset().top - 55);
+			});
 
 			scope.$watch( controller.getTabs, function ( tab ) {
 				scope._tabs = tab;
@@ -563,6 +572,7 @@ NGApp.directive('uiTabs', function ( $compile, $timeout ) {
 			} );
 
 			scope.setCurrent = function( tab ){
+				controller.rootScope.$broadcast('tab-loaded');
 				controller.setCurrent( tab );
 			};
 
