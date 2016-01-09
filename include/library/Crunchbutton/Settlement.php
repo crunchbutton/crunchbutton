@@ -68,7 +68,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 	public function driverWeeksSummaryShifts( $id_driver ){
 		$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM admin_shift_assign AS asa
 							INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
-							WHERE asa.id_admin = "' . $id_driver . '"';
+							WHERE cs.active = 1 AND asa.id_admin = "' . $id_driver . '"';
 
 		if( $this->filters[ 'start' ] ){
 			$query .= 'AND cs.date_start >= \'' . ( new DateTime( $this->filters[ 'start' ] ) )->format( 'Y-m-d' ) . ' 00:00:00\'';
@@ -179,6 +179,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$query = 'SELECT cs.*, asa.id_admin_shift_assign FROM community_shift cs
 								INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift AND asa.id_admin = ' . $id_admin . '
 								WHERE
+											cs.active = 1
+										AND
 											cs.date_start >= "' . $start . '"
 										AND
 											cs.date_start <= "' . $end . ' 23:59:59"' . $where;
@@ -2208,6 +2210,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 								INNER JOIN admin a ON a.id_admin = asa.id_admin
 								WHERE
+									cs.active = 1
+									AND
 									cs.date_start >= '" . ( new DateTime($this->filters['start']) )->format('Y-m-d') . "'
 									AND
 									cs.date_start <= '" . (new DateTime($this->filters['end']))->format('Y-m-d') . " 23:59:59'"
