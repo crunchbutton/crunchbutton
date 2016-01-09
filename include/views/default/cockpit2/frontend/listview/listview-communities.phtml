@@ -31,7 +31,7 @@
 							<span class="listview-bold">{{community.closedLog.closed_by}}</span> @ {{community.closedLog.closed_at}}<br>
 							<span class="listview-bold">{{community.closedLog.type}}</span> {{community.closedLog.note}}
 						</span>
-						<span class="listview-smaller" ng-if="community.note">
+						<span class="listview-smaller" ng-if="community.note && community.note.text">
 							Last Note: {{community.note.text}} <br>({{community.note.added_by}})
 						</span>
 
@@ -49,8 +49,6 @@
 							{{community.close_3rd_party_delivery_restaurants_note}}
 						</span>
 						*/ ?>
-						<br>
-						<span class="listview-bold">Last Order</span> <span ng-if="community._order_date" class="listview-smaller"><span am-time-ago="community._order_date | localtime | timestamp"></span></span>
 					</td>
 					<td class="tb-v-center">
 						<a href="/restaurants?community={{community.id_community}}" class="listview-smaller">{{community.restaurants}}</a>
@@ -70,9 +68,8 @@
 					<td nowrap class="tb-v-center">
 						<div>
 							<a href ng-click="openClosingTimeContainer( community.permalink )"><button class="button button-small button-small button-empty button-green"><i class="fa fa-power-off"></i>&nbsp;&nbsp;Switch</button></a>
-							<a href="/community/{{community.permalink}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+							<a href="/community/{{community.permalink || community.id_community}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 						</div>
-						<br>
 					</td>
 				</tr>
 			</table>

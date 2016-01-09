@@ -1,5 +1,7 @@
-<a href="" ng-click="viewLess()" ng-if="allowAll && query.limit == 'none'">Show Less</a>
-<a href="" ng-click="viewAll()" ng-if="allowAll && query.limit != 'none'">Show All</a>
+<div class="show-more-links left">
+	<a href="" ng-click="viewLess()" ng-if="allowAll && query.limit == 'none'">Show Less</a>
+	<a href="" ng-click="viewAll()" ng-if="allowAll && query.limit != 'none'">Show All</a>
+</div>
 
 <table class="tb-pagination right" ng-if="pages > 1 || more" page-key>
 	<tbody>

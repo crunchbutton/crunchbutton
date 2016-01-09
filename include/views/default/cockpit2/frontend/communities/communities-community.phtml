@@ -75,7 +75,7 @@
 				<h1>Status</h1>
 				<div class="support-box-header-actions-wrap">
 					<div class="support-box-header-actions">
-						<a href ng-click="openClosingTimeContainer()"><button class="button button-small button-small button-empty button-green"><i class="fa fa-gear"></i>&nbsp;&nbsp;Open/Close</button></a>
+						<a href ng-click="openClosingTimeContainer()"><button class="button button-small button-small button-empty button-green"><i class="fa fa-power-off"></i>&nbsp;&nbsp;Switch</button></a>
 					</div>
 				</div>
 				<div class="divider"></div>
@@ -83,15 +83,6 @@
 
 			<div class="no-box-content-color">
 				<div class="field-container">
-
-					<div class="field-row">
-						<div class="field-key">Autoclose</div>
-						<div class="field-value">
-							<span class="tag tag-green" ng-if="community.auto_close">Enabled</span>
-							<span class="tag tag-red" ng-if="!community.auto_close">Disabled</span>
-						</div>
-					</div>
-
 					<div class="field-row">
 						<div class="field-key">Is Auto Closed</div>
 						<div class="field-value">
@@ -139,6 +130,7 @@
 						<div class="field-value">{{community.close_3rd_party_delivery_restaurants_note}}</div>
 					</div>
 
+
 					<div class="field-row" ng-if="community.dont_warn_till_formated">
 						<div class="field-key">Don't warn CS till</div>
 						<div class="field-value">{{community.dont_warn_till_formated}}</div>
@@ -147,24 +139,24 @@
 					<div class="field-row">
 						<div class="field-key" title="Combine Restaurant and Driver's Shift Hours">Combine hours</div>
 						<div class="field-value">
-							<span class="tag tag-red" ng-if="community.combine_restaurant_driver_hours">Yes</span>
-							<span class="tag tag-green" ng-if="!community.combine_restaurant_driver_hours">No</span>
+							<span class="tag tag-green" ng-if="community.combine_restaurant_driver_hours">Yes</span>
+							<span class="tag tag-red" ng-if="!community.combine_restaurant_driver_hours">No</span>
 						</div>
 					</div>
 
 					<div class="field-row">
 						<div class="field-key">Can be opened by drivers</div>
 						<div class="field-value">
-							<span class="tag tag-red" ng-if="community.drivers_can_open">Yes</span>
-							<span class="tag tag-green" ng-if="!community.drivers_can_open">No</span>
+							<span class="tag tag-green" ng-if="community.drivers_can_open">Yes</span>
+							<span class="tag tag-red" ng-if="!community.drivers_can_open">No</span>
 						</div>
 					</div>
 
 					<div class="field-row">
 						<div class="field-key" title="Change driver restaurant name automatically based on assigned shifts">Auto restaurant name change</div>
 						<div class="field-value">
-							<span class="tag tag-red" ng-if="community.automatic_driver_restaurant_name">Yes</span>
-							<span class="tag tag-green" ng-if="!community.automatic_driver_restaurant_name">No</span>
+							<span class="tag tag-green" ng-if="community.automatic_driver_restaurant_name">Yes</span>
+							<span class="tag tag-red" ng-if="!community.automatic_driver_restaurant_name">No</span>
 						</div>
 					</div>
 
@@ -173,6 +165,8 @@
 		</div>
 
 	</div>
+</div>
+<div class="content-padding">
 <? /*
 	<div class="support-box-wrap box-content2">
 		<div class="support-box-wrap-header">
@@ -204,9 +198,9 @@
 		<ui-tab title="Orders" icon="car" default="true" id="orders" path="assets/view/communities-community-tab-orders.html" method="loadOrders"></ui-tab>
 		<ui-tab title="Restaurants" icon="coffee" id="restaurants" path="assets/view/communities-community-tab-restaurants.html" method="loadRestaurants"></ui-tab>
 		<ui-tab title="Drivers" icon="road" id="drivers" path="assets/view/communities-community-tab-drivers.html" method="loadDrivers"></ui-tab>
-		<ui-tab title="Text Drivers" icon="mobile" id="sms_drivers" path="assets/view/communities-community-tab-sms-drivers.html" method="loadDriversSMS"></ui-tab>
+		<ui-tab title="Broadcast" icon="mobile" id="sms_drivers" path="assets/view/communities-community-tab-sms-drivers.html" method="loadDriversSMS"></ui-tab>
 		<ui-tab title="Aliases" icon="link" id="aliases" path="assets/view/communities-community-tab-aliases.html" method="loadAliases"></ui-tab>
-		<ui-tab title="Open/Close" id="logs" icon="list" path="assets/view/communities-community-tab-logs.html" method="loadLogs"></ui-tab>
+		<ui-tab title="Status" id="logs" icon="power-off" path="assets/view/communities-community-tab-logs.html" method="loadLogs"></ui-tab>
 		<ui-tab title="Notes" id="notes" icon="file" path="assets/view/communities-community-tab-notes.html" method="loadNotes"></ui-tab>
 	</ui-tabs>
 
