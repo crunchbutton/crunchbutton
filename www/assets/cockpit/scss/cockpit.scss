@@ -726,7 +726,7 @@ p {
 		-webkit-transform: translateX(0) !important;
 	}
 	.snap-drawer-left {
-		position: absolute;
+		position: fixed;
 		z-index: 2;
 		width: 222px;
 		padding-top: 52px;
