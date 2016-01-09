@@ -866,8 +866,12 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 					}, 100 );
 				}
 
-				$rootScope.$on( 'sticky-header-content-loaded', function(e, data) {
-					justDoIt();
+				var end = $rootScope.$on( 'listview-content-loaded', function(e, data) {
+					angular.element(elem).scrollTop = 0;
+				});
+
+				scope.$on('$destroy', function() {
+					end();
 				});
 
 				$rootScope.$on( 'ng-repeat-finished', function(e, data) {
