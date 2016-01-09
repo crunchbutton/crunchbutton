@@ -23,13 +23,13 @@
 					<td>{{queue.id_queue}}</td>
 					<td>{{queue.range}}</td>
 					<td>
-						<span class="tag tag-purple" ng-if="queue.type == 'settlement-restaurant'">Restaurant</span>
-						<span class="tag tag-orange" ng-if="queue.type == 'settlement-driver'">Driver</span>
+						<span class="tag tag-empty tag-purple" ng-if="queue.type == 'settlement-restaurant'">Restaurant</span>
+						<span class="tag tag-empty tag-orange" ng-if="queue.type == 'settlement-driver'">Driver</span>
 					</td>
 					<td>
-						<span class="tag tag-darkgreen" ng-if="queue.pay_type == 'payment'">Payment</span>
-						<span class="tag tag-lightblue" ng-if="queue.pay_type == 'reimbursement'">Reimbursement</span>
-						<span class="tag tag-darkgreen" ng-if="queue.type == 'settlement-restaurant'">Payment</span>
+						<span class="tag tag-empty tag-darkgreen" ng-if="queue.pay_type == 'payment'">Payment</span>
+						<span class="tag tag-empty tag-lightblue" ng-if="queue.pay_type == 'reimbursement'">Reimbursement</span>
+						<span class="tag tag-empty tag-darkgreen" ng-if="queue.type == 'settlement-restaurant'">Payment</span>
 					</td>
 					<td>{{queue.name}}</td>
 					<td><span class="listview-smaller">{{queue.started_at | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}</span></td>
