@@ -1,15 +1,11 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
-	<div class="page-title-wrap">
-		<h1 class="title"><i class="fa fa-calendar"></i>Check In Status - Next 48 hours</h1>
-	</div>
-	<div class="divider"></div>
-
-	<div class="box-content2 box-content-table">
+	<div class="box-content2 box-content-table box-search-bar table-sticky-dependant">
 		<table>
 			<tr>
-				<td><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
+				<td><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1" placeholder="Search checkins within the next 48 hours"></td>
+				<td></td>
 				<th>Status</th>
 				<td>
 					<select ng-model="query.status" name="searchType" tabindex="2">
@@ -25,5 +21,9 @@
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
 	<ng-include src="'assets/view/listview-shift-checkin.html'"></ng-include>
-	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+	<div sticky-bottom="47" class="table-sticky-dependant" ng-show="pages > 1 || more">
+		<div class="no-box-content-color">
+			<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+		</div>
+	</div>
 </div>

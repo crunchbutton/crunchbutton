@@ -1,6 +1,6 @@
 NGApp.controller( 'SettlementCtrl', function ( $scope ) {} );
 
-NGApp.controller('SettlementListCtrl', function ($scope, $location, SettlementService, ViewListService ) {
+NGApp.controller('SettlementListCtrl', function ($rootScope, $scope, $location, SettlementService, ViewListService ) {
 
 	angular.extend($scope, ViewListService);
 
@@ -39,6 +39,11 @@ NGApp.controller('SettlementListCtrl', function ($scope, $location, SettlementSe
 	}
 
 	$scope.show_more_options = false;
+
+	$scope.showMoreOptions = function() {
+		$scope.show_more_options=!$scope.show_more_options;
+		$rootScope.$broadcast('search-toggle');
+	};
 
 	$scope.types = SettlementService.types();
 	$scope.pay_types = SettlementService.pay_types();

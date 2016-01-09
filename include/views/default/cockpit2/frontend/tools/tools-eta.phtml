@@ -1,36 +1,37 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
-	<h1 class="title"><i class="fa fa-coffee"></i>Smart ETA<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
+	<h1 class="title table-sticky-dependant"><i class="fa fa-coffee"></i>Smart ETA<div class="title-loader" ng-if="loading"><i class="fa fa-refresh fa-spin"></i></div></h1>
 
-
-	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+	<div class="bar-loader bar-loader-search table-sticky-dependant" ng-class="{'bar-loader-loading': loading}"></div>
 
 	<div class="box-content2 box-content-table">
-		<table class="tb-zebra" sticky-header>
-			<thead>
+		<div sticky-header>
+			<table class="thead">
 				<tr>
 					<th>Restaurant</th>
 					<th>Community</th>
-					<th>ETA (Minutes)</th>
-					<th>Active drivers</th>
-					<th>Orders placed but not picked up</th>
-					<th>Orders picked up but not delivered</th>
-					<th>Additional orders from the same restaurant accepted by the same driver</th>
+					<th title="ETA in minutes">ETA</th>
+					<th title="Active drivers">A</th>
+					<th title="Orders placed but not picked up">NP</th>
+					<th title="Orders picked up but not delivered">ND</th>
+					<th title="Additional orders from the same restaurant accepted by the same driver">DD</th>
 				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="restaurant in restaurants" ng-init="$last ? ngRepeatFinished() : null">
-					<td>{{restaurant.restaurant}}</td>
-					<td>{{restaurant.community}}</td>
-					<td>{{restaurant.eta}}</td>
-					<td>{{restaurant.activeDrivers}}</td>
-					<td>{{restaurant.ordersPlacedButNotPickedUp}}</td>
-					<td>{{restaurant.ordersPickedUpButNotDelivered}}</td>
-					<td>{{restaurant.additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver}}</td>
-				</tr>
-			</tbody>
-		</table>
+			</table>
+			<div class="tbody">
+				<table class="tb-zebra">
+					<tr ng-repeat="restaurant in restaurants" ng-init="$last ? ngRepeatFinished() : null">
+						<td>{{restaurant.restaurant}}</td>
+						<td>{{restaurant.community}}</td>
+						<td>{{restaurant.eta}}</td>
+						<td>{{restaurant.activeDrivers}}</td>
+						<td>{{restaurant.ordersPlacedButNotPickedUp}}</td>
+						<td>{{restaurant.ordersPickedUpButNotDelivered}}</td>
+						<td>{{restaurant.additionalOrdersFromTheSameRestaurantAcceptedByAnyDriver}}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
 	</div>
 
 </div>

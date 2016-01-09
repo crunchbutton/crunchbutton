@@ -412,6 +412,7 @@ NGApp.controller('RestaurantsCtrl', function ($rootScope, $scope, RestaurantServ
 				$scope.payments.push( { 'label': 'Empty', 'value': 'empty' } );
 			}
 		}
+		$rootScope.$broadcast('search-toggle');
 
 	}
 

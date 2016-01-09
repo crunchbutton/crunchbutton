@@ -1,23 +1,19 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
-	<div class="page-title-wrap">
-		<h1 class="title"><i class="fa fa-coffee"></i>Restaurants</h1>
-		<div class="page-title-nav">
-			<button ng-click="addRestaurant()" class="button button-green nav-button-green"><i class="fa fa-plus"></i></button>
-		</div>
-	</div>
-	<div class="divider"></div>
-
-	<div class="box-content2 box-content-table">
+	<div class="box-content2 box-content-table box-search-bar table-sticky-dependant">
 		<table>
 			<tr>
-				<td colspan="4" width="100%">
-					<i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1">
+				<td colspan="5">
+					<div title="More options" class="search-bar-options" ng-class="{'orange':show_more_options}" ng-click="moreOptions()">
+						<i class="fa" ng-class="{'fa-search':show_more_options, 'fa-search-plus':!show_more_options}"></i>
+					</div>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1" placeholder="Search restaurants">
 				</td>
-				<td>
-					<i title="More options" class="fa fa-search-plus link no-underline" ng-class="{'orange':show_more_options}" ng-click="moreOptions()">
-				<td>
+				<td colspan="2">
+					<div class="page-title-nav">
+						<button ng-click="addRestaurant()" class="button button-green nav-button-green"><i class="fa fa-plus"></i>&nbsp;Add Restaurant</button>
+					</div>
+				</td>
 			</tr>
 			<tr ng-if="show_more_options">
 				<th>Community</th>
@@ -48,5 +44,9 @@
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
 	<ng-include src="'assets/view/listview-restaurants.html'"></ng-include>
-	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+	<div sticky-bottom="47" class="table-sticky-dependant" ng-show="pages > 1 || more">
+		<div class="no-box-content-color">
+			<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+		</div>
+	</div>
 </div>

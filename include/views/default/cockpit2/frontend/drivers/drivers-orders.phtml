@@ -39,7 +39,7 @@
 								<span ng-switch-when="pickedup">Picked up</span>
 								<span ng-switch-when="accepted">Accepted</span>
 								<span ng-switch-when="canceled">Canceled</span>
-								<span> by <b>{{order.status.driver.name}}</b> @ {{order.status.date_timestamp | tsToHour}}</span>
+								<span> by <b>{{order.status.driver.name}}</b> @ {{order.status.timestamp | tsToHour}}</span>
 							</span>
 						</h6>
 

@@ -1,18 +1,19 @@
 <div class="top-pad"></div>
 
 <div class="content-padding">
-	<div class="page-title-wrap">
-		<h1 class="title"><i class="fa fa-slideshare"></i>Communities</h1>
-		<div class="page-title-nav">
-			<a href="/community/new"><button class="button button-green nav-button-green"><i class="fa fa-plus"></i></button></a>
-			<a href="/communities/notes"><button class="button button-green nav-button-green"><i class="fa fa-file"></i> Notes</button></a>
-		</div>
-	</div>
-	<div class="divider"></div>
-	<div class="box-content2 box-content-table">
+
+	<div class="box-content2 box-content-table box-search-bar table-sticky-dependant">
 		<table>
 			<tr>
-				<td colspan="4"><i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1"></td>
+				<td colspan="5">
+					<i class="fa fa-search"></i>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1" placeholder="Search communities">
+				</td>
+				<td colspan="2">
+					<div class="page-title-nav">
+						<a href="/community/new"><button class="button button-green nav-button-green"><i class="fa fa-plus"></i><span>Add community</span></button></a>
+						<a href="/communities/notes"><button class="button button-green nav-button-green"><i class="fa fa-file"></i><span>Notes</span></button></a>
+					</div>
+				</td>
 			</tr>
 			<tr>
 				<th>Status</th>
@@ -37,7 +38,11 @@
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
 
 	<ng-include src="'assets/view/listview-communities.html'"></ng-include>
-	<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+	<div sticky-bottom="47" class="table-sticky-dependant" ng-show="pages > 1 || more">
+		<div class="no-box-content-color">
+			<ng-include src="'assets/view/listview-paging.html'"></ng-include>
+		</div>
+	</div>
 
 	<ng-include src="'assets/view/communities-community-open-close-form.html'"></ng-include>
 
