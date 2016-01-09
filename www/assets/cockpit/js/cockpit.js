@@ -601,6 +601,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.menuToggled = true;
 	$rootScope.menuToggle = function() {
 		$rootScope.menuToggled = !$rootScope.menuToggled;
+		$rootScope.$broadcast('menu-toggle');
 	};
 	Mousetrap.bind('alt+m', function() {
 		$rootScope.$apply(function() {
