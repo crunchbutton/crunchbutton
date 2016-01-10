@@ -148,8 +148,11 @@ class Crunchbutton_App extends Cana_App {
 				'url' => getenv('DATABASE_URL_WRITE'),
 				'type' => Cana_Db::typeByUrl(getenv('DATABASE_URL_WRITE'))
 			];
-			$write = $this->buildDb('writeDB');
-			$this->dbWrite($write);
+		}
+
+		if (!$write && $params['config']->db->{$db}->hostWrite) {
+			$params['config']->db->writeDB = $params['config']->db->{$db};
+			$params['config']->db->writeDB->host = $params['config']->db->writeDB->hostWrite;
 		}
 
 		$params['postInitSkip'] = true;
@@ -204,6 +207,12 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		$this->config($config);
+
+		if ($params['config']->db->writeDB) {
+			error_log('>> writedb');
+			$write = $this->buildDb('writeDB');
+			$this->dbWrite($write);
+		}
 
 		$this->buildAuth($this->db());
 
