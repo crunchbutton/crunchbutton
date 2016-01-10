@@ -46,6 +46,7 @@ class Crunchbutton_Queue extends Cana_Table {
 		}
 
 		$queue = self::q('select * from queue where status=?'.$allQuery.' order by date_run asc', [self::STATUS_NEW]);
+		$count = $queue->count();
 		//$processid = uniqid();
 
 		foreach ($queue as $q) {
@@ -61,6 +62,7 @@ class Crunchbutton_Queue extends Cana_Table {
 
 			if (!$res->rowCount()) {
 				echo "skipping\n";
+				$count--;
 				continue;
 			}
 
@@ -101,7 +103,7 @@ class Crunchbutton_Queue extends Cana_Table {
 				$q->complete($res);
 			}
 		}
-		return $queue->count();
+		return $count;
 	}
 
 	public function queue_type(){
