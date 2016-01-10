@@ -42,12 +42,12 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		}
 
-		return Admin::q( 'SELECT a.* FROM admin a
+		return Admin::q( 'select z.* from admin as z inner join (SELECT distinct a.id_admin FROM admin a
 												INNER JOIN admin_shift_assign asa ON asa.id_admin = a.id_admin
 												INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
 												INNER JOIN restaurant_community rc ON rc.id_community = cs.id_community
 												INNER JOIN `order` o ON o.id_restaurant = rc.id_restaurant
-											WHERE o.id_order = ? AND cs.date_start <= ? AND cs.date_end >= ? AND cs.active = true AND a.active = true ', [$id_order, $now->format( 'Y-m-d H:i:s' ), $now->format( 'Y-m-d H:i:s' )]);
+											WHERE o.id_order = ? AND cs.date_start <= ? AND cs.date_end >= ? AND cs.active = true AND a.active = true) as y using (id_admin) ', [$id_order, $now->format( 'Y-m-d H:i:s' ), $now->format( 'Y-m-d H:i:s' )]);
 	}
 
 	public function duration( $timeIn = 'hours' ){
