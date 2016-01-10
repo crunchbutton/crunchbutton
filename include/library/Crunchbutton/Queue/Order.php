@@ -30,7 +30,7 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 			$debug_dt = new DateTime('now', new DateTimeZone(c::config()->timezone));
 			$debugDtString2 = $debug_dt->format('Y-m-d H:i:s');
 
-     	$dl = $this->order()->community()->delivery_logistics;
+     		$dl = $this->order()->community()->delivery_logistics;
 			// perform delivery logistics only if there are multiple drivers and it is enabled, and
 			//  it is not a pre-order
 			if (!$preordered && $dl && $drivers->count() > 1) {
