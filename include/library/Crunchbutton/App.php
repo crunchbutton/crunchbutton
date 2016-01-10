@@ -151,7 +151,7 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		if (!$write && $params['config']->db->{$db}->hostWrite) {
-			$params['config']->db->writeDB = $params['config']->db->{$db};
+			$params['config']->db->writeDB = clone $params['config']->db->{$db};
 			$params['config']->db->writeDB->host = $params['config']->db->writeDB->hostWrite;
 		}
 
