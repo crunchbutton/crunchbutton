@@ -32,7 +32,7 @@
 					<tr><td><a href="#advancedDelivery">Advanced Delivery</a></td></tr>
 					<tr><td><a href="#payment">Payment</a></td></tr>
 					<tr><td><a href="#shifts">Shifts</a></td></tr>
-					<tr><td><a href="#moreHelp"> More Help</a></td></tr>
+					<tr><td><a href="#moreHelp">More Help</a></td></tr>
 				</table>
 			</div>
 		</div>
@@ -186,7 +186,7 @@
 
 					<b>How do I deliver more orders faster and make more money?</b><br>
 					Pick up multiple orders at once, then deliver them all at once. This allows you to deliver more orders in the same period of time and make more money.
-<br><br>
+					<br><br>
 
 					Why this works: Restaurants are usually close together. And customers are usually close together. So first visit a bunch of restaurants, then deliver to a bunch of customers. We aim for delivery times under 45 minutes, so do whatever is most efficient!<br><br>
 
@@ -228,14 +228,14 @@
 				<p>
 
 					<span ng-switch on="account.user.payment_type">
-							<b>
-								How much do I get paid?
-							</b><br>
+						<b>
+							How much do I get paid?
+						</b><br>
 						<span ng-switch-when="orders">
-								As an independent contractor, you will receive a delivery fee on each order, which is usually $3, but can be more in some circumstances. You also keep any tips received, which are on average $2-3, but can be much higher. The more orders you deliver, the higher the payment you will receive. You'll get an advance when customers pay you in cash, and you can keep any tips received.
+							As an independent contractor, you will receive a delivery fee on each order, which is usually $3, but can be more in some circumstances. You also keep any tips received, which are on average $2-3, but can be much higher. The more orders you deliver, the higher the payment you will receive. You'll get an advance when customers pay you in cash, and you can keep any tips received.
 						</span>
 						<span ng-switch-when="hours">
-								As an independent contractor, you will receive ${{account.user.hour_rate}} for each hour of service provided. You also keep all tips. You'll get an advance towards this when customers pay you in cash, and you can keep any tips received.
+							As an independent contractor, you will receive ${{account.user.hour_rate}} for each hour of service provided. You also keep all tips. You'll get an advance towards this when customers pay you in cash, and you can keep any tips received.
 						</span>
 						<span ng-switch-when="hours_without_tips">
 							As an independent contractor, you will receive get ${{account.user.hour_rate}} for each hour of service provided. You'll get an advance towards this when customers pay you in cash, and you can keep any cash tips received.
@@ -255,6 +255,11 @@
 						When do I get my $$$?
 					</b><br>
 					Payments are usually received every Friday for the previous Mon-Sun week. For example: If your first week is Monday, June 1 - Sunday, June 7, your first payment will be on Friday, June 12. Your first deposit, and deposits to international bank accounts, can take up to 7 business days. You get to keep all cash received from cash orders as an advance towards that too.<br><br>
+
+					<b>What about my <?=date('Y')-1?> tax forms?</b><br>
+					Your Tax Forms (1099 forms) will be mailed out at the end of January to your address specified in cockpit.
+					<br><br>
+
 					<b>
 						I have a question about my payment.
 					</b><br>
