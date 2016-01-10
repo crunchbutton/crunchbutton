@@ -46,10 +46,23 @@ class Crunchbutton_Queue extends Cana_Table {
 		}
 
 		$queue = self::q('select * from queue where status=?'.$allQuery.' order by date_run asc', [self::STATUS_NEW]);
-		$processid = uniqid();
+		//$processid = uniqid();
 
 		foreach ($queue as $q) {
 			echo '  Starting #'.$q->id_queue. '...';
+
+			$q->status = self::STATUS_RUNNING;
+			$q->date_start = date('Y-m-d H:i:s');
+
+			$res = c::db()->query(
+				'update queue set status=?, date_start=? where id_queue=? and status=?',
+				[$q->status, $q->date_start, $q->id_queue, self::STATUS_NEW]
+			);
+
+			if (!$res->rowCount()) {
+				echo "skipping\n";
+				continue;
+			}
 
 			register_shutdown_function(function() use ($q) {
 				$error = error_get_last();
@@ -60,17 +73,6 @@ class Crunchbutton_Queue extends Cana_Table {
 					$q->save();
 				}
 			});
-
-			$q->data = $processid;
-			$q->status = self::STATUS_RUNNING;
-			$q->date_start = date('Y-m-d H:i:s');
-			$q->save();
-			$q = new Crunchbutton_Queue($q->id_queue);
-			if ($q->data != $processid) {
-				register_shutdown_function(function(){});
-				echo "skipping\n";
-				continue;
-			}
 
 			$queue_type = $q->queue_type()->type;
 
