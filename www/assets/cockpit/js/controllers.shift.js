@@ -79,6 +79,7 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, $routeParam
 			if( json.communities ){
 				$scope.shifts = { communities: json.communities };
 				$scope.days = json.days;
+				$scope.current_week = json.current_week;
 				$scope.loaded = true;
 			}
 		} );
