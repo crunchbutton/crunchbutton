@@ -9,7 +9,7 @@ class Crunchbutton_Resource_Community extends Cana_Table {
 			->load($id);
 	}
 	function removeByResource( $id_resource ){
-		c::db()->query( 'DELETE FROM resource_community WHERE id_resource = "' . $id_resource . '"' );
+		c::dbWrite()->query( 'DELETE FROM resource_community WHERE id_resource = "' . $id_resource . '"' );
 	}
 
 }

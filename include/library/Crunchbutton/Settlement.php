@@ -2257,18 +2257,18 @@ class Crunchbutton_Settlement extends Cana_Model {
 	public function revertPaymentByScheduleId( $id_payment_schedule ){
 		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
 		if( $schedule->id_payment_schedule ){
-			c::db()->query( 'DELETE FROM payment_schedule_order WHERE id_payment_schedule = "' . $schedule->id_payment_schedule . '"' );
-			c::db()->query( 'DELETE FROM payment_schedule_referral WHERE id_payment_schedule = "' . $schedule->id_payment_schedule . '"' );
-			c::db()->query( 'DELETE FROM payment_schedule_shift WHERE id_payment_schedule = "' . $schedule->id_payment_schedule . '"' );
+			c::dbWrite()->query( 'DELETE FROM payment_schedule_order WHERE id_payment_schedule = "' . $schedule->id_payment_schedule . '"' );
+			c::dbWrite()->query( 'DELETE FROM payment_schedule_referral WHERE id_payment_schedule = "' . $schedule->id_payment_schedule . '"' );
+			c::dbWrite()->query( 'DELETE FROM payment_schedule_shift WHERE id_payment_schedule = "' . $schedule->id_payment_schedule . '"' );
 			if( $schedule->id_payment ){
 				$transactions = Crunchbutton_Order_Transaction::q( 'SELECT * FROM payment_order_transaction WHERE id_payment = "' . $schedule->id_payment . '"' );
 				foreach ( $transactions as $transaction ) {
-					c::db()->query( 'DELETE FROM order_transaction WHERE id_order_transaction = "' . $transaction->id_order_transaction . '"' );
+					c::dbWrite()->query( 'DELETE FROM order_transaction WHERE id_order_transaction = "' . $transaction->id_order_transaction . '"' );
 				}
-				c::db()->query( 'DELETE FROM payment_order_transaction WHERE id_payment = "' . $schedule->id_payment . '"' );
-				c::db()->query( 'DELETE FROM payment WHERE id_payment = "' . $schedule->id_payment . '"' );
+				c::dbWrite()->query( 'DELETE FROM payment_order_transaction WHERE id_payment = "' . $schedule->id_payment . '"' );
+				c::dbWrite()->query( 'DELETE FROM payment WHERE id_payment = "' . $schedule->id_payment . '"' );
 			}
-			c::db()->query( 'DELETE FROM payment_schedule WHERE id_payment_schedule = "' . $schedule->id_payment_schedule . '"' );
+			c::dbWrite()->query( 'DELETE FROM payment_schedule WHERE id_payment_schedule = "' . $schedule->id_payment_schedule . '"' );
 		}
 	}
 }

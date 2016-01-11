@@ -21,7 +21,7 @@ class Crunchbutton_Admin_Shift_Preference extends Cana_Table {
 	}
 
 	public function removeByAdminShift( $id_admin, $id_community_shift ){
-		return c::db()->query( "DELETE FROM admin_shift_preference WHERE id_admin = " . $id_admin . " AND id_community_shift = " . $id_community_shift );
+		return c::dbWrite()->query( "DELETE FROM admin_shift_preference WHERE id_admin = " . $id_admin . " AND id_community_shift = " . $id_community_shift );
 	}
 
 	public function shiftsByPeriod( $id_admin, $from, $to, $dontWantToWorkItems = false ){

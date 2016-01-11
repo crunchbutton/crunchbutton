@@ -36,7 +36,7 @@ class Crunchbutton_Session {
 
 	public static function deleteToken($token) {
 		if (!$token) return false;
-		Cana::db()->query('delete from session where token=?',[$token]);
+		Cana::dbWrite()->query('delete from session where token=?',[$token]);
 	}
 
 	public function adapter($adapter = null) {
