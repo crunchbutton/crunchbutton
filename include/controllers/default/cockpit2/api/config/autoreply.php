@@ -36,7 +36,7 @@ class Controller_api_config_autoreply extends Crunchbutton_Controller_RestAccoun
 	private function _remove(){
 		if( trim( $this->request()[ 'id_config' ] ) ){
 			$id_config = trim( $this->request()[ 'id_config' ] );
-			c::db()->query( 'DELETE FROM config WHERE id_config = "' . $id_config . '" AND `key` = "' . Crunchbutton_Support::CONFIG_AUTO_REPLY_KEY . '"' );
+			c::dbWrite()->query( 'DELETE FROM config WHERE id_config = "' . $id_config . '" AND `key` = "' . Crunchbutton_Support::CONFIG_AUTO_REPLY_KEY . '"' );
 			echo json_encode( [ 'success' => 'success' ] );exit();
 		} else {
 			$this->_error();

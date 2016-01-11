@@ -696,7 +696,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function removeGroup( $id_group ){
-		Cana::db()->query('DELETE FROM `admin_group` WHERE id_admin = ? AND id_group = ?', [$this->id_admin, $id_group]);
+		Cana::dbWrite()->query('DELETE FROM `admin_group` WHERE id_admin = ? AND id_group = ?', [$this->id_admin, $id_group]);
 	}
 
 	public function permissions(){
@@ -722,7 +722,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function removePermissions(){
-		c::db()->query('DELETE FROM admin_permission WHERE id_admin = ?', [$this->id_admin]);
+		c::dbWrite()->query('DELETE FROM admin_permission WHERE id_admin = ?', [$this->id_admin]);
 	}
 
 	public function addPermissions( $permissions ){

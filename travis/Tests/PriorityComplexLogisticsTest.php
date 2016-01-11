@@ -1644,7 +1644,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
     public function testRestaurantClusterExist()
     {
-        c::db()->query('delete from order_logistics_cluster where id_restaurant = ?',
+        c::dbWrite()->query('delete from order_logistics_cluster where id_restaurant = ?',
             [$this->restaurant1->id_restaurant]);
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $useDate1 = $now->format('Y-m-d H:i:s');
@@ -1666,7 +1666,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
     public function testRestaurantClusterWrongTime()
     {
-        c::db()->query('delete from order_logistics_cluster where id_restaurant = ?',
+        c::dbWrite()->query('delete from order_logistics_cluster where id_restaurant = ?',
             [$this->restaurant1->id_restaurant]);
         $now = new DateTime('now', new DateTimeZone(c::config()->timezone));
         $useDate1 = $now->format('Y-m-d H:i:s');

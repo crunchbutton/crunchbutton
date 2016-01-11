@@ -86,20 +86,20 @@ class HoursTest extends PHPUnit_Framework_TestCase {
 		$name = self::NAME;
 
 		// delete shift assignment
-		c::db()->query( 'DELETE admin_shift_assign.* FROM admin_shift_assign INNER JOIN community_shift ON community_shift.id_community_shift = admin_shift_assign.id_community_shift INNER JOIN community ON community.id_community = community_shift.id_community WHERE community.name = ?', [ $name ] );
+		c::dbWrite()->query( 'DELETE admin_shift_assign.* FROM admin_shift_assign INNER JOIN community_shift ON community_shift.id_community_shift = admin_shift_assign.id_community_shift INNER JOIN community ON community.id_community = community_shift.id_community WHERE community.name = ?', [ $name ] );
 
 		// delete shift
-		c::db()->query( 'DELETE community_shift.* FROM community_shift INNER JOIN community ON community.id_community = community_shift.id_community WHERE community.name = ?', [ $name ] );
+		c::dbWrite()->query( 'DELETE community_shift.* FROM community_shift INNER JOIN community ON community.id_community = community_shift.id_community WHERE community.name = ?', [ $name ] );
 
 		// delete driver
-		c::db()->query( 'DELETE FROM admin WHERE admin.name = ?', [ $name ] );
+		c::dbWrite()->query( 'DELETE FROM admin WHERE admin.name = ?', [ $name ] );
 
 		// delete restaurants
-		c::db()->query( 'DELETE FROM restaurant WHERE restaurant.name = ?', [$name.' 3rd Party Delivery'] );
-		c::db()->query( 'DELETE FROM restaurant WHERE restaurant.name = ?', [$name.' Delivery Service'] );
+		c::dbWrite()->query( 'DELETE FROM restaurant WHERE restaurant.name = ?', [$name.' 3rd Party Delivery'] );
+		c::dbWrite()->query( 'DELETE FROM restaurant WHERE restaurant.name = ?', [$name.' Delivery Service'] );
 
 		// delete community
-		c::db()->query( 'DELETE FROM community WHERE community.name = ?', [$name] );
+		c::dbWrite()->query( 'DELETE FROM community WHERE community.name = ?', [$name] );
 
 	}
 
