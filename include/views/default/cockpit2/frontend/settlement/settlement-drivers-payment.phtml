@@ -10,7 +10,7 @@
 	<div class="divider"></div>
 
 	<h2 class="title">#{{result.id_driver}} - {{result.driver}}</h2>
-	<span ng-click="payment_info( result.id_driver );" class="orange link">Edit payment info</span> |
+	<a href="/staff/{{result.id_driver}}/payinfo">Edit payment info</a> |
 	<a href="/drivers/payment/{{result.id_payment_schedule}}">Driver's Summary</a>
 
 	<br/><br/>
