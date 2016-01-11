@@ -45,7 +45,7 @@
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton</db>
-			<host>***REMOVED***</host>
+			<host>_HOST_</host>
 			<hostWrite>_HOST_</hostWrite>
 			<prefix></prefix>
 			<encrypted>true</encrypted>
