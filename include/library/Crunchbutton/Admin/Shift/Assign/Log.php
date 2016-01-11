@@ -11,19 +11,25 @@ class Crunchbutton_Admin_Shift_Assign_Log extends Cana_Table {
 	}
 
 	public static function logByShift( $id_community_shift ){
-		return Crunchbutton_Admin_Shift_Assign_Log::q( 'SELECT
-																												asal.id_admin_shift_assign_log,
-																												asal.date, a1.name AS driver,
-																												a2.name AS admin,
-																												asal.assigned,
-																												asal.reason,
-																												asal.reason_other,
-																												asal.find_replacement
-																											FROM admin_shift_assign_log asal
-																												INNER JOIN admin a1 ON a1.id_admin = asal.id_driver
-																												INNER JOIN admin a2 ON a2.id_admin = asal.id_admin
-																											WHERE id_community_shift = ?
-																											ORDER BY id_admin_shift_assign_log DESC', [ $id_community_shift ] );
+		return self::q( 'SELECT
+											asal.id_admin_shift_assign_log,
+											asal.date, a1.name AS driver,
+											a2.name AS admin,
+											asal.assigned,
+											asal.reason,
+											asal.reason_other,
+											asal.find_replacement
+										FROM admin_shift_assign_log asal
+											INNER JOIN admin a1 ON a1.id_admin = asal.id_driver
+											INNER JOIN admin a2 ON a2.id_admin = asal.id_admin
+										WHERE id_community_shift = ?
+										ORDER BY id_admin_shift_assign_log DESC', [ $id_community_shift ] );
+	}
+
+	public static function logRemovedByShiftDriver( $id_community_shift, $id_driver ){
+		return self::q( 'SELECT * FROM admin_shift_assign_log
+											WHERE id_community_shift = ? AND id_driver = ? AND assigned = false
+											ORDER BY id_admin_shift_assign_log DESC LIMIT 1', [ $id_community_shift, $id_driver ] )->get( 0 );
 	}
 
 	public function admin(){

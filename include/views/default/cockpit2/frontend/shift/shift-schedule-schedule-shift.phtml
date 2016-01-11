@@ -103,15 +103,19 @@
 									<textarea ng-model="driver.notes_text"></textarea>
 									<br>
 									<button name='refresh' ng-click='saveDriverNote( driver )' class="button button-small button-empty button-border button-green"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save Notes</button>
+									<button ng-if="driver.id_admin_shift_assign_log" ng-click='driver.removal_info = !driver.removal_info' class="button button-small button-empty button-border button-blue"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit removal info</button>
 									<span class="tag tag-green" ng-if="driver.notes_saved">Saved!</span>
 								</td>
 							</tr>
-							<tr ng-if="driver.ask_reason">
+							<tr ng-if="driver.removal_info">
 								<td></td>
 								<td colspan="5">
 									<table class="tb-grid tb-sub-grid">
 										<tr>
-											<td><strong>Remove from shift reason:</strong></td>
+											<td>
+												<strong ng-if="!driver.id_admin_shift_assign_log">Remove from shift reason:</strong>
+												<strong ng-if="driver.id_admin_shift_assign_log">Edit removal info:</strong>
+											</td>
 											<td ng-if="driver.reason && driver.reason != 'Our decision'"><strong>Did they find a replacement:</strong></td>
 											<td width="100%;"></td>
 										</tr>
@@ -141,7 +145,9 @@
 												</select>
 											</td>
 											<td>
-												<button name='refresh' ng-click='removeShiftAssigment( driver )' class="button button-small button-empty button-border button-blue"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Remove assignment!</button>
+												<button ng-if="!driver.id_admin_shift_assign_log" ng-click='removeShiftAssigment( driver )' class="button button-small button-empty button-border button-red"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Remove assignment!</button>
+												<button ng-if="driver.id_admin_shift_assign_log" ng-click='updateRemovalInfo( driver )' class="button button-small button-empty button-border button-blue"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Update removal info</button>
+
 											</td>
 										</tr>
 									</table>
