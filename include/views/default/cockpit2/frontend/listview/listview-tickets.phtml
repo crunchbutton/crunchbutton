@@ -49,7 +49,7 @@
 						<span class="tag tag-green" ng-if="ticket.status == 'open'">Open</span>
 						<span class="tag tag-red" ng-if="ticket.status != 'open'">Closed</span>
 					</td>
-					<td nowrap class="tb-v-center">
+					<td nowrap class="tb-v-center tb-right">
 						<button ng-if="ticket.status == 'open'" ng-click="closeTicket(ticket.id_support);" class="button button-small button-empty button-green"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;Close</button>
 						<a href="/ticket/{{ticket.id_support}}"><button class="button button-small button-empty button-green">
 						<i class="fa fa-eye"></i>
