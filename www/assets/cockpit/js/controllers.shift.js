@@ -253,15 +253,22 @@ NGApp.controller('ShiftScheduleEditShiftCtrl', function ( $scope, $rootScope, Sh
 
 NGApp.controller('ShiftScheduleScheduleShiftCtrl', function ( $scope, $rootScope, ShiftScheduleService ) {
 
+	var info = null;
+
 	$rootScope.$on( 'openScheduleShiftContainer', function( e, data ) {
+		info = data;
 		$scope.loading = true;
 		$scope.shift = null;
-		ShiftScheduleService.loadShift( data, function( json ){
+		loadShiftInfo();
+		App.dialog.show( '.schedule-shift-dialog-container' );
+	});
+
+	var loadShiftInfo = function(){
+		ShiftScheduleService.loadShift( info, function( json ){
 			$scope.loading = false;
 			$scope.shift = json;
 		} )
-		App.dialog.show( '.schedule-shift-dialog-container' );
-	});
+	}
 
 	loadShiftLog = function(){
 		var params = { id_community_shift: $scope.shift.id_community_shift };
@@ -314,8 +321,8 @@ NGApp.controller('ShiftScheduleScheduleShiftCtrl', function ( $scope, $rootScope
 			if( json.error ){
 				App.alert( 'Error saving: ' + json.error );
 			} else {
+				loadShiftInfo();
 				$scope.saved = true;
-				loadShiftLog();
 				if( callback ){
 					callback();
 				}
@@ -331,16 +338,32 @@ NGApp.controller('ShiftScheduleScheduleShiftCtrl', function ( $scope, $rootScope
 
 	var processShiftAssignmentUpdate = function( driver ){
 		if( driver.assigned ){
-			driver.ask_reason = false;
 			updateShiftAssignment( driver );
 		} else {
 			if( !$scope.shift.ask_reason ){
 				updateShiftAssignment( driver );
 			} else {
 				driver.assigned = true;
-				driver.ask_reason = true;
+				driver.removal_info = true;
 			}
 		}
+	}
+
+	$scope.updateRemovalInfo = function( driver ){
+		ShiftScheduleService.updateRemovalInfo( driver, function( json ){
+			if( json.error ){
+				App.alert( 'Error saving: ' + json.error );
+			} else {
+				$scope.saved = true;
+				loadShiftInfo();
+				setTimeout( function() {
+					$rootScope.$apply( function() {
+						$scope.saved = false;
+					} );
+				}, 500 );
+				$rootScope.$broadcast( 'shiftsChanged', json.id_community );
+			}
+		} );
 	}
 
 	$scope.removeShiftAssigment = function( driver ){
@@ -358,7 +381,7 @@ NGApp.controller('ShiftScheduleScheduleShiftCtrl', function ( $scope, $rootScope
 			return;
 		}
 		driver.assigned = false;
-		updateShiftAssignment( driver, function(){ driver.ask_reason = false; } );
+		updateShiftAssignment( driver, function(){ driver.removal_info = false; } );
 	}
 
 } );

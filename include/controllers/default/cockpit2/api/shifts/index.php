@@ -36,13 +36,31 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			case 'save-driver-note':
 				$this->_saveDriverNote();
 				break;
-			case 'remove-shift':
-				$this->_removeShift();
+			case 'save-driver-note':
+				$this->_saveDriverNote();
+				break;
+			case 'update-removal-info':
+				$this->_updateRemovalInfo();
 				break;
 			case 'remove-recurring-shift':
 				$this->_removeRecurringShift();
 				break;
 		}
+	}
+
+	private function _updateRemovalInfo(){
+		if( $this->method() == 'post' ){
+			$log = Crunchbutton_Admin_Shift_Assign_Log::o( $this->request()[ 'id_admin_shift_assign_log' ] );
+			if( $log->id_admin_shift_assign_log ){
+				$log->reason = $this->request()[ 'reason' ];
+				$log->reason_other = $this->request()[ 'reason_other' ];
+				$log->find_replacement = ( $this->request()[ 'find_replacement' ] == 'true' ? true : false );
+				$log->id_admin = c::user()->id_admin;
+				$log->save();
+				echo json_encode( [ 'success' => true ] );exit;
+			}
+		}
+		$this->error( 404 );
 	}
 
 	private function _removeShift(){
@@ -314,7 +332,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 			$out[ 'community' ] = [ 'name' => $community->name, 'id_community' => $community->id_community, 'tz' => $community->timezone ];
 			$out[ 'segment' ] = [ 'start' => [ 'day' => $shift->dateStart()->format( 'M jS Y ' ), 'hour' => $shift->dateStart()->format( 'g:i A' ) ],
-													'end' => [ 'day' => $shift->dateEnd()->format( 'M jS Y ' ), 'hour' => $shift->dateEnd()->format( 'g:i A' ) ] ];
+														'end' => [ 'day' => $shift->dateEnd()->format( 'M jS Y ' ), 'hour' => $shift->dateEnd()->format( 'g:i A' ) ] ];
 			$out[ 'hidden' ] = $shift->isHidden();
 			$out[ 'recurring' ] = $shift->isRecurring();
 			$out[ 'period' ] = $shift->startEndToString();
@@ -382,8 +400,18 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 				$_driver[ 'assigned' ] = ( Crunchbutton_Admin_Shift_Assign::adminHasShift( $driver->id_admin, $shift->id_community_shift ) ) ? true : false;
 				$_driver[ 'assigned_permanently' ] = ( Crunchbutton_Admin_Shift_Assign_Permanently::adminIsPermanently( $driver->id_admin, $shift->id_community_shift ) ) ? true : false;
 
-				if( $_driver[ 'assigned' ] ){
-
+				if( !$_driver[ 'assigned' ] ){
+					$assignmentLog = Crunchbutton_Admin_Shift_Assign_Log::logRemovedByShiftDriver( $shift->id_community_shift, $driver->id_admin );
+					if( $assignmentLog && $assignmentLog->id_admin_shift_assign_log ){
+						$_driver[ 'id_admin_shift_assign_log' ] = $assignmentLog->id_admin_shift_assign_log;
+						$_driver[ 'reason' ] = $assignmentLog->reason;
+						$_driver[ 'reason_other' ] = $assignmentLog->reason_other;
+						if( $assignmentLog->find_replacement ){
+							$_driver[ 'find_replacement' ] = 'true';
+						} else {
+							$_driver[ 'find_replacement' ] = 'false';
+						}
+					}
 				}
 
 				if( $_driver[ 'assigned' ] ){
