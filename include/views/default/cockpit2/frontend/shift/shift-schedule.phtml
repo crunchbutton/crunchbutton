@@ -61,6 +61,9 @@
 
 		<div class="support-box-wrap-header">
 			<h1>{{community.name}}</h1>
+			<br>
+			<span class="tag tag-green" ng-if="current_week">CURRENT WEEK!</span>
+			<span class="tag tag-red" ng-if="!current_week">NOT CURRENT WEEK!</span>
 			<div class="divider"></div>
 		</div>
 		<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': !loaded}"></div>

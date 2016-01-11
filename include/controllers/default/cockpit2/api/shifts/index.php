@@ -448,27 +448,46 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _weekStart(){
+		$day = $this->_startDayCurrentWeek();
+		$range = [ 'start' => $day->format( 'Y,m,d' ) ];
+		echo json_encode( $range );
+	}
+
+	private function _startDayCurrentWeek(){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
-		$_now = $now->format( 'M jS Y' );
 		if( $now->format( 'l' ) == 'Thursday' ){
 			$thursday = $now;
 		} else {
 			$thursday = new DateTime( 'last thursday', new DateTimeZone( c::config()->timezone  ) );
 		}
-		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-		$range = [ 'start' => $thursday->format( 'Y,m,d' ) ];
-		echo json_encode( $range );
+		$thursday = clone $thursday;
+		$thursday->setTime( 0, 0, 0 );
+		return $thursday;
 	}
 
 	private function _loadShifts(){
 
-		if( $this->request()['start'] && $this->request()['communities'] ){
+		$start = $this->request()['start'];
+		$communities = $this->request()['communities'];
+
+		if( $start && $communities ){
+
+			$currentStartDay = $this->_startDayCurrentWeek();
+			$currentEndDay = $this->_startDayCurrentWeek();
+			$currentEndDay->modify( '+ 6 days' );
+			$currentEndDay->setTime( 23, 59, 59 );
+
 			$out = [ 'days' => [] ];
-			$start = $this->request()['start'];
 			$start = explode( 'T', $start );
 			$start = new DateTime( $start[ 0 ] . ' 00:00:00', new DateTimeZone( c::config()->timezone  ) );
 
-			$filterCommunities = $this->request()['communities'];
+			if( $start >= $currentStartDay && $start <= $currentEndDay ){
+				$current_week = true;
+			} else {
+				$current_week = false;
+			}
+
+			$filterCommunities = $communities;
 
 			$year = ( $this->request()['year'] ? $this->request()['year'] : $start->format( 'Y' ) );
 			$month = ( $this->request()['month'] ? $this->request()['month'] : $start->format( 'm' ) );
@@ -546,6 +565,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			$out[ 'month' ] = $month;
 			$out[ 'day' ] = $day;
 			$out[ 'current' ] = $current;
+			$out[ 'current_week' ] = $current_week;
 			$out[ 'now' ] = $_now;
 			$out[ 'communities' ] = $communities;
 
