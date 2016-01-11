@@ -172,7 +172,7 @@ NGApp.controller('ShiftScheduleEditShiftCtrl', function ( $scope, $rootScope, Sh
 	$rootScope.$on( 'openEditShiftContainer', function( e, data ) {
 		$scope.loading = true;
 		$scope.shift = null;
-		data.ignore_log = false;
+		data.ignore_log = true;
 		$scope.shift = null;
 		ShiftScheduleService.loadShift( data, function( json ){
 
@@ -274,7 +274,7 @@ NGApp.controller('ShiftScheduleScheduleShiftCtrl', function ( $scope, $rootScope
 		if( driver.assigned_permanently ){
 			driver.assigned_permanently = false;
 		}
-		updateShiftAssignment( driver );
+		processShiftAssignmentUpdate( driver );
 	}
 
 	$scope.assignDriverPermanently = function( driver ){
@@ -284,7 +284,7 @@ NGApp.controller('ShiftScheduleScheduleShiftCtrl', function ( $scope, $rootScope
 		if( !driver.assigned_permanently && $scope.shift.shift_remove_permanency ){
 			driver.assigned = false;
 		}
-		updateShiftAssignment( driver );
+		processShiftAssignmentUpdate( driver );
 	}
 
 	$scope.saveDriverNote = function( driver ){
@@ -303,14 +303,22 @@ NGApp.controller('ShiftScheduleScheduleShiftCtrl', function ( $scope, $rootScope
 		} );
 	}
 
-	var updateShiftAssignment = function( driver ){
+	var updateShiftAssignment = function( driver, callback ){
 		var params = { id_admin: driver.id_admin, id_community_shift: $scope.shift.id_community_shift, assigned: driver.assigned, permanent: driver.assigned_permanently };
+		if( !driver.assigned ){
+			params.reason = driver.reason;
+			params.reason_other = driver.reason_other;
+			params.find_replacement = driver.find_replacement;
+		}
 		ShiftScheduleService.assignDriver( params, function( json ){
 			if( json.error ){
 				App.alert( 'Error saving: ' + json.error );
 			} else {
 				$scope.saved = true;
 				loadShiftLog();
+				if( callback ){
+					callback();
+				}
 				setTimeout( function() {
 					$rootScope.$apply( function() {
 						$scope.saved = false;
@@ -319,6 +327,38 @@ NGApp.controller('ShiftScheduleScheduleShiftCtrl', function ( $scope, $rootScope
 				$rootScope.$broadcast( 'shiftsChanged', json.id_community );
 			}
 		} );
+	}
+
+	var processShiftAssignmentUpdate = function( driver ){
+		if( driver.assigned ){
+			driver.ask_reason = false;
+			updateShiftAssignment( driver );
+		} else {
+			if( !$scope.shift.ask_reason ){
+				updateShiftAssignment( driver );
+			} else {
+				driver.assigned = true;
+				driver.ask_reason = true;
+			}
+		}
+	}
+
+	$scope.removeShiftAssigment = function( driver ){
+		if( !driver.reason ){
+			// as it is modal we need to use default alert
+			alert( 'Please select the reason!' );
+			return;
+		}
+		if( ( driver.reason == 'Unacceptable: Other' || driver.reason == 'Acceptable: Other' ) && !driver.reason_other ){
+			alert( 'Please type the reason!' );
+			return;
+		}
+		if( driver.reason != 'Our decision' && !driver.find_replacement ){
+			alert( 'Please select one option for "Did they find a replacement"!' );
+			return;
+		}
+		driver.assigned = false;
+		updateShiftAssignment( driver, function(){ driver.ask_reason = false; } );
 	}
 
 } );
