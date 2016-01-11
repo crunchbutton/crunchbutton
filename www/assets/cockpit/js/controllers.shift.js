@@ -174,8 +174,13 @@ NGApp.controller('ShiftScheduleEditShiftCtrl', function ( $scope, $rootScope, Sh
 		data.ignore_log = false;
 		$scope.shift = null;
 		ShiftScheduleService.loadShift( data, function( json ){
+
 			$scope.loading = false;
 			$scope.shift = json;
+			$scope.shift.ok_to_change = 'yes';
+			if( $scope.shift.drivers_assigned ){
+				$scope.shift.ok_to_change = 'no';
+			}
 			$scope.shift.change = 'only-this-shift';
 		} )
 		App.dialog.show( '.edit-shift-dialog-container' );

@@ -43,7 +43,7 @@
 							</div>
 						</li>
 
-						<li class="li-input" ng-if="shift.recurring" ng-disabled="!shift.editable" ng-class="{'error': formEditShift.shiftChange.$invalid}" >
+						<li class="li-input" ng-if="shift.recurring" ng-disabled="!shift.editable" ng-class="{'error': formEditShift.shiftChange.$invalid}">
 							<div class="label">Change:</div>
 							<div class="input">
 								<select name="shiftChange" ng-model="shift.change" required>
@@ -55,10 +55,30 @@
 								<small ng-show="formEditShift.shiftChange.$error.required">Required.</small>
 							</div>
 						</li>
+					</ul>
+					<ul class="ul-inputs submitted">
+						<li class="li-input divider-line" ng-show="shift.drivers_assigned" ng-class="{'error': shift.ok_to_change == 'no'}">
+							<div class="label">
+								<span ng-if="shift.change == 'only-this-shift'">
+									There are already driver(s) scheduled for this shift.
+									Make sure they are aware you’re editing this shift’s hours before saving!
+								</span>
+								<span ng-if="shift.change == 'all-recurring-shifts'">
+									There are already driver(s) scheduled for 1 or more shifts in this series of recurring shifts.
+									Make sure they are aware you’re editing this shift’s hours before saving!
+								</span>
+							</div>
+							<div class="input">
+								<select name="shiftChange" ng-model="shift.ok_to_change" required>
+									<option value="yes">Okay, they are I'm editing this shift's hours.</option>
+									<option value="no">No, they aren't.</option>
+								</select>
+							</div>
+						</li>
 
 						<li class="li-input" ng-show="!isSavingAddShift">
 							<span class="tag tag-red" ng-if="!shift.editable">Ready only!</span>
-							<button ng-if="shift.editable" class="button button-empty button-border button-green button-full" ng-click="formEditShiftSave();"><span class="fa fa-save"></span>&nbsp;&nbsp;Save</button>
+							<button ng-if="shift.editable && shift.ok_to_change == 'yes'" class="button button-empty button-border button-green button-full" ng-click="formEditShiftSave();"><span class="fa fa-save"></span>&nbsp;&nbsp;Save</button>
 						</li>
 						<li class="li-input" ng-show="isSavingAddShift">
 							<i class="fa fa-circle-o-notch fa-spin"></i>
@@ -67,7 +87,7 @@
 				</div>
 			</ng-form>
 		</div>
-		<div class="support-box-wrap box-content2" ng-if="shift.editable">
+		<div class="support-box-wrap box-content2" ng-if="shift.editable && shift.ok_to_change == 'yes'">
 			<div class="ul-inputs">
 				<ul  class="ul-inputs">
 					<li class="li-input">
