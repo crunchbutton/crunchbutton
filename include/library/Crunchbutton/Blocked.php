@@ -65,17 +65,17 @@ class Crunchbutton_Blocked extends Cana_Table {
 	}
 
 	public static function unBlockUser( $id_user ){
-		Cana::db()->query('DELETE FROM blocked WHERE id_user = ?' , [ $id_user ] );
+		Cana::dbWrite()->query('DELETE FROM blocked WHERE id_user = ?' , [ $id_user ] );
 	}
 
 	public static function unBlockPhone( $id_phone ){
-		Cana::db()->query('DELETE FROM blocked WHERE id_phone = ?' , [ $id_phone ] );
+		Cana::dbWrite()->query('DELETE FROM blocked WHERE id_phone = ?' , [ $id_phone ] );
 	}
 
 	public static function unBlockPhoneNumer( $phone ){
 		$phone = Crunchbutton_Phone::byPhone($phone);
 		if( $phone->id_phone ){
-			Cana::db()->query('DELETE FROM blocked WHERE id_phone = ?' , [ $phone->id_phone ] );
+			Cana::dbWrite()->query('DELETE FROM blocked WHERE id_phone = ?' , [ $phone->id_phone ] );
 		}
 	}
 

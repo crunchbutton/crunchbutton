@@ -736,7 +736,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 
 	public function removeCommunity(){
-		c::db()->query( 'DELETE FROM restaurant_community WHERE id_restaurant=?', [$this->id_restaurant]);
+		c::dbWrite()->query( 'DELETE FROM restaurant_community WHERE id_restaurant=?', [$this->id_restaurant]);
 	}
 
 	/**
@@ -774,7 +774,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				} else {
 					// remove
 					if( $element[ 'id_notification' ] ){
-						c::db()->query( 'DELETE FROM notification WHERE id_notification = "' . $element[ 'id_notification' ] . '"' );
+						c::dbWrite()->query( 'DELETE FROM notification WHERE id_notification = "' . $element[ 'id_notification' ] . '"' );
 					}
 				}
 			}
@@ -787,7 +787,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function saveCommunity( $id_community ){
-		c::db()->query( 'DELETE FROM restaurant_community WHERE id_restaurant = "' . $this->id_restaurant . '"');
+		c::dbWrite()->query( 'DELETE FROM restaurant_community WHERE id_restaurant = "' . $this->id_restaurant . '"');
 		$restaurantCommunity = new Crunchbutton_Restaurant_Community();
 		$restaurantCommunity->id_restaurant = $this->id_restaurant;
 		$restaurantCommunity->id_community = $id_community;
@@ -800,7 +800,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	 * @return void
 	 */
 	public function saveHours($hours) {
-		c::db()->query('delete from hour where id_restaurant=?', [$this->id_restaurant]);
+		c::dbWrite()->query('delete from hour where id_restaurant=?', [$this->id_restaurant]);
 		if ($hours) {
 			foreach ($hours as $day => $times) {
 				foreach ($times as $time) {

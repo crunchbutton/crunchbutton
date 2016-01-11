@@ -20,7 +20,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 
 	public function deleteFromOrder( $id_order ){
 		$query = 'DELETE FROM notification_log WHERE id_order = ' . $id_order;
-		Cana::db()->query( $query );
+		Cana::dbWrite()->query( $query );
 	}
 
 	public function notification() {

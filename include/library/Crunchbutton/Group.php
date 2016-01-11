@@ -150,7 +150,7 @@ class Crunchbutton_Group extends Cana_Table {
 	}
 
 	public function removePermissions(){
-		c::db()->query( "DELETE FROM admin_permission WHERE id_group = {$this->id_group}" );
+		c::dbWrite()->query( "DELETE FROM admin_permission WHERE id_group = {$this->id_group}" );
 	}
 
 	public function byName( $name ){

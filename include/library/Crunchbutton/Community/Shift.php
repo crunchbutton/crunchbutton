@@ -560,7 +560,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 					$_shift->save();
 				}
 			}
-			c::db()->query( 'DELETE FROM admin_shift_assign_permanently WHERE id_community_shift = ' . $shift->id_community_shift_father  );
+			c::dbWrite()->query( 'DELETE FROM admin_shift_assign_permanently WHERE id_community_shift = ' . $shift->id_community_shift_father  );
 		}
 		if( $shift->recurring ){
 
@@ -575,7 +575,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 				}
 			}
 
-			c::db()->query( 'DELETE FROM admin_shift_assign_permanently WHERE id_community_shift = ' . $shift->id_community_shift  );
+			c::dbWrite()->query( 'DELETE FROM admin_shift_assign_permanently WHERE id_community_shift = ' . $shift->id_community_shift  );
 		}
 	}
 
@@ -589,7 +589,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 				$_shift->save();
 			}
 		}
-		c::db()->query( 'DELETE FROM admin_shift_assign_permanently WHERE id_community_shift = ' . $shift->id_community_shift  );
+		c::dbWrite()->query( 'DELETE FROM admin_shift_assign_permanently WHERE id_community_shift = ' . $shift->id_community_shift  );
 	}
 
 	public function remove( $id_community_shift ){
@@ -606,7 +606,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 	}
 
 	public function removeHoursFromDay( $id_community, $date ){
-		return c::db()->query( "DELETE FROM community_shift WHERE id_community = $id_community AND date_start BETWEEN '{$date} 00:00:00' AND '{$date} 23:59:59'" );
+		return c::dbWrite()->query( "DELETE FROM community_shift WHERE id_community = $id_community AND date_start BETWEEN '{$date} 00:00:00' AND '{$date} 23:59:59'" );
 	}
 
 	public function copyHoursFromTo( $id_community, $dayFrom, $dayTo ){
