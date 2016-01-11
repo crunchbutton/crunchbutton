@@ -9,7 +9,7 @@ class Crunchbutton_Quote_Community extends Cana_Table {
 			->load($id);
 	}
 	function removeByQuote( $id_quote ){
-		c::db()->query( 'DELETE FROM quote_community WHERE id_quote = "' . $id_quote . '"' );
+		c::dbWrite()->query( 'DELETE FROM quote_community WHERE id_quote = "' . $id_quote . '"' );
 	}
 
 }
