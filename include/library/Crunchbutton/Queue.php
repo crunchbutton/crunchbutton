@@ -45,7 +45,10 @@ class Crunchbutton_Queue extends Cana_Table {
 			$allQuery = ' and (date_run<now() or date_run is null)';
 		}
 
-		$queue = self::q('select * from queue where status=?'.$allQuery.' order by date_run asc', [self::STATUS_NEW]);
+		// use dbwrite so there is no lag
+		$qq = new Crunchbutton_Queue;
+		$qq->dbWrite(c::dbWrite());
+		$queue = $qq->q('select * from queue where status=?'.$allQuery.' order by date_run asc', [self::STATUS_NEW]);
 		$count = $queue->count();
 		//$processid = uniqid();
 
@@ -115,7 +118,7 @@ class Crunchbutton_Queue extends Cana_Table {
 
 	// dump the que and do nothing
 	public static function clean() {
-		c::db()->exec('update queue set status=?', [self::STATUS_STOPPED]);
+		c::dbWrite()->exec('update queue set status=?', [self::STATUS_STOPPED]);
 	}
 
 	// run the entire que until its empty
