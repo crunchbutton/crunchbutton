@@ -70,8 +70,8 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 		return c::db()->query( "DELETE FROM admin_shift_assign WHERE id_community_shift = " . $id_community_shift );
 	}
 
-	public function delete() {
-		Crunchbutton_Admin_Shift_Assign_Log::removeAssignment( $this->id_admin_shift_assign );
+	public function delete( $reason = [] ) {
+		Crunchbutton_Admin_Shift_Assign_Log::removeAssignment( $this->id_admin_shift_assign, $reason );
 		parent::delete();
 	}
 

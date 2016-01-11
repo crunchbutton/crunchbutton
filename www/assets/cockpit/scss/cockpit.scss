@@ -1245,6 +1245,19 @@ input {
 	width: 100% !important;
 	margin-bottom:1.5em;
 }
+.tb-sub-grid{
+	margin: 0;
+}
+	.tb-sub-grid td{
+		font-size: .9em !important;
+		background: #f9f9f9;
+	}
+		.tb-sub-grid .text-reason{
+			font-size: 1em !important;
+			margin: .3em 0;
+			width: 15em;
+			border:1px solid #CCC;
+		}
 .tb-zebra > tbody > tr:nth-child(2n){
 	background: #f9f9f9;
 }

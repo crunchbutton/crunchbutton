@@ -33,6 +33,11 @@
 								<td>
 									<span class="tag tag-green" ng-if="log.assigned">Assigned</span>
 									<span class="tag tag-red" ng-if="!log.assigned">Removed</span>
+									<span ng-if="!log.assigned">
+										<span ng-if="log.reason" class="listview-smallest">{{log.reason}}</span><span ng-if="log.reason_other" class="listview-smallest">: {{log.reason_other}}</span>
+										<span class="tag tag-green" ng-if="log.find_replacement === true">Found replacement</span>
+										<span class="tag tag-red" ng-if="log.find_replacement === false">Didn't find replacement</span>
+									</span>
 								</td>
 								<td>{{log.date | localtime:'MM/DD @ h:mm a'}}</td>
 								<td>{{log.admin}}</td>
@@ -73,8 +78,8 @@
 								<th>Notes</th>
 							</tr>
 						</thead>
-						<tbody>
-							<tr ng-repeat="driver in shift.drivers">
+						<tbody ng-repeat="driver in shift.drivers">
+							<tr>
 								<td>
 									<input type="checkbox" ng-disabled="!shift.editable" ng-change="assignDriver( driver )" ng-model="driver.assigned">
 								</td>
@@ -99,6 +104,47 @@
 									<br>
 									<button name='refresh' ng-click='saveDriverNote( driver )' class="button button-small button-empty button-border button-green"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save Notes</button>
 									<span class="tag tag-green" ng-if="driver.notes_saved">Saved!</span>
+								</td>
+							</tr>
+							<tr ng-if="driver.ask_reason">
+								<td></td>
+								<td colspan="5">
+									<table class="tb-grid tb-sub-grid">
+										<tr>
+											<td><strong>Remove from shift reason:</strong></td>
+											<td ng-if="driver.reason && driver.reason != 'Our decision'"><strong>Did they find a replacement:</strong></td>
+											<td width="100%;"></td>
+										</tr>
+										<tr>
+											<td>
+												<select ng-model="driver.reason">
+													<optgroup label="Unacceptable reason">
+														<option value="Unacceptable: Doesn't want to work">Doesn't want to work</option>
+														<option value="Unacceptable: Studying / Homework">Studying / Homework</option>
+														<option value="Unacceptable: Conflicting other job / commitment">Conflicting other job / commitment</option>
+														<option value="Unacceptable: Other">Other</option>
+													</optgroup>
+													<optgroup label="Acceptable reason">
+														<option value="Acceptable: Sick">Sick</option>
+														<option value="Acceptable: Family Emergency">Family Emergency</option>
+														<option value="Acceptable: Other">Other</option>
+													</optgroup>
+													<option value="Our decision">Removed from shift, our decision</option>
+												</select>
+												<br>
+												<input type="text" class="text-reason" ng-if="driver.reason == 'Unacceptable: Other' || driver.reason == 'Acceptable: Other'" placeholder="Type the reason" maxlength="200" ng-model="driver.reason_other" />
+											</td>
+											<td ng-if="driver.reason && driver.reason != 'Our decision'">
+												<select ng-model="driver.find_replacement">
+													<option value="false">No</option>
+													<option value="true">Yes</option>
+												</select>
+											</td>
+											<td>
+												<button name='refresh' ng-click='removeShiftAssigment( driver )' class="button button-small button-empty button-border button-blue"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Remove assignment!</button>
+											</td>
+										</tr>
+									</table>
 								</td>
 							</tr>
 						</tbody>

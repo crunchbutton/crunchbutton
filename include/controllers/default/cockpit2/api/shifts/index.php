@@ -120,7 +120,17 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 					if( $assignment->isPermanent() ){
 						$this->_removePermanency( $shift, $id_admin );
 					}
-					$assignment->delete();
+					$params = [];
+					if( $this->request()[ 'reason' ] ){
+						$params[ 'reason' ] = $this->request()[ 'reason' ];
+					}
+					if( $this->request()[ 'reason_other' ] ){
+						$params[ 'reason_other' ] = $this->request()[ 'reason_other' ];
+					}
+					if( $this->request()[ 'find_replacement' ] ){
+						$params[ 'find_replacement' ] = ( $this->request()[ 'find_replacement' ] == 'true' ? true : false );
+					}
+					$assignment->delete( $params );
 				}
 			}
 			echo json_encode( [ 'success' => true ] );exit;
@@ -309,6 +319,14 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			$out[ 'recurring' ] = $shift->isRecurring();
 			$out[ 'period' ] = $shift->startEndToString();
 
+			$_48hours = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$_48hours->setTimezone( new DateTimeZone( $community->timezone ) );
+			$_48hours->modify( '+ 48 hours' );
+
+			if( $_48hours->format( 'YmdHis' ) >= $shift->dateStart()->format( 'YmdHis' ) ){
+				$out[ 'ask_reason' ] = true;
+			}
+
 			$drivers = $shift->community()->getDriversOfCommunity();
 
 			$week = $shift->week();
@@ -363,6 +381,10 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 				$_driver[ 'total_shifts' ] = $driverShifts->count();
 				$_driver[ 'assigned' ] = ( Crunchbutton_Admin_Shift_Assign::adminHasShift( $driver->id_admin, $shift->id_community_shift ) ) ? true : false;
 				$_driver[ 'assigned_permanently' ] = ( Crunchbutton_Admin_Shift_Assign_Permanently::adminIsPermanently( $driver->id_admin, $shift->id_community_shift ) ) ? true : false;
+
+				if( $_driver[ 'assigned' ] ){
+
+				}
 
 				if( $_driver[ 'assigned' ] ){
 					$_drivers_assigned[] = $driver->name;
@@ -427,6 +449,27 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 				unset( $log[ 'id_community_shift' ] );
 				unset( $log[ 'id_driver' ] );
 				unset( $log[ 'id_admin' ] );
+
+				if( $log[ 'assigned' ] ){
+					unset( $log[ 'reason' ] );
+					unset( $log[ 'reason_other' ] );
+					unset( $log[ 'find_replacement' ] );
+				} else {
+					if( !$log[ 'reason' ] )	{
+						unset( $log[ 'reason' ] );
+						unset( $log[ 'reason_other' ] );
+						unset( $log[ 'find_replacement' ] );
+					} else {
+						if( $log[ 'reason' ] == 'Our decision' ){
+							unset( $log[ 'find_replacement' ] );
+						}
+						if( !$log[ 'reason_other' ] ){
+							unset( $log[ 'reason_other' ] );
+						}
+					}
+				}
+
+
 				$out[] = $log;
 			}
 		}
