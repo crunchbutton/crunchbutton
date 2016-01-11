@@ -653,7 +653,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
     public function testMovingDriverRegression()
     {
 
-        c::db()->query('delete from admin_location where id_admin = ?',
+        c::dbWrite()->query('delete from admin_location where id_admin = ?',
             [$this->driver1->id_admin]);
         $now = new DateTime('2015-07-01 01:13:25', new DateTimeZone(c::config()->timezone));
         $date = $now->format('Y-m-d H:i:s');
@@ -706,7 +706,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
     // Moving driver - less than 4 points - only take the EW average
     public function testMovingDriverAverage()
     {
-        c::db()->query('delete from admin_location where id_admin = ?',
+        c::dbWrite()->query('delete from admin_location where id_admin = ?',
             [$this->driver1->id_admin]);
         $now = new DateTime('2015-07-01 01:13:25', new DateTimeZone(c::config()->timezone));
         $date = $now->format('Y-m-d H:i:s');
@@ -742,7 +742,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
 
     public function testSuperFastDriverEW1()
     {
-        c::db()->query('delete from admin_location where id_admin = ?',
+        c::dbWrite()->query('delete from admin_location where id_admin = ?',
             [$this->driver1->id_admin]);
         $now = new DateTime('2015-07-01 01:13:25', new DateTimeZone(c::config()->timezone));
         $date = $now->format('Y-m-d H:i:s');
@@ -782,7 +782,7 @@ class DriverLocationTest extends PHPUnit_Framework_TestCase
 
     public function testSuperFastDriverEW2()
     {
-        c::db()->query('delete from admin_location where id_admin = ?',
+        c::dbWrite()->query('delete from admin_location where id_admin = ?',
             [$this->driver1->id_admin]);
         $now = new DateTime('2015-06-30 18:13:25', new DateTimeZone(c::config()->timezone));
         $date = $now->format('Y-m-d H:i:s');

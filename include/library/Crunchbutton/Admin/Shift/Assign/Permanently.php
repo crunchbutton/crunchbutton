@@ -57,7 +57,7 @@ class Crunchbutton_Admin_Shift_Assign_Permanently extends Cana_Table {
 		$shift = Crunchbutton_Community_Shift::o( $id_community_shift );
 		$id_community_shift_father = $shift->recurringId();
 		if( $id_community_shift_father ){
-			return c::db()->query( "DELETE FROM admin_shift_assign_permanently WHERE id_community_shift = " . $id_community_shift_father );
+			return c::dbWrite()->query( "DELETE FROM admin_shift_assign_permanently WHERE id_community_shift = " . $id_community_shift_father );
 		}
 	}
 
@@ -65,7 +65,7 @@ class Crunchbutton_Admin_Shift_Assign_Permanently extends Cana_Table {
 		$shift = Crunchbutton_Community_Shift::o( $id_community_shift );
 		$id_community_shift_father = $shift->recurringId();
 		if( $id_community_shift_father ){
-			return c::db()->query( "DELETE FROM admin_shift_assign_permanently WHERE id_admin = " . $id_admin . " AND id_community_shift = " . $id_community_shift_father );
+			return c::dbWrite()->query( "DELETE FROM admin_shift_assign_permanently WHERE id_admin = " . $id_admin . " AND id_community_shift = " . $id_community_shift_father );
 		}
 	}
 
