@@ -109,7 +109,6 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 				Crunchbutton_Admin_Shift_Assign_Permanently::addDriver( $id_admin, $id_community_shift );
 			}
 		}
-
 		return true;
 	}
 
