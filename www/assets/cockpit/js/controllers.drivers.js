@@ -540,13 +540,14 @@ NGApp.controller( 'DriversShiftsScheduleRatingCtrl', function ( $scope, $rootSco
 
 	$scope.shiftsToWorkFrom = [];
 	for( var i = 0; i <= 10; i++ ){
-		$scope.shiftsToWorkFrom.push( i );
+		$scope.shiftsToWorkFrom.push( { value: i, label: i } );
 	}
 
 	$scope.shiftsToWorkTo = [];
 	for( var i = 0; i <= 10; i++ ){
-		$scope.shiftsToWorkTo.push( i );
+		$scope.shiftsToWorkTo.push( { value: i, label: i } );
 	}
+	$scope.shiftsToWorkTo.push( { value: 100, label: 'As many as possible!' } );
 
 	$scope.options = { 'shifts_from': 1, 'shifts_to': 1 };
 
@@ -555,13 +556,8 @@ NGApp.controller( 'DriversShiftsScheduleRatingCtrl', function ( $scope, $rootSco
 		$scope.period = data.info.period;
 		$scope.shifts = data.results;
 		setTimeout( function(){
-
 			$scope.options.shifts_from = data.options.shifts_from;
 			$scope.options.shifts_to = data.options.shifts_to;
-			console.log('$scope.options.shifts_from',$scope.options.shifts_from);
-			console.log('$scope.options.shifts_to',$scope.options.shifts_to);
-			console.log('$scope.options.shifts_from',$scope.options.shifts_from);
-			// $scope.fixOptionTo();
 		}, 200 );
 
 	}
@@ -571,12 +567,23 @@ NGApp.controller( 'DriversShiftsScheduleRatingCtrl', function ( $scope, $rootSco
 		for( var i = $scope.options.shifts_from; i <= 10; i++ ){
 			$scope.shiftsToWorkTo.push( i );
 		}
+		$scope.shiftsToWorkTo.push( { value: 100, label: 'As many as possible!' } );
 		if( $scope.options && $scope.options.shifts_from > $scope.options.shifts_to ){
 			$scope.options.shifts_to = $scope.options.shifts_from;
 		}
 	}
 
 	$scope.save = function(){
+
+		if( !$scope.options.shifts_from ){
+			App.alert( 'Please select how many shifts you want to work.<br>' );
+			return;
+		}
+		if( !$scope.options.shifts_to ){
+			App.alert( 'Please select how many shifts you want to work.<br>' );
+			return;
+		}
+
 		$scope.makeBusy();
 		$scope.isSaving = true;
 		var shifts = {};

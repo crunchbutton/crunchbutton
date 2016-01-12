@@ -35,11 +35,8 @@
 		</div>
 
 			<div class="shifts-available">
-
 				<h2 class="title">Shifts</h2>
-
 				<div class="box-content2">
-
 					<table class="tb-grid">
 						<tbody ng-repeat="shift in shifts">
 							<tr>
@@ -60,24 +57,20 @@
 									<button title="I'm not available" ng-disabled="shift.assigned" class="button schedule-action-no" ng-class="{'active':shift.ranking == -1 }" ng-click="shift.ranking = -1">
 										<i class="fa fa-thumbs-o-down"></i>
 									</button>
-
 								</td>
 							</tr>
 						</tbody>
 					</table>
-
 				</div>
-
 			</div>
-
 		<div class="support-box-wrap box-content2">
 			<div class="no-box-content-color">
 				<p>
 					<br>
 					If possible, I'd like to work
-						<select ng-model="options.shifts_from" ng-change="fixOptionTo()" ng-options="option for option in shiftsToWorkFrom"></select>
+						<select ng-model="options.shifts_from" ng-change="fixOptionTo()" ng-options="option.value as option.label for option in shiftsToWorkFrom"></select>
 						 to
-						<select ng-model="options.shifts_to" ng-options="option for option in shiftsToWorkTo"></select>
+						<select ng-model="options.shifts_to" ng-options="option.value as option.label for option in shiftsToWorkTo"></select>
 						shifts this week.
 				</p>
 			</div>

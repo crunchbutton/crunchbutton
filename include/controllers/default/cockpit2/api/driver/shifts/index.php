@@ -274,15 +274,15 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 		if( $_availableShifts === 0 ){
 			$status->completed = 1;
 		}
+		$status->save();
+		$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $id_admin, $week, $year );
 
-		if( !$status->shifts_from ){
+		if( !$status->shifts_from && $status->shifts_from != 0 ){
 			$status->shifts_from = 0;
 		}
-		if( !$status->shifts_to ){
+		if( !$status->shifts_to && $status->shifts_to != 0 ){
 			$status->shifts_to = 0;
 		}
-
-		$status->save();
 
 		echo json_encode( [ 'info' => [ 'period' => $shifts_period ], 'completed' => $status->completed, 'shifts' => $status->shifts, 'options' => [ 'shifts_to' => $status->shifts_to, 'shifts_from' => $status->shifts_from ], 'results' => $shifts ] );
 	}
