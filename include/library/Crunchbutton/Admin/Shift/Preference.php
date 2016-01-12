@@ -24,7 +24,7 @@ class Crunchbutton_Admin_Shift_Preference extends Cana_Table {
 		return c::db()->query( "DELETE FROM admin_shift_preference WHERE id_admin = " . $id_admin . " AND id_community_shift = " . $id_community_shift );
 	}
 
-	public function shiftsByPeriod( $id_admin, $from, $to, $dontWantToWorkItems = false ){
+	public static function shiftsByPeriod( $id_admin, $from, $to, $dontWantToWorkItems = false ){
 		if( $dontWantToWorkItems ){
 			$where = 'AND asp.ranking = 0';
 		} else {
@@ -36,9 +36,8 @@ class Crunchbutton_Admin_Shift_Preference extends Cana_Table {
 		$to->modify( '+ 1 day' );
 		$to = $to->format( 'Y-m-d' ) . ' 23:59:59';
 
-		// echo '<pre>';var_dump( $from, $to );exit();
 		return Crunchbutton_Community_Shift::q('
-			SELECT cs.* FROM community_shift cs
+			SELECT cs.*, asp.ranking FROM community_shift cs
 			INNER JOIN admin_shift_preference asp ON asp.id_community_shift = cs.id_community_shift
 			WHERE cs.date_start >= ? AND cs.date_start <= ?
 			AND asp.id_admin = ?

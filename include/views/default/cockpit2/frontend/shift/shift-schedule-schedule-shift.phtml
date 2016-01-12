@@ -73,7 +73,6 @@
 								<th></th>
 								<th>Driver</th>
 								<th>Ranking</th>
-								<th>Shifts desired / <br>Assigned shifts</th>
 								<th ng-if="shift.recurring">Make it permanent</th>
 								<th>Notes</th>
 							</tr>
@@ -85,18 +84,18 @@
 								</td>
 								<td>
 									{{driver.name}}
-									<div>{{driver.phone | formatPhone}}</div>
+									<div class="listview-small">
+									Shifts desired:
+										<strong ng-if="driver.total_shifts_want_work">{{driver.total_shifts_want_work}}</strong>
+										<strong ng-if="!driver.total_shifts_want_work">?</strong>
+									<br>Assigned shifts: <strong>{{driver.total_shifts}}</strong>
+									</div>
 								</td>
 								<td>
 									<span class="tag tag-green" ng-if="driver.ranking.current == 1">Yes, definitely</span>
 									<span class="tag tag-blue" ng-if="driver.ranking.current > 1">I'm available</span>
 									<span class="tag tag-red" ng-if="driver.ranking.current == 0">Definitely not</span>
 									<span class="tag tag-grey" ng-if="driver.ranking.current == -1">Did not fill out</span>
-								</td>
-								<td>
-									<span ng-if="driver.ranking.highest">{{driver.ranking.highest}}</span>
-									<span ng-if="!driver.ranking.highest">-</span> /
-									{{driver.total_shifts}}
 								</td>
 								<td ng-if="shift.recurring"><input ng-change="assignDriverPermanently( driver )" ng-disabled="!shift.editable" type="checkbox" ng-model="driver.assigned_permanently"></td>
 								<td>
@@ -109,7 +108,7 @@
 							</tr>
 							<tr ng-if="driver.removal_info">
 								<td></td>
-								<td colspan="5">
+								<td colspan="4">
 									<table class="tb-grid tb-sub-grid">
 										<tr>
 											<td>
