@@ -301,6 +301,7 @@ NGApp.controller('ShiftScheduleScheduleShiftCtrl', function ( $scope, $rootScope
 				App.alert( 'Error saving: ' + json.error );
 			} else {
 				driver.notes_saved = true;
+				loadShiftInfo();
 				setTimeout( function() {
 					$rootScope.$apply( function() {
 						driver.notes_saved = false;
