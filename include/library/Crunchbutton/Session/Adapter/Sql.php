@@ -7,7 +7,7 @@ class Crunchbutton_Session_Adapter_Sql extends Cana_Table implements SessionHand
 		Cana::dbWrite()->query('delete from session where id_session=?',[$id]);
 
 		if (c::auth()->session()->adapter()->id_session) {
-			//Cana::db()->query('delete from session where id_session=?',[c::auth()->session()->adapter()->id_session]);
+			//Cana::dbWrite()->query('delete from session where id_session=?',[c::auth()->session()->adapter()->id_session]);
 		}
 		return true;
 	}
@@ -88,7 +88,7 @@ class Crunchbutton_Session_Adapter_Sql extends Cana_Table implements SessionHand
 
 	public function gc($maxlifetime) {
 		// only delete if there is no token
-		//Cana::db()->query('DELETE FROM session WHERE date_activity < "'.(time() - $maxlifetime).'" and token is null');
+		//Cana::dbWrite()->query('DELETE FROM session WHERE date_activity < "'.(time() - $maxlifetime).'" and token is null');
 		return true;
 	}
 
@@ -110,7 +110,7 @@ class Crunchbutton_Session_Adapter_Sql extends Cana_Table implements SessionHand
 
 	public static function deleteToken($token) {
 		if (!$token) return false;
-		Cana::db()->query('delete from session where token=?',[$token]);
+		Cana::dbWrite()->query('delete from session where token=?',[$token]);
 	}
 
 	public function auth() {
