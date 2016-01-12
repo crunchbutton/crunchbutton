@@ -70,7 +70,7 @@ class Crunchbutton_Admin_Shift_Assign_Permanently extends Cana_Table {
 	}
 
 	public function removeByAdminShiftFather( $id_admin, $id_community_shift ){
-		return c::db()->query( "DELETE FROM admin_shift_assign_permanently WHERE id_admin = " . $id_admin . " AND id_community_shift = " . $id_community_shift );
+		return c::dbWrite()->query( "DELETE FROM admin_shift_assign_permanently WHERE id_admin = " . $id_admin . " AND id_community_shift = " . $id_community_shift );
 	}
 
 }
