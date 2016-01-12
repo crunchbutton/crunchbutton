@@ -90,12 +90,10 @@
 									</div>
 								</td>
 								<td>
-									<span class="tag tag-green" ng-if="driver.ranking.current == 1">Yes, definitely</span>
-									<span class="tag tag-blue" ng-if="driver.ranking.current > 1">I'm available</span>
-									<span class="tag tag-red" ng-if="driver.ranking.current == 0">Definitely not</span>
-									<span class="tag tag-grey" ng-if="driver.ranking.current == -1">Did not fill out</span>
-
-
+									<span class="tag tag-green" ng-if="driver.ranking == 1">Yes, definitely</span>
+									<span class="tag tag-blue" ng-if="driver.ranking >= 2">I'm available</span>
+									<span class="tag tag-red" ng-if="driver.ranking == 0">Definitely not</span>
+									<span class="tag tag-grey" ng-if="driver.ranking == -1">Did not fill out</span>
 									<div class="listview-small">
 									Shifts desired:
 										<strong ng-if="driver.total_shifts_want_work">{{driver.total_shifts_want_work}}</strong>

@@ -1455,9 +1455,34 @@ td.documents-check {
 .schedule-action-not{
 	background: #dd5954;
 }
+
 .schedule-action-yes{
-	background: #4db1a7;
+	background: $buttonGreen;
+	border:3px solid #FFF;
+	opacity: 0.4;
 }
+	.schedule-action-yes.active{
+		border:3px solid #129077;
+		opacity: 1;
+	}
+.schedule-action-no{
+	background: $buttonRed;
+	border:3px solid #FFF;
+	opacity: 0.4;
+}
+	.schedule-action-no.active{
+		border:3px solid #9d3745;
+		opacity: 1;
+	}
+.schedule-action-maybe{
+	background: #c4b521;
+	border:3px solid #FFF;
+	opacity: 0.4;
+}
+	.schedule-action-maybe.active{
+		border:3px solid #a09319;
+		opacity: 1;
+	}
 
 .tb-grid .total-due{
 	background: #E8E8E8;

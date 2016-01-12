@@ -525,6 +525,79 @@ NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) 
 
 } );
 
+NGApp.controller( 'DriversShiftsScheduleRatingCtrl', function ( $scope, $rootScope, DriverShiftScheduleRatingService ) {
+
+	var isSaving = false;
+
+	$scope.ready = false;
+
+	var list = function(){
+		DriverShiftScheduleRatingService.list( function( data ){
+			process( data );
+			$scope.ready = true;
+		} );
+	}
+
+	$scope.shiftsToWorkFrom = [];
+	for( var i = 0; i <= 10; i++ ){
+		$scope.shiftsToWorkFrom.push( i );
+	}
+
+	$scope.shiftsToWorkTo = [];
+	for( var i = 0; i <= 10; i++ ){
+		$scope.shiftsToWorkTo.push( i );
+	}
+
+	$scope.options = { 'shifts_from': 1, 'shifts_to': 1 };
+
+	var process = function( data ){
+		$scope.available = 0;
+		$scope.period = data.info.period;
+		$scope.shifts = data.results;
+		setTimeout( function(){
+
+			$scope.options.shifts_from = data.options.shifts_from;
+			$scope.options.shifts_to = data.options.shifts_to;
+			console.log('$scope.options.shifts_from',$scope.options.shifts_from);
+			console.log('$scope.options.shifts_to',$scope.options.shifts_to);
+			console.log('$scope.options.shifts_from',$scope.options.shifts_from);
+			// $scope.fixOptionTo();
+		}, 200 );
+
+	}
+
+	$scope.fixOptionTo = function(){
+		$scope.shiftsToWorkTo = [];
+		for( var i = $scope.options.shifts_from; i <= 10; i++ ){
+			$scope.shiftsToWorkTo.push( i );
+		}
+		if( $scope.options && $scope.options.shifts_from > $scope.options.shifts_to ){
+			$scope.options.shifts_to = $scope.options.shifts_from;
+		}
+	}
+
+	$scope.save = function(){
+		$scope.makeBusy();
+		$scope.isSaving = true;
+		var shifts = {};
+		if( $scope.shifts && $scope.shifts.length ){
+			for( var i = 0; i < $scope.shifts.length; i++ ){
+				var shift = $scope.shifts[ i ];
+				shifts[ shift.id_community_shift ] = shift.ranking;
+			}
+		}
+		var data = { options: $scope.options, shifts: shifts };
+		DriverShiftScheduleRatingService.save( data, function( data ){
+			$scope.isSaving = false;
+			process( data );
+			$scope.unBusy();
+		} );
+	}
+
+	list();
+
+} );
+
 NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftScheduleService ) {
 
 	var isSaving = false;
