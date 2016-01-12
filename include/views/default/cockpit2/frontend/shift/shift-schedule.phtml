@@ -72,7 +72,7 @@
 				<thead>
 					<tr>
 						<th><i class="fa fa-arrow-left schedule-shift-navigation" ng-click="previousWeek()"></i></th>
-						<th ng-repeat="day in days" class="table-label">
+						<th ng-repeat="day in days" class="table-label" ng-class="{ 'schedule-today': day.today}">
 							<div class="date">{{day.date}}</div>
 							<div class="weekday">{{day.weekday}}</div>
 						</th>
