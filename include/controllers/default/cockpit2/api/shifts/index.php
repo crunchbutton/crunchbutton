@@ -369,9 +369,9 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			$preferences = $shift->getAdminPreferences();
 			foreach( $preferences as $preference ){
 				$highestRanking = $preference->highestRankingByPeriod( $preference->id_admin, $firstDayOfWeek, $lastDayOfWeek );
-				$ranking[ $preference->id_admin ] = [ 'current' => -1, 'highest' => intval( $highestRanking ) ];
-				if( intval( $preference->ranking ) ){
-					$ranking[ $preference->id_admin ][ 'current' ] = intval( $preference->ranking );
+				$ranking[ $preference->id_admin ] = -1;
+				if( isset( $preference->ranking ) ){
+					$ranking[ $preference->id_admin ] = intval( $preference->ranking );
 				}
 			}
 
@@ -393,10 +393,17 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			foreach( $drivers as $driver ){
 
 				$totalShifts = Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $week, $year )->get( 0 );
-				if( $totalShifts->id_admin_shift_status ){
-					$totalShifts = $totalShifts->shifts;
+				if( $totalShifts->shifts_from || $totalShifts->shifts_to ){
+					if( $totalShifts->shifts_from && $totalShifts->shifts_to ){
+						$totalShifts = $totalShifts->shifts_from . '-' . $totalShifts->shifts_to;
+					} else if( $totalShifts->shifts_from ){
+						$totalShifts = $totalShifts->shifts_from;
+					} else if( $totalShifts->shifts_to ){
+						$totalShifts = $totalShifts->shifts_to;
+					}
+
 				} else {
-					$totalShifts = 0;
+					$totalShifts = '?';
 				}
 
 				$_driver = [ 'id_admin' => $driver->id_admin, 'name' => $driver->name, 'phone' => $driver->phone() ];
@@ -426,8 +433,8 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 					$_drivers_assigned[] = $driver->name;
 				}
 
-				$_driver[ 'ranking' ] = [ 'current' => -1, 'highest' => 0 ];
-				if( $ranking[ $driver->id_admin ] ){
+				$_driver[ 'ranking' ] = -1;
+				if( isset( $ranking[ $driver->id_admin ] ) ){
 					$_driver[ 'ranking' ] = $ranking[ $driver->id_admin ];
 				}
 
@@ -440,12 +447,15 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 					$_driver[ 'notes_text' ] = '';
 				}
 
-				if( $_driver[ 'ranking' ][ 'current' ] > 0 ){
-					$_driver[ 'sort' ] = $_driver[ 'ranking' ][ 'current' ];
-				} else if( $_driver[ 'ranking' ][ 'current' ] == -1 ){
+				if( $_driver[ 'ranking' ] == 0 ){
+					$_driver[ 'sort' ] = -10;
+				} else if( $_driver[ 'ranking' ] == -1 ){
 					$_driver[ 'sort' ] = 0;
+				} else if( $_driver[ 'ranking' ] == 1 ){
+					$_driver[ 'sort' ] = 10;
 				} else {
-					$_driver[ 'sort' ] = -1;
+					$_driver[ 'sort' ] = 5;
+					$_driver[ 'ranking' ] = 2;
 				}
 				$_drivers[] = $_driver;
 			}

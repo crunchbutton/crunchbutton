@@ -342,10 +342,16 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			templateUrl: 'assets/view/drivers-shifts.html',
 			back: false
 		})
-		.when('/drivers/shifts/schedule', {
+		.when('/drivers/shifts/schedule-old', {
 			action: 'drivers-shift-preferences',
 			controller: 'DriversShiftsScheduleCtrl',
 			templateUrl: 'assets/view/drivers-shifts-schedule.html',
+			back: false
+		})
+		.when('/drivers/shifts/schedule', {
+			action: 'drivers-shift-preferences',
+			controller: 'DriversShiftsScheduleRatingCtrl',
+			templateUrl: 'assets/view/drivers-shifts-schedule-rating.html',
 			back: false
 		})
 		.when('/schedule', {

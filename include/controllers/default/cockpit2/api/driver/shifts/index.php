@@ -9,6 +9,10 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 				$this->_schedule();
 				break;
 
+			case 'rating':
+				$this->_rating();
+				break;
+
 			case 'checkin':
 				$this->_checkin();
 				break;
@@ -37,6 +41,14 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 			echo json_encode( [ 'success' => true ] );exit;
 		}
 		echo json_encode( [ 'error' => true ] );exit;
+	}
+
+	private function _rating(){
+		if( $this->method() == 'post' ){
+			$this->_ratingAction();
+		} else {
+			$this->_ratingList();
+		}
 	}
 
 	private function _schedule(){
@@ -147,6 +159,132 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 				break;
 		}
 
+	}
+
+	private function _ratingAction(){
+		$id_admin = c::user()->id_admin;
+		$action = trim( $this->request()[ 'action' ] );
+		if( $action == 'save' ){
+			$shifts = $this->request()[ 'shifts' ];
+			foreach ( $shifts as $shift => $ranking ) {
+				$preference = Crunchbutton_Admin_Shift_Preference::q( 'SELECT * FROM admin_shift_preference WHERE id_community_shift = ? AND id_admin = ?', [$shift, $id_admin]);
+				if( !$preference->id_community_shift ){
+					$preference = new Crunchbutton_Admin_Shift_Preference;
+					$preference->id_community_shift = $shift;
+					$preference->id_admin = $id_admin;
+				}
+				$preference->ranking = $ranking;
+				$preference->save();
+			}
+			// Start week on Thursday #3084
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+			if( $now->format( 'l' ) == 'Thursday' ){
+				$thursday = $now;
+				$thursday->modify( '+ 1 week' );
+			} else {
+				$thursday = new DateTime( 'next thursday', new DateTimeZone( c::config()->timezone  ) );
+			}
+
+			$year = $thursday->format( 'Y' );
+			$week = $thursday->format( 'W' );
+			$options = $this->request()[ 'options' ];
+			$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $id_admin, $week, $year );
+			$status->shifts_from = $options[ 'shifts_from' ];
+			$status->shifts_to = $options[ 'shifts_to' ];
+			$status->save();
+
+			$this->_ratingList();
+		}
+	}
+
+	private function _ratingList(){
+
+		// Start week on Thursday #3084
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+		if( $now->format( 'l' ) == 'Thursday' ){
+			$thursday = $now;
+			$thursday->modify( '+ 1 week' );
+		} else {
+			$thursday = new DateTime( 'next thursday', new DateTimeZone( c::config()->timezone  ) );
+		}
+
+		$year = $thursday->format( 'Y' );
+		$week = $thursday->format( 'W' );
+
+		$firstDay = $thursday;
+		$shifts_period = $firstDay->format( 'l m/d' );
+		$firstDay->modify( '+ 6 days' );
+		$shifts_period .= '-' . $firstDay->format( 'l m/d' );
+
+		$firstDay->modify( '- 6 days' );
+
+		$days = [];
+		for( $i = 0; $i <= 6; $i++ ){
+			$days[] = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+			$firstDay->modify( '+ 1 day' );
+		}
+
+		$shifts = [];
+
+		$id_admin = c::user()->id_admin;
+
+		$from = $days[ 0 ];
+		$to = $days[ 6 ];
+
+		$preferences = Crunchbutton_Admin_Shift_Preference::shiftsByPeriod( $id_admin, $from->format( 'Y-m-d' ), $to->format( 'Y-m-d' ) );
+		$prefs = [];
+		foreach ( $preferences as $preference ) {
+			$prefs[ $preference->id_community_shift ] = intval( $preference->ranking );
+		}
+
+		$communities = $this->_communities();
+		foreach( $communities as $community ) {
+			$_community = Crunchbutton_Community::o( $community );
+			foreach( $days as $day ){
+				$segments = Crunchbutton_Community_Shift::shiftByCommunityDay( $community, $day->format( 'Y-m-d' ) );
+				foreach ( $segments as $segment ) {
+					if( $segment->isHidden() ){
+						continue;
+					}
+					$export = $segment->export();
+					$data = array( 'id_community_shift' => $segment->id_community_shift, 'day' => $export[ 'period' ][ 'day_start' ] . ' - ' . $export[ 'period' ][ 'weekday' ] , 'period' => $export[ 'period' ][ 'toString' ], 'tz' => $export[ 'period' ][ 'timezone_abbr' ], 'community' => $_community->name );
+					$data[ 'assigned' ] = Crunchbutton_Admin_Shift_Assign::adminHasShift( $id_admin, $segment->id_community_shift );
+					if( $prefs[ $segment->id_community_shift ] ){
+						$data[ 'ranking' ] = $prefs[ $segment->id_community_shift ];
+					} else {
+						$data[ 'ranking' ] = -1;
+					}
+					$shifts[] = $data;
+				}
+			}
+		}
+
+		$_availableShifts = 0;
+		if( $shifts && count( $shifts ) > 0 ){
+			$res_array = [];
+			foreach( $shifts as $shift ){
+				if( !$shift[ 'ranking' ] || $shift[ 'ranking' ] > 0 ){
+					$_availableShifts++;
+				}
+			}
+		}
+
+		$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $id_admin, $week, $year );
+		// See #6768
+		if( $_availableShifts === 0 ){
+			$status->completed = 1;
+		}
+
+		if( !$status->shifts_from ){
+			$status->shifts_from = 0;
+		}
+		if( !$status->shifts_to ){
+			$status->shifts_to = 0;
+		}
+
+		$status->save();
+
+		echo json_encode( [ 'info' => [ 'period' => $shifts_period ], 'completed' => $status->completed, 'shifts' => $status->shifts, 'options' => [ 'shifts_to' => $status->shifts_to, 'shifts_from' => $status->shifts_from ], 'results' => $shifts ] );
 	}
 
 	private function _scheduleList(){

@@ -53,6 +53,30 @@ NGApp.factory( 'DriverShiftsService', function( $rootScope, $resource ) {
 } );
 
 
+NGApp.factory( 'DriverShiftScheduleRatingService', function( $rootScope, $resource ) {
+
+	var service = {};
+
+	var schedules = $resource( App.service + 'driver/shifts/rating', {}, {
+		'list' : { 'method': 'GET', params : {} },
+		'save' : { 'method': 'POST', params : {} },
+	}	);
+
+	service.list = function( callback ){
+		schedules.list( {}, function( data ){
+			callback( data ); } );
+	};
+
+	service.save = function( data, callback ){
+		data.action = 'save';
+		schedules.save( data, function( json ){
+				callback( json );
+			} );
+	};
+
+	return service;
+} );
+
 NGApp.factory( 'DriverShiftScheduleService', function( $rootScope, $resource ) {
 
 	var service = {};
