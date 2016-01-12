@@ -352,23 +352,6 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 			$out[ 'drivers' ] = [];
 
-			$ranking = [];
-			$preferences = $shift->getAdminPreferences();
-			foreach( $preferences as $preference ){
-				$highestRanking = $preference->highestRankingByPeriod( $driver->id_admin, $firstDayOfWeek, $lastDayOfWeek );
-				$ranking[ $preference->id_admin ] = [ 'current' => -1, 'highest' => intval( $highestRanking ) ];
-				if( intval( $preference->ranking ) ){
-					$ranking[ $preference->id_admin ][ 'current' ] = intval( $preference->ranking );
-				}
-			}
-
-			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-			if( $now > $shift->dateEnd( c::config()->timezone ) ){
-				$out[ 'editable' ] = false;
-			} else {
-				$out[ 'editable' ] = true;
-			}
-
 			$shift_date = new DateTime( $shift->dateStart()->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
 
 			if( $shift_date->format( 'l' ) == 'Thursday' ){
@@ -382,6 +365,23 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			$thursday->modify( '+ 6 days' );
 			$lastDayOfWeek = $thursday->format( 'Y-m-d' );
 
+			$ranking = [];
+			$preferences = $shift->getAdminPreferences();
+			foreach( $preferences as $preference ){
+				$highestRanking = $preference->highestRankingByPeriod( $preference->id_admin, $firstDayOfWeek, $lastDayOfWeek );
+				$ranking[ $preference->id_admin ] = [ 'current' => -1, 'highest' => intval( $highestRanking ) ];
+				if( intval( $preference->ranking ) ){
+					$ranking[ $preference->id_admin ][ 'current' ] = intval( $preference->ranking );
+				}
+			}
+
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			if( $now > $shift->dateEnd( c::config()->timezone ) ){
+				$out[ 'editable' ] = false;
+			} else {
+				$out[ 'editable' ] = true;
+			}
+
 			if( intval( $shift->dateStart()->format( 'Ymd' ) ) <= intval( date( 'Ymd' ) ) ){
 				$out[ 'shift_remove_permanency' ] = true;
 			}
@@ -392,11 +392,19 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 			foreach( $drivers as $driver ){
 
-				$_driver = [ 'id_admin' => $driver->id_admin, 'name' => $driver->name, 'phone' => $driver->phone() ];
+				$totalShifts = Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $week, $year )->get( 0 );
+				if( $totalShifts->id_admin_shift_status ){
+					$totalShifts = $totalShifts->shifts;
+				} else {
+					$totalShifts = 0;
+				}
 
+				$_driver = [ 'id_admin' => $driver->id_admin, 'name' => $driver->name, 'phone' => $driver->phone() ];
+				$prefs = Crunchbutton_Admin_Shift_Preference::shiftsByPeriod( $driver->id_admin, $firstDayOfWeek, $lastDayOfWeek );
 				Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $week, $year );
 				$driverShifts = Crunchbutton_Admin_Shift_Assign::shiftsByAdminPeriod( $driver->id_admin, $firstDayOfWeek, $lastDayOfWeek );
 				$_driver[ 'total_shifts' ] = $driverShifts->count();
+				$_driver[ 'total_shifts_want_work' ] = $totalShifts;
 				$_driver[ 'assigned' ] = ( Crunchbutton_Admin_Shift_Assign::adminHasShift( $driver->id_admin, $shift->id_community_shift ) ) ? true : false;
 				$_driver[ 'assigned_permanently' ] = ( Crunchbutton_Admin_Shift_Assign_Permanently::adminIsPermanently( $driver->id_admin, $shift->id_community_shift ) ) ? true : false;
 
