@@ -181,27 +181,27 @@ class Crunchbutton_Phone extends Cana_Table {
 
 		// insert new phones
 		// support
-		c::db()->query( "INSERT INTO phone ( phone ) SELECT phone FROM ( SELECT DISTINCT( REPLACE( REPLACE( REPLACE( REPLACE( t.phone, ' ', '' ), ')', '' ), '(', '' ), '-', '' ) ) AS phone FROM support t WHERE t.phone IS NOT NULL ) phone WHERE NOT EXISTS ( SELECT p.phone FROM phone p WHERE phone.phone = p.phone )" );
+		c::dbWrite()->query( "INSERT INTO phone ( phone ) SELECT phone FROM ( SELECT DISTINCT( REPLACE( REPLACE( REPLACE( REPLACE( t.phone, ' ', '' ), ')', '' ), '(', '' ), '-', '' ) ) AS phone FROM support t WHERE t.phone IS NOT NULL ) phone WHERE NOT EXISTS ( SELECT p.phone FROM phone p WHERE phone.phone = p.phone )" );
 		// support_message
-		c::db()->query( "INSERT INTO phone ( phone ) SELECT phone FROM ( SELECT DISTINCT( REPLACE( REPLACE( REPLACE( REPLACE( t.phone, ' ', '' ), ')', '' ), '(', '' ), '-', '' ) ) AS phone FROM support_message t WHERE t.phone IS NOT NULL ) phone WHERE NOT EXISTS ( SELECT p.phone FROM phone p WHERE phone.phone = p.phone )" );
+		c::dbWrite()->query( "INSERT INTO phone ( phone ) SELECT phone FROM ( SELECT DISTINCT( REPLACE( REPLACE( REPLACE( REPLACE( t.phone, ' ', '' ), ')', '' ), '(', '' ), '-', '' ) ) AS phone FROM support_message t WHERE t.phone IS NOT NULL ) phone WHERE NOT EXISTS ( SELECT p.phone FROM phone p WHERE phone.phone = p.phone )" );
 		// user
-		c::db()->query( "INSERT INTO phone ( phone ) SELECT phone FROM ( SELECT DISTINCT( REPLACE( REPLACE( REPLACE( REPLACE( t.phone, ' ', '' ), ')', '' ), '(', '' ), '-', '' ) ) AS phone FROM `user` t WHERE t.phone IS NOT NULL ) phone WHERE NOT EXISTS ( SELECT p.phone FROM phone p WHERE phone.phone = p.phone )" );
+		c::dbWrite()->query( "INSERT INTO phone ( phone ) SELECT phone FROM ( SELECT DISTINCT( REPLACE( REPLACE( REPLACE( REPLACE( t.phone, ' ', '' ), ')', '' ), '(', '' ), '-', '' ) ) AS phone FROM `user` t WHERE t.phone IS NOT NULL ) phone WHERE NOT EXISTS ( SELECT p.phone FROM phone p WHERE phone.phone = p.phone )" );
 		// order
-		c::db()->query( "INSERT INTO phone ( phone ) SELECT phone FROM ( SELECT DISTINCT( REPLACE( REPLACE( REPLACE( REPLACE( t.phone, ' ', '' ), ')', '' ), '(', '' ), '-', '' ) ) AS phone FROM `order` t WHERE t.phone IS NOT NULL ) phone WHERE NOT EXISTS ( SELECT p.phone FROM phone p WHERE phone.phone = p.phone )" );
+		c::dbWrite()->query( "INSERT INTO phone ( phone ) SELECT phone FROM ( SELECT DISTINCT( REPLACE( REPLACE( REPLACE( REPLACE( t.phone, ' ', '' ), ')', '' ), '(', '' ), '-', '' ) ) AS phone FROM `order` t WHERE t.phone IS NOT NULL ) phone WHERE NOT EXISTS ( SELECT p.phone FROM phone p WHERE phone.phone = p.phone )" );
 		// admin
-		c::db()->query( "INSERT INTO phone ( phone ) SELECT phone FROM ( SELECT DISTINCT( REPLACE( REPLACE( REPLACE( REPLACE( t.phone, ' ', '' ), ')', '' ), '(', '' ), '-', '' ) ) AS phone FROM admin t WHERE t.phone IS NOT NULL ) phone WHERE NOT EXISTS ( SELECT p.phone FROM phone p WHERE phone.phone = p.phone )" );
+		c::dbWrite()->query( "INSERT INTO phone ( phone ) SELECT phone FROM ( SELECT DISTINCT( REPLACE( REPLACE( REPLACE( REPLACE( t.phone, ' ', '' ), ')', '' ), '(', '' ), '-', '' ) ) AS phone FROM admin t WHERE t.phone IS NOT NULL ) phone WHERE NOT EXISTS ( SELECT p.phone FROM phone p WHERE phone.phone = p.phone )" );
 
 		// update tables
 		// support
-		c::db()->query( "UPDATE support t INNER JOIN phone p ON p.phone = t.phone SET t.id_phone = p.id_phone WHERE t.id_phone IS NULL" );
+		c::dbWrite()->query( "UPDATE support t INNER JOIN phone p ON p.phone = t.phone SET t.id_phone = p.id_phone WHERE t.id_phone IS NULL" );
 		// support_message
-		c::db()->query( "UPDATE support_message t INNER JOIN phone p ON p.phone = t.phone SET t.id_phone = p.id_phone WHERE t.id_phone IS NULL" );
+		c::dbWrite()->query( "UPDATE support_message t INNER JOIN phone p ON p.phone = t.phone SET t.id_phone = p.id_phone WHERE t.id_phone IS NULL" );
 		// user
-		c::db()->query( "UPDATE user t INNER JOIN phone p ON p.phone = t.phone SET t.id_phone = p.id_phone WHERE t.id_phone IS NULL" );
+		c::dbWrite()->query( "UPDATE user t INNER JOIN phone p ON p.phone = t.phone SET t.id_phone = p.id_phone WHERE t.id_phone IS NULL" );
 		// order
-		c::db()->query( "UPDATE `order` t INNER JOIN phone p ON p.phone = t.phone SET t.id_phone = p.id_phone WHERE t.id_phone IS NULL" );
+		c::dbWrite()->query( "UPDATE `order` t INNER JOIN phone p ON p.phone = t.phone SET t.id_phone = p.id_phone WHERE t.id_phone IS NULL" );
 		// admin
-		c::db()->query( "UPDATE admin t INNER JOIN phone p ON p.phone = t.phone SET t.id_phone = p.id_phone WHERE t.id_phone IS NULL" );
+		c::dbWrite()->query( "UPDATE admin t INNER JOIN phone p ON p.phone = t.phone SET t.id_phone = p.id_phone WHERE t.id_phone IS NULL" );
 
 		// now uses php to get the null ones because the phone is not cleaned
 		$users = User::q( 'SELECT * FROM `user` WHERE id_phone IS NULL AND phone IS NOT NULL' );

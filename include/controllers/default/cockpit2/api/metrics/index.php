@@ -179,16 +179,18 @@ class _Community_Metric_Container {
 	public function _buildOrdersQuery() {
 		$periodFormat = self::_getPeriodFormat($this->period);
 		$q = '
-			SELECT
-				id_community,
-				DATE_FORMAT(`order`.date, "' . $periodFormat . '") date_group,
+			select
+				`order`.id_community,
+				date_format(convert_tz(`order`.date,"GMT",c.timezone), "' . $periodFormat . '") date_group,
 				COUNT(*) count
-			FROM `order`
-			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
+			from `order`
+			inner join community c using(`id_community`)
+			where ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
 				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
 				AND ' . self::_buildOrderFilter('`order`') . '
-			GROUP BY id_community, date_group
-			';
+			group by id_community, date_group
+
+		';
 		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count');
 	}
 	public function _buildThirdPartyOrdersQuery() {

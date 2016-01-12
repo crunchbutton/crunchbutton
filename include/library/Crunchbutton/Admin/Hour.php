@@ -11,7 +11,7 @@ class Crunchbutton_Admin_Hour extends Cana_Table {
 
 	public function removeByDateIdAdmin( $date, $id_admin ){
 		die ('#5584 deprecated');
-		return c::db()->query( "DELETE from admin_hour WHERE id_admin = $id_admin AND DATE_FORMAT( date_start, '%Y-%m-%d' ) = '$date'" );
+		return c::dbWrite()->query( "DELETE from admin_hour WHERE id_admin = $id_admin AND DATE_FORMAT( date_start, '%Y-%m-%d' ) = '$date'" );
 	}
 
 	public function hoursByDateRestaurant( $id_restaurant, $date ){

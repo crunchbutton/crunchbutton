@@ -9,7 +9,7 @@ class Crunchbutton_Promo_Group extends Cana_Table
 			->idVar('id_promo_group')
 			->load($id);
 	}
-	
+
 	public function date() {
 		if (!isset($this->_date)) {
 			$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
@@ -26,14 +26,14 @@ class Crunchbutton_Promo_Group extends Cana_Table
 		$data[ 'giftcards' ][ 'used' ] = $this->giftcards_used_total();
 
 		if( $data[ 'giftcards' ][ 'total' ] > 0 && $data[ 'giftcards' ][ 'used' ] > 0 ){
-			$data[ 'giftcards' ][ 'used_percent' ] = ( $data[ 'giftcards' ][ 'used' ] * 100 ) / $data[ 'giftcards' ][ 'total' ];	
+			$data[ 'giftcards' ][ 'used_percent' ] = ( $data[ 'giftcards' ][ 'used' ] * 100 ) / $data[ 'giftcards' ][ 'total' ];
 		} else {
 			$data[ 'giftcards' ][ 'used_percent' ] = 0;
 		}
 
 
 		if( $data[ 'giftcards' ][ 'total' ] > 0 && $data[ 'giftcards' ][ 'redeemed' ] > 0 ){
-			$data[ 'giftcards' ][ 'redeemed_percent' ] = ( $data[ 'giftcards' ][ 'redeemed' ] * 100 ) / $data[ 'giftcards' ][ 'total' ];	
+			$data[ 'giftcards' ][ 'redeemed_percent' ] = ( $data[ 'giftcards' ][ 'redeemed' ] * 100 ) / $data[ 'giftcards' ][ 'total' ];
 		} else {
 			$data[ 'giftcards' ][ 'redeemed_percent' ] = 0;
 		}
@@ -58,24 +58,24 @@ class Crunchbutton_Promo_Group extends Cana_Table
 		} else {
 			$data[ 'users' ][ 'new_per_giftcard_redeemed' ] = 0;
 		}
-		
+
 		$data[ 'orders' ][ 'total' ] = $this->orders_total();
 		if( $data[ 'orders' ][ 'total' ] > 0 && $data[ 'giftcards' ][ 'total' ] > 0 ){
-			$data[ 'orders' ][ 'per_gift_card' ] = ( $data[ 'orders' ][ 'total' ] / $data[ 'giftcards' ][ 'total' ] );	
+			$data[ 'orders' ][ 'per_gift_card' ] = ( $data[ 'orders' ][ 'total' ] / $data[ 'giftcards' ][ 'total' ] );
 		} else {
-			$data[ 'orders' ][ 'per_gift_card' ] = 0;	
+			$data[ 'orders' ][ 'per_gift_card' ] = 0;
 		}
 
 		if( $data[ 'orders' ][ 'total' ] > 0 && $data[ 'giftcards' ][ 'redeemed' ] > 0 ){
-			$data[ 'orders' ][ 'per_gift_card_redeemed' ] = ( $data[ 'orders' ][ 'total' ] / $data[ 'giftcards' ][ 'redeemed' ] );	
+			$data[ 'orders' ][ 'per_gift_card_redeemed' ] = ( $data[ 'orders' ][ 'total' ] / $data[ 'giftcards' ][ 'redeemed' ] );
 		} else {
-			$data[ 'orders' ][ 'per_gift_card_redeemed' ] = 0;	
+			$data[ 'orders' ][ 'per_gift_card_redeemed' ] = 0;
 		}
 
 		if( $data[ 'orders' ][ 'total' ] > 0 && $data[ 'users' ][ 'new' ] ){
-			$data[ 'orders' ][ 'per_new_users' ] = ( $data[ 'orders' ][ 'total' ] / $data[ 'users' ][ 'new' ] );	
+			$data[ 'orders' ][ 'per_new_users' ] = ( $data[ 'orders' ][ 'total' ] / $data[ 'users' ][ 'new' ] );
 		} else {
-			$data[ 'orders' ][ 'per_new_users' ] = 0;	
+			$data[ 'orders' ][ 'per_new_users' ] = 0;
 		}
 
 		// $data[ 'giftcards' ] = $this->giftcards()->count();
@@ -92,7 +92,7 @@ class Crunchbutton_Promo_Group extends Cana_Table
 
 	public function giftcards_redeemed(){
 		if ( !isset( $this->_giftcards_redeemed ) ) {
-			$query = "SELECT p.* FROM promo p 
+			$query = "SELECT p.* FROM promo p
 									INNER JOIN promo_group_promo pgp ON p.id_promo = pgp.id_promo AND pgp.id_promo_group = {$this->id_promo_group}
 									INNER JOIN credit c ON p.id_promo = c.id_promo AND p.id_promo = c.id_promo";
 			$this->_giftcards_redeemed = Promo::q( $query, $this->db() );
@@ -123,7 +123,7 @@ class Crunchbutton_Promo_Group extends Cana_Table
 
 	public function remove_giftcards(){
 		$query = "DELETE FROM promo_group_promo WHERE id_promo_group = {$this->id_promo_group}";
-		Cana::db()->query( $query );
+		Cana::dbWrite()->query( $query );
 	}
 
 	public function unique_users(){
@@ -247,7 +247,7 @@ class Crunchbutton_Promo_Group extends Cana_Table
 				$ini = intval( $numbers[ 0 ] );
 				$end = intval( $numbers[ 1 ] );
 				for( $i = $ini; $i <= $end; $i++ ){
-					$ids[] = $i;	
+					$ids[] = $i;
 				}
 			} else {
 				$ids[] = intval( $numbers[ 0 ] );
@@ -266,14 +266,14 @@ class Crunchbutton_Promo_Group extends Cana_Table
 			}
 
 			sort( $ids );
-			
+
 			$groups = array();
 			$total = sizeof( $ids );
 			for( $i = 0; $i < $total; $i++ ){
 				if( $i > 0 && ( $ids[ $i - 1 ] == $ids[ $i ] - 1 ) ){
 					$groups[ count( $groups ) - 1 ][ 1 ] =  $ids[ $i ];
 				} else {
-					$groups[] = array( $ids[ $i ] ); 
+					$groups[] = array( $ids[ $i ] );
 				}
 			}
 
@@ -303,7 +303,7 @@ class Crunchbutton_Promo_Group extends Cana_Table
 	public static function find($search = []) {
 
 		$query = 'SELECT `promo_group`.* FROM `promo_group` WHERE id_promo_group IS NOT NULL ';
-		
+
 		if ( $search[ 'name' ] ) {
 			$query .= " AND name LIKE '%{$search[ 'name' ]}%' ";
 		}
