@@ -394,6 +394,9 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 				$totalShifts = Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $week, $year )->get( 0 );
 				if( $totalShifts->shifts_from || $totalShifts->shifts_to ){
+					if( $totalShifts->shifts_to == 100 ){
+						$totalShifts->shifts_to = 'As many as possible!';
+					}
 					if( $totalShifts->shifts_from && $totalShifts->shifts_to ){
 						$totalShifts = $totalShifts->shifts_from . '-' . $totalShifts->shifts_to;
 					} else if( $totalShifts->shifts_from ){
