@@ -72,7 +72,7 @@
 							<tr>
 								<th></th>
 								<th>Driver</th>
-								<th>Ranking</th>
+								<th>Preferences</th>
 								<th ng-if="shift.recurring">Make it permanent</th>
 								<th>Notes</th>
 							</tr>
@@ -84,11 +84,9 @@
 								</td>
 								<td>
 									{{driver.name}}
-									<div class="listview-small">
-									Shifts desired:
-										<strong ng-if="driver.total_shifts_want_work">{{driver.total_shifts_want_work}}</strong>
-										<strong ng-if="!driver.total_shifts_want_work">?</strong>
-									<br>Assigned shifts: <strong>{{driver.total_shifts}}</strong>
+									<div ng-if="driver.id_admin_shift_assign_log">
+										<br>
+										<button ng-click='driver.removal_info = !driver.removal_info' class="button button-small button-empty button-border button-blue"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit removal info</button>
 									</div>
 								</td>
 								<td>
@@ -96,13 +94,26 @@
 									<span class="tag tag-blue" ng-if="driver.ranking.current > 1">I'm available</span>
 									<span class="tag tag-red" ng-if="driver.ranking.current == 0">Definitely not</span>
 									<span class="tag tag-grey" ng-if="driver.ranking.current == -1">Did not fill out</span>
+
+
+									<div class="listview-small">
+									Shifts desired:
+										<strong ng-if="driver.total_shifts_want_work">{{driver.total_shifts_want_work}}</strong>
+										<strong ng-if="!driver.total_shifts_want_work">?</strong>
+										<br>Assigned shifts: <strong>{{driver.total_shifts}}</strong>
+									</div>
+
 								</td>
 								<td ng-if="shift.recurring"><input ng-change="assignDriverPermanently( driver )" ng-disabled="!shift.editable" type="checkbox" ng-model="driver.assigned_permanently"></td>
 								<td>
 									<textarea ng-model="driver.notes_text"></textarea>
 									<br>
-									<button name='refresh' ng-click='saveDriverNote( driver )' class="button button-small button-empty button-border button-green"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save Notes</button>
-									<button ng-if="driver.id_admin_shift_assign_log" ng-click='driver.removal_info = !driver.removal_info' class="button button-small button-empty button-border button-blue"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit removal info</button>
+									<span ng-if="driver.notes.id_admin" class="listview-smaller">
+										by <span>{{driver.notes.added_by}}</span> @
+										<span>{{driver.notes.date_utc | localtime:'MM/DD h:mm a'}}</span>
+									</span>
+									<br>
+									<button ng-click='saveDriverNote( driver )' class="button button-small button-empty button-border button-green"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save Notes</button>
 									<span class="tag tag-green" ng-if="driver.notes_saved">Saved!</span>
 								</td>
 							</tr>
