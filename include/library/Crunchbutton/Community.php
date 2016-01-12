@@ -1646,7 +1646,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		if( $query ){
 			$results = $query->run();
 			if( $results ){
-				c::db()->query( 'UPDATE community SET top = 0' );
+				c::dbWrite()->query( 'UPDATE community SET top = 0' );
 				$position = 1;
 				foreach( $results as $result ){
 					$community = Crunchbutton_Community::o( $result->id_community );

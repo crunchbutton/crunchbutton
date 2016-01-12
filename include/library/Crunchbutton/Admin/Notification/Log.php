@@ -84,7 +84,7 @@ class Crunchbutton_Admin_Notification_Log extends Cana_Table
     public function cleanLog($id_order)
     {
         $query = 'DELETE FROM admin_notification_log WHERE id_order = ?';
-        c::db()->query($query, [$id_order]);
+        c::dbWrite()->query($query, [$id_order]);
     }
 
     public function restaurant()

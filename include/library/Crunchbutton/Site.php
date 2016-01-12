@@ -20,7 +20,7 @@ class Crunchbutton_Site extends Cana_Table {
 			return $this->_config;
 		}
 	}
-	
+
 	public function set($key, $value) {
 		$c = $this->config($key);
 
@@ -29,10 +29,10 @@ class Crunchbutton_Site extends Cana_Table {
 		} else {
 			$c = Crunchbutton_Config::store($key, $value, $this->id_site);
 		}
-		
+
 		return $c;
 	}
-	
+
 	public function exportConfig() {
 		$config = $this->config();
 		$conf = [];
@@ -41,7 +41,7 @@ class Crunchbutton_Site extends Cana_Table {
 		}
 		return $conf;
 	}
-	
+
 	public function exposedConfig() {
 		$config = $this->config();
 		$conf = [];
@@ -56,7 +56,7 @@ class Crunchbutton_Site extends Cana_Table {
 		}
 		return $conf;
 	}
-	
+
 	public static function byDomain($domain = null) {
 		$domain = is_null($domain) ? $_SERVER['HTTP_HOST'] : $domain;
 
@@ -73,7 +73,7 @@ class Crunchbutton_Site extends Cana_Table {
 				break;
 			}
 		}
-		
+
 		// default if there is no site (only happens if the site table is empty which should never happen)
 		if (!$tsite) {
 			$tsite = new Site([

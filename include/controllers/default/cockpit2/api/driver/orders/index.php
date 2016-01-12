@@ -48,7 +48,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 						$last = Crunchbutton_Order_Action::byOrder( $order->id_order );
 						// delete last actions so the driver could play with
 						if( $last->id_order_action && c::user()->id_admin != $last->id_admin && $last->type != Crunchbutton_Order_Action::DELIVERY_REJECTED ){
-							c::db()->query( 'DELETE FROM order_action WHERE id_order = "' . $order->id_order . '"' );
+							c::dbWrite()->query( 'DELETE FROM order_action WHERE id_order = "' . $order->id_order . '"' );
 						}
 					}
 
