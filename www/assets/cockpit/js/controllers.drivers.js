@@ -565,7 +565,7 @@ NGApp.controller( 'DriversShiftsScheduleRatingCtrl', function ( $scope, $rootSco
 	$scope.fixOptionTo = function(){
 		$scope.shiftsToWorkTo = [];
 		for( var i = $scope.options.shifts_from; i <= 10; i++ ){
-			$scope.shiftsToWorkTo.push( i );
+			$scope.shiftsToWorkTo.push( { value: i, label: i } );
 		}
 		$scope.shiftsToWorkTo.push( { value: 100, label: 'As many as possible!' } );
 		if( $scope.options && $scope.options.shifts_from > $scope.options.shifts_to ){
