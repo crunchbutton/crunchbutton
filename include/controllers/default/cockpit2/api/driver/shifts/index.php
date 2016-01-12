@@ -283,7 +283,6 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 		if( !$status->shifts_to && $status->shifts_to != 0 ){
 			$status->shifts_to = 0;
 		}
-
 		echo json_encode( [ 'info' => [ 'period' => $shifts_period ], 'completed' => $status->completed, 'shifts' => $status->shifts, 'options' => [ 'shifts_to' => $status->shifts_to, 'shifts_from' => $status->shifts_from ], 'results' => $shifts ] );
 	}
 

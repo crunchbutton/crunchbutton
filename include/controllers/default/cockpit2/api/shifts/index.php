@@ -547,20 +547,16 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 	private function _startDayCurrentWeek(){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
-		if( $now->format( 'l' ) == 'Thursday' ){
-			$thursday = $now;
-		} else {
-			$thursday = new DateTime( 'last thursday', new DateTimeZone( c::config()->timezone  ) );
-		}
-		$thursday = clone $thursday;
-		$thursday->setTime( 0, 0, 0 );
-		return $thursday;
+		$now->setTime( 0, 0, 0 );
+		return $now;
 	}
 
 	private function _loadShifts(){
 
 		$start = $this->request()['start'];
 		$communities = $this->request()['communities'];
+
+		$today = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 
 		if( $start && $communities ){
 
@@ -595,8 +591,9 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 			$days = [];
 			for( $i = 0; $i <= 6; $i++ ){
+				$isToday = ( $today->format( 'Ymd' ) == $firstDay->format( 'Ymd' ) );
 				$days[] = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
-				$out[ 'days' ][ $firstDay->format( 'Ymd' ) ] = [ 'date' => $firstDay->format( 'M jS' ), 'weekday' => $firstDay->format( 'l' ) ];
+				$out[ 'days' ][ $firstDay->format( 'Ymd' ) ] = [ 'date' => $firstDay->format( 'M jS' ), 'weekday' => $firstDay->format( 'l' ), 'today' => $isToday ];
 				$firstDay->modify( '+ 1 day' );
 			}
 
