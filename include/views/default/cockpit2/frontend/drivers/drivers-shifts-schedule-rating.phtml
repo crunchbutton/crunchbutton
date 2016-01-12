@@ -57,7 +57,7 @@
 									<button title="I'm available" ng-disabled="shift.assigned" class="button schedule-action-maybe" ng-class="{'active':shift.ranking == 2 }" ng-click="shift.ranking = 2">
 										<i class="fa fa-thumbs-o-up"></i>
 									</button>
-									<button title="I'm not available" ng-disabled="shift.assigned" class="button schedule-action-no" ng-class="{'active':shift.ranking == 0 }" ng-click="shift.ranking = 0">
+									<button title="I'm not available" ng-disabled="shift.assigned" class="button schedule-action-no" ng-class="{'active':shift.ranking == -1 }" ng-click="shift.ranking = -1">
 										<i class="fa fa-thumbs-o-down"></i>
 									</button>
 
