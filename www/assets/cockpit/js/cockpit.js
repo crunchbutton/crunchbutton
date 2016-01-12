@@ -763,6 +763,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$rootScope.isLive = ( App.config.env == 'live' );
 		$rootScope.isBeta = !$rootScope.isLive;
 		$rootScope.config = App.config.site;
+		$rootScope.bundle = App.config.version;
 
 		// display update page
 		if (App.config.site['cockpit-min-app-version'] && App.version) {
