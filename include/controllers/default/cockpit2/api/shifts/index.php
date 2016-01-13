@@ -109,8 +109,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 			// assign shift or change the permanency
 			if( $assigned ){
-				$assignment = Crunchbutton_Admin_Shift_Assign::q( "SELECT * FROM admin_shift_assign WHERE id_admin = " . $id_admin . " AND id_community_shift = " . $id_community_shift . " LIMIT 1" )->get( 0 );
-				if( !$assignment->id_admin_shift_assign ){
+				if( !Crunchbutton_Admin_Shift_Assign::adminHasShift( $id_admin, $id_community_shift ) ){
 					Crunchbutton_Admin_Shift_Assign::assignAdminToShift( $id_admin, $id_community_shift, $permanent );
 				}
 				$assignment = Crunchbutton_Admin_Shift_Assign::q( "SELECT * FROM admin_shift_assign WHERE id_admin = " . $id_admin . " AND id_community_shift = " . $id_community_shift . " LIMIT 1" )->get( 0 );
