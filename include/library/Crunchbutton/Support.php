@@ -1062,6 +1062,12 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		return null;
 	}
 
+	public function emitStatusChanged(){
+		Event::emit([
+			'room' => [ 'tickets.update' ]
+		], 'change_ticket_status', [] );
+	}
+
 	public function dailyDigest( $days = 1 ){
 
 		$_admin_cache_names = [];
