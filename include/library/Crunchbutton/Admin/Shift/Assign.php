@@ -31,9 +31,9 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 		if( $shift->id_admin_shift_assign && !$shift->confirmed ){
 			$assignment = self::o( $shift->id_admin_shift_assign );
 			Crunchbutton_Admin_Shift_Assign_Confirmation::confirm( $assignment, true );
-			$message = 'Automatically checkin for shift ' . $shift->fullDate() . ' when driver accpeted an order.';
-			$admin = Admin::o( c::user()->id_admin );
-			$admin->addNote( $message );
+			// $message = 'Automatically checkin for shift ' . $shift->fullDate() . ' when driver accpeted an order.';
+			// $admin = Admin::o( c::user()->id_admin );
+			// $admin->addNote( $message );
 		}
 	}
 
