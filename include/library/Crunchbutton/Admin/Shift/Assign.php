@@ -103,6 +103,7 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 			if( $now > $startAt ){
 				Crunchbutton_Admin_Shift_Assign_Confirmation::confirm( $assignment, true );
 			}
+			return $assignment;
 		} else {
 			Crunchbutton_Admin_Shift_Assign_Permanently::removeByAdminShift( $id_admin, $id_community_shift );
 			if( $permanently ){
