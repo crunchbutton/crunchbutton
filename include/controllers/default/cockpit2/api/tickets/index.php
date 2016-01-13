@@ -136,9 +136,9 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			s.status
 		', $q);
 
-echo '<pre>';var_dump( $query, $keys );
-		$r = c::db()->show_query($query, $keys);
-exit();
+// echo '<pre>';var_dump( $query, $keys );
+		$r = c::db()->query($query, $keys);
+// exit();
 		$i = 1;
 		$more = false;
 
