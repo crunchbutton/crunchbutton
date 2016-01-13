@@ -210,37 +210,6 @@
 			<div class="divider"></div>
 		</div>
 
-		<div class="support-box-wrap box-content2" ng-if="ticket.user.id_user" class="support-box-wrap">
-			<div class="support-box-wrap-header">
-				<h1>Customer #{{ticket.user.id_user}}</h1>
-				<div class="support-box-header-actions-wrap">
-					<div class="support-box-header-actions">
-						<a href="/customer/{{ticket.user.id_user}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
-					</div>
-				</div>
-				<div class="divider"></div>
-			</div>
-
-			<div class="no-box-content-color">
-				<div class="field-container">
-					<div class="field-row">
-						<div class="field-key">Name</div>
-						<div class="field-value">{{ticket.user.name}}</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Phone</div>
-						<div class="field-value"><a href ng-click="callText(ticket.user.phone)">{{ticket.user.phone | formatPhone}}</a></div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">Address</div>
-						<div class="field-value"><a href ng-click="routeAddress(ticket.user.address)">{{ticket.user.address}}</a></div>
-					</div>
-				</div>
-				<br>
-				<button ng-click="creditDialog( ticket.user.id_user );" ng-if="ticket.user.id_user" class="button button-empty button-border button-orange"><i class="fa fa-gift"></i>&nbsp;&nbsp;Gift Card</button>
-			</div>
-		</div>
-
 		<div class="support-box-wrap box-content2" ng-if="ticket.staff.id_admin" class="support-box-wrap">
 			<div class="support-box-wrap-header">
 				<h1>Staff #{{ticket.staff.id_admin}}</h1>
@@ -304,6 +273,37 @@
 					</div>
 				</div>
 				<br>
+			</div>
+		</div>
+
+		<div class="support-box-wrap box-content2" ng-if="ticket.user.id_user" class="support-box-wrap">
+			<div class="support-box-wrap-header">
+				<h1>Customer #{{ticket.user.id_user}}</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<a href="/customer/{{ticket.user.id_user}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Name</div>
+						<div class="field-value">{{ticket.user.name}}</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Phone</div>
+						<div class="field-value"><a href ng-click="callText(ticket.user.phone)">{{ticket.user.phone | formatPhone}}</a></div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">Address</div>
+						<div class="field-value"><a href ng-click="routeAddress(ticket.user.address)">{{ticket.user.address}}</a></div>
+					</div>
+				</div>
+				<br>
+				<button ng-click="creditDialog( ticket.user.id_user );" ng-if="ticket.user.id_user" class="button button-empty button-border button-orange"><i class="fa fa-gift"></i>&nbsp;&nbsp;Gift Card</button>
 			</div>
 		</div>
 
