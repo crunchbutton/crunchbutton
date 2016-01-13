@@ -76,18 +76,13 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 	service.sideInfo.load = function(){
 
-		console.log('service.sideInfo.load');
-
 		if( service.sideInfo.id_support ){
-console.log('1',1);
 			if( !service._private.could_load ){
 				return false;
 			}
-console.log('2',2);
 			if( service.sideInfo.data.total !== null && service.sideInfo.data.loaded >= service.sideInfo.data.total ){
 				return;
 			}
-console.log('3',3);
 			service._private.could_load = false;
 
 			service.sideInfo.data.page++;
@@ -95,42 +90,35 @@ console.log('3',3);
 			var params = { id_support: service.sideInfo.id_support, page: service.sideInfo.data.page };
 
 			TicketService.side_info( params, function( data ){
-console.log('4',4);
 				service.sideInfo.scroll( 'current' );
-
 				service.sideInfo.data.pexcard = data.pexcard;
 				service.sideInfo.data.restaurant = data.restaurant;
 				service.sideInfo.data.order = data.order;
 				service.sideInfo.data.total = data.messages.total;
-
 				var messages = [];
 				for( x in data.messages.list ){
 					if( data.messages.list[ x ].id_support_message ){
 						messages.push( data.messages.list[ x ] );
 					}
 				}
-console.log('5',5);
 				for( x in service.sideInfo.data.messages ){
 					if( service.sideInfo.data.messages[ x ].id_support_message ){
 						messages.push( service.sideInfo.data.messages[ x ] );
 					}
 				}
-console.log('6',6);
+
 				service.sideInfo.data.messages = messages;
 				service.sideInfo.data.loaded = service.sideInfo.data.messages.length;
 				service.sideInfo.data.has_more = ( service.sideInfo.data.loaded >= service.sideInfo.data.total ) ? false : true;
 				service.sideInfo.update_controller();
 				if( service._private.first_load ){
-console.log('7',7);
 					service.sideInfo.scroll( 'begin' );
 					service._private.first_load = false;
 					service.sideInfo.load_ticket_page();
 					$rootScope.$broadcast( 'triggerSideViewTicket', {} );
 				} else {
-console.log('8',8);
 					service.sideInfo.scroll();
 				}
-console.log('9',9);
 			} );
 			return true;
 		}
