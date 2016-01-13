@@ -70,7 +70,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			// only display support to their number
 			$phone = preg_replace('/[^0-9]/','', c::admin()->phone);
 			$q .= ' AND s.phone=?';
-			$keys['phone'] = intval( $phone );
+			$keys[] = $phone;
 		}
 
 		if ($search) {
@@ -136,9 +136,9 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			s.status
 		', $q);
 
-// echo '<pre>';var_dump( $query, $keys );
+
 		$r = c::db()->query($query, $keys);
-// exit();
+
 		$i = 1;
 		$more = false;
 
