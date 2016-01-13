@@ -133,10 +133,6 @@ class Crunchbutton_App extends Cana_App {
 				'url' => getenv('DATABASE_URL'),
 				'type' => Cana_Db::typeByUrl(getenv('DATABASE_URL'))
 			];
-			$params['config']->db->writeDB = (object)[
-				'url' => getenv('DATABASE_URL'),
-				'type' => Cana_Db::typeByUrl(getenv('DATABASE_URL'))
-			];
 			$db = 'readDB';
 		}
 
@@ -146,14 +142,14 @@ class Crunchbutton_App extends Cana_App {
 		} else {
 			$params['config']->cache->default = $params['config']->cache->{$params['config']->cache->default};
 		}
-/*
+
 		if (getenv('DATABASE_URL_WRITE')) {
 			$params['config']->db->writeDB = (object)[
 				'url' => getenv('DATABASE_URL_WRITE'),
 				'type' => Cana_Db::typeByUrl(getenv('DATABASE_URL_WRITE'))
 			];
 		}
-*/
+
 		if (!$write && $params['config']->db->{$db}->hostWrite) {
 			$params['config']->db->writeDB = clone $params['config']->db->{$db};
 			$params['config']->db->writeDB->host = $params['config']->db->writeDB->hostWrite;
