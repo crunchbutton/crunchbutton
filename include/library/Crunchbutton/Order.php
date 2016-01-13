@@ -1329,7 +1329,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				'left outer join order_priority as op on op.id_order = o.id_order
 				where (oa.id_order is not null or ' .
 				'(op.id_order is null and ((c.delivery_logistics is null) or (o.date < ? and ' .
-				'c.delivery_logistics is not null)))  or (op.id_order is not null and op.priority_expiration < ?) ' .
+				'c.delivery_logistics is not null) or (o.preordered=1)))  or (op.id_order is not null and op.priority_expiration < ?) ' .
 				'or (op.id_order is not null and op.priority_expiration >= ? and op.id_admin = ? '.
 				'and op.priority_given != ?)) and o.delivery_service=true and o.delivery_type = "delivery" and ( o.date > ? OR ( o.preordered = 1 and o.date_delivery < ? ) )'.
 				'and ' . $where . ' ORDER BY o.id_order';
