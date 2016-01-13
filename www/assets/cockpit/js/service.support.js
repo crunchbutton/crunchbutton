@@ -233,6 +233,14 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 						console.debug('Recieved sms status update: ', d);
 
 						updateSmsStatus( d );
+					} )
+					.on( 'change_ticket_status', function( d ){
+						console.log('1change_ticket_status >>>>> ');
+						console.log('1change_ticket_status >>>>> ');
+						console.log('1change_ticket_status >>>>> ');
+						console.log('1change_ticket_status >>>>> ');
+						console.log('1change_ticket_status >>>>> ');
+						$rootScope.$broadcast( 'updateHeartbeat' );
 					} );
 			}
 
