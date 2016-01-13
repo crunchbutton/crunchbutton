@@ -12,6 +12,12 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			templateUrl: 'assets/view/shift.html',
 			reloadOnSearch: false
 		})
+		.when('/shifts/settings', {
+			action: 'shift',
+			controller: 'ShiftSettingsCtrl',
+			templateUrl: 'assets/view/shift-settings.html',
+			reloadOnSearch: false
+		})
 		.when('/shifts/schedule/:permalink?', {
 			action: 'shift-schedule',
 			controller: 'ShiftScheduleCtrl',
@@ -22,6 +28,49 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 }]);
 
 NGApp.controller( 'ShiftCtrl', function ( $scope ) {} );
+
+NGApp.controller('ShiftSettingsCtrl', function( $scope, ShiftSettingsService ) {
+
+	var load = function(){
+		ShiftSettingsService.load( function( json ){
+			if( !json.error ){
+				$scope.config = json;
+				$scope.ready = true;
+				console.log('$scope.config',$scope.config);
+			}
+		} )
+	}
+
+	$scope.save = function(){
+
+		if( $scope.isSaving ){
+			return;
+		}
+
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			return;
+		}
+
+
+		$scope.isSaving = true;
+		ShiftSettingsService.save( $scope.config, function( data ){
+			$scope.isSaving = false;
+			if( data.error ){
+				App.alert( data.error);
+				return;
+			} else {
+				$scope.saved = true;
+				App.alert( ( 'Information saved!' ) )
+				setTimeout( function() { $scope.saved = false; }, 1000 );
+			}
+		} );
+	}
+
+	load();
+
+});
+
 
 NGApp.controller('ShiftChekinCtrl', function ( $scope, ShiftService, ViewListService, DriverShiftsService ) {
 	angular.extend( $scope, ViewListService );

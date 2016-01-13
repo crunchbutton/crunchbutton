@@ -3,6 +3,7 @@
 class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 
 	const CB_TIMEZONE = 'America/Los_Angeles'; // pst
+	const CREATE_DRIVER_SHIFT_BUFFER_KEY = 'create_driver_shift_buffer'; // #7395
 
 	public function __construct($id = null) {
 		parent::__construct();
@@ -28,6 +29,14 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 
 	public function isHidden(){
 		return !$this->isVisible();
+	}
+
+	public static function driverBufferBeforeCreateShift(){
+		$minutes = Crunchbutton_Config::getVal( self::CREATE_DRIVER_SHIFT_BUFFER_KEY );
+		if( !$minutes ){
+			$minutes = 5;
+		}
+		return intval( $minutes );
 	}
 
 	public static function driversCouldDeliveryOrder( $id_order ){

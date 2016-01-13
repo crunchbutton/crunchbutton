@@ -1413,7 +1413,25 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 		$driver = c::admin();
 
-		if( !$driver->isWorking() ){
+		$shouldCreateAShift = !$driver->isWorking();
+
+		if( $shouldCreateAShift ){
+			// don't create 1 hour shifts for drivers whose shifts just ended #7395
+			$lastShift = Community_Shift::lastShiftsByAdmin( $driver->id_admin, 1 );
+			if( $lastShift->count() ){
+				$lastShift = $lastShift->get( 0 );
+				$ended = $lastShift->dateEnd();
+				$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+				$now->setTimezone( new DateTimeZone( $lastShift->community()->timezone ) );
+				$minutes = Crunchbutton_Community_Shift::driverBufferBeforeCreateShift();
+				$ended->modify( '+ ' . $minutes . ' minutes' );
+				if( $ended->format( 'YmdHis' ) > $now->format( 'YmdHis' ) ){
+					$shouldCreateAShift = false;
+				}
+			}
+		}
+
+		if( $shouldCreateAShift ){
 
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 			$now->setTimezone( new DateTimeZone( $community->timezone ) );
