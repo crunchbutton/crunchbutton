@@ -1189,10 +1189,10 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			if( $user->id_user ){
 				$support->id_user = $user->id_user;
 				$support->name = $user->name;
+				$order = $user->lastOrder();
 			} else {
 				$support->name = $params[ 'name' ];
 			}
-			$order = $user->lastOrder();
 			if( $order && $order->id_order ){
 				$support->id_order = $order->id_order;
 				$support->id_restaurant = $order->id_restaurant;
