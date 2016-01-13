@@ -68,9 +68,9 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 
 		if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
 			// only display support to their number
-			$phone = preg_replace('/[^0-9]/','', c::admin()->phone) . '';
+			$phone = preg_replace('/[^0-9]/','', c::admin()->phone);
 			$q .= ' AND s.phone=?';
-			$keys['phone'] = $phone;
+			$keys['phone'] = intval( $phone );
 		}
 
 		if ($search) {
