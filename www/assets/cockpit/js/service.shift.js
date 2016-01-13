@@ -18,6 +18,29 @@ NGApp.factory('ShiftService', function(ResourceFactory, $routeParams, $resource)
 	return service;
 });
 
+NGApp.factory('ShiftSettingsService', function(ResourceFactory, $routeParams, $resource) {
+
+	var service = {};
+	var settings = ResourceFactory.createResource(App.service + 'shifts/settings/', {}, {
+		'load' : { method: 'GET', params : {} },
+		'save' : { method: 'POST', params : {} },
+	});
+
+	service.load = function( params, callback) {
+		settings.load( params, function(data) {
+			callback(data);
+		});
+	}
+
+	service.save = function( params, callback) {
+		settings.save( params, function(data) {
+			callback(data);
+		});
+	}
+	return service;
+});
+
+
 NGApp.factory('ShiftScheduleService', function(ResourceFactory, $routeParams, $resource) {
 
 	var service = { checking: {} };

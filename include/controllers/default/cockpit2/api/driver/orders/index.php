@@ -231,7 +231,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 		}
 	}
 
-	// if the driver is not current working it will create a new shift $7281
+	// if the driver is not current working it will create a new shift#7281
 	private function _checkIfDriverIsWorking(){
 		$driver = c::admin();
 		return $driver->isWorking();

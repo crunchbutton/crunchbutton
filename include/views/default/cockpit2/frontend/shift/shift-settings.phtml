@@ -1,0 +1,40 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title"><i class="fa fa-wrench"></i>Shift settings</h1>
+
+	<div class="divider"></div>
+
+	<form name="form" novalidate>
+
+		<div class="ul-inputs">
+
+			<p><strong>Shifts</strong><br><br></p>
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
+				<li class="li-input" ng-class="{'error':form.minutesToWaitBeforeCreateNewShift.$invalid}">
+					<div class="label">How many minutes the system should created the 1 hour shift for driver whose shifts just ended?</div>
+					<div class="input">
+						<input type="number" ignore-mouse-wheel name="minutesToWaitBeforeCreateNewShift" ng-model="config.create_driver_shift_buffer" required>
+					</div>
+					<div class="notes">Value in minutes.</div>
+					<div class="box-error">
+						<small ng-show="form.minutesToWaitBeforeCreateNewShift.$error.required">Required.</small>
+					</div>
+				</li>
+			</ul>
+
+
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
+				<li class="li-input">
+					<button class="button green" ng-click="save();">Save</button>
+				</li>
+			</ul>
+		</div>
+
+	</form>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

@@ -267,7 +267,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 	private function _editShift(){
 
-		if( true || $this->method() == 'post' ){
+		if( $this->method() == 'post' ){
 
 			$id_community_shift = $this->request()[ 'id_community_shift' ];
 			$segments = $this->request()[ 'period' ];
