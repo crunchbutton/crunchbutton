@@ -251,7 +251,20 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 				load();
 			});
 		} else {
-			$scope.community = { 'active': 1, 'private': 0, 'image': 0, 'close_all_restaurants': 0, 'close_3rd_party_delivery_restaurants': 0, 'driver_checkin': 1 };
+			$scope.community = {
+				'active': true,
+				'private': false,
+				'image': false,
+				'close_all_restaurants': false,
+				'close_3rd_party_delivery_restaurants': false,
+				'driver_checkin': true,
+				'drivers_can_open': false,
+				'campus_cash': false,
+				'signature': false,
+				'allow_preorder': false,
+				'notify_non_shift_drivers': false,
+				'display_hours_restaurants_page': false,
+				'display_eta': false };
 			load();
 		}
 	}
