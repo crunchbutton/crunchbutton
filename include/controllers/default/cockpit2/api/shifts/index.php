@@ -549,6 +549,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 	private function _startDayCurrentWeek(){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+		$now->setTimezone( new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
 		$now->setTime( 0, 0, 0 );
 		return $now;
 	}
