@@ -1690,9 +1690,6 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 
 	// Alias to method AccountSignOut.do()
 	$scope.signout = AccountSignOut.signout;
-	$scope.profile = function(){
-		MainNavigationService.link( '/profile' );
-	}
 	$scope.facebook = AccountModalService.facebookOpen;
 	$scope.modal = AccountModalService;
 	$scope.orders = [];
