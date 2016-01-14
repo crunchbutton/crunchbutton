@@ -275,7 +275,8 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out[ '_dishes_qty' ] = $_dishes_qty;
 		$out[ 'duplicated_items' ] = $duplicated_items;
 
-		$status = $this->status()->last();
+		$status = $this->lastStatus();
+
 		$status_date = new DateTime( $status[ 'date' ], new DateTimeZone( $this->restaurant()->timezone ) );
 		$now = new DateTime( 'now', new DateTimeZone( $this->restaurant()->timezone ) );
 		$status[ 'date_timestamp' ] = Crunchbutton_Util::dateToUnixTimestamp( $status_date );
@@ -284,7 +285,10 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 		$out['status'] = $status;
 		$out['eta'] = $this->eta()->exports();
-		$driver = $this->status()->driver();
+
+		if( $status[ 'driver' ] ){
+			$driver = Admin::o( $status[ 'driver' ][ 'id_admin' ] );
+		}
 
 		$actions = $this->actions();
 

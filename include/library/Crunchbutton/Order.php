@@ -2888,6 +2888,19 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return array_unique( $restaurants_ids );
 	}
 
+	public function lastStatus(){
+		if( !$this->_last_status ){
+			$status = Order_Action::o( $this->delivery_status );
+			if( !$status->id_order_action ){
+				$status = $this->status()->last();
+			} else {
+				$status = $status->export2Array();
+			}
+			$this->_last_status = $status;
+		}
+		return $this->_last_status;
+	}
+
 	public function status() {
 		if (!$this->_statuss) {
 			$this->_statuss = new Order_Status($this);
