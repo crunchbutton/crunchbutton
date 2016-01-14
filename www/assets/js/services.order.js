@@ -659,15 +659,16 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 			// Check if the user address was already validated
 			if (!service._deliveryAddressOk) {
-
+				/*
 				if (service.location.bounding && google && google.maps && google.maps.LatLng ) {
 					var latLong = new google.maps.LatLng( service.location.bounding.lat, service.location.bounding.lon );
 				}
+				*/
 
 				// Use the restautant's position to create the bounding box - just for tests only
-				if (service._useRestaurantBoundingBox) {
+				//if (service._useRestaurantBoundingBox) {
 					var latLong = new google.maps.LatLng( service.restaurant.loc_lat, service.restaurant.loc_long );
-				}
+				//}
 
 				if (!latLong) {
 					App.busy.unBusy();
