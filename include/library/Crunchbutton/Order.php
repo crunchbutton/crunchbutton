@@ -379,7 +379,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$user->save();
 
 		// Reload the user from db #1737
-		$user = User::o($user->id_user);
+		$user = new User(c::dbWrite()->get('select * from `user` where id_user=?', [$order->id_user])->get(0));
 
 		$this->id_user = $user->id_user;
 
@@ -658,7 +658,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$user->saving_from = $user->saving_from.'Order->process 2 - ';
 		$user->save();
 
-		$user = new User( $user->id_user );
+		$user = new User(c::dbWrite()->get('select * from `user` where id_user=?', [$order->id_user])->get(0));
 		$this->_user = $user;
 
 		// If the pay_type is card

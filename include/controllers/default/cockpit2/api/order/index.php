@@ -43,6 +43,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				$order = new Order;
 				// card, subtotal, tip, name, phone, address
 				$charge = $order->process( $_POST, 'restaurant' );
+				$order = new Order(c::dbWrite()->get('select * from `order` where id_order=?', [$order->id_order])->get(0));
 				if ($charge === true) {
 					echo json_encode([
 						'id_order' => $order->id_order,
