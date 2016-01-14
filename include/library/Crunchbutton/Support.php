@@ -882,7 +882,6 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			//$out['order'] = $order->properties();
 			$out['order'] = $order->exports();
 
-
 			if( !$out['order']['geomatched'] && $out['order']['id_address'] ){
 				$address = Crunchbutton_Address::o( $out['order']['id_address'] );
 				$_address = $address->exports();
@@ -913,7 +912,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 		if( $out['driver'] ){
 			$out['driver'] = $out['driver']->get( 0 );
-			$note = $this->order()->driver()->lastNote();
+			$note = $out['driver']->lastNote();
 			if( $note->id_admin_note ){
 				$out['driver'][ 'note' ] = $note->exports();
 			}
