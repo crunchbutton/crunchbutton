@@ -96,9 +96,8 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 	$scope.loggingIn = false;
 
 	var l;
-	setTimeout(function(){
-		l = Ladda.create($('.button-login .ladda-button').get(0));
-	},700);
+	setTimeout( function(){ l = Ladda.create( $( '.button-login .ladda-button' ).get( 0 ) ); }, 700 );
+
 	$scope.newuser = !$.totalStorage('hasLoggedIn');
 
 	$scope.login = function() {
@@ -119,7 +118,9 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 			return;
 		}
 		$scope.loggingIn = true;
-		l.start();
+		if( l ){
+			l.start();
+		}
 		AccountService.login( $scope.username, $scope.password, function( status ) {
 			if( status ){
 				var redirect_to = $.totalStorage( 'redirect_to' );
@@ -136,12 +137,13 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 				}
 			}
 			$scope.loggingIn = false;
-			l.stop();
+			if( l ){
+				l.stop();
+			}
 		} );
 	}
-
 	// needs to be updated when the html is
-	$scope.welcome = Math.floor((Math.random() * 8) + 1);
+	$scope.welcome = Math.floor( ( Math.random() * 8 ) + 1 );
 });
 
 NGApp.controller( 'ProfileCtrl', function ($scope) {});
