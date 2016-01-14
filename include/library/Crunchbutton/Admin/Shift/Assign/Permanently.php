@@ -29,11 +29,31 @@ class Crunchbutton_Admin_Shift_Assign_Permanently extends Cana_Table {
 		return false;
 	}
 
-	public function getByShift( $id_community_shift ){
+	public function getByShift( $id_community_shift, $date = null ){
+
 		$query = 'SELECT aap.* FROM admin_shift_assign_permanently aap
 							INNER JOIN admin a ON aap.id_admin = a.id_admin AND a.active = true
 							WHERE id_community_shift = "' . $id_community_shift . '"';
-		return Crunchbutton_Admin_Shift_Assign_Permanently::q( $query );
+		$_perms = [];
+		$perms = Crunchbutton_Admin_Shift_Assign_Permanently::q( $query );
+		if( !$date ){
+			return $perms;
+		}
+		foreach( $perms as $perm ){
+			// Get the first assigned for this shift
+			$shift = Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM admin_shift_assign asa
+																									INNER JOIN community_shift cs ON asa.id_community_shift = cs.id_community_shift
+																									AND cs.id_community_shift_father = ? AND asa.id_admin = ?
+																									ORDER by date_start ASC LIMIT 1', [ $perm->id_community_shift, $perm->id_admin ] )->get( 0 );
+			if( $shift->id_community_shift ){
+				$timezone = $shift->timezone();
+				$date_base = DateTime::createFromFormat( 'Y-m-d H:i:s', $date . ' 00:00:00', new DateTimeZone( $timezone ) );
+				if( $date_base->format( 'YmdHis' ) > $shift->dateStart()->format( 'YmdHis' )  ){
+					$_perms[] = $perms;
+				}
+			}
+		}
+		return $_perms;
 	}
 
 	public function addDriver( $id_admin, $id_community_shift ){

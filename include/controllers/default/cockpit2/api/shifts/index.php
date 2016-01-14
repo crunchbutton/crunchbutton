@@ -333,8 +333,8 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			$community = $shift->community();
 
 			$out[ 'community' ] = [ 'name' => $community->name, 'id_community' => $community->id_community, 'tz' => $community->timezone ];
-			$out[ 'segment' ] = [ 'start' => [ 'day' => $shift->dateStart()->format( 'M jS Y ' ), 'hour' => $shift->dateStart()->format( 'g:i A' ) ],
-														'end' => [ 'day' => $shift->dateEnd()->format( 'M jS Y ' ), 'hour' => $shift->dateEnd()->format( 'g:i A' ) ] ];
+			$out[ 'segment' ] = [ 'start' => [ 'day' => $shift->dateStart()->format( 'M jS Y l - ' ), 'hour' => $shift->dateStart()->format( 'g:i A' ) ],
+														'end' => [ 'day' => $shift->dateEnd()->format( 'M jS Y - l ' ), 'hour' => $shift->dateEnd()->format( 'g:i A' ) ] ];
 			$out[ 'hidden' ] = $shift->isHidden();
 			$out[ 'recurring' ] = $shift->isRecurring();
 			$out[ 'period' ] = $shift->startEndToString();

@@ -4679,7 +4679,7 @@ table.receipt{
 	}
 	.shift-schedule .shift{
 		padding: .3em;
-		margin: .6em .3em;
+		margin: .4em 0;
 		border-radius: 2px;
 		font-size: .9em;
 		line-height: 1.5em;
@@ -4759,7 +4759,24 @@ table.receipt{
 .schedule-today{
 	color: #468847;
 }
-
+.wrap{
+	display:table;
+	white-space: pre-wrap; /* css-3 */
+	white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+	white-space: -pre-wrap; /* Opera 4-6 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+	.schedule-notes{
+		width:270px;
+		cursor: pointer;
+	}
+		.schedule-notes:hover{
+			background: #fffcdd;
+		}
+.allow-wrap td{
+	white-space: normal !important;
+}
 ui-tabs {
 	clear: both;
 	min-height: 100vh;

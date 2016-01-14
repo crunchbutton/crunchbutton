@@ -104,15 +104,27 @@
 								</td>
 								<td ng-if="shift.recurring"><input ng-change="assignDriverPermanently( driver )" ng-disabled="!shift.editable" type="checkbox" ng-model="driver.assigned_permanently"></td>
 								<td>
-									<textarea ng-model="driver.notes_text"></textarea>
-									<br>
-									<span ng-if="driver.notes.id_admin" class="listview-smaller">
-										by <span>{{driver.notes.added_by}}</span> @
-										<span>{{driver.notes.date_utc | localtime:'MM/DD h:mm a'}}</span>
-									</span>
-									<br>
-									<button ng-click='saveDriverNote( driver )' class="button button-small button-empty button-border button-green"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save Notes</button>
-									<span class="tag tag-green" ng-if="driver.notes_saved">Saved!</span>
+
+									<div ng-if="!driver.editing" ng-click="driver.editing = true">
+										<div ng-if="driver.notes_text">
+											<div class="schedule-notes listview-smaller wrap">{{driver.notes_text}}</div>
+												<span ng-if="driver.notes.id_admin" class="listview-smaller">
+													<i>by <span>{{driver.notes.added_by}}</span> @
+														<span>{{driver.notes.date_utc | localtime:'MM/DD h:mm a'}}</span>
+												</i>
+											</span>
+										</div>
+										<div ng-if="!driver.notes_text">
+											<button class="button button-small button-empty button-border button-blue"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Add Note</button>
+										</div>
+									</div>
+
+									<div ng-if="driver.editing">
+										<textarea ng-model="driver.notes_text"></textarea>
+										<br>
+										<button ng-click='saveDriverNote( driver )' class="button button-small button-empty button-border button-green"><i class="fa fa-floppy-o"></i>&nbsp;&nbsp;Save Notes</button>
+										<button ng-click='driver.editing = false' class="button button-small button-empty button-border button-red"><i class="fa fa-ban"></i>&nbsp;&nbsp;Cancel</button>
+									</div>
 								</td>
 							</tr>
 							<tr ng-if="driver.removal_info">
