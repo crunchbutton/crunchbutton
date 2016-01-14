@@ -153,7 +153,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 						} else {
 
 							if( data.fb_new ){ // #7077
-								if( fbq ){
+								if(window.fbq ){
 									fbq('track', 'CompleteRegistration');
 								}
 							}
