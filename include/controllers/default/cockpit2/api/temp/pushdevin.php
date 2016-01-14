@@ -12,10 +12,10 @@ class Controller_api_temp_pushdevin extends Crunchbutton_Controller_RestAccount 
 			'env' => c::getEnv(),
 			'app' => 'crunchbutton'
 		]);
-		
+
 		var_dump($r);
 		*/
-		
+
 		/*
 		$r = Crunchbutton_Message_Push_Ios::send([
 			'to' => 'b85dc7710abcd6a18aa6ff91ca165aa97fa02df23323d49c689a7d50fd47e800',
@@ -34,13 +34,13 @@ class Controller_api_temp_pushdevin extends Crunchbutton_Controller_RestAccount 
 // cockpit
 // live - 8d9b2a99aa4754686eb76ff3a20c007c808470a7327107e786f6cf0e1696f7ac
 // beta - b85dc7710abcd6a18aa6ff91ca165aa97fa02df23323d49c689a7d50fd47e800
-		
+
 // crunchbutton
 // beta - addc8d82f9faf739a5c47d10e21041176bd5ba8695bce9e36c6eae47e37c4aac
 		$r = Crunchbutton_Message_Push_Ios::send([
-			'to' => 'addc8d82f9faf739a5c47d10e21041176bd5ba8695bce9e36c6eae47e37c4aac',
+			'to' => '499b145345bbf9363ec3abdb44ef9927170c4b74963674d60814b3639ab0cc4b',
 			'message' => $message,
-			'count' => 1,
+			'count' => 0,
 			'id' => 'order-'.$order->id,
 			'sound' => Crunchbutton_Message_Push_Ios::SOUND_NEW_ORDER,
 			'showInForeground' => true,
@@ -48,9 +48,9 @@ class Controller_api_temp_pushdevin extends Crunchbutton_Controller_RestAccount 
 			'app' => 'crunchbutton',
 			'env' => 'dev'
 		]);
-		
+
 		var_dump($r);
-		
+
 		exit;
 
 
