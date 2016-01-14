@@ -135,6 +135,23 @@ class Crunchbutton_Order_Action extends Cana_Table {
 		return false;
 	}
 
+	public function export2Array(){
+		$date = $this->date();
+		$date_timestamp = Crunchbutton_Util::dateToUnixTimestamp( $date );
+		return [
+			'status' => str_replace('delivery-','',$this->type),
+			'date' => $date->format('Y-m-d H:i:s'),
+			'timestamp' => $date->getTimestamp(),
+			'date_timestamp' => $date_timestamp,
+			'order' => $this->_statusOrder[$this->type],
+			'driver' => [
+				'id_admin' => $this->id_admin,
+				'name' =>  Admin::o($this->id_admin)->name,
+				'phone' =>  Admin::o($this->id_admin)->phone
+			]
+		];
+	}
+
 	public function admin(){
 		return Admin::o($this->id_admin);
 	}
