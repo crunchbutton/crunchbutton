@@ -478,7 +478,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 						}
 
 						// Create the permanent assigments
-						$permanentlys = Crunchbutton_Admin_Shift_Assign_Permanently::getByShift( $shift->id_community_shift );
+						$permanentlys = Crunchbutton_Admin_Shift_Assign_Permanently::getByShift( $shift->id_community_shift, $date );
 						foreach( $permanentlys as $permanently ){
 							if( $permanently->id_admin ){
 								if( !Crunchbutton_Admin_Shift_Assign_Permanently_Removed::wasRemoved( $newShift->id_community_shift, $permanently->id_admin ) ){
@@ -494,7 +494,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 
 						if( $now < $checkShift->dateStart()->get( 0 ) ){
 							// Create the permanent assigments
-							$permanentlys = Crunchbutton_Admin_Shift_Assign_Permanently::getByShift( $shift->id_community_shift );
+							$permanentlys = Crunchbutton_Admin_Shift_Assign_Permanently::getByShift( $shift->id_community_shift, $date );
 							foreach( $permanentlys as $permanently ){
 								if( $permanently->id_admin ){
 									if( !Crunchbutton_Admin_Shift_Assign::adminHasShift( $permanently->id_admin, $checkShift->id_community_shift ) ){
