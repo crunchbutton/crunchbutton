@@ -26,7 +26,7 @@
 				<div class="input-wrap">
 					<label for="username">
 						<span class="label">Username:</span>
-						<span class="field"><input onclick="this.focus();alert(1)" id="login-username" ng-enter="login();" type="text" name="username" tabindex="1" ng-model="username" <? if (!$this->export) : ?>autofocus="autofocus"<? endif ; ?> autocorrect="off" autocapitalize="off"></span>
+						<span class="field"><input onclick="this.focus();" id="login-username" ng-enter="login();" type="text" name="username" tabindex="1" ng-model="username" <? if (!$this->export) : ?>autofocus="autofocus"<? endif ; ?> autocorrect="off" autocapitalize="off"></span>
 					</label>
 				</div>
 			</label>
@@ -35,14 +35,14 @@
 				<div class="input-wrap">
 					<label for="password">
 						<span class="label">Password:</span>
-						<span class="field"><input id="login-password" onclick="this.focus();alert(1)" type="password" name="password" tabindex="2" ng-model="password" ng-enter="login();" autocorrect="off" autocapitalize="off"></span>
+						<span class="field"><input id="login-password" onclick="this.focus();" type="password" name="password" tabindex="2" ng-model="password" ng-enter="login();" autocorrect="off" autocapitalize="off"></span>
 					</label>
 				</div>
 			</label>
 
 			<div class="find-restaurants button-login">
 				<button class="ladda-button button orange" ng-click="login()" tabindex="3" data-color="orange" data-style="zoom-in">
-					<span class="ladda-label">Sign Ina</span>
+					<span class="ladda-label">Sign In</span>
 				</button>
 			</div>
 		</form>
