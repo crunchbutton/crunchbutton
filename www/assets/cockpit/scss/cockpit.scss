@@ -599,6 +599,14 @@ p {
 	margin-right: 8px;
 }
 
+	.drawer-right-content {
+		height: 100%;
+		margin: 0;
+	}
+	.drawer-right-content-view {
+		height: 100%;
+	}
+
 @media(min-width:$desktopWidth) {
 	.side-menu-label, .side-menu-icon {
 		padding: 8px 0 6px 0;
@@ -611,13 +619,6 @@ p {
 	}
 	.indent {
 		margin-left: 1em;
-	}
-	.drawer-right-content {
-		height: 100%;
-		margin: 0;
-	}
-	.drawer-right-content-view {
-		height: 100%;
 	}
 	.snap-drawer .menu-link:hover:not(.nav-active) .side-menu-wrap {
 		background: #22242a;
