@@ -487,7 +487,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 	// method to load drivers - called at ui-tab directive
 	$scope.loadDrivers = function(){
 		$scope.loadingStaff = true;
-		StaffService.list( { community: $scope.community.id_community, limit: 50, type: 'driver', 'working': 'force','send_text':'all'}, function(data) {
+		StaffService.list( { community: $scope.community.id_community, limit: 50, type: 'driver', 'send_text':'all'}, function(data) {
 			$scope.staff = data.results;
 			$scope.loadingStaff = false;
 			$rootScope.$broadcast('tab-loaded');
