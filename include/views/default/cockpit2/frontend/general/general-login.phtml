@@ -27,14 +27,14 @@
 				<div class="input-wrap">
 					<label for="username">
 						<span class="label">Username:</span>
-						<span class="field"><input onclick="this.focus();" id="username" ng-enter="login();" type="text" name="username" tabindex="1" ng-model="username" <? if (!$this->export) : ?>autofocus="autofocus"<? endif ; ?> autocorrect="off" autocapitalize="off"></span>
+						<span class="field"><input onclick="this.focus();" id="username" style="-webkit-user-select: auto !important;" placeholder="username" ng-enter="login();" type="text" name="username" tabindex="1" ng-model="username" <? if (!$this->export) : ?>autofocus="autofocus"<? endif ; ?> autocorrect="off" autocapitalize="off"></span>
 					</label>
 				</div>
 
 				<div class="input-wrap">
 					<label for="password">
 						<span class="label">Password:</span>
-						<span class="field"><input id="password" onclick="this.focus();" type="password" name="password" tabindex="2" ng-model="password" ng-enter="login();" autocorrect="off" autocapitalize="off"></span>
+						<span class="field"><input id="password" onclick="this.focus();" style="-webkit-user-select: auto !important;" placeholder="password" type="password" name="password" tabindex="2" ng-model="password" ng-enter="login();" autocorrect="off" autocapitalize="off"></span>
 					</label>
 				</div>
 
