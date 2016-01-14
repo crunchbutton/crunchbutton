@@ -528,7 +528,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				if ($charge === true) {
 
 					// reload so we get id_order and uuid
-					$order = new Order($order->id_order);
+					$order = new Order(c::dbWrite()->get('select * from `order` where id_order=?', [$order->id_order])->get(0));
 
 					echo json_encode([
 						'id_user' => c::auth()->session()->adapter()->id_user,
