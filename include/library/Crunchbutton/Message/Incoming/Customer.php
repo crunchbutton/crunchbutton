@@ -11,11 +11,13 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 		$parsed = $this->parseBody($params['body']);
 		$action = $parsed['verb'];
 
+		$phone = Phone::byPhone( $params['from'] );
+
 		$this->order = Order::q('select * from `order` where phone=? order by date desc limit 1',[$params['from']])->get(0);
-		$this->support = Support::q('SELECT s.* FROM support s
-																		INNER JOIN support_message sm ON sm.id_support = s.id_support
-																		WHERE s.phone = ? AND TIMESTAMPDIFF( hour, sm.date, NOW() ) < 24
-																		ORDER BY sm.date DESC LIMIT 1',[$params['from']])->get(0);
+		$this->support = Support::q('SELECT s.* FROM support_message sm
+																		INNER JOIN support s ON s.id_support = sm.id_support
+																		AND s.id_phone = ? AND TIMESTAMPDIFF( hour, sm.date, NOW() ) < 24
+																		ORDER BY sm.date DESC LIMIT 1',[ $phone->id_phone ])->get(0);
 
 		$response = [];
 
@@ -62,11 +64,17 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 
 		// when it should create a new ticket
 		// when it didnt find a ticket
+		if( $this->support->id_support ){
+			$created = false;
+		}
+
 		if( !$this->support->id_support ){
 			$created = true;
 		}
+
 		// when it find a ticket but it bellongs to another order
-		if( $this->support->id_support && $this->order->id_order && $this->support->id_order != $this->order->id_order ){
+		if( $this->order &&  $this->support && $this->support->id_support && $this->order->id_order
+				&& $this->support->id_order != $this->order->id_order ){
 			$created = true;
 		}
 
@@ -78,9 +86,9 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 				'body' => $params['body'],
 				'media' => $params['media']
 			]);
-			$created = true;
 
 		} else {
+
 			// Open support
 			if ($this->support->status == Crunchbutton_Support::STATUS_CLOSED) {
 				$this->support->status = Crunchbutton_Support::STATUS_OPEN;
