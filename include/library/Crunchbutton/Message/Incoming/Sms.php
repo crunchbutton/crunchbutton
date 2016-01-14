@@ -35,7 +35,7 @@ class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 			header('HTTP/1.0 400 Bad Request');
 			exit;
 		}
-		
+
 		$params = [
 			'body' => $body,
 			'media' => $media,
@@ -48,7 +48,7 @@ class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 
 		// routing for drivers and support
 		if ($admin->id_admin) {
-			
+
 			$params['admin'] = $admin;
 
 			if ($admin->isDriver()) {
@@ -63,7 +63,7 @@ class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 				Message_Incoming_Response::twilioSms($msg, $to);
 				exit;
 			}
-			
+
 			foreach ($msg as $m) {
 				if ($m->stop) {
 					exit;
