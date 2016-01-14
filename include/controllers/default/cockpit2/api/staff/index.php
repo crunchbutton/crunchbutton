@@ -330,7 +330,11 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		$out[ 'isMarketingRep' ] = $staff->isMarketingRep();
 		$out[ 'isSupport' ] = $staff->isSupport();
-		$out[ 'isDriver' ] = $staff->isDriver();
+		// why twice?
+		$out[ 'isDriver' ] = $out[ 'is_driver' ];
+		if ($out['isDriver']) {
+			$out['orders'] = Order::q('select count(distinct id_order) orders from `order_action` where id_admin=? and type="delivery-accepted"', [$staff->id_admin])->get(0)->orders;
+		}
 		$out[ 'isCampusManager' ] = $staff->isCampusManager();
 		$out[ 'address' ] = $staff->address;
 
