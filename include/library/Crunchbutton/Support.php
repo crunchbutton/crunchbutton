@@ -847,40 +847,27 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		return $hasCreatePermission;
 	}
 
-	public function exports( $params = array() ) {
-
-		$out = [];
+	public function exports($params = []) {
 
 		$out = $this->properties();
-		$out['user'] = $this->user()->id_user ? $this->user()->exports() : null;
-		$out['driver'] = ( $this->order()->id_order && $this->order()->driver()->id_admin ) ? $this->order()->driver()->exports( [ 'last-checkins' => true ] ) : null;
-		$out['restaurant'] = $this->restaurant()->id_restaurant ? $this->restaurant()->exports() : null;
-		$out['order'] = $this->order()->id_order ? $this->order()->exports() : null;
 
-		if( !$out['order']['geomatched'] && $out['order']['id_address'] ){
-			$address = Crunchbutton_Address::o( $out['order']['id_address'] );
-			$_address = $address->exports();
-			$_address[ 'approved' ] = ( $_address['status'] == Address::STATUS_APPROVED );
-			$out['order']['_address'] = $_address;
-		}
-
-		// try to find the user based on the phone
-		if( !$out['user'] && $this->id_phone ){
+		if ($this->id_user) {
+			$user = $this->user();
+		} elseif ($this->id_phone) {
 			$user = User::q( 'SELECT * FROM user WHERE id_phone = ? ORDER BY id_user DESC LIMIT 1', [ $this->id_phone ] )->get( 0 );
-			if( $user->id_user ){
-				$out['user'] = $user->exports();
-			}
+		}
+		if ($user->id_user) {
+			$out['user'] = $user->properties();
 		}
 
-		if( !$out['order'] && $out['user'] ){
-			$order = Order::q( 'SELECT * FROM `order` WHERE id_user = ? ORDER BY id_order DESC LIMIT 1', [ $out['user'][ 'id_user' ] ] )->get( 0 );
-			if( $order->id_order ){
-				$out['order'] = $order->exports();
-			}
-		}
-
-		if( $this->order() ){
+		if ($this->id_order) {
 			$order = $this->order();
+		} elseif($user) {
+			$order = Order::q( 'SELECT * FROM `order` WHERE id_user = ? ORDER BY id_order DESC LIMIT 1', [ $out['user'][ 'id_user' ] ] )->get( 0 );
+		}
+
+		if ($order->id_order) {
+
 			$campus_card_charged = $order->campus_cash_charged();
 			if( $campus_card_charged ){
 				$out['order'][ 'campus_cash_charged' ] = true;
@@ -891,6 +878,20 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 				$out['order'][ 'campus_cash_sha1' ] = $paymentType->stripe_id;
 			}
 
+
+			//$out['order'] = $order->properties();
+			$out['order'] = $order->exports();
+
+
+			if( !$out['order']['geomatched'] && $out['order']['id_address'] ){
+				$address = Crunchbutton_Address::o( $out['order']['id_address'] );
+				$_address = $address->exports();
+				$_address[ 'approved' ] = ( $_address['status'] == Address::STATUS_APPROVED );
+				$out['order']['_address'] = $_address;
+			}
+
+			$out['driver'] = $order->driver()->exports( [ 'last-checkins' => true ]);
+			$out['restaurant'] = $order->restaurant()->properties();
 		}
 
 		// Export the comments
@@ -937,30 +938,31 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			if( $communities ){
 				$out[ 'staff' ][ 'communities' ] = [];
 				foreach( $communities as $community ){
+					$id_community = $community->id_community;
 					$out[ 'staff' ][ 'communities' ][] = $community->name;
 				}
 			}
 		}
 
-		if( $out['restaurant'] || $out['order'] || $out['staff'] ){
-			if( $out['restaurant'] ){
-				$id_community = $out['restaurant'][ 'id_community' ];
-			} else if( $out['order'] ){
-				$id_community = $out['order'][ 'id_community' ];
-			} else if( $out[ 'staff' ] ){
-				$id_community = $out['staff'][ 'id_community' ];
-			}
-			if( $id_community ){
+		if ($out['restaurant'] || $out['order'] || $out['staff']) {
+			if ($out['order']) {
+				$community = Community::o($out['order']['id_community']);
+
+			} elseif( $out['restaurant'] ){
+				$community = Community::q('select c.* from community c left join restaurant_community rc where rc.id_restaurant=? limit 1', [$out['restaurant']->id_restaurant])->get(0);
+
+			} elseif( $out[ 'staff' ] ){
 				$community = Community::o( $id_community );
-				if( $community->id_community ){
-					$out[ 'community' ] = [];
-					$out[ 'community' ][ 'id_community' ] = $community->id_community;
-					$out[ 'community' ][ 'name' ] = $community->name;
-					$out[ 'community' ][ 'permalink' ] = $community->permalink;
-					$note = $community->lastNote();
-					if( $note ){
-						$out[ 'community' ][ 'note' ] = $note->exports();
-					}
+			}
+
+			if ($community->id_community) {
+				$out[ 'community' ] = [];
+				$out[ 'community' ][ 'id_community' ] = $community->id_community;
+				$out[ 'community' ][ 'name' ] = $community->name;
+				$out[ 'community' ][ 'permalink' ] = $community->permalink;
+				$note = $community->lastNote();
+				if ($note) {
+					$out[ 'community' ][ 'note' ] = $note->exports();
 				}
 			}
 		}
