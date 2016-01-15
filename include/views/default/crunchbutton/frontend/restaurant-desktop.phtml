@@ -16,13 +16,13 @@
 	<div class="cart-items restaurant-side-bar restaurant-side-bar-margin" ng-if="order.cart.hasItems() && ( open || force_pre_order )">
 
 		<!-- cart -->
-		<ng-include src="'assets/view/restaurant-cart.html'"></ng-include>
+		<ng-include src="'/assets/view/restaurant-cart.html'"></ng-include>
 
 		<div ng-if="( restaurant._open || restaurant.force_pre_order ) && order.cart.hasItems()">
 
 			<!-- breakdown -->
 			<div class="payment-content">
-				<ng-include src="'assets/view/restaurant-breakdown.html'"></ng-include>
+				<ng-include src="'/assets/view/restaurant-breakdown.html'"></ng-include>
 			</div>
 
 		</div>
@@ -30,14 +30,14 @@
 	</div>
 
 	<!-- payment and user info -->
-	<ng-include src="'assets/view/restaurant-form-user-info.html'"></ng-include>
+	<ng-include src="'/assets/view/restaurant-form-user-info.html'"></ng-include>
 
 	<!-- stored user info -->
-	<ng-include src="'assets/view/restaurant-stored-user-info.html'"></ng-include>
+	<ng-include src="'/assets/view/restaurant-stored-user-info.html'"></ng-include>
 
 </div>
 
 <!-- menu -->
-<ng-include src="'assets/view/restaurant-menu.html'"></ng-include>
+<ng-include src="'/assets/view/restaurant-menu.html'"></ng-include>
 
 <div class="divider"></div>
