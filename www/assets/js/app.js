@@ -1209,8 +1209,6 @@ App.init = function(config) {
 		case 'stripe':
 			Stripe.setPublishableKey( App.config.processor.stripe );
 			break;
-		case 'balanced':
-			break;
 		default:
 			console.log( 'Processor error::', App.config.processor );
 			break;
