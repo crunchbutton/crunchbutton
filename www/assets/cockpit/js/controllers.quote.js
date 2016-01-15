@@ -3,13 +3,13 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/quotes', {
 			action: 'quotes',
 			controller: 'CommunityQuotesCtrl',
-			templateUrl: 'assets/view/quotes.html',
+			templateUrl: '/assets/view/quotes.html',
 			reloadOnSearch: false
 		})
 		.when('/quote/:id?', {
 			action: 'quotes',
 			controller: 'CommunityQuoteCtrl',
-			templateUrl: 'assets/view/quotes-quote.html'
+			templateUrl: '/assets/view/quotes-quote.html'
 		});
 }]);
 

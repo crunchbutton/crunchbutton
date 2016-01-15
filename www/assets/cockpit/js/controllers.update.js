@@ -3,7 +3,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/update', {
 			action: 'drivers-welcome-update',
 			controller: 'UpdateCtrl',
-			templateUrl: 'assets/view/general-update.html'
+			templateUrl: '/assets/view/general-update.html'
 		});
 
 }]);

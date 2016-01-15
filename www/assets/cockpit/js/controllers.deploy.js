@@ -5,17 +5,17 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/deploy', {
 			action: 'deploy',
 			controller: 'DeployCtrl',
-			templateUrl: 'assets/view/deploy-home.html'
+			templateUrl: '/assets/view/deploy-home.html'
 
 		}).when('/deploy/server/:id', {
 			action: 'deploy-server',
 			controller: 'DeployServerCtrl',
-			templateUrl: 'assets/view/deploy-server.html'
+			templateUrl: '/assets/view/deploy-server.html'
 
 		}).when('/deploy/version/:id', {
 			action: 'deploy-version',
 			controller: 'DeployVersionCtrl',
-			templateUrl: 'assets/view/deploy-version.html'
+			templateUrl: '/assets/view/deploy-version.html'
 		});
 
 }]);

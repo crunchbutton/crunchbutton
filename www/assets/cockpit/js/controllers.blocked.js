@@ -3,7 +3,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/blockeds', {
 			action: 'tools',
 			controller: 'BlockedsCtrl',
-			templateUrl: 'assets/view/blockeds.html',
+			templateUrl: '/assets/view/blockeds.html',
 			reloadOnSearch: false
 
 		})

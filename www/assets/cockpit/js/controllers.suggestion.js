@@ -3,7 +3,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/suggestions', {
 			action: 'suggestions',
 			controller: 'SuggestionsCtrl',
-			templateUrl: 'assets/view/suggestions.html',
+			templateUrl: '/assets/view/suggestions.html',
 			reloadOnSearch: false
 
 		});

@@ -3,12 +3,12 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/permission/staff/:id', {
 			action: 'staff',
 			controller: 'PermissionCtrl',
-			templateUrl: 'assets/view/permission-form.html'
+			templateUrl: '/assets/view/permission-form.html'
 		})
 		.when('/permission/group/:id', {
 			action: 'group',
 			controller: 'PermissionCtrl',
-			templateUrl: 'assets/view/permission-form.html'
+			templateUrl: '/assets/view/permission-form.html'
 		});
 }]);
 

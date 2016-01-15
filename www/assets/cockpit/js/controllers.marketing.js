@@ -7,18 +7,18 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/marketing/outgoing', {
 			action: 'tools',
 			controller: 'MarketingOutgoingLogCtrl',
-			templateUrl: 'assets/view/marketing-outgoing.html'
+			templateUrl: '/assets/view/marketing-outgoing.html'
 		})
 		.when('/marketing/brand-reps', {
 			action: 'brand-reps',
 			controller: 'MarketingBrandRepsCtrl',
-			templateUrl: 'assets/view/marketing-brand-representative.html',
+			templateUrl: '/assets/view/marketing-brand-representative.html',
 			reloadOnSearch: false
 		})
 		.when('/marketing/drivers', {
 			action: 'drivers',
 			controller: 'MarketingDriversCtrl',
-			templateUrl: 'assets/view/marketing-drivers.html',
+			templateUrl: '/assets/view/marketing-drivers.html',
 			reloadOnSearch: false
 		})
 }]);
