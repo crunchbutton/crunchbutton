@@ -59,6 +59,13 @@ body, input, textarea, button {
 i {
 	font-style: italic;
 }
+.html-body {
+	display: block;
+}
+.preloader {
+	display: none;
+	pointer-events: none;
+}
 
 @media screen and (max-width: $mobileWidth) {
 	.bg {
@@ -806,26 +813,39 @@ p {
 
 
 @mixin page-login-bg() {
-	background: linear-gradient(
-		rgba(255, 255, 255, 0.12),
-		rgba(255, 255, 255, 0.12)
-	),
-		linear-gradient(
-			rgba(0, 0, 0, 0.25),
-			rgba(0, 0, 0, 0.25)
-		),
-		url(../images/micro/bg-sandwich.jpg);
-	background-position: top right;
-	background-size: 150%;
+	background: url(https://d1f9xa61stkpgn.cloudfront.net/viztango-usc.jpg) center center no-repeat;
+	-webkit-filter: brightness(0.6) contrast(125%);
+	background-size:cover;
+	z-index: -1;
+	height: 100%;
+	width: 100%;
+	transform: scale(1);
+	transform-origin: top left;
+}
+
+input:-webkit-autofill {
+
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-transition: "color 9999s ease-out, background-color 9999s ease-out";
+    -webkit-transition-delay: 9999s;
 }
 
 @media screen and (max-width: $mobileWidth) {
-	.page-login .bg {
+	.page-login .bg:before {
+		content: "";
+		position: fixed;
 		@include page-login-bg();
+
 	}
 }
 @media screen and (min-width: $desktopWidth) {
-	.page-login {
+	.page-login:before {
+		content: "";
+		position: fixed;
 		@include page-login-bg();
 	}
 }
@@ -940,7 +960,7 @@ input {
 	border: 2px solid #fff;
 	border-radius: 50%;
 	display: inline-block;
-	padding: .25em 0 0 0;
+	padding: .3em 0 0 0;
 	width: 2em;
 	height: 2em;
 	box-sizing: border-box;

@@ -1,6 +1,7 @@
 <?=$this->display('layout/html.top')?>
 
-<body class="no-init" ng-controller="AppController">
+<body class="no-init page-login" ng-controller="AppController">
+	<div class="preloader"></div>
 	<div class="loader-wrap">
 		<div class="loader-frame"><div class="loader">&nbsp;</div></div>
 	</div>
@@ -22,4 +23,10 @@
 	<?=$this->display('layout/html.bottom')?>
 </body>
 
+<? if (c::config()->bundle) : ?>
+	<? $css = c::config()->site->config('s3-bundle')->val() ? 'https://'.c::config()->s3->buckets->build->cache.'/'.Deploy_Server::currentVersion().'/css/cockpit.css' : '/assets/cockpit/css/bundle.css?v='.Deploy_Server::currentVersion().'&s=cockpit' ?>
+	<link rel="stylesheet" type="text/css" href="<?=$css?>">
+<? else : ?>
+	<?=$this->display('bundle/css')?>
+<? endif ; ?>
 
