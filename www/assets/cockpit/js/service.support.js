@@ -1,7 +1,4 @@
 NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams, $timeout, NotificationService, AccountService, SocketService, MainNavigationService, TicketService) {
-	if (!SocketService) {
-		return null;
-	}
 	var service = {
 		isTyping: false,
 		id_support: false,
