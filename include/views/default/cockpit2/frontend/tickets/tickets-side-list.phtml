@@ -18,9 +18,9 @@
 						<br>
 						<span class="tickets-side-message" ng-class="{ 'text-warning': ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply' || ticket.last_reply_type == 'warning', 'text-muted': ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply' }">{{ticket.message_client}}</span>
 
-						<!-- <div ng-if="ticket.media" ng-repeat="image in ticket.media">
+						<div ng-if="ticket.media" ng-repeat="image in ticket.media">
 							<img ng-if="image" class="support-side-image" src="{{image}}">
-						</div> -->
+						</div>
 
 					</div>
 				</div>
