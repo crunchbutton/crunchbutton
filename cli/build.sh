@@ -6,6 +6,9 @@ cd /app/cli/
 $PHPPATH -f ./_build.php crunchbutton.com $PHPPATH | tr -d "\t\n\r" > /app/www/build/crunchbutton.html
 $PHPPATH -f ./_build.php cockpit.la $PHPPATH | tr -d "\t\n\r" > /app/www/build/cockpit.html
 
+#$PHPPATH -f ./_build.php crunchbutton.com assets/view/bundle.css s=style $PHPPATH > /app/www/assets/css/bundle.css
+#$PHPPATH -f ./_build.php cockpit.la assets/cockpit/view/cockpit.html s=cockpit $PHPPATH > /app/www/assets/view/cockpit.html
+
 $PHPPATH -f ./_build.php crunchbutton.com assets/css/bundle.css s=style $PHPPATH > /app/www/assets/css/bundle.css
 $PHPPATH -f ./_build.php cockpit.la assets/cockpit/css/bundle.css s=cockpit $PHPPATH > /app/www/assets/cockpit/css/bundle.css
 
