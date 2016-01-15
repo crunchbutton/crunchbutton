@@ -173,15 +173,21 @@ class _Community_Metric_Container {
 		$commString = '(' . implode(',', $communities) . ')';
 		return $tableName . '.id_community IN ' . $commString;
 	}
+
 	public static function _buildDateFilter($startDate, $endDate, $dateColumn = 'date') {
 		return '( ' . $dateColumn . ' >= "' . $startDate->format(self::MySQLDateFormat) . '" AND ' . $dateColumn . ' <= "' . $endDate->format(self::MySQLDateFormat) . '" )';
 	}
+
+	public static function _buildDateConverterTz($periodFormat, $column = '`order`.date', $offset = '4') {
+		return 'date_format(convert_tz(adddate('.$column.', interval -'.$offset.' hour),"GMT",c.timezone), "' . $periodFormat . '") date_group,';
+	}
+
 	public function _buildOrdersQuery() {
 		$periodFormat = self::_getPeriodFormat($this->period);
 		$q = '
 			select
 				`order`.id_community,
-				date_format(convert_tz(`order`.date,"GMT",c.timezone), "' . $periodFormat . '") date_group,
+				' . self::_buildDateConverterTz($periodFormat) . '
 				COUNT(*) count
 			from `order`
 			inner join community c using(`id_community`)
@@ -198,9 +204,10 @@ class _Community_Metric_Container {
 		$q = '
 			SELECT
 				id_community,
-				DATE_FORMAT(`order`.date, "' . $periodFormat . '") date_group,
+				' . self::_buildDateConverterTz($periodFormat) . '
 				COUNT(*) count
 			FROM `order`
+			inner join community c using(`id_community`)
 			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
 				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
 				AND ' . self::_buildThirdPartyOrderFilter('`order`') . '
@@ -223,9 +230,10 @@ class _Community_Metric_Container {
 		$q = '
 			SELECT
 				id_community,
-				DATE_FORMAT(`order`.date, "' . $periodFormat . '") date_group,
+				' . self::_buildDateConverterTz($periodFormat) . '
 				ROUND(SUM(final_price_plus_delivery_markup), 2) final_price_plus_delivery_markup
 			FROM `order`
+			inner join community c using(`id_community`)
 			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
 				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
 				AND ' . self::_buildOrderFilter('`order`') . '
@@ -441,24 +449,28 @@ class _Community_Metric_Container {
                 throw new MetricsHttpException(400, 'invalid chart type: ' . $this->chartType);
         }
 	}
+
 	public static function _buildOrderFilter($table) {
 		$out = '(' . $table . '.likely_test = FALSE OR ' . $table . '.likely_test IS NULL)';
 		$out = $out . ' AND (' . $table . '.do_not_reimburse_driver IS NULL OR ' . $table . '.do_not_reimburse_driver = 0)';
 		return '(' . $out . ')';
 	}
+
 	public static function _buildThirdPartyOrderFilter($table) {
 		$out = '(' . $table . '.likely_test = FALSE OR ' . $table . '.likely_test IS NULL)';
 		$out = $out . ' AND ' . $table . '.delivery_service=TRUE AND .' . $table. '.delivery_type="delivery" AND ' . '(' . $table . '.refunded IS NULL OR ' . $table . '.refunded = FALSE)';
 		return '(' . $out . ')';
 	}
+
 	public function _uniqueUsersQuery() {
 		$periodFormat = self::_getPeriodFormat($this->period);
 		$q = '
 			SELECT
 				id_community,
-				DATE_FORMAT(`order`.date, "' . $periodFormat . '") date_group,
+				' . self::_buildDateConverterTz($periodFormat) . '
 				COUNT(DISTINCT phone) count
 			FROM `order`
+			inner join community c using(`id_community`)
 			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
 				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
 				AND ' . self::_buildOrderFilter('`order`') . '
@@ -466,14 +478,16 @@ class _Community_Metric_Container {
 			';
 		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count');
 	}
+
 	public function _refundedOrdersQuery() {
 		$periodFormat = self::_getPeriodFormat($this->period);
 		$q = '
 			SELECT
 				id_community,
-				DATE_FORMAT(`order`.date, "' . $periodFormat . '") date_group,
+				' . self::_buildDateConverterTz($periodFormat) . '
 				COUNT(*) count
 			FROM `order`
+			inner join community c using(`id_community`)
 			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
 				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
 				AND (`order`.likely_test = FALSE OR `order`.likely_test IS NULL) AND `order`.refunded = TRUE
@@ -481,18 +495,20 @@ class _Community_Metric_Container {
 			';
 		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count');
 	}
+
 	public function _newUsersQuery() {
 		$periodFormat = self::_getPeriodFormat($this->period);
 		// TODO(jtratner): pre-calculate first order to speed up this query
 		$q = '
 			SELECT
 				id_community,
-				DATE_FORMAT(`order`.date, "' . $periodFormat . '") date_group,
+				' . self::_buildDateConverterTz($periodFormat) . '
 				COUNT(DISTINCT `order`.phone) count
 			FROM `order`
 			INNER JOIN (SELECT phone, MIN(id_order) first_order_id FROM `order` GROUP BY phone
 				) UserWithFirstOrder
 				ON UserWithFirstOrder.first_order_id = `order`.id_order
+			inner join community c using(`id_community`)
 			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, '`order`.date') . '
 				AND ' . self::_buildCommunityFilter($this->communities, '`order`') . '
 				AND ' . self::_buildOrderFilter('`order`') . '
@@ -500,15 +516,17 @@ class _Community_Metric_Container {
 			';
 		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count');
 	}
+
 	public function _repeatUserQuery() {
 		$periodFormat = self::_getPeriodFormat($this->period);
 		// TODO(jtratner): pre-calculate first order to speed up this query
 		$q = '
 			SELECT
 				id_community,
-				DATE_FORMAT(`order`.date, "' . $periodFormat . '") date_group,
+				' . self::_buildDateConverterTz($periodFormat) . '
 				COUNT(DISTINCT `order`.phone) count
 			FROM `order`
+			inner join community c using(`id_community`)
 			INNER JOIN (SELECT phone, MIN(id_order) first_order_id FROM `order` GROUP BY phone
 				) UserWithFirstOrder
 				ON UserWithFirstOrder.phone = `order`.phone
@@ -520,15 +538,17 @@ class _Community_Metric_Container {
 			';
 		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count');
 	}
+
 	public function _repeatOrderQuery() {
 		$periodFormat = self::_getPeriodFormat($this->period);
 		// TODO(jtratner): pre-calculate first order to speed up this query
 		$q = '
 			SELECT
 				id_community,
-				DATE_FORMAT(`order`.date, "' . $periodFormat . '") date_group,
+				' . self::_buildDateConverterTz($periodFormat) . '
 				COUNT(*) count
 			FROM `order`
+			inner join community c using(`id_community`)
 			INNER JOIN (SELECT phone, MIN(id_order) first_order_id FROM `order` GROUP BY phone
 				) UserWithFirstOrder
 				ON UserWithFirstOrder.phone = `order`.phone
@@ -540,6 +560,7 @@ class _Community_Metric_Container {
 			';
 		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count');
 	}
+
 	public static function _getNumberColumn($colType, $tableName) {
 		switch($colType) {
 		case 'gross-revenue':
@@ -563,15 +584,17 @@ class _Community_Metric_Container {
 			throw new MetricsHttpException(500, 'got unknown type: ' . $colType);
 		}
 	}
+
 	public function _repeatRevenueQuery( $colType) {
 		$periodFormat = self::_getPeriodFormat($this->period);
 		// TODO(jtratner): pre-calculate first order to speed up this query
 		$q = '
 			SELECT
 				id_community,
-				DATE_FORMAT(`order`.date, "' . $periodFormat . '") date_group,
+				' . self::_buildDateConverterTz($periodFormat) . '
 				' . self::_getNumberColumn($colType, '`order`') . ' count
 			FROM `order`
+			inner join community c using(`id_community`)
 			INNER JOIN (SELECT phone, MIN(id_order) first_order_id FROM `order` GROUP BY phone
 				) UserWithFirstOrder
 				ON UserWithFirstOrder.phone = `order`.phone
@@ -590,9 +613,10 @@ class _Community_Metric_Container {
 		$q = '
 			SELECT
 				id_community,
-				DATE_FORMAT(`order`.date, "' . $periodFormat . '") date_group,
+				' . self::_buildDateConverterTz($periodFormat) . '
 				COUNT(*) count
 			FROM `order`
+			inner join community c using(`id_community`)
 			INNER JOIN (SELECT phone, MIN(id_order) first_order_id FROM `order` GROUP BY phone
 				) UserWithFirstOrder
 				ON UserWithFirstOrder.first_order_id = `order`.id_order
@@ -603,15 +627,17 @@ class _Community_Metric_Container {
 			';
 		return self::formatQueryResults(self::_getMySQLQuery($q), 'id_community', 'date_group', 'count');
 	}
+
 	public function _firstOrderRevenueQuery( $colType) {
 		$periodFormat = self::_getPeriodFormat($this->period);
 		// TODO(jtratner): pre-calculate first order to speed up this query
 		$q = '
 			SELECT
 				id_community,
-				DATE_FORMAT(`order`.date, "' . $periodFormat . '") date_group,
+				' . self::_buildDateConverterTz($periodFormat) . '
 				' . self::_getNumberColumn($colType, '`order`') . ' count
 			FROM `order`
+			inner join community c using(`id_community`)
 			INNER JOIN (SELECT phone, MIN(id_order) first_order_id FROM `order` GROUP BY phone
 				) UserWithFirstOrder
 				ON UserWithFirstOrder.first_order_id = `order`.id_order
@@ -743,9 +769,10 @@ class _Community_Metric_Container {
         $q = '
 			SELECT
 				id_community,
-				DATE_FORMAT(date, "' . $periodFormat . '") date_group,
+				' . self::_buildDateConverterTz($periodFormat, '`community_opens_closes`.date') . '
 				SUM(num_open_hours) open_hours
 			FROM community_opens_closes
+			inner join community c using(`id_community`)
 			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, 'date') . '
 				AND ' . self::_buildCommunityFilter($this->communities, 'community_opens_closes') . '
 			GROUP BY id_community, date_group
@@ -759,9 +786,10 @@ class _Community_Metric_Container {
         $q = '
 			SELECT
 				id_community,
-				DATE_FORMAT(date, "' . $periodFormat . '") date_group,
+				' . self::_buildDateConverterTz($periodFormat, '`community_opens_closes`.date') . '
 				SUM(num_auto_close_hours) auto_close_hours
 			FROM community_opens_closes
+			inner join community c using(`id_community`)
 			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, 'date') . '
 				AND ' . self::_buildCommunityFilter($this->communities, 'community_opens_closes') . '
 			GROUP BY id_community, date_group
@@ -775,9 +803,10 @@ class _Community_Metric_Container {
         $q = '
 			SELECT
 				id_community,
-				DATE_FORMAT(date, "' . $periodFormat . '") date_group,
+				' . self::_buildDateConverterTz($periodFormat, '`community_opens_closes`.date') . '
 				SUM(num_force_close_hours) force_close_hours
 			FROM community_opens_closes
+			inner join community c using(`id_community`)
 			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, 'date') . '
 				AND ' . self::_buildCommunityFilter($this->communities, 'community_opens_closes') . '
 			GROUP BY id_community, date_group
@@ -790,9 +819,10 @@ class _Community_Metric_Container {
         $q = '
 			SELECT
 				id_community,
-				DATE_FORMAT(date, "' . $periodFormat . '") date_group,
+				' . self::_buildDateConverterTz($periodFormat, '`community_opens_closes`.date') . '
 				SUM(num_force_close_hours + num_auto_close_hours) total_close_hours
 			FROM community_opens_closes
+			inner join community c using(`id_community`)
 			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, 'date') . '
 				AND ' . self::_buildCommunityFilter($this->communities, 'community_opens_closes') . '
 			GROUP BY id_community, date_group
@@ -809,12 +839,13 @@ class _Community_Metric_Container {
                 if(a.all_hours=0, 0.0, (force_close_hours + auto_close_hours) / all_hours) as closure_rate FROM
 			(SELECT
 				id_community,
-				DATE_FORMAT(date, "' . $periodFormat . '") date_group,
+				date_format(convert_tz(`community_opens_closes`.date,"GMT",c.timezone), "' . $periodFormat . '") date_group,
 				SUM(num_force_close_hours) force_close_hours,
 				SUM(num_auto_close_hours) auto_close_hours,
 				SUM(num_open_hours) open_hours,
 				sum(num_open_hours + num_auto_close_hours + num_force_close_hours) all_hours
 			FROM community_opens_closes
+			inner join community c using(`id_community`)
 			WHERE ' . self::_buildDateFilter($this->startDate, $this->endDate, 'date') . '
 				AND ' . self::_buildCommunityFilter($this->communities, 'community_opens_closes') . '
 			GROUP BY id_community, date_group) as a
