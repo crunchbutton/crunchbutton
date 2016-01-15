@@ -234,7 +234,6 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $
 
 NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrdersService, MainNavigationService, AccountService, $location ) {
 
-	$scope.showOrders = ( AccountService && AccountService.user && ( ( AccountService.user.permissions && AccountService.user.permissions.GLOBAL ) || AccountService.user.working || ( AccountService.user.hours_since_last_shift !== false && AccountService.user.hours_since_last_shift <= 6 ) ) );
 	// #5413
 	$scope.showOrders = true;
 
@@ -272,7 +271,6 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 	};
 
 	$scope.update = function() {
-		console.debug('Updating drivers orders...');
 
 		DriverOrdersService.list(function(data) {
 			$scope.driverorders = data;
@@ -291,19 +289,42 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 	}
 
 	$scope.accept = function( id_order ) {
-		$scope.makeBusy();
-		DriverOrdersService.accept( id_order,
-			function( json ){
-				if( json.status ) {
-					$scope.changed();
-				} else {
-					$scope.unBusy();
-					var name = json[ 'delivery-status' ].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
-					App.alert( 'Oops!\n It seems this order was already accepted ' + name + '!'  );
-					$scope.changed();
-				}
+
+		var accept = function( create_shift ){
+			$scope.makeBusy();
+			params = { id_order: id_order };
+			if( create_shift ){
+				params.create_shift = true;
 			}
-		);
+			DriverOrdersService.accept( params,
+				function( json ){
+					if( params.create_shift ){
+						$rootScope.$broadcast( 'adminWorking', true );
+					}
+					if( json.status ) {
+						$scope.changed();
+					} else {
+						$scope.unBusy();
+						var name = json[ 'delivery-status' ].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
+						App.alert( 'Oops!\n It seems this order was already accepted ' + name + '!'  );
+						$scope.changed();
+					}
+				}
+			);
+		}
+
+		if( !AccountService.user.working ){
+			var acceptAndCreateShift = function(){
+				accept( true );
+			}
+			var acceptAndDontCreateShift = function(){
+				accept( false );
+			}
+			App.confirm( 'You are not currently on shift. Would you like to deliver for the next hour?', 'Confirm?', acceptAndCreateShift, acceptAndDontCreateShift, 'Accept & deliver for next hour,Accept only this order', true );
+		} else {
+			accept();
+		}
+
 	};
 
 	$scope.pickedup = function( id_order ) {
@@ -328,7 +349,6 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 			$scope.update();
 		}
 	});
-
 
 	$scope.update();
 } );

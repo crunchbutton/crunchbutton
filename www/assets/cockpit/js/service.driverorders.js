@@ -93,8 +93,11 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $http, $r
 		orders.text_customer_5_min_away( { 'id_order': id_order }, function( json ){ callback( json ); } );
 	}
 
-	service.accept = function( id_order, callback ){
-		orders.accept( { 'id_order': id_order }, function( json ){
+	service.accept = function( params, callback ){
+		if( !typeof params == 'object' ){
+			params = { id_order: params };
+		}
+		orders.accept( params, function( json ){
 			App.playAudio('orders-delivered');
 			callback( json ); } );
 	}
@@ -149,7 +152,8 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $http, $r
 } );
 
 
-NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $routeParams, DriverOrdersService, MainNavigationService) {
+NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $routeParams, DriverOrdersService, MainNavigationService, AccountService) {
+
 	var service = {
 		order: null
 	};
@@ -214,18 +218,42 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 	}
 
 	service.accept = function() {
-		$rootScope.makeBusy();
-		DriverOrdersService.accept( service.order.id_order,
-			function( json ){
-				if( json.status ) {
-					service.load();
-				} else {
-					service.load();
-					var name = json[ 'delivery-status' ].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
-					App.alert( 'Oops!\n It seems this order was already accepted ' + name + '!'  );
-				}
+
+		var accept = function( create_shift ){
+
+			$rootScope.makeBusy();
+			var params = { id_order: service.order.id_order };
+			if( create_shift ){
+				params.create_shift = true;
 			}
-		);
+			DriverOrdersService.accept( params,
+				function( json ){
+					if( params.create_shift ){
+						$rootScope.$broadcast( 'adminWorking', true );
+					}
+					if( json.status ) {
+						service.load();
+					} else {
+						service.load();
+						var name = json[ 'delivery-status' ].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
+						App.alert( 'Oops!\n It seems this order was already accepted ' + name + '!'  );
+					}
+				}
+			);
+		}
+
+		if( !AccountService.user.working ){
+			var acceptAndCreateShift = function(){
+				accept( true );
+			}
+			var acceptAndDontCreateShift = function(){
+				accept( false );
+			}
+			App.confirm( 'You are not currently on shift. Would you like to deliver for the next hour?', 'Confirm?', acceptAndCreateShift, acceptAndDontCreateShift, 'Accept & deliver for next hour,Accept only this order', true );
+		} else {
+			accept();
+		}
+
 	};
 
 	service.undo = function() {
