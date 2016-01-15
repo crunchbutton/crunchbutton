@@ -80,7 +80,7 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 
 	var id_support = null;
 
-	if (typeof TicketViewService.scope.viewTicket == 'string') {
+	if (typeof TicketViewService.scope.viewTicket == 'string' || typeof TicketViewService.scope.viewTicket == 'number') {
 		id_support = TicketViewService.scope.viewTicket;
 	} else {
 		id_support = TicketViewService.scope.viewTicket.id;
