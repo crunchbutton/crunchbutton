@@ -128,7 +128,7 @@ NGApp.directive('tabSelect', function(MainNavigationService) {
 NGApp.directive('profilePreference', function (AccountService, $http, $rootScope ) {
 	return {
 		restrict: 'A',
-		templateUrl: 'assets/view/general-profile-preference.html',
+		templateUrl: '/assets/view/general-profile-preference.html',
 		scope: {
 			content: '@',
 			key: '@',

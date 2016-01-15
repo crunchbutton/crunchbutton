@@ -137,7 +137,7 @@ NGApp.directive('hackExpandContent', function() {
 NGApp.directive( 'restaurantIsClosed', function () {
 	return {
 		restrict: 'A',
-		templateUrl: 'assets/view/restaurant.closed.inline.html'
+		templateUrl: '/assets/view/restaurant.closed.inline.html'
 	};
 });
 

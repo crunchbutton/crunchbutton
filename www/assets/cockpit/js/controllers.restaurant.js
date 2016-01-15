@@ -4,65 +4,65 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/restaurant/order/placement/dashboard/:id?', {
 			action: 'restaurant-order-placement',
 			controller: 'RestaurantOrderPlacementDashboard',
-			templateUrl: 'assets/view/restaurant-order-placement-dashboard.html'
+			templateUrl: '/assets/view/restaurant-order-placement-dashboard.html'
 		})
 		.when('/restaurant/order/placement/new/:id?', {
 			action: 'restaurant-order-placement',
 			controller: 'RestaurantOrderPlacementNew',
-			templateUrl: 'assets/view/restaurant-order-placement-new.html'
+			templateUrl: '/assets/view/restaurant-order-placement-new.html'
 		})
 		.when('/restaurant/order/placement/list/:id?', {
 			action: 'restaurant-order-placement',
 			controller: 'RestaurantOrderPlacementList',
-			templateUrl: 'assets/view/restaurant-order-placement-list.html'
+			templateUrl: '/assets/view/restaurant-order-placement-list.html'
 		})
 		.when('/restaurant/order/placement/:id', {
 			action: 'restaurant-order-placement',
 			controller: 'RestaurantOrderPlacementView',
-			templateUrl: 'assets/view/restaurant-order-placement-view.html'
+			templateUrl: '/assets/view/restaurant-order-placement-view.html'
 		})
 
 		/* Restaurants */
 		.when('/restaurants', {
 			action: 'restaurants',
 			controller: 'RestaurantsCtrl',
-			templateUrl: 'assets/view/restaurants.html',
+			templateUrl: '/assets/view/restaurants.html',
 			reloadOnSearch: false
 		})
 		.when('/restaurants/weight-adjustment', {
 			action: 'restaurant',
 			controller: 'RestaurantWeightAdjustmentCtrl',
-			templateUrl: 'assets/view/restaurants-weight-adjustment.html'
+			templateUrl: '/assets/view/restaurants-weight-adjustment.html'
 		})
 		.when('/restaurant/edit/:id', {
 			action: 'restaurant',
 			controller: 'RestaurantEditCtrl',
-			templateUrl: 'assets/view/restaurants-edit.html'
+			templateUrl: '/assets/view/restaurants-edit.html'
 		})
 		.when('/restaurant/:id', {
 			action: 'restaurant',
 			controller: 'RestaurantCtrl',
-			templateUrl: 'assets/view/restaurants-restaurant.html'
+			templateUrl: '/assets/view/restaurants-restaurant.html'
 		})
 		.when('/restaurant/order/new', {
 			action: 'restaurant-order-new',
 			controller: 'RestaurantOrderNew',
-			templateUrl: 'assets/view/restaurant-order-new.html'
+			templateUrl: '/assets/view/restaurant-order-new.html'
 		})
 		.when('/restaurant/order/list', {
 			action: 'restaurant-order-new',
 			controller: 'RestaurantOrderList',
-			templateUrl: 'assets/view/restaurant-order-list.html'
+			templateUrl: '/assets/view/restaurant-order-list.html'
 		})
 		.when('/restaurant/order/:id', {
 			action: 'restaurant-order-new',
 			controller: 'RestaurantOrderView',
-			templateUrl: 'assets/view/restaurant-order-view.html'
+			templateUrl: '/assets/view/restaurant-order-view.html'
 		})
 		.when('/restaurant/payment-info/:id', {
 			action: 'restaurant-payment-info',
 			controller: 'RestaurantPaymentInfoCtrl',
-			templateUrl: 'assets/view/restaurant-payment-info.html'
+			templateUrl: '/assets/view/restaurant-payment-info.html'
 		});
 }]);
 

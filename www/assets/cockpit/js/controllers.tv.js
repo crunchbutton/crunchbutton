@@ -3,7 +3,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/tv', {
 			action: 'tv',
 			controller: 'TvCtrl',
-			templateUrl: 'assets/view/tv.html'
+			templateUrl: '/assets/view/tv.html'
 
 		});
 }]);

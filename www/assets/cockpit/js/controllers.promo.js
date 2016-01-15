@@ -3,35 +3,35 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/promo/', {
 			action: 'promo',
 			controller: 'PromoCtrl',
-			templateUrl: 'assets/view/promo.html'
+			templateUrl: '/assets/view/promo.html'
 
 		})
 		.when('/promo/discount-codes/', {
 			action: 'promo',
 			controller: 'PromoDiscountCodesCtrl',
-			templateUrl: 'assets/view/promo-discount-codes.html'
+			templateUrl: '/assets/view/promo-discount-codes.html'
 
 		})
 		.when('/promo/discount-code/:id?', {
 			action: 'promo',
 			controller: 'PromoDiscountCodeCtrl',
-			templateUrl: 'assets/view/promo-discount-code-form.html'
+			templateUrl: '/assets/view/promo-discount-code-form.html'
 		})
 		.when('/promo/gift-cards/', {
 			action: 'promo',
 			controller: 'GiftCardsCtrl',
-			templateUrl: 'assets/view/promo-gift-cards.html'
+			templateUrl: '/assets/view/promo-gift-cards.html'
 
 		})
 		.when('/promo/gift-card/generate', {
 			action: 'promo',
 			controller: 'GiftCardGenerateCtrl',
-			templateUrl: 'assets/view/promo-gift-card-generate.html'
+			templateUrl: '/assets/view/promo-gift-card-generate.html'
 		})
 		.when('/promo/gift-card/create', {
 			action: 'promo',
 			controller: 'GiftCardCreateCtrl',
-			templateUrl: 'assets/view/promo-gift-card-create.html'
+			templateUrl: '/assets/view/promo-gift-card-create.html'
 		});
 }]);
 

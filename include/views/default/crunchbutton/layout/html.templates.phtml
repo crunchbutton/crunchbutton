@@ -1,6 +1,6 @@
 <? foreach (Crunchbutton_Util::frontendTemplates( false, true ) as $file) : ?>
 	<? $fi = explode('/',$file); array_shift($fi); $fi = implode('/',$fi); $fi = $fi ? $fi : $file; ?>
-	<script type="text/ng-template" id="assets/view/<?=$fi?>.html">
+	<script type="text/ng-template" id="/assets/view/<?=$fi?>.html">
 		<?=$this->render('frontend/'.$file, ['filter' => false])?>
 	</script>
 <? endforeach ; ?>
