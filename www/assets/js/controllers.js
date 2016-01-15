@@ -956,6 +956,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 			);
 		}, error );
 	};
+	setTimeout( function(){ $scope.focus( '.location-address' ); }, 200 );
 });
 
 NGApp.controller('LocationUnavailableCtrl', function ($scope, $http, $location, $rootScope, RestaurantsService, LocationService, AccountService, PositionsService, RecommendRestaurantService ) {
