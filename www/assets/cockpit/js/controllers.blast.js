@@ -3,12 +3,12 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/blast', {
 			action: 'blasts',
 			controller: 'BlastsCtrl',
-			templateUrl: '/assets/view/blasts.html'
+			templateUrl: 'assets/view/blasts.html'
 
 		}).when('/blast/:id', {
 			action: 'blast',
 			controller: 'BlastCtrl',
-			templateUrl: '/assets/view/blast-blast.html'
+			templateUrl: 'assets/view/blast-blast.html'
 		});
 }]);
 

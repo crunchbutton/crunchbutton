@@ -4,23 +4,23 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/groups', {
 			action: 'group',
 			controller: 'GroupsCtrl',
-			templateUrl: '/assets/view/groups.html',
+			templateUrl: 'assets/view/groups.html',
 			reloadOnSearch: false
 		})
 		.when('/group/edit/:id', {
 			action: 'group',
 			controller: 'GroupFormCtrl',
-			templateUrl: '/assets/view/groups-form.html'
+			templateUrl: 'assets/view/groups-form.html'
 		})
 		.when('/group/new', {
 			action: 'group',
 			controller: 'GroupFormCtrl',
-			templateUrl: '/assets/view/groups-form.html'
+			templateUrl: 'assets/view/groups-form.html'
 		})
 		.when('/group/:id', {
 			action: 'group',
 			controller: 'GroupCtrl',
-			templateUrl: '/assets/view/groups-group.html'
+			templateUrl: 'assets/view/groups-group.html'
 		});
 
 }]);

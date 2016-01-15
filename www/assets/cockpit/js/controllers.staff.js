@@ -3,63 +3,63 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/staff', {
 			action: 'staffs',
 			controller: 'StaffCtrl',
-			templateUrl: '/assets/view/staff.html',
+			templateUrl: 'assets/view/staff.html',
 			reloadOnSearch: false
 		})
 		.when('/staff/notes', {
 			action: 'staff',
 			controller: 'StaffNotesCtrl',
-			templateUrl: '/assets/view/staff-notes.html'
+			templateUrl: 'assets/view/staff-notes.html'
 		})
 		.when('/staff/activations', {
 			action: 'activations',
 			controller: 'StaffActivationsCtrl',
-			templateUrl: '/assets/view/staff-activations.html'
+			templateUrl: 'assets/view/staff-activations.html'
 		})
 		.when('/staff/marketing/:id', {
 			action: 'staff',
 			controller: 'StaffMarketingFormCtrl',
-			templateUrl: '/assets/view/staff-marketing-form.html'
+			templateUrl: 'assets/view/staff-marketing-form.html'
 		})
 		.when('/staff/:id', {
 			action: 'staff',
 			controller: 'StaffInfoCtrl',
-			templateUrl: '/assets/view/staff-staff.html'
+			templateUrl: 'assets/view/staff-staff.html'
 		})
 		.when('/staff/:id/payinfo', {
 			action: 'staff',
 			controller: 'StaffPayInfoCtrl',
-			templateUrl: '/assets/view/staff-payinfo.html'
+			templateUrl: 'assets/view/staff-payinfo.html'
 		})
 		.when('/staff/:id/pexcard', {
 			action: 'staff',
 			controller: 'StaffPexCardCtrl',
-			templateUrl: '/assets/view/staff-pexcard.html'
+			templateUrl: 'assets/view/staff-pexcard.html'
 		})
 		.when('/staff/:id/permission', {
 			action: 'staff',
 			controller: 'StaffPermissionCtrl',
-			templateUrl: '/assets/view/staff-permission.html'
+			templateUrl: 'assets/view/staff-permission.html'
 		})
 		.when('/staff/marketing-rep/faq', {
 			action: 'marketing-rep-help',
 			controller: 'StaffMarketingFaqCtrl',
-			templateUrl: '/assets/view/staff-marketing-rep-help.html'
+			templateUrl: 'assets/view/staff-marketing-rep-help.html'
 		})
 		.when('/staff/marketing-rep/request-materials', {
 			action: 'marketing-rep-request-materials',
 			controller: 'StaffMarketingRequestMaterialsCtrl',
-			templateUrl: '/assets/view/staff-marketing-rep-request-materials.html'
+			templateUrl: 'assets/view/staff-marketing-rep-request-materials.html'
 		})
 		.when('/staff/marketing-rep/docs', {
 			action: 'marketing-rep-docs',
 			controller: 'StaffMarketingDocsCtrl',
-			templateUrl: '/assets/view/staff-marketing-docs.html'
+			templateUrl: 'assets/view/staff-marketing-docs.html'
 		})
 		.when('/staff/marketing-rep/docs/payment', {
 			action: 'marketing-rep-docs',
 			controller: 'DriversPaymentFormCtrl',
-			templateUrl: '/assets/view/staff-payment-info-form.html'
+			templateUrl: 'assets/view/staff-payment-info-form.html'
 		});
 }]);
 

@@ -3,19 +3,19 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/orders', {
 			action: 'orders',
 			controller: 'OrdersCtrl',
-			templateUrl: '/assets/view/orders.html',
+			templateUrl: 'assets/view/orders.html',
 			reloadOnSearch: false
 		})
 		.when('/campus-manager/orders', {
 			action: 'orders',
 			controller: 'OrdersCampusManagerCtrl',
-			templateUrl: '/assets/view/orders.html',
+			templateUrl: 'assets/view/orders.html',
 			reloadOnSearch: false
 		}).
 		when('/order/:id', {
 			action: 'order',
 			controller: 'OrderCtrl',
-			templateUrl: '/assets/view/orders-order.html'
+			templateUrl: 'assets/view/orders-order.html'
 		});
 }]);
 

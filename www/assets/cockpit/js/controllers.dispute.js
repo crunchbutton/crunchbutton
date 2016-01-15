@@ -3,17 +3,17 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/dispute/evidence/:id', {
 			action: 'dispute',
 			controller: 'DisputeEvidenceCtrl',
-			templateUrl: '/assets/view/disputes-dispute-evidence.html'
+			templateUrl: 'assets/view/disputes-dispute-evidence.html'
 		})
 		.when('/dispute/:id', {
 			action: 'dispute',
 			controller: 'DisputeCtrl',
-			templateUrl: '/assets/view/disputes-dispute.html'
+			templateUrl: 'assets/view/disputes-dispute.html'
 		})
 		.when('/disputes/', {
 			action: 'dispute',
 			controller: 'DisputesCtrl',
-			templateUrl: '/assets/view/disputes.html',
+			templateUrl: 'assets/view/disputes.html',
 			reloadOnSearch: false
 		})
 }]);

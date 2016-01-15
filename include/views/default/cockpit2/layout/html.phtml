@@ -1,32 +1,20 @@
 <?=$this->display('layout/html.top')?>
 
-<body class="no-init page-login" ng-controller="AppController">
-	<div class="preloader"></div>
-	<div class="loader-wrap">
-		<div class="loader-frame"><div class="loader">&nbsp;</div></div>
-	</div>
-	<?=$this->display('layout/html.body')?>
-
-	<audio id="support-message-new">
-		<source src="/assets/cockpit/audio/message-creation.wav"></source>
-	</audio>
-	<audio id="support-message-recieved">
-		<source src="/assets/cockpit/audio/message-inbound.wav"></source>
-	</audio>
-	<audio id="orders-delivered">
-		<source src="/assets/cockpit/audio/orders-delivered.mp3"></source>
-	</audio>
-	<audio id="new-order">
-		<source src="/assets/cockpit/audio/new-order.wav"></source>
-	</audio>
-
-	<?=$this->display('layout/html.bottom')?>
-</body>
+<script src="https://static.twilio.com/libs/twiliojs/1.2/twilio.min.js"></script>
 
 <? if (c::config()->bundle) : ?>
-	<? $css = c::config()->site->config('s3-bundle')->val() ? 'https://'.c::config()->s3->buckets->build->cache.'/'.Deploy_Server::currentVersion().'/css/cockpit.css' : '/assets/cockpit/css/bundle.css?v='.Deploy_Server::currentVersion().'&s=cockpit' ?>
-	<link rel="stylesheet" type="text/css" href="<?=$css?>">
+	<? $js = c::config()->site->config('s3-bundle')->val() ? 'https://'.c::config()->s3->buckets->build->cache.'/'.Deploy_Server::currentVersion().'/js/cockpit.js' : '/assets/cockpit/js/bundle.js?v='.Deploy_Server::currentVersion().'&s=cockpit' ?>
+	<script src="<?=$js?>"></script>
 <? else : ?>
-	<?=$this->display('bundle/css')?>
+	<?=$this->display('bundle/js', ['set' => ['scripts' => ['cockpit']]])?>
 <? endif ; ?>
 
+<?=$this->display('layout/html.bottom')?>
+
+
+<script src="//maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+<script src="//js.stripe.com/v2/" bundle="false"></script>
+<script type="text/javascript">
+	Stripe.setPublishableKey( '<?=c::config()->stripe->{c::getEnv()}->{'public'}?>' );
+</script>
+<? /* &key=AIzaSyBSQXZPG5n_yRG4umquaDANsL62uhlgaE8 */ ?>

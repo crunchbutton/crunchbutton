@@ -3,26 +3,26 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/support', {
 			action: 'support',
 			controller: 'SupportCtrl',
-			templateUrl: '/assets/view/support.html',
+			templateUrl: 'assets/view/support.html',
 			title: 'Support',
 			reloadOnSearch: false
 		})
 		.when('/chat', {
 			action: 'chat',
 			controller: 'ChatCtrl',
-			templateUrl: '/assets/view/chat.html',
+			templateUrl: 'assets/view/chat.html',
 			title: 'Chat'
 		})
 		.when('/chat/:room', {
 			action: 'chat',
 			controller: 'ChatCtrl',
-			templateUrl: '/assets/view/chat.html',
+			templateUrl: 'assets/view/chat.html',
 			title: 'Chat'
 		})
 		.when('/support/phone', {
 			action: 'support',
 			controller: 'SupportPhoneCtrl',
-			templateUrl: '/assets/view/support-phone.html',
+			templateUrl: 'assets/view/support-phone.html',
 			title: 'Support',
 			reloadOnSearch: false
 		});
