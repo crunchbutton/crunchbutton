@@ -11,10 +11,6 @@ NGApp.factory('eventSocket', function (socketFactory, $rootScope, $q) {
 });
 
 NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope, $q) {
-	if (!eventSocket) {
-		console.error('No event socket');
-		return null;
-	}
 	var service = {};
 	var listening = {};
 	service.socket = eventSocket;
