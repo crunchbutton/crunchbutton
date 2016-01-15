@@ -7,9 +7,6 @@ console.log('App.tokenizeCard');
 		case 'stripe':
 			App.tokenizeCard_stripe( card, complete );
 			break;
-		case 'balanced':
-			App.tokenizeCard_balanced( card, complete );
-			break;
 		default:
 			App.alert('There was an error communicating with our payment processor.');
 			console.log( 'Processor error::', App.config.processor );
@@ -168,7 +165,7 @@ App.tokenizeCard_balanced = function(card, completed) {
 		}
 		completed(res);
 	};
-	
+
 	console.debug('Sending card to balanced...');
 
 	balanced.card.create(card, handleResponse);
