@@ -47,6 +47,9 @@ NGApp.controller('ChatCtrl', function($scope, $rootScope, $routeParams, SocketSe
 
 
 NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, $location, TicketService, TicketViewService, AccountService) {
+	if (!TicketViewService) {
+		return null;
+	}
 
 	$scope.params = { status: 'open' };
 
@@ -184,6 +187,9 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 } );
 
 NGApp.controller('SideSupportCtrl', function($scope, $rootScope, TicketViewService) {
+	if (!TicketViewService) {
+		return null;
+	}
 	TicketViewService.scope = $scope;
 	$scope.setViewTicket = TicketViewService.setViewTicket;
 });
