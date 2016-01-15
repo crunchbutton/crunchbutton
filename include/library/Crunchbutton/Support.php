@@ -910,7 +910,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			}
 		}
 
-		if ($order->driver()->id_admin) {
+		if ($order && $order->driver() && $order->driver()->id_admin) {
 			$note = $order->driver()->get(0)->lastNote();
 			if( $note->id_admin_note ){
 				$out['driver'][ 'note' ] = $note->exports();

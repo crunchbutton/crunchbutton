@@ -10,8 +10,8 @@
 			<a href ng-click="triggerViewTicket(ticket)">Chat</a>
 		</div>
 
-		<div class="ticket-status-top" ng-click="openCloseTicket()">
-			<div class="ticket-status-open" ng-if="ticket.status=='open'">Open</div>
+		<div class="ticket-status-top">
+			<div class="ticket-status-open" ng-if="ticket.status=='open'" ng-click="openCloseTicket()">Open</div>
 			<div class="ticket-status-closed" ng-if="ticket.status=='closed'">Closed</div>
 			<span class="tag tag-red" ng-if="ticket.type == 'EMAIL'">Email Ticket</span>
 		</div>
