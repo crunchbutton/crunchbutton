@@ -14,7 +14,7 @@ class Crunchbutton_Call extends Cana_Table {
 
 		parent::save();
 
-		Event::emit([
+		Event::create([
 			'room' => [
 				'call.'.$this->id_call,
 				'calls'

@@ -16,6 +16,7 @@ class Crunchbutton_Queue extends Cana_Table {
 	const TYPE_CLASS_SETTLEMENT_DRIVER		= 'Crunchbutton_Queue_Settlement_Driver';
 	const TYPE_CLASS_SETTLEMENT_RESTAURANT		= 'Crunchbutton_Queue_Settlement_Restaurant';
 	const TYPE_CLASS_RESTAURANT_TIME		= 'Crunchbutton_Queue_Restaurant_Time';
+	const TYPE_CLASS_EVENT_EMIT		= 'Crunchbutton_Queue_Event_Emit';
 
 	const TYPE_ORDER						= 'order';
 	const TYPE_CRON						= 'cron';
@@ -31,6 +32,7 @@ class Crunchbutton_Queue extends Cana_Table {
 	const TYPE_SETTLEMENT_DRIVER		= 'settlement-driver';
 	const TYPE_SETTLEMENT_RESTAURANT		= 'settlement-restaurant';
 	const TYPE_RESTAURANT_TIME		= 'restaurant-time';
+	const TYPE_EVENT_EMIT		= 'event-emit';
 
 	const STATUS_NEW		= 'new';
 	const STATUS_SUCCESS	= 'success';

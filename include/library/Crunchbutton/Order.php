@@ -3702,7 +3702,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		parent::save();
 
-		Event::emit([
+		Event::create([
 			'room' => [
 				'order.'.$this->id_order,
 				'orders',

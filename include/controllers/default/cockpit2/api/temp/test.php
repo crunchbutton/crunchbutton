@@ -4,13 +4,17 @@ class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
 
 	public function init(){
 
-		$driver = Admin::o( 5 );
-		// $driver->stopHelpOutNotification();
-		echo '<pre>';var_dump( $driver->couldReceiveHelpOutNotification() );exit();
+		$q = Crunchbutton_Queue_Event_Emit::o( 34 );
+		$q->run();
 
-		// $order = Order::o( 240724 );
-		// $notification = Crunchbutton_Admin_Notification::o( 3 );
-		// echo $notification->getSmsMessage( $order, null, 'push', null, true );
+		die('hard');
+
+			Event::create([
+				'room' => [
+					'ticket.'.$message->id_support,
+					'tickets'
+				]
+			], 'sms_status', [ 'id_support_message' => $message->id_support_message, 'status' => $this->status ] );
 
 	}
 }
