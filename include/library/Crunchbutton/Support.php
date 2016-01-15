@@ -1063,7 +1063,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 	}
 
 	public function emitStatusChanged(){
-		Event::emit([
+		Event::create([
 			'room' => [ 'tickets', 'tickets.update' ]
 		], 'change_ticket_status', [] );
 	}

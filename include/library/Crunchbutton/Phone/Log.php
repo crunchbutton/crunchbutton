@@ -25,7 +25,7 @@ class Crunchbutton_Phone_Log extends Cana_Table{
 		$message = Support_Message::q( 'SELECT * FROM support_message WHERE id_phone_log = ? ORDER BY id_support_message DESC LIMIT 1', [ $this->id_phone_log ] )->get( 0 );
 
 		if ($message && $message->id_support) {
-			Event::emit([
+			Event::create([
 				'room' => [
 					'ticket.'.$message->id_support,
 					'tickets'

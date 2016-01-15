@@ -20,14 +20,14 @@ class Crunchbutton_Deploy_Version extends Cana_Table {
 		}
 		return $this->_server;
 	}
-	
+
 	public function admin() {
 		if (!isset($this->_admin)) {
 			$this->_admin = Admin::o($this->id_admin);
 		}
 		return $this->_admin;
 	}
-	
+
 	public static function getQue($host) {
 		if (!$host) {
 			return;
@@ -44,13 +44,13 @@ class Crunchbutton_Deploy_Version extends Cana_Table {
 		", [$host]);
 		return $que;
 	}
-	
+
 	public function save($new = false) {
 		$new = $this->id_deploy_version ? false : true;
 
 		parent::save();
 
-		$res = Event::emit([
+		$res = Event::create([
 			'room' => [
 				'deploy.version.'.$this->id_deploy_version,
 				'deploy.versions',

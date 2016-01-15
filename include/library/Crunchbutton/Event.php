@@ -1,6 +1,7 @@
 <?php
 
 class Crunchbutton_Event {
+
 	public static function q($payload) {
 
 		if (!c::config()->site->config('chat-server')->val()) {
@@ -47,12 +48,17 @@ class Crunchbutton_Event {
 		return $res;
 	}
 
+	public static function create( $to, $event, $payload = [] ){
+		$info = [ 'to' => $to, 'event' => $event, 'payload' => $payload ];
+		$info = json_encode( $info );
+		$q = Queue::create([
+			'type' => Crunchbutton_Queue::TYPE_EVENT_EMIT,
+			'info' => $info
+		]);
+	}
+
 	public static function emit($to, $event, $payload = [], $async = true) {
-
 		$work = new Event_Payload($to, $event, $payload);
-
-		c::timeout(function() use($work) {
 		Event::q($work);
-		},0,$async);
 	}
 }

@@ -36,7 +36,7 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		parent::save();
 
 		if ($new) {
-			Event::emit([
+			Event::create([
 				'room' => [
 					'ticket.'.$this->id_support,
 					'tickets'

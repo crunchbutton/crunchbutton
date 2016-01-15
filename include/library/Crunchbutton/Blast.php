@@ -66,7 +66,7 @@ class Crunchbutton_Blast extends Cana_Table {
 
 		parent::save();
 
-		$res = Event::emit([
+		$res = Event::create([
 			'room' => [
 				'blast.'.$this->id_blast,
 				'blasts'
