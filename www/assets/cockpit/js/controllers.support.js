@@ -183,9 +183,6 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 } );
 
 NGApp.controller('SideSupportCtrl', function($scope, $rootScope, TicketViewService) {
-	if (!TicketViewService) {
-		return null;
-	}
 	TicketViewService.scope = $scope;
 	$scope.setViewTicket = TicketViewService.setViewTicket;
 });

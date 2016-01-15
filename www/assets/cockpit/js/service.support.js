@@ -259,9 +259,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	}
 
 	$rootScope.$watch('account.user.prefs["notification-desktop-support-all"]', function(e, value) {
-		if (!service.socket) {
-			return;
-		}
 		if (value == '1') {
 			console.debug('Subscribing to all tickets');
 			service.socket.emit('event.subscribe', 'tickets');
