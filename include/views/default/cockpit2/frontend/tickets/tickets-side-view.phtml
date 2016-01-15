@@ -139,9 +139,9 @@
 						<div class="support-chat-contents-message-body">
 							<div ng-if="message.subject"><b><i>{{message.subject}}</i></b></div>
 							<span ng-bind-html="message.body | linkfy: true"></span>
-							<!-- <div ng-if="message.media" ng-repeat="image in message.media">
+							<div ng-if="message.media" ng-repeat="image in message.media">
 								<img ng-if="image" class="support-side-image" src="{{image}}">
-							</div> -->
+							</div>
 						</div>
 					</div>
 				</div>
