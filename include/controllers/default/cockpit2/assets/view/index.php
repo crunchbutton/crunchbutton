@@ -25,7 +25,7 @@ class Controller_assets_view extends Cana_Controller {
 			}
 
 			if (str_replace('.phtml', '', $fileInfo->getFileName()) == $file) {
-				$filePath = substr(str_replace('.phtml','',str_replace($path, '',$fileInfo->getPathname())),1);
+				$filePath = 'frontend/'.substr(str_replace('.phtml','',str_replace($path, '',$fileInfo->getPathname())),1);
 				break;
 			}
 		}
@@ -37,7 +37,7 @@ class Controller_assets_view extends Cana_Controller {
 
 		c::view()->layout('layout/blank');
 		c::view()->export = true;
-		c::view()->display('frontend/'.$filePath, ['display' => true, 'filter' => false]);
+		c::view()->display($filePath, ['display' => true, 'filter' => false]);
 		exit;
 	}
 }
