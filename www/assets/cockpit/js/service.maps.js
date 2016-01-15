@@ -132,7 +132,7 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 			updateBounds(loc);
 
 
-			$templateRequest('assets/view/mapview-order-info.html').then(function(d) {
+			$templateRequest('/assets/view/mapview-order-info.html').then(function(d) {
 				var orderScope = params.scope.$new(true);
 				orderScope.order = order;
 
