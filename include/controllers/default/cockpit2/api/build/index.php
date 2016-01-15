@@ -40,6 +40,7 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 
 		// css
 		$files[] = 'css/bundle.css?s=cockpit&_export=1&v='.Deploy_Server::currentVersion();
+		$files[] = 'css/preload.css';
 
 		// javascript
 		$files[] = 'js/bundle.js?s=cockpit&v='.Deploy_Server::currentVersion();
