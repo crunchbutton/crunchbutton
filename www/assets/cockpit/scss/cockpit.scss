@@ -2712,7 +2712,6 @@ b, strong{ font-weight: bold; }
 	width: 8em;
 	text-align: center;
 	font-size: 1.3em;
-	cursor: pointer;
 	line-height: 2.3em;
 }
 
@@ -2723,6 +2722,7 @@ b, strong{ font-weight: bold; }
 
 .ticket-status-open {
 	background: #1ab394;
+	cursor: pointer;
 }
 
 .ticket-status-closed {
