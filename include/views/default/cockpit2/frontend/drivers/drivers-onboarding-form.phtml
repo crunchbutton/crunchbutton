@@ -269,9 +269,13 @@
 							</div>
 						</li>
 
-						<li class="li-input">
+						<li class="li-input" ng-class="{'error':form.desiredWeeklyHours.$invalid}">
 							<div class="label">Desired Weekly Hours:</div>
-							<div class="input"><input type="number" ignore-mouse-wheel ng-model="driver.weekly_hours" placeholder=""></div>
+							<div class="input"><input type="number" name="desiredWeeklyHours" min="0" required max="99" ignore-mouse-wheel ng-model="driver.weekly_hours" placeholder=""></div>
+							<div class="box-error">
+								<small ng-show="form.desiredWeeklyHours.$error.required">Required.</small>
+								<small ng-show="form.desiredWeeklyHours.$error.number">Not valid number!</small>
+							</div>
 						</li>
 
 						<li class="li-input" ng-class="{'error':form.weekendDriver.$invalid}">
