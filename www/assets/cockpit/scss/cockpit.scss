@@ -508,14 +508,6 @@ p {
 	color: #fff;
 }
 .snap-drawer .menu-link .side-menu-wrap {
-	-webkit-transform: translateX(0) !important;
-
-	-webkit-transition: background .2s;
-	-moz-transition: background .2s;
-	-ms-transition: background .2s;
-	-o-transition: background .2s;
-	transition: background .2s;
-
 	@include box-border-radius();
 }
 
