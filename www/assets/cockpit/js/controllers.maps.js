@@ -10,27 +10,27 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/maps', {
 			action: 'maps',
 			controller: 'MapsCtrl',
-			templateUrl: 'assets/view/maps.html'
+			templateUrl: '/assets/view/maps.html'
 
 		}).when('/maps/drivers', {
 			action: 'maps-drivers',
 			controller: 'MapsDriversCtrl',
-			templateUrl: 'assets/view/maps-drivers.html'
+			templateUrl: '/assets/view/maps-drivers.html'
 
 		}).when('/maps/driver/:id', {
 			action: 'maps-driver',
 			controller: 'MapsDriverCtrl',
-			templateUrl: 'assets/view/maps-driver.html'
+			templateUrl: '/assets/view/maps-driver.html'
 
 		}).when('/maps/orders', {
 			action: 'maps-orders',
 			controller: 'MapsOrdersCtrl',
-			templateUrl: 'assets/view/maps-orders.html'
+			templateUrl: '/assets/view/maps-orders.html'
 
 		}).when('/maps/order/:id', {
 			action: 'maps-order',
 			controller: 'MapsOrderCtrl',
-			templateUrl: 'assets/view/maps-order.html'
+			templateUrl: '/assets/view/maps-order.html'
 		});
 
 }]);

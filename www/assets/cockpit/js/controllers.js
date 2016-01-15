@@ -386,7 +386,7 @@ NGApp.controller( 'CallText', function ($scope, $rootScope) {
 		$scope.hideSMSBox = true;
 	}
 
-	// variables to controll the template 'assets/view/support-phone.html'
+	// variables to controll the template '/assets/view/support-phone.html'
 	// when it is called by a modal
 	$scope.isModal = true;
 	$scope.hideCallBox = true;

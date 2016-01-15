@@ -69,7 +69,7 @@ NGApp.factory('errorInterceptor', function($q) {
 	var unteruptable = [
 		App.service + 'config',
 		App.service + 'driver/orders/',
-		'assets/view/'
+		'/assets/view/'
 	];
 	var removeUrl = function(url) {
 		for (var x in errorInterceptor.cancelers) {
@@ -141,217 +141,217 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/settlement', {
 			action: 'settlement',
 			controller: 'SettlementCtrl',
-			templateUrl: 'assets/view/settlement.html'
+			templateUrl: '/assets/view/settlement.html'
 		})
 		.when('/settlement/list', {
 			action: 'settlement-list',
 			controller: 'SettlementListCtrl',
-			templateUrl: 'assets/view/settlement-list.html',
+			templateUrl: '/assets/view/settlement-list.html',
 			reloadOnSearch: false
 		})
 		.when('/settlement/queue', {
 			action: 'settlement',
 			controller: 'SettlementQueueListCtrl',
-			templateUrl: 'assets/view/settlement-queue.html',
+			templateUrl: '/assets/view/settlement-queue.html',
 			reloadOnSearch: false
 		})
 		.when('/settlement/restaurants', {
 			action: 'settlement',
 			controller: 'SettlementRestaurantsCtrl',
-			templateUrl: 'assets/view/settlement-restaurants.html'
+			templateUrl: '/assets/view/settlement-restaurants.html'
 		})
 		.when('/settlement/restaurants/no-payment-method', {
 			action: 'settlement',
 			controller: 'SettlementRestaurantsNoPaymentCtrl',
-			templateUrl: 'assets/view/settlement-restaurants-no-payment-method.html'
+			templateUrl: '/assets/view/settlement-restaurants-no-payment-method.html'
 		})
 		.when('/settlement/restaurants/scheduled', {
 			action: 'settlement',
 			controller: 'SettlementRestaurantsScheduledCtrl',
-			templateUrl: 'assets/view/settlement-restaurants-scheduled.html'
+			templateUrl: '/assets/view/settlement-restaurants-scheduled.html'
 		})
 		.when('/settlement/restaurants/payment/arbitrary/:id_restaurant?', {
 			action: 'settlement',
 			controller: 'SettlementRestaurantsPaymentArbitraryCtrl',
-			templateUrl: 'assets/view/settlement-restaurants-payment-arbitrary.html'
+			templateUrl: '/assets/view/settlement-restaurants-payment-arbitrary.html'
 		})
 		.when('/settlement/restaurants/scheduled/:id', {
 			action: 'settlement',
 			controller: 'SettlementRestaurantsScheduledViewCtrl',
-			templateUrl: 'assets/view/settlement-restaurants-payment.html'
+			templateUrl: '/assets/view/settlement-restaurants-payment.html'
 		})
 		.when('/settlement/restaurants/archived/:id', {
 			action: 'settlement',
 			controller: 'SettlementRestaurantsScheduledViewCtrl',
-			templateUrl: 'assets/view/settlement-restaurants-payment.html'
+			templateUrl: '/assets/view/settlement-restaurants-payment.html'
 		})
 		.when('/settlement/restaurants/deleted/:id', {
 			action: 'settlement',
 			controller: 'SettlementRestaurantsScheduledViewCtrl',
-			templateUrl: 'assets/view/settlement-restaurants-payment.html'
+			templateUrl: '/assets/view/settlement-restaurants-payment.html'
 		})
 		.when('/settlement/restaurants/payment/:id', {
 			action: 'settlement',
 			controller: 'SettlementRestaurantsPaymentCtrl',
-			templateUrl: 'assets/view/settlement-restaurants-payment.html'
+			templateUrl: '/assets/view/settlement-restaurants-payment.html'
 		})
 		.when('/settlement/restaurants/summary/:id', {
 			action: 'settlement',
 			controller: 'SettlementRestaurantsSummaryCtrl',
-			templateUrl: 'assets/view/settlement-summary.html'
+			templateUrl: '/assets/view/settlement-summary.html'
 		})
 		.when('/settlement/restaurants/payments', {
 			action: 'settlement',
 			controller: 'SettlementRestaurantsPaymentsCtrl',
-			templateUrl: 'assets/view/settlement-restaurants-payments.html'
+			templateUrl: '/assets/view/settlement-restaurants-payments.html'
 		})
 		.when('/settlement/drivers', {
 			action: 'settlement',
 			controller: 'SettlementDriversCtrl',
-			templateUrl: 'assets/view/settlement-drivers.html'
+			templateUrl: '/assets/view/settlement-drivers.html'
 		})
 		.when('/settlement/drivers/scheduled', {
 			action: 'settlement',
 			controller: 'SettlementDriversScheduledCtrl',
-			templateUrl: 'assets/view/settlement-drivers-scheduled.html',
+			templateUrl: '/assets/view/settlement-drivers-scheduled.html',
 			reloadOnSearch: false
 		})
 		.when('/settlement/drivers/old-payments/:id?', {
 			action: 'settlement',
 			controller: 'SettlementDriversOldPaymentsCtrl',
-			templateUrl: 'assets/view/settlement-drivers-old-payments.html',
+			templateUrl: '/assets/view/settlement-drivers-old-payments.html',
 		})
 		.when('/settlement/drivers/archived', {
 			action: 'settlement',
 			controller: 'SettlementDriversArchivedCtrl',
-			templateUrl: 'assets/view/settlement-drivers-scheduled.html',
+			templateUrl: '/assets/view/settlement-drivers-scheduled.html',
 		})
 		.when('/settlement/drivers/deleted', {
 			action: 'settlement',
 			controller: 'SettlementDriversDeletedCtrl',
-			templateUrl: 'assets/view/settlement-drivers-scheduled.html',
+			templateUrl: '/assets/view/settlement-drivers-scheduled.html',
 		})
 		.when('/settlement/drivers/deleted/:id', {
 			action: 'settlement',
 			controller: 'SettlementDriversScheduledViewCtrl',
-			templateUrl: 'assets/view/settlement-drivers-payment.html'
+			templateUrl: '/assets/view/settlement-drivers-payment.html'
 		})
 		.when('/settlement/drivers/archived/:id', {
 			action: 'settlement',
 			controller: 'SettlementDriversScheduledViewCtrl',
-			templateUrl: 'assets/view/settlement-drivers-payment.html'
+			templateUrl: '/assets/view/settlement-drivers-payment.html'
 		})
 		.when('/settlement/drivers/scheduled/:id', {
 			action: 'settlement',
 			controller: 'SettlementDriversScheduledViewCtrl',
-			templateUrl: 'assets/view/settlement-drivers-payment.html'
+			templateUrl: '/assets/view/settlement-drivers-payment.html'
 		})
 		.when('/settlement/drivers/payments', {
 			action: 'settlement',
 			controller: 'SettlementDriversPaymentsCtrl',
-			templateUrl: 'assets/view/settlement-drivers-payments.html',
+			templateUrl: '/assets/view/settlement-drivers-payments.html',
 			reloadOnSearch: false
 		})
 		.when('/settlement/drivers/payment/arbitrary/:id_driver?', {
 			action: 'settlement',
 			controller: 'SettlementDriversPaymentArbitraryCtrl',
-			templateUrl: 'assets/view/settlement-drivers-payment-arbitrary.html'
+			templateUrl: '/assets/view/settlement-drivers-payment-arbitrary.html'
 		})
 		.when('/settlement/drivers/payment/:id', {
 			action: 'settlement',
 			controller: 'SettlementDriversPaymentCtrl',
-			templateUrl: 'assets/view/settlement-drivers-payment.html'
+			templateUrl: '/assets/view/settlement-drivers-payment.html'
 		})
 		.when('/settlement/drivers/summary/:id', {
 			action: 'settlement',
 			controller: 'SettlementDriversSummaryCtrl',
-			templateUrl: 'assets/view/settlement-summary.html'
+			templateUrl: '/assets/view/settlement-summary.html'
 		})
 		/* Pexcard */
 		.when('/pexcard', {
 			action: 'pexcard',
 			controller: 'PexCardCtrl',
-			templateUrl: 'assets/view/pexcard.html'
+			templateUrl: '/assets/view/pexcard.html'
 		})
 		.when('/pexcard/log', {
 			action: 'pexcard',
 			controller: 'PexCardLogCtrl',
-			templateUrl: 'assets/view/pexcard-log.html'
+			templateUrl: '/assets/view/pexcard-log.html'
 		})
 		.when('/pexcard/config', {
 			action: 'pexcard',
 			controller: 'PexConfigCtrl',
-			templateUrl: 'assets/view/pexcard-config.html'
+			templateUrl: '/assets/view/pexcard-config.html'
 		})
 		.when('/pexcard/card/log', {
 			action: 'pexcard',
 			controller: 'PexCardCardLogCtrl',
-			templateUrl: 'assets/view/pexcard-card-log.html'
+			templateUrl: '/assets/view/pexcard-card-log.html'
 		})
 		.when('/pexcard/log/:id', {
 			action: 'pexcard',
 			controller: 'PexCardLogViewCtrl',
-			templateUrl: 'assets/view/pexcard-log-view.html'
+			templateUrl: '/assets/view/pexcard-log-view.html'
 		})
 		.when('/pexcard/card/driver/:id', {
 			action: 'pexcard',
 			driver: true,
 			controller: 'PexCardIdCtrl',
-			templateUrl: 'assets/view/pexcard-pex-id.html'
+			templateUrl: '/assets/view/pexcard-pex-id.html'
 		})
 		.when('/pexcard/card/:id?', {
 			action: 'pexcard',
 			controller: 'PexCardIdCtrl',
-			templateUrl: 'assets/view/pexcard-pex-id.html'
+			templateUrl: '/assets/view/pexcard-pex-id.html'
 		})
 		.when('/pexcard/report/old', {
 			action: 'pexcard',
 			controller: 'PexCardReportOldCtrl',
-			templateUrl: 'assets/view/pexcard-report.html'
+			templateUrl: '/assets/view/pexcard-report.html'
 		})
 		.when('/pexcard/report', {
 			action: 'pexcard',
 			controller: 'PexCardReportCtrl',
-			templateUrl: 'assets/view/pexcard-report.html'
+			templateUrl: '/assets/view/pexcard-report.html'
 		})
 		/* Driver shifts */
 		.when('/drivers/dashboard', {
 			action: 'drivers-dashboard',
 			controller: 'DriversDashboardCtrl',
-			templateUrl: 'assets/view/drivers-dashboard.html'
+			templateUrl: '/assets/view/drivers-dashboard.html'
 		})
 		.when('/drivers/orders', {
 			action: 'drivers-orders',
 			controller: 'DriversOrdersCtrl',
-			templateUrl: 'assets/view/drivers-orders.html',
+			templateUrl: '/assets/view/drivers-orders.html',
 			back: false
 		})
 		.when('/drivers/order/signature/:id', {
 			action: 'drivers-order',
 			controller: 'DriversOrderSignatureCtrl',
-			templateUrl: 'assets/view/drivers-order-signature.html'
+			templateUrl: '/assets/view/drivers-order-signature.html'
 		})
 		.when('/drivers/order/:id', {
 			action: 'drivers-order',
 			controller: 'DriversOrderCtrl',
-			templateUrl: 'assets/view/drivers-order.html'
+			templateUrl: '/assets/view/drivers-order.html'
 		})
 		.when('/drivers/shifts', {
 			action: 'drivers-shifts',
 			controller: 'DriversShiftsCtrl',
-			templateUrl: 'assets/view/drivers-shifts.html',
+			templateUrl: '/assets/view/drivers-shifts.html',
 			back: false
 		})
 		.when('/drivers/shifts/schedule-old', {
 			action: 'drivers-shift-preferences',
 			controller: 'DriversShiftsScheduleCtrl',
-			templateUrl: 'assets/view/drivers-shifts-schedule.html',
+			templateUrl: '/assets/view/drivers-shifts-schedule.html',
 			back: false
 		})
 		.when('/drivers/shifts/schedule', {
 			action: 'drivers-shift-preferences',
 			controller: 'DriversShiftsScheduleRatingCtrl',
-			templateUrl: 'assets/view/drivers-shifts-schedule-rating.html',
+			templateUrl: '/assets/view/drivers-shifts-schedule-rating.html',
 			back: false
 		})
 		.when('/schedule', {
@@ -362,187 +362,187 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/drivers/summary', {
 			action: 'drivers-summary',
 			controller: 'DriversSummaryCtrl',
-			templateUrl: 'assets/view/drivers-summary.html',
+			templateUrl: '/assets/view/drivers-summary.html',
 			back: false
 		})
 		.when('/drivers/summary/:id', {
 			action: 'drivers-summary',
 			controller: 'DriversSummaryCtrl',
-			templateUrl: 'assets/view/drivers-summary.html'
+			templateUrl: '/assets/view/drivers-summary.html'
 		})
 		.when('/drivers/payments', {
 			action: 'drivers-summary',
 			controller: 'DriversPaymentsCtrl',
-			templateUrl: 'assets/view/drivers-payments.html'
+			templateUrl: '/assets/view/drivers-payments.html'
 		})
 		.when('/drivers/payments/:id', {
 			action: 'drivers-summary',
 			controller: 'DriversPaymentsCtrl',
-			templateUrl: 'assets/view/drivers-payments.html'
+			templateUrl: '/assets/view/drivers-payments.html'
 		})
 		.when('/drivers/payment/:id', {
 			action: 'drivers-summary',
 			controller: 'DriversPaymentCtrl',
-			templateUrl: 'assets/view/drivers-payment.html'
+			templateUrl: '/assets/view/drivers-payment.html'
 		})
 
 		/* driver welcome shit */
 		.when('/drivers/welcome', {
 			action: 'drivers-welcome-home',
 			controller: 'DriversWelcomeHomeCtrl',
-			templateUrl: 'assets/view/drivers-welcome-home.html',
+			templateUrl: '/assets/view/drivers-welcome-home.html',
 			back: false
 		})
 		.when('/drivers/welcome/info', {
 			action: 'drivers-welcome-info',
 			controller: 'DriversWelcomeInfoCtrl',
-			templateUrl: 'assets/view/drivers-welcome-info.html',
+			templateUrl: '/assets/view/drivers-welcome-info.html',
 			back: true
 		})
 		.when('/drivers/welcome/location', {
 			action: 'drivers-welcome-location',
 			controller: 'DriversWelcomeLocationCtrl',
-			templateUrl: 'assets/view/drivers-welcome-location.html',
+			templateUrl: '/assets/view/drivers-welcome-location.html',
 			back: true
 		})
 		.when('/drivers/welcome/push', {
 			action: 'drivers-welcome-push',
 			controller: 'DriversWelcomePushCtrl',
-			templateUrl: 'assets/view/drivers-welcome-push.html',
+			templateUrl: '/assets/view/drivers-welcome-push.html',
 			back: true
 		})
 		.when('/drivers/welcome/wahoo', {
 			action: 'drivers-welcome-wahoo',
 			controller: 'DriversWelcomeWahooCtrl',
-			templateUrl: 'assets/view/drivers-welcome-wahoo.html',
+			templateUrl: '/assets/view/drivers-welcome-wahoo.html',
 			back: true
 		})
 		/* other */
 		.when('/login', {
 			action: 'login',
 			controller: 'LoginCtrl',
-			templateUrl: 'assets/view/general-login.html'
+			templateUrl: '/assets/view/general-login.html'
 		})
 		.when('/legal', {
 			action: 'legal',
 			controller: 'LegalCtrl',
-			templateUrl: 'assets/view/general-legal.html'
+			templateUrl: '/assets/view/general-legal.html'
 		})
 		.when('/info', {
 			action: 'info',
 			controller: 'InfoCtrl',
-			templateUrl: 'assets/view/general-info.html'
+			templateUrl: '/assets/view/general-info.html'
 		})
 		.when('/drivers/help', {
 			action: 'drivers-help',
 			controller: 'DriversHelpCtrl',
-			templateUrl: 'assets/view/drivers-help.html',
+			templateUrl: '/assets/view/drivers-help.html',
 			back: false,
 			reloadOnSearch: false
 		})
 		.when('/drivers/feedback', {
 			action: 'drivers-feedback',
 			controller: 'DriversFeedbackCtrl',
-			templateUrl: 'assets/view/drivers-feedback.html',
+			templateUrl: '/assets/view/drivers-feedback.html',
 			back: false,
 			reloadOnSearch: false
 		})
 		.when('/invite', {
 			action: 'drivers-invite',
 			controller: 'InviteCtrl',
-			templateUrl: 'assets/view/drivers-invite.html',
+			templateUrl: '/assets/view/drivers-invite.html',
 			back: false,
 			reloadOnSearch: false
 		})
 		.when('/drivers/drivers-locations', {
 			action: 'drivers-locations',
 			controller: 'DriversLocationsCtrl',
-			templateUrl: 'assets/view/drivers-locations.html',
+			templateUrl: '/assets/view/drivers-locations.html',
 			back: false,
 			reloadOnSearch: false
 		})
 		.when('/drivers/help/credit-card', {
 			action: 'drivers-help',
 			controller: 'DriversHelpCreditCardCtrl',
-			templateUrl: 'assets/view/drivers-help-credit-card.html'
+			templateUrl: '/assets/view/drivers-help-credit-card.html'
 		})
 		.when('/profile', {
 			action: 'profile',
 			controller: 'ProfileCtrl',
-			templateUrl: 'assets/view/general-profile.html',
+			templateUrl: '/assets/view/general-profile.html',
 			back: false
 		})
 		.when('/profile/password', {
 			action: 'profile',
 			controller: 'ProfilePasswordCtrl',
-			templateUrl: 'assets/view/general-profile-password.html',
+			templateUrl: '/assets/view/general-profile-password.html',
 			back: false
 		})
 		/* Driver onBoarding Routes */
 		.when('/drivers/onboarding', {
 			action: 'drivers-onboarding',
 			controller: 'DriversOnboardingCtrl',
-			templateUrl: 'assets/view/drivers-onboarding-list.html',
+			templateUrl: '/assets/view/drivers-onboarding-list.html',
 			reloadOnSearch: false
 		})
 		.when('/drivers/onboarding/docs', {
 			action: 'drivers-onboarding-docs',
 			controller: 'DriversOnboardingDocsCtrl',
-			templateUrl: 'assets/view/drivers-onboarding-docs.html'
+			templateUrl: '/assets/view/drivers-onboarding-docs.html'
 		})
 		.when('/drivers/onboarding/new', {
 			action: 'drivers-onboarding-new',
 			controller: 'DriversOnboardingFormCtrl',
-			templateUrl: 'assets/view/drivers-onboarding-form.html'
+			templateUrl: '/assets/view/drivers-onboarding-form.html'
 		})
 		.when('/drivers/onboarding/:id', {
 			action: 'drivers-onboarding-edit',
 			controller: 'DriversOnboardingFormCtrl',
-			templateUrl: 'assets/view/drivers-onboarding-form.html'
+			templateUrl: '/assets/view/drivers-onboarding-form.html'
 		})
 		.when('/drivers/docs', {
 			action: 'drivers-documents',
 			controller: 'DriversDocsFormCtrl',
-			templateUrl: 'assets/view/drivers-docs-form.html',
+			templateUrl: '/assets/view/drivers-docs-form.html',
 			back: false
 		})
 		.when('/drivers/docs/payment', {
 			redirectTo: '/drivers/docs/'
 			// action: 'drivers-documents',
 			// controller: 'DriversPaymentFormCtrl',
-			// templateUrl: 'assets/view/drivers-payment-info-form.html'
+			// templateUrl: '/assets/view/drivers-payment-info-form.html'
 		})
 		.when('/drivers/docs/pexcard', {
 			action: 'drivers-pex-card',
 			controller: 'DriversPexCardCtrl',
-			templateUrl: 'assets/view/drivers-pexcard.html',
+			templateUrl: '/assets/view/drivers-pexcard.html',
 			back: false
 		})
 		.when('/setup/:phone', {
 			action: 'drivers-setup',
 			controller: 'DriversOnboardingSetupCtrl',
-			templateUrl: 'assets/view/drivers-onboarding-setup.html'
+			templateUrl: '/assets/view/drivers-onboarding-setup.html'
 		})
 		.when('/onboarding/', {
 			action: 'onboarding',
 			controller: 'PreOnboardingCtrl',
-			templateUrl: 'assets/view/pre-onboarding.html'
+			templateUrl: '/assets/view/pre-onboarding.html'
 		})
 		.when('/onboarding/:id', {
 			action: 'onboarding',
 			controller: 'PreOnboardingCtrl',
-			templateUrl: 'assets/view/pre-onboarding.html'
+			templateUrl: '/assets/view/pre-onboarding.html'
 		})
 		.when('/home', {
 			action: 'home',
 			controller: 'HomeCtrl',
-			templateUrl: 'assets/view/general-home.html',
+			templateUrl: '/assets/view/general-home.html',
 			back: false
 		})
 		.otherwise({
 			action: 'default',
 			controller: 'DefaultCtrl',
-			templateUrl: 'assets/view/general-default.html'
+			templateUrl: '/assets/view/general-default.html'
 		});
 	// only use html5 enabled location stuff if its not in a phonegap container
 	//$locationProvider.html5Mode(!App.isPhoneGap);

@@ -3,7 +3,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/update', {
 			action: 'drivers-welcome-update',
 			controller: 'UpdateCtrl',
-			templateUrl: 'assets/view/general-update.html'
+			templateUrl: '/assets/view/general-update.html'
 		});
 
 }]);
@@ -20,7 +20,7 @@ NGApp.controller('UpdateCtrl', function( $scope) {
 		} else {
 			$scope.url = 'https://play.google.com/store/apps/details?id=com.crunchbutton.cockpit';
 		}
-	
+
 	$scope.update = function() {
 
 		window.open($scope.url,'_system');

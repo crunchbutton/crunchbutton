@@ -3,13 +3,13 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/calls', {
 			action: 'calls',
 			controller: 'CallsCtrl',
-			templateUrl: 'assets/view/calls.html',
+			templateUrl: '/assets/view/calls.html',
 			reloadOnSearch: false
 
 		}).when('/call/:id', {
 			action: 'call',
 			controller: 'CallCtrl',
-			templateUrl: 'assets/view/calls-call.html'
+			templateUrl: '/assets/view/calls-call.html'
 		});
 }]);
 
