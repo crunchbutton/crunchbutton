@@ -47,10 +47,6 @@ NGApp.controller('ChatCtrl', function($scope, $rootScope, $routeParams, SocketSe
 
 
 NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, $location, TicketService, TicketViewService, AccountService) {
-	if (!TicketViewService) {
-		return null;
-	}
-
 	$scope.params = { status: 'open' };
 
 	var getTickets = function() {
