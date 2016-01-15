@@ -167,26 +167,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 			if (AccountService.isSupport) {
 
-			service.socket.on('tickets', function(payload) {
-				console.log('tickets >>>> ');
-				console.log('tickets >>>> ');
-				console.log('tickets >>>> ');
-				console.log('tickets >>>> ');
-				console.debug('Recieved preference update', payload);
-
-			});
-
-				SocketService.listen('tickets.update', $rootScope)
-					.on( 'change_ticket_status', function( d ){
-						console.log('change_ticket_status >>>>> ');
-						console.log('change_ticket_status >>>>> ');
-						console.log('change_ticket_status >>>>> ');
-						console.log('change_ticket_status >>>>> ');
-						console.log('change_ticket_status >>>>> ');
-						$rootScope.$broadcast( 'updateHeartbeat' );
-					} );
-
-
 				SocketService.listen('tickets', $rootScope)
 					.on('message', function(d) {
 
@@ -233,14 +213,15 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 						updateSmsStatus( d );
 					} )
-					.on( 'change_ticket_status', function( d ){
+					/*.on( 'change_ticket_status', function( d ){
 						console.log('1change_ticket_status >>>>> ');
 						console.log('1change_ticket_status >>>>> ');
 						console.log('1change_ticket_status >>>>> ');
 						console.log('1change_ticket_status >>>>> ');
 						console.log('1change_ticket_status >>>>> ');
 						$rootScope.$broadcast( 'updateHeartbeat' );
-					} );
+					} )*/
+					;
 			}
 
 		} else {
@@ -266,7 +247,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			console.debug('Unsubscribing to all tickets');
 			service.socket.emit('event.unsubscribe', 'tickets');
 		}
-		service.socket.emit('event.subscribe', 'tickets.update');
 	});
 
 	service.send = function(message, add_as_note, callback) {
