@@ -93,7 +93,7 @@
 	<div class="restaurants-items">
 
 	<span ng-repeat="restaurant in restaurants | limitTo:restaurantsToShow" class="restaurants-repeated">
-		<ng-include src="'assets/view/restaurants-box-restaurant.html'"></ng-include>
+		<ng-include src="'/assets/view/restaurants-box-restaurant.html'"></ng-include>
 	</span>
 	<div class="divider"></div>
 
@@ -108,4 +108,4 @@
 	<p>Want something else delivered? <a href class="suggestion-text" ng-click="suggestion();"> Let us know!</a></p>
 </div>
 
-<ng-include src="'assets/view/restaurants-suggestion.html'"></ng-include>
+<ng-include src="'/assets/view/restaurants-suggestion.html'"></ng-include>

@@ -8,20 +8,20 @@
 		<div class="restaurant-pad"></div>
 
 		<!-- image -->
-		<ng-include src="'assets/view/restaurant-image.html'"></ng-include>
+		<ng-include src="'/assets/view/restaurant-image.html'"></ng-include>
 
 		<!-- main-content-readable-margin -->
 		<div class="restaurant-content-body content-padding">
 			<div class="restaurant-content-body-background"></div>
 
 			<!-- comment -->
-			<ng-include src="'assets/view/restaurant-comment.html'"></ng-include>
+			<ng-include src="'/assets/view/restaurant-comment.html'"></ng-include>
 
 			<div ng-if="restaurant.eta && restaurant._open" class="restaurant-message">Delivery estimate: about {{restaurant.eta}} minutes</div>
 
 			<!-- desktop version -->
 			<span class="hide-mobile">
-				<ng-include src="'assets/view/restaurant-desktop.html'"></ng-include>
+				<ng-include src="'/assets/view/restaurant-desktop.html'"></ng-include>
 			</span>
 
 			<!-- mobile version -->
@@ -39,12 +39,12 @@
 
 	<!-- total breakdown - mobile only -->
 	<span class="hide-desktop">
-		<ng-include src="'assets/view/restaurant-breakdown.html'"></ng-include>
+		<ng-include src="'/assets/view/restaurant-breakdown.html'"></ng-include>
 	</span>
 
 	<div class="divider bottom-spacer"></div>
 
 </div>
 
-<ng-include src="'assets/view/restaurant-message-boxes.html'"></ng-include>
-<ng-include src="'assets/view/restaurant-suggestion.html'"></ng-include>
+<ng-include src="'/assets/view/restaurant-message-boxes.html'"></ng-include>
+<ng-include src="'/assets/view/restaurant-suggestion.html'"></ng-include>
