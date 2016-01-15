@@ -3,13 +3,13 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/tickets', {
 			action: 'tickets',
 			controller: 'TicketsCtrl',
-			templateUrl: 'assets/view/tickets.html',
+			templateUrl: '/assets/view/tickets.html',
 			reloadOnSearch: false
 
 		}).when('/ticket/:id', {
 			action: 'ticket',
 			controller: 'TicketCtrl',
-			templateUrl: 'assets/view/tickets-ticket.html'
+			templateUrl: '/assets/view/tickets-ticket.html'
 		});
 }]);
 
