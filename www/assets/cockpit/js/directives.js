@@ -859,7 +859,9 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 						});
 						var tbodyHeight = ( windowHeight - (theadHeight + 130) + 'px' );
 
-						tbody.css( 'height', tbodyHeight );
+						if (!$('.listview-auto-height').length) {
+							tbody.css( 'height', tbodyHeight );
+						}
 
 						processing = false;
 
