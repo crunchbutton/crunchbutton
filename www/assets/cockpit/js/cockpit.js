@@ -69,7 +69,7 @@ NGApp.factory('errorInterceptor', function($q) {
 	var unteruptable = [
 		App.service + 'config',
 		App.service + 'driver/orders/',
-		'assets/view/'
+		'/assets/view/'
 	];
 	var removeUrl = function(url) {
 		for (var x in errorInterceptor.cancelers) {
