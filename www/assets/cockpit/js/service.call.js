@@ -95,6 +95,9 @@ NGApp.factory('CallService', function(ResourceFactory, SocketService, $rootScope
 		if (AccountService.user && AccountService.user.id_admin) {
 
 			if (AccountService.user.permissions.GLOBAL || AccountService.user.permissions['SUPPORT-ALL'] ||  AccountService.user.permissions['SUPPORT-VIEW'] ||  AccountService.user.permissions['SUPPORT-CRUD']) {
+				if (!SocketService) {
+					return null;
+				}
 				SocketService.listen('calls', $rootScope)
 					.on('update', function(d) {
 						console.log('CALL UPDATED', d);
