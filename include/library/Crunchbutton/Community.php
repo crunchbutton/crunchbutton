@@ -281,7 +281,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 	public function dontWarnTill(){
 		if( $this->dont_warn_till ){
-			return new DateTime( $this->dont_warn_till, new DateTimeZone( c::config()->timezone ) );
+			return new DateTime( $this->dont_warn_till, new DateTimeZone( Community_Shift::CB_TIMEZONE ) );
 		}
 		return null;
 	}
@@ -824,6 +824,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 						if( $nextShift->id_community_shift ){
 							$createTicket = true;
 							$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+							$now->setTimezone( new DateTimeZone( Community_Shift::CB_TIMEZONE ) );
 							$dont_warn_till = $this->dontWarnTill();
 
 							if( $dont_warn_till && intval( $dont_warn_till->format( 'YmdHis' ) ) > intval( $now->format( 'YmdHis' ) ) ){
