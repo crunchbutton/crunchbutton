@@ -3,13 +3,13 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/reports', {
 			action: 'tools',
 			controller: 'ReportsCtrl',
-			templateUrl: '/assets/view/report.html',
+			templateUrl: 'assets/view/report.html',
 			reloadOnSearch: false
 		})
 		.when('/report/first-time-users-gift-card', {
 			action: 'tools',
 			controller: 'ReportFirstTimeUserGiftCodesUsedPerSchoolPerDayCtrl',
-			templateUrl: '/assets/view/report-first-time-users-gift-card.html'
+			templateUrl: 'assets/view/report-first-time-users-gift-card.html'
 		})
 }]);
 

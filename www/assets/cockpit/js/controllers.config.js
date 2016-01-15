@@ -3,32 +3,32 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/config', {
 			action: 'tools',
 			controller: 'ConfigCtrl',
-			templateUrl: '/assets/view/config.html'
+			templateUrl: 'assets/view/config.html'
 		})
 		.when('/config/rewards', {
 			action: 'tools',
 			controller: 'ConfigRewardsCtrl',
-			templateUrl: '/assets/view/config-rewards.html'
+			templateUrl: 'assets/view/config-rewards.html'
 		})
 		.when('/config/live', {
 			action: 'tools',
 			controller: 'ConfigLiveCtrl',
-			templateUrl: '/assets/view/config-live.html'
+			templateUrl: 'assets/view/config-live.html'
 		})
 		.when('/config/rules', {
 			action: 'tools',
 			controller: 'ConfigRulesCtrl',
-			templateUrl: '/assets/view/config-rules.html'
+			templateUrl: 'assets/view/config-rules.html'
 		})
 		.when('/config/blocked', {
 			action: 'tools',
 			controller: 'ConfigBlockedsCtrl',
-			templateUrl: '/assets/view/config-blockeds.html'
+			templateUrl: 'assets/view/config-blockeds.html'
 		})
 		.when('/config/auto-reply', {
 			action: 'tools',
 			controller: 'ConfigAutoReplyCtrl',
-			templateUrl: '/assets/view/config-auto-reply.html'
+			templateUrl: 'assets/view/config-auto-reply.html'
 		});
 
 }]);

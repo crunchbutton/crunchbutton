@@ -3,25 +3,25 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/shifts/checkin', {
 			action: 'shift-checkin',
 			controller: 'ShiftChekinCtrl',
-			templateUrl: '/assets/view/shift-checkin.html',
+			templateUrl: 'assets/view/shift-checkin.html',
 			reloadOnSearch: false
 		})
 		.when('/shifts/', {
 			action: 'shift',
 			controller: 'ShiftCtrl',
-			templateUrl: '/assets/view/shift.html',
+			templateUrl: 'assets/view/shift.html',
 			reloadOnSearch: false
 		})
 		.when('/shifts/settings', {
 			action: 'shift',
 			controller: 'ShiftSettingsCtrl',
-			templateUrl: '/assets/view/shift-settings.html',
+			templateUrl: 'assets/view/shift-settings.html',
 			reloadOnSearch: false
 		})
 		.when('/shifts/schedule/:permalink?', {
 			action: 'shift-schedule',
 			controller: 'ShiftScheduleCtrl',
-			templateUrl: '/assets/view/shift-schedule.html',
+			templateUrl: 'assets/view/shift-schedule.html',
 			reloadOnSearch: false
 		});
 

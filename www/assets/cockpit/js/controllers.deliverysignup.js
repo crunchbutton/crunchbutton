@@ -3,7 +3,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/delivery-signups', {
 			action: 'tools',
 			controller: 'DeliverySignUpsCtrl',
-			templateUrl: '/assets/view/delivery-signups.html',
+			templateUrl: 'assets/view/delivery-signups.html',
 			reloadOnSearch: false
 		})
 }]);

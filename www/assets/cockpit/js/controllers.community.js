@@ -4,33 +4,33 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/communities', {
 			action: 'communities',
 			controller: 'CommunitiesCtrl',
-			templateUrl: '/assets/view/communities.html',
+			templateUrl: 'assets/view/communities.html',
 			reloadOnSearch: false
 		})
 		.when('/communities/notes', {
 			action: 'community',
 			controller: 'CommunitiesNotesCtrl',
-			templateUrl: '/assets/view/communities-notes.html'
+			templateUrl: 'assets/view/communities-notes.html'
 		})
 		.when('/community/edit/:id', {
 			action: 'community',
 			controller: 'CommunityFormCtrl',
-			templateUrl: '/assets/view/communities-form.html'
+			templateUrl: 'assets/view/communities-form.html'
 		})
 		.when('/community/new', {
 			action: 'community',
 			controller: 'CommunityFormCtrl',
-			templateUrl: '/assets/view/communities-form.html'
+			templateUrl: 'assets/view/communities-form.html'
 		})
 		.when('/communities/closed', {
 			action: 'community',
 			controller: 'CommunitiesClosedCtrl',
-			templateUrl: '/assets/view/communities-closed.html'
+			templateUrl: 'assets/view/communities-closed.html'
 		})
 		.when('/community/:id/:tab?', {
 			action: 'community',
 			controller: 'CommunityCtrl',
-			templateUrl: '/assets/view/communities-community.html'
+			templateUrl: 'assets/view/communities-community.html'
 		});
 
 }]);

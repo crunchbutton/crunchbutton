@@ -4,7 +4,7 @@ NGApp.config(['$routeProvider', function ($routeProvider) {
 		.when('/metrics', {
 			action: 'metrics',
 			controller: 'MetricsCtrl',
-			templateUrl: '/assets/view/metrics.html',
+			templateUrl: 'assets/view/metrics.html',
 			reloadOnSearch: false
 
 		});

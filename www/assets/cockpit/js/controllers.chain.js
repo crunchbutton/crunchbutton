@@ -4,34 +4,34 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/chains', {
 			action: 'chains',
 			controller: 'ChainsCtrl',
-			templateUrl: '/assets/view/chains-hub.html',
+			templateUrl: 'assets/view/chains-hub.html',
 			reloadOnSearch: false
 		})
 		.when('/chains/list', {
 			action: 'chains',
 			controller: 'ChainsCtrl',
-			templateUrl: '/assets/view/chains.html',
+			templateUrl: 'assets/view/chains.html',
 			reloadOnSearch: false
 		})
 		.when('/chain/community/:id?', {
 			action: 'chains',
 			controller: 'ChainCommunityFormCtrl',
-			templateUrl: '/assets/view/chain-community-form.html'
+			templateUrl: 'assets/view/chain-community-form.html'
 		})
 		.when('/chain/communities/', {
 			action: 'chains',
 			controller: 'ChainsCommunityCtrl',
-			templateUrl: '/assets/view/chains-communities.html',
+			templateUrl: 'assets/view/chains-communities.html',
 		})
 		.when('/chain/:id?', {
 			action: 'chains',
 			controller: 'ChainFormCtrl',
-			templateUrl: '/assets/view/chain-form.html'
+			templateUrl: 'assets/view/chain-form.html'
 		})
 		.when('/chain/', {
 			action: 'chains',
 			controller: 'ChainFormCtrl',
-			templateUrl: '/assets/view/chain-form.html'
+			templateUrl: 'assets/view/chain-form.html'
 		});
 }]);
 

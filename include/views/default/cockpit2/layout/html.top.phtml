@@ -1,32 +1,40 @@
 <!doctype html>
 <html lang="en" ng-app="NGApp">
-
 <? if (!c::config()->bundle) : ?>
 	<base href="/">
 <? endif; ?>
-
 <head>
-	<title ng-bind="title ? title + ' | Cockpit' : 'Cockpit'">Cockpit</title>
+<title ng-bind="title ? title + ' | Cockpit' : 'Cockpit'">Cockpit</title>
+<meta name="fragment" content="!" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
+<meta name="format-detection" content="telephone=no">
 
-	<meta name="fragment" content="!">
-	<meta name="viewport" content="initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
-	<meta name="format-detection" content="telephone=no">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-	<link rel="apple-touch-icon-precomposed" href="/assets/images/micro/appicon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-	<? if( c::env() == 'local' ): ?>
-		<link rel="shortcut icon" href="/assets/cockpit/images/favicon-dev.png">
-	<? else : ?>
-		<link rel="shortcut icon" href="/assets/cockpit/images/favicon.png">
-	<? endif ; ?>
+<link rel="apple-touch-icon-precomposed" href="/assets/images/micro/appicon.png">
+<?=$this->display('layout/html.servertime')?>
 
-	<link href="https://netdna.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet" type="text/css">
-	<link href="https://fonts.googleapis.com/css?family=Ruda:400,700,900" rel="stylesheet" type="text/css">
-	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet" type="text/css">
+<? if (c::config()->bundle) : ?>
+	<? $css = c::config()->site->config('s3-bundle')->val() ? 'https://'.c::config()->s3->buckets->build->cache.'/'.Deploy_Server::currentVersion().'/css/cockpit.css' : '/assets/cockpit/css/bundle.css?v='.Deploy_Server::currentVersion().'&s=cockpit' ?>
+	<link rel="stylesheet" type="text/css" href="<?=$css?>">
+<? else : ?>
+	<?=$this->display('bundle/css')?>
+<? endif ; ?>
 
-	<link rel="stylesheet" type="text/css" href="/assets/cockpit/css/preload.css">
-</head>
+<? if( c::env() == 'local' ): ?>
+	<link rel="shortcut icon" href="/assets/cockpit/images/favicon-dev.png">
+<? else : ?>
+	<link rel="shortcut icon" href="/assets/cockpit/images/favicon.png">
+<? endif ; ?>
+
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=Ruda:400,700,900" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet" type="text/css">
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+<?=$this->display('layout/html.templates')?>

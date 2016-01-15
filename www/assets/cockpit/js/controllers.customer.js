@@ -3,24 +3,24 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/customers', {
 			action: 'customers',
 			controller: 'CustomersCtrl',
-			templateUrl: '/assets/view/customers.html',
+			templateUrl: 'assets/view/customers.html',
 			reloadOnSearch: false
 
 		})
 		.when('/customer/credit/:id', {
 			action: 'customer',
 			controller: 'CustomerCreditCtrl',
-			templateUrl: '/assets/view/customers-credit.html'
+			templateUrl: 'assets/view/customers-credit.html'
 		})
 		.when('/customer/edit/:id', {
 			action: 'customer',
 			controller: 'CustomerEditCtrl',
-			templateUrl: '/assets/view/customers-form.html'
+			templateUrl: 'assets/view/customers-form.html'
 		})
 		.when('/customer/:id', {
 			action: 'customer',
 			controller: 'CustomerCtrl',
-			templateUrl: '/assets/view/customers-customer.html'
+			templateUrl: 'assets/view/customers-customer.html'
 		});
 }]);
 
