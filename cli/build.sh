@@ -4,7 +4,7 @@ PHPPATH=php
 cd /app/cli/
 
 $PHPPATH -f ./_build.php crunchbutton.com $PHPPATH | tr -d "\t\n\r" > /app/www/build/crunchbutton.html
-$PHPPATH -f ./_build.php cockpit.la "" enable_templates_in_bundle=1 $PHPPATH | tr -d "\t\n\r" > /app/www/build/cockpit.html
+$PHPPATH -f ./_build.php cockpit.la "" bundle=1 $PHPPATH | tr -d "\t\n\r" > /app/www/build/cockpit.html
 
 #$PHPPATH -f ./_build.php crunchbutton.com assets/view/bundle.css s=style $PHPPATH > /app/www/assets/css/bundle.css
 #$PHPPATH -f ./_build.php cockpit.la assets/cockpit/view/cockpit.html s=cockpit $PHPPATH > /app/www/assets/view/cockpit.html
