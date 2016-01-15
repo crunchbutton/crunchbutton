@@ -3,24 +3,24 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/blast', {
 			action: 'blasts',
 			controller: 'BlastsCtrl',
-			templateUrl: 'assets/view/blasts.html'
+			templateUrl: '/assets/view/blasts.html'
 
 		}).when('/blast/:id', {
 			action: 'blast',
 			controller: 'BlastCtrl',
-			templateUrl: 'assets/view/blast-blast.html'
+			templateUrl: '/assets/view/blast-blast.html'
 		});
 }]);
 
 NGApp.controller('BlastsCtrl', function ($rootScope, $scope, BlastService, SocketService, DateTimeService) {
 
 	$scope.loadingBlasts = true;
-	
+
 	$scope.blast = {
 		date: DateTimeService.local(new Date).format('YYYY-MM-DD HH:mm:ss Z'),
 		content: 'Hello %n!'
 	};
-	
+
 	var updateBlasts = function() {
 		BlastService.list({}, function(d) {
 			$scope.blasts = d;
@@ -41,15 +41,15 @@ NGApp.controller('BlastsCtrl', function ($rootScope, $scope, BlastService, Socke
 		});
 
 	updateBlasts();
-	
+
 	$scope.cancel = function(id) {
 		BlastService.cancel(id, updateBlasts);
 	};
-	
+
 	$scope.save = function() {
 		BlastService.post($scope.blast, updateBlasts);
 	};
-	
+
 	$scope.sample = function() {
 		BlastService.sample({sample: $scope.blast.data, content: $scope.blast.content}, function(samples) {
 			$scope.samples = samples;
@@ -66,14 +66,14 @@ NGApp.controller('BlastCtrl', function ($scope, $routeParams, BlastService, $roo
 			$scope.loadingBlast = false;
 		});
 	};
-	
+
 	SocketService.listen('blast.' + $routeParams.id, $scope)
 		.on('update', function(d) {
 			updateBlast();
 		});
-	
+
 	updateBlast();
-	
+
 	$scope.cancel = function(id) {
 		BlastService.cancel(id, updateBlasts);
 	};

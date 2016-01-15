@@ -3,7 +3,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/dashboard', {
 			action: 'dashboard',
 			controller: 'DashboardCtrl',
-			templateUrl: 'assets/view/dashboard.html'
+			templateUrl: '/assets/view/dashboard.html'
 		});
 }]);
 

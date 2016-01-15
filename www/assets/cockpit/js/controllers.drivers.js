@@ -3,7 +3,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/resources', {
 			action: 'community-resources',
 			controller: 'CommunityResourcesDriverCtrl',
-			templateUrl: 'assets/view/drivers-resources.html'
+			templateUrl: '/assets/view/drivers-resources.html'
 
 		})
 }]);
@@ -13,13 +13,13 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/drivers/community', {
 			action: 'drivers-community',
 			controller: 'DriversCommunityCtrl',
-			templateUrl: 'assets/view/drivers-community.html'
+			templateUrl: '/assets/view/drivers-community.html'
 
 		})
 		.when('/drivers/notification/:id?', {
 			action: 'drivers-notification',
 			controller: 'DriversNotificationCtrl',
-			templateUrl: 'assets/view/drivers-notifications.html'
+			templateUrl: '/assets/view/drivers-notifications.html'
 
 		})
 }]);

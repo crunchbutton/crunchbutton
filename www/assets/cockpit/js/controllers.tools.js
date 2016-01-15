@@ -3,12 +3,12 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/tools', {
 			action: 'tools',
 			controller: 'ToolsCtrl',
-			templateUrl: 'assets/view/tools.html'
+			templateUrl: '/assets/view/tools.html'
 		})
 		.when('/tools/eta', {
 			action: 'tools-eta',
 			controller: 'ToolsETACtrl',
-			templateUrl: 'assets/view/tools-eta.html'
+			templateUrl: '/assets/view/tools-eta.html'
 		});
 }]);
 

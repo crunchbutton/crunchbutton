@@ -3,13 +3,13 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/community/resources', {
 			action: 'resources',
 			controller: 'CommunityResourcesCtrl',
-			templateUrl: 'assets/view/resources.html',
+			templateUrl: '/assets/view/resources.html',
 			reloadOnSearch: false
 		})
 		.when('/community/resource/:id?', {
 			action: 'resources',
 			controller: 'CommunityResourceCtrl',
-			templateUrl: 'assets/view/resources-resource.html'
+			templateUrl: '/assets/view/resources-resource.html'
 		});
 }]);
 
