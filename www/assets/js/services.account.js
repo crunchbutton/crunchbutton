@@ -485,7 +485,7 @@ NGApp.factory( 'AccountSignOut', function( $http, $rootScope, $location, Account
 
 	// When the user confirms the signout
 	service.signoutConfirmed = function( button ){
-		// PhoneGap send the button user pressed 1 == OK
+		// cordova send the button user pressed 1 == OK
 		if( button != 1 ){
 			return;
 		}
@@ -502,7 +502,7 @@ NGApp.factory( 'AccountSignOut', function( $http, $rootScope, $location, Account
 					App.processConfig(data);
 				});
 				// Redirect the user to location page
-				if (App.isPhoneGap) {
+				if (App.isCordova) {
 					MainNavigationService.link( '/splash' );
 				} else {
 					MainNavigationService.link( '/location' );

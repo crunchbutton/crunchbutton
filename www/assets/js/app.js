@@ -33,7 +33,7 @@ var App = {
 	touchY: null,
 	touchOffset: null,
 	localStorage: false,
-	isPhoneGap: (document.location.protocol == 'file:' || document.location.host == 'localhost:12344'),
+	isCordova: (document.location.protocol == 'file:' || document.location.host == 'localhost:12344'),
 	useNativeAlert: false,
 	useNativeConfirm: true,
 	ajaxTimeout: 5000,
@@ -61,11 +61,11 @@ var App = {
 
 App.useTransform = true;
 
-// enable localstorage on phonegap
-App.localStorage = App.isPhoneGap;
+// enable localstorage on cordova
+App.localStorage = App.isCordova;
 
 App.setLoggedIn = function(loggedIn) {
-	if ($('.is-ui2').get(0) && !loggedIn && App.isPhoneGap && App.enableSplash) {
+	if ($('.is-ui2').get(0) && !loggedIn && App.isCordova && App.enableSplash) {
 		var goToSplash = true;
 		if( localStorage && localStorage.locsv3 ){
 			var locsv3 = JSON.parse( localStorage.locsv3 );
@@ -397,15 +397,15 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			templateUrl: '/assets/view/home.html'
 		})
 	;
-	// only use html5 enabled location stuff if its not in a phonegap container
+	// only use html5 enabled location stuff if its not in a cordova container
 	$locationProvider.html5Mode({
-		enabled: !App.isPhoneGap,
+		enabled: !App.isCordova,
 		requireBase: false
 	});
 }]);
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, AccountService, MainNavigationService, AccountSignOut, CartService, ReferralService, LocationService, PhoneGapService, PushService, RestaurantService, RestaurantsService) {
+NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, AccountService, MainNavigationService, AccountSignOut, CartService, ReferralService, LocationService, CordovaService, PushService, RestaurantService, RestaurantsService) {
 	// define external pointers
 	App.rootScope = $rootScope;
 	App.location = $location;
@@ -434,9 +434,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		}
 	}
 
-	// hack to fix the phonegap bug at android with soft keyboard #2908
+	// hack to fix the cordova bug at android with soft keyboard #2908
 	$rootScope.softKeyboard = function( e ){
-		if( App.isPhoneGap && App.isAndroid() ){
+		if( App.isCordova && App.isAndroid() ){
 			var el = $( e.currentTarget );
 			var walkTo = ( $('.snap-content-inner').scrollTop() + el.offset().top - ( $( window ).height() / 2 ) + ( el.height() + 55 ) );
 			$( 'html, body, .snap-content-inner' ).animate( { scrollTop: walkTo }, '500');
@@ -447,9 +447,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$('.nav-top').removeClass('at-top');
 	};
 
-	// hack to fix the phonegap bug at android with soft keyboard #2908 - input at modals
+	// hack to fix the cordova bug at android with soft keyboard #2908 - input at modals
 	$rootScope.softKeyboardModal = function( e ){
-		if( App.isPhoneGap && App.isAndroid() ){
+		if( App.isCordova && App.isAndroid() ){
 			var el = $( '.mfp-content' );
 			if( el.css( 'marginTop' ) == '0px' ){
 				var walkTo = el.offset().top + 20;
@@ -462,7 +462,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.account = AccountService;
 	$rootScope.navigation = MainNavigationService;
 	$rootScope.signout = AccountSignOut;
-	$rootScope.isPhoneGap = App.isPhoneGap;
+	$rootScope.isCordova = App.isCordova;
 	$rootScope.server = App.server;
 
 	$rootScope.animationClass = '';
@@ -508,7 +508,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			// @todo: remove double data
 			if (data) {
 				$rootScope.account.user = data;
-				if (App.isPhoneGap) {
+				if (App.isCordova) {
 					$.totalStorage('token', data.token);
 				}
 				$rootScope.$broadcast( 'haveUser', $rootScope.account.user );
@@ -516,7 +516,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			}
 			// If the user logged out clean the cart!
 			if( !App.config.user.id_user ){
-				if (App.isPhoneGap) {
+				if (App.isCordova) {
 					$.totalStorage('token', null);
 				}
 				CartService.clean();
@@ -697,7 +697,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			MainNavigationService.navStack.push($route.current.$$route.originalPath);
 		}
 
-		if (App.isPhoneGap) {
+		if (App.isCordova) {
 			if (cordova && cordova.plugins) {
 				if (cordova.plugins.Keyboard) {
 					cordova.plugins.Keyboard.hideKeyboardAccessoryBar(MainNavigationService.page == 'restaurant' || MainNavigationService.page == 'apply' ? false : true);
@@ -764,7 +764,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 App.alert = function(txt, title, useNativeAlert, fn, good_news) {
 	setTimeout(function() {
-		if (useNativeAlert && App.isPhoneGap) {
+		if (useNativeAlert && App.isCordova) {
 			navigator.notification.alert(txt, null, title || 'Crunchbutton');
 		} else if ( useNativeAlert ) {
 			alert( txt );
@@ -780,7 +780,7 @@ App.remoteNotification = function(txt, title, fn) {
 };
 
 App.confirm = function(txt, title, fn, buttons) {
-	if (App.useNativeConfirm && App.isPhoneGap) {
+	if (App.useNativeConfirm && App.isCordova) {
 		return navigator.notification.confirm(txt, fn, title || 'Crunchbutton', buttons || 'Ok,Cancel' );
 	} else {
 		return confirm(txt);
@@ -1083,7 +1083,7 @@ App.init = function(config) {
 
 	// Check if the device is online or offline
 	App.verifyConnection.init();
-	App.phoneGapListener.init();
+	App.cordovaListener.init();
 
 	$(document).on('touchmove', ($('.is-ui2').get(0) ? '.mfp-wrap' : '.snap-drawers, .mfp-wrap, .support-container'), function(e) {
 		e.preventDefault();
@@ -1105,7 +1105,7 @@ App.init = function(config) {
 	});
 
 	// add ios7 styles for nav bar and page height
-	if (App.isPhoneGap && !App.iOS7()) {
+	if (App.isCordova && !App.iOS7()) {
 		$('body').removeClass('ios7');
 	}
 
@@ -1140,10 +1140,10 @@ App.init = function(config) {
 
 	}
 
-	// init the storage type. cookie, or localstorage if phonegap
+	// init the storage type. cookie, or localstorage if cordova
 	$.totalStorage.ls(App.localStorage);
 
-	// phonegap
+	// cordova
 	if (typeof CB !== 'undefined' && CB.config) {
 		App.config = CB.config;
 		CB.config = null;
@@ -1197,7 +1197,7 @@ App.init = function(config) {
 	}
 
 	// show download page only if its ui2 in an ios browser
-	if (App.iOS() && !App.isPhoneGap && !$.totalStorage('_viewmobile2') && $('.is-ui2').get(0)) {
+	if (App.iOS() && !App.isCordova && !$.totalStorage('_viewmobile2') && $('.is-ui2').get(0)) {
 		setTimeout(function(){
 			$rootScope.navigation.link('/download', 'instant');
 		},10);
@@ -1227,7 +1227,7 @@ App.init = function(config) {
 	$(window).trigger('nginit');
 
 	/*
-	if (!App.isPhoneGap) {
+	if (!App.isCordova) {
 		$(document).mousemove(function(e) {
 			if ($('.parallax-bg').length) {
 				console.log(e.pageX, e.pageY);
@@ -1237,7 +1237,7 @@ App.init = function(config) {
 	*/
 
 	// setup for system links
-	if (App.isPhoneGap) {
+	if (App.isCordova) {
 		$(document).on('click', 'a[target=_system]', function(e) {
 			e.preventDefault();
 			e.stopPropagation();
@@ -1262,7 +1262,7 @@ App.handleOpenURL = function(url) {
 
 	var handler = 'crunchbutton://';
 
-	if (!App.isPhoneGap || url.indexOf(handler) < 0) {
+	if (!App.isCordova || url.indexOf(handler) < 0) {
 		return;
 	}
 
@@ -1358,7 +1358,7 @@ App.dialog = {
  */
 App.playAudio = function(audio) {
 	var path = 'assets/audio/';
-	if (App.isPhoneGap) {
+	if (App.isCordova) {
 		window.plugins.NativeAudio.play(audio);
 	} else {
 		var sound = new Howl({
@@ -1369,19 +1369,19 @@ App.playAudio = function(audio) {
 }
 
 App.vibrate = function() {
-	if (App.isPhoneGap) {
+	if (App.isCordova) {
 		try {
 			navigator.vibrate(100);
 		} catch (e) {}
 	}
 }
 
-// Methods used by phoneGap
+// Methods used by cordova
 App.verifyConnection = {
 	isOffLine: false,
 	forceReload: false,
 	init: function () {
-		if (App.isPhoneGap) {
+		if (App.isCordova) {
 			App.verifyConnection.check( function( online ){
 				var timer = ( online ) ? 3000 : ( 3500 );
 				// hide splashscreen
@@ -1434,17 +1434,17 @@ App.setNotificationBarStatus = function( status ){
 	App.rootScope.$safeApply();
 }
 
-// Phonegap events listeners
-App.phoneGapListener = {
+// cordova events listeners
+App.cordovaListener = {
 	init : function(){
-		if( App.isPhoneGap ){
-			document.addEventListener( 'deviceready', App.phoneGapListener.deviceready , false );
-			document.addEventListener( 'pause', App.phoneGapListener.pause , false );
-			document.addEventListener( 'resume', App.phoneGapListener.resume , false );
-			document.addEventListener( 'online', App.phoneGapListener.online , false );
-			document.addEventListener( 'offline', App.phoneGapListener.offline , false );
+		if( App.isCordova ){
+			document.addEventListener( 'deviceready', App.cordovaListener.deviceready , false );
+			document.addEventListener( 'pause', App.cordovaListener.pause , false );
+			document.addEventListener( 'resume', App.cordovaListener.resume , false );
+			document.addEventListener( 'online', App.cordovaListener.online , false );
+			document.addEventListener( 'offline', App.cordovaListener.offline , false );
 			if( !navigator.onLine ){
-				App.phoneGapListener.offline();
+				App.cordovaListener.offline();
 			}
 		}
 	},
@@ -1496,7 +1496,7 @@ App.share = function(params) {
 
 	var pic = params.picture || 'http://crunchbutton.com/assets/images/facebook-like.png';
 
-	if (App.isPhoneGap && App.iOS() && window.facebookConnectPlugin) {
+	if (App.isCordova && App.iOS() && window.facebookConnectPlugin) {
 		facebookConnectPlugin.showDialog({
 			method: 'feed',
 			user_message_prompt: 'Crunchbutton',
@@ -1603,7 +1603,7 @@ App.loadConfig = function() {
 };
 
 $(function() {
-	if (!App.isPhoneGap) {
+	if (!App.isCordova) {
 		App.loadConfig();
 	}
 });

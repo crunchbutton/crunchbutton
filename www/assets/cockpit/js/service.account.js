@@ -51,7 +51,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 	};
 
 	service.login = function( username, password, callback ) {
-		// App.isPhoneGap
+		// App.isCordova
 		user.login( { 'username': username, 'password': password, 'native': true }, function( json ){
 			if( json && json.id_admin ){
 				$rootScope.$broadcast( 'userAuth', json );

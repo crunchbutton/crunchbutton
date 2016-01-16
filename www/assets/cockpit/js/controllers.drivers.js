@@ -1587,7 +1587,7 @@ NGApp.controller('DriversWelcomeLocationCtrl', function($location, LocationServi
 	};
 	var l;
 	$scope.locateit = function() {
-		if (App.isPhoneGap) {
+		if (App.isCordova) {
 			LocationService.register(complete);
 		} else {
 			complete();
@@ -1606,7 +1606,7 @@ NGApp.controller('DriversWelcomePushCtrl', function($rootScope, $location, PushS
 		$rootScope.$safeApply();
 	};
 	$scope.pushit = function() {
-		if (App.isPhoneGap && PushService.register) {
+		if (App.isCordova && PushService.register) {
 			PushService.register(complete);
 		} else {
 			complete();

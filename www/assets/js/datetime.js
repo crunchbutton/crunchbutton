@@ -30,7 +30,7 @@ dateTime.updateGMT = function( gmt ){
 	}
 }
 
-// This method will be called by phonegap at the 'resume' event
+// This method will be called by cordova at the 'resume' event
 dateTime.restart = function(){
 	dateTime.timer = 0;
 	dateTime.now = false;

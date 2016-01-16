@@ -196,7 +196,7 @@ NGApp.controller('SplashCtrl', function ($scope, AccountFacebookService) {
 
 	if (App.parallax.setupBackgroundImage) {
 		App.parallax.setupBackgroundImage( $( '.home-top' ).get( 0 ) );
-		if( App.isPhoneGap && App.isAndroid() ){
+		if( App.isCordova && App.isAndroid() ){
 			// Android App: Tough to Get to Enter Address #2905
 			angular.element( '.fixed-599' ).css( 'position', 'static' ).css( 'marginTop', 10 );
 		}
@@ -326,7 +326,7 @@ NGApp.controller('HelpCtrl', function ($scope) {
  * Home controller
  */
 NGApp.controller('HomeCtrl', function ($scope, $http, $location, RestaurantsService, LocationService) {
-	if (!App.isPhoneGap) {
+	if (!App.isCordova) {
 		// If it have a valid restaurant position just reditect to restaurants page
 		if (LocationService.position.pos().valid('restaurants')) {
 			$location.path('/' + RestaurantsService.permalink);
@@ -467,7 +467,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 
 	$scope.$on( '$destroy', function(){
 		checkLoadedRestaurants = false;
-		if( App.isPhoneGap && App.isAndroid() && checkIfRestaurantsWereLoaded ){
+		if( App.isCordova && App.isAndroid() && checkIfRestaurantsWereLoaded ){
 			$timeout.cancel( checkIfRestaurantsWereLoaded );
 		}
 		RestaurantsService.forceGetStatus = true;
@@ -566,7 +566,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	var listLoaded = false;
 
 	// See #5129
-	if( App.isPhoneGap && App.isAndroid() ){
+	if( App.isCordova && App.isAndroid() ){
 		var checkIfRestaurantsWereLoaded = $timeout(function() {
 			if( $route.current && $route.current.$$route && $route.current.$$route.action == 'restaurants' && checkLoadedRestaurants && !listLoaded ){
 				error();
@@ -713,8 +713,8 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 
 	$scope.location = LocationService;
 
-	// @todo: this function prevents angular from rendering on phonegap correctly until it gets a response back from google (about 9 seconds)
-	if (!App.isPhoneGap) {
+	// @todo: this function prevents angular from rendering on cordova correctly until it gets a response back from google (about 9 seconds)
+	if (!App.isCordova) {
 		$scope.location.init();
 	}
 
@@ -921,7 +921,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 				// Address not ok
 				function() {
 					$scope.loadingLocation = $scope.loadingGetfood = false;
-					var oopsText = App.isPhoneGap ? 'Oops! Please enter an address' : '&#9785; Oops! Please enter a street name, number, and city';
+					var oopsText = App.isCordova ? 'Oops! Please enter an address' : '&#9785; Oops! Please enter a street name, number, and city';
 					$('.location-address').val('').attr('placeholder',$('<div>').html(oopsText).text());
 					$scope.warningPlaceholder = true;
 					$scope.focus( '.location-address' );
@@ -1641,7 +1641,7 @@ NGApp.controller('ProfileCtrl', function ($scope, $filter, AccountService ) {
 			} );
 		}
 
-		if (App.useNativeConfirm && App.isPhoneGap) {
+		if (App.useNativeConfirm && App.isCordova) {
 			App.confirm( 'Confirm remove credit card?',' Confirm?', remove );
 		} else {
 			if( App.confirm( 'Confirm remove credit card?' ) ){

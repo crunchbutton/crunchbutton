@@ -94,7 +94,7 @@ var Restaurant = function(id) {
 
 		self.categories();
 
-		if (App.isPhoneGap) {
+		if (App.isCordova) {
 			// this shouldnt be used anymore, but old apps will still be pulling from this url
 			// self.img = App.imgServer + '596x596/' + img +  '.jpg';
 		}

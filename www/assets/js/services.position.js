@@ -153,8 +153,8 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 		var success = success || function () {};
 		var error = error || function () {};
 
-		// it is taking about 25 to 30 secs to detect the user's location at phonegap
-		var timer = timer || ( App.isPhoneGap ? 30000 : 8000 );
+		// it is taking about 25 to 30 secs to detect the user's location at cordova
+		var timer = timer || ( App.isCordova ? 30000 : 8000 );
 
 		if ( navigator.geolocation ) {
 
@@ -259,7 +259,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 
 		service.initied = true;
 
-		if ( App.isPhoneGap ) {
+		if ( App.isCordova ) {
 			if ( parseInt( service.position.locs.length ) > 0 ) {
 				service.restaurantsService.list(
 					// success - has restaurants

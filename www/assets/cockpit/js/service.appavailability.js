@@ -5,7 +5,7 @@ NGApp.factory( 'AppAvailabilityService', function() {
 	var schemes = { maps: {} };
 	schemes.maps.waze = {
 		scheme: function(){
-						if( App.isPhoneGap ){
+						if( App.isCordova ){
 							if( App.iOS() ){ return 'waze://'; }
 							if( App.isAndroid() ){ return 'com.waze'; }
 						}
@@ -17,7 +17,7 @@ NGApp.factory( 'AppAvailabilityService', function() {
 
 	schemes.maps.google = {
 		scheme: function(){
-						if( App.isPhoneGap ){
+						if( App.isCordova ){
 							if( App.iOS() ){ return 'comgooglemaps://'; }
 							if( App.isAndroid() ){ return true; }
 						}
@@ -29,7 +29,7 @@ NGApp.factory( 'AppAvailabilityService', function() {
 
 	schemes.maps.apple = {
 		scheme: function(){
-						if( App.isPhoneGap ){
+						if( App.isCordova ){
 							if( App.iOS() ){ return true; }
 							if( App.isAndroid() ){ return false; }
 						}

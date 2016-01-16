@@ -144,7 +144,7 @@ NGApp.factory('ViewListService', function($rootScope, $location, $timeout) {
 			updater();
 		};
 
-		if (!App.isPhoneGap) {
+		if (!App.isCordova) {
 			scope.focus('#search');
 		}
 

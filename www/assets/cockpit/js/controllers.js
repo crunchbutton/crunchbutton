@@ -13,7 +13,7 @@ NGApp.controller('DefaultCtrl', function ($rootScope, $scope, $http, $location, 
 		if( !isNaN( parseInt( id_order ) ) ){
 			MainNavigationService.link('/drivers/order/' + id_order, 'instant');
 		} else {
-			if (App.isPhoneGap && !$.totalStorage('isDriverWelcomeSetup')) {
+			if (App.isCordova && !$.totalStorage('isDriverWelcomeSetup')) {
 				setTimeout(function(){
 					MainNavigationService.link('/drivers/welcome', 'instant');
 					$rootScope.$apply();
@@ -103,7 +103,7 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 	$scope.login = function() {
 		if( !$scope.username ){
 			App.alert('Please enter your username', '', false, function() {
-				if (!App.isPhoneGap) {
+				if (!App.isCordova) {
 					$rootScope.focus('[name="username"]');
 				}
 			});
@@ -111,7 +111,7 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 		}
 		if( !$scope.password ){
 			App.alert('Please enter your password', '', false, function() {
-				if (!App.isPhoneGap) {
+				if (!App.isCordova) {
 					$rootScope.focus('[name="password"]');
 				}
 			});
@@ -132,7 +132,7 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 				}
 			} else {
 				$scope.error = true;
-				if (!App.isPhoneGap) {
+				if (!App.isCordova) {
 					$rootScope.focus('[name="username"]');
 				}
 			}
@@ -177,7 +177,7 @@ NGApp.controller( 'ProfilePasswordCtrl', function ($scope, ProfileService) {
 NGApp.controller( 'NotificationAlertCtrl', function ($scope, $rootScope ) {
 	$rootScope.$on('notificationAlert', function(e, title, message, fn, unselectable) {
 
-		if (!App.isPhoneGap) {
+		if (!App.isCordova) {
 			$(':focus').blur();
 		}
 

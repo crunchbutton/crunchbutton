@@ -16,17 +16,17 @@ var App = {
 	config: null,
 	_init: false,
 	localStorage: false,
-	isPhoneGap: document.location.protocol == 'file:',
+	isCordova: document.location.protocol == 'file:',
 	useNativeAlert: true,
 	useNativeConfirm: true,
 	ajaxTimeout: 5000,
 	version: null
 };
 
-// enable localstorage on phonegap
-App.localStorage = App.isPhoneGap;
+// enable localstorage on cordova
+App.localStorage = App.isCordova;
 
-if (App.isPhoneGap) {
+if (App.isCordova) {
 	App.service = 'https://cockpit.la/api/';
 }
 
@@ -34,7 +34,7 @@ if ( navigator.appVersion.indexOf( 'Win' ) !=-1 ){
 	App.isWindows = true;
 };
 
-console.debug((App.isPhoneGap ? 'Is' : 'Is not') + ' Phonegap')
+console.debug((App.isCordova ? 'Is' : 'Is not') + ' Cordova')
 
 var NGApp = angular.module('NGApp', ['chart.js', 'ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload', 'angularMoment', 'btford.socket-io', 'cfp.hotkeys', 'ngMap', 'ui.select','pasvaz.bindonce' , 'ngSanitize'], function( $httpProvider ) {
 
@@ -544,8 +544,8 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'DefaultCtrl',
 			templateUrl: '/assets/view/general-default.html'
 		});
-	// only use html5 enabled location stuff if its not in a phonegap container
-	//$locationProvider.html5Mode(!App.isPhoneGap);
+	// only use html5 enabled location stuff if its not in a cordova container
+	//$locationProvider.html5Mode(!App.isCordova);
 
 	$locationProvider.html5Mode({
 		enabled: true,
@@ -556,7 +556,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 // global route change items
 NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash, LocationService, HeartbeatService, PushService, TicketViewService, CallService, DriverOrdersViewService, errorInterceptor, TwilioService, AppAvailabilityService) {
 
-	if (App.isPhoneGap) {
+	if (App.isCordova) {
 		$http.defaults.headers.common['app-version'] = App.version;
 	}
 
@@ -586,7 +586,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.title = '';
 	$rootScope.flash = flash;
 	$rootScope.navigation = MainNavigationService;
-	$rootScope.isPhoneGap = App.isPhoneGap;
+	$rootScope.isCordova = App.isCordova;
 	$rootScope.server = App.server;
 	$rootScope.account = AccountService;
 	$rootScope.location = LocationService;
@@ -669,8 +669,8 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		App.go.apply(arguments);
 	};
 
-	if (App.isPhoneGap) {
-		$('body').addClass('phonegap');
+	if (App.isCordova) {
+		$('body').addClass('cordova');
 	}
 
 	$rootScope.instant = function() {
@@ -842,7 +842,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 					if( !isAllowed  ) {
 						$.totalStorage( 'redirect_to', $location.url() );
 						// Force login page
-						if( App.isPhoneGap ){
+						if( App.isCordova ){
 							MainNavigationService.link( '/login' );
 						} else {
 							window.stop();
@@ -870,7 +870,7 @@ App.alert = function(txt, title, useNativeAlert, fn, unselectable ) {
 
 	setTimeout(function() {
 		App.rootScope.closePopup();
-		if (useNativeAlert && App.isPhoneGap && parent.window.navigator && parent.window.navigator.notification) {
+		if (useNativeAlert && App.isCordova && parent.window.navigator && parent.window.navigator.notification) {
 			parent.window.navigator.notification.alert(txt, null, title || 'Crunchbutton');
 		} else {
 
@@ -891,7 +891,7 @@ App.agreementBox = function(txt, title, success, fail) {
 };
 
 App.confirm = function(txt, title, success, fail, buttons, force) {
-	if ( force || ( App.useNativeConfirm && App.isPhoneGap && parent.window.navigator && parent.window.navigator.notification ) ) {
+	if ( force || ( App.useNativeConfirm && App.isCordova && parent.window.navigator && parent.window.navigator.notification ) ) {
 		setTimeout(function() {
 			App.rootScope.$broadcast('notificationConfirm', title || '', txt, success, fail, buttons);
 		});
@@ -917,7 +917,7 @@ App.go = function( url, transition ){
 			App.rootScope.animationClass = transition ? 'animation-' + transition : '';
 			App.rootScope.$safeApply();
 			// @todo: do some tests to figure out if we need this or not
-			// App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
+			// App.location.path(!App.isCordova ? url : 'index.html#' + url);
 			App.location.path( url || '/' );
 			App.rootScope.$safeApply();
 		}, 10 );
@@ -997,7 +997,7 @@ App.init = function(config) {
 		return;
 	}
 
-	App.phoneGapListener.init();
+	App.cordovaListener.init();
 
 	App._init = true;
 
@@ -1010,7 +1010,7 @@ App.init = function(config) {
 	FastClick.attach(document.body);
 
 	// add ios7 styles for nav bar and page height
-	if (App.isPhoneGap && !App.iOS7()) {
+	if (App.isCordova && !App.iOS7()) {
 		$('body').removeClass('ios7');
 	}
 
@@ -1045,10 +1045,10 @@ App.init = function(config) {
 
 	}
 
-	// init the storage type. cookie, or localstorage if phonegap
+	// init the storage type. cookie, or localstorage if cordova
 	$.totalStorage.ls(App.localStorage);
 
-	// phonegap
+	// cordova
 	if (typeof CB !== 'undefined' && CB.config) {
 		App.config = CB.config;
 		CB.config = null;
@@ -1072,7 +1072,7 @@ App.init = function(config) {
 	$( window ).trigger( 'nginit' );
 
 	/*
-	if (!App.isPhoneGap) {
+	if (!App.isCordova) {
 		$(document).mousemove(function(e) {
 			if ($('.parallax-bg').length) {
 				console.log(e.pageX, e.pageY);
@@ -1082,7 +1082,7 @@ App.init = function(config) {
 	*/
 
 
-	if (App.isPhoneGap) {
+	if (App.isCordova) {
 		// setup for system links
 		$(document).on('click', 'a[target=_system], a[target=_blank]', function(e) {
 			e.preventDefault();
@@ -1229,17 +1229,17 @@ document.addEventListener('statusTap', function() {
 
 
 
-// Phonegap events listeners
-App.phoneGapListener = {
+// cordova events listeners
+App.cordovaListener = {
 	init : function(){
-		if( App.isPhoneGap ){
-			document.addEventListener( 'deviceready', App.phoneGapListener.deviceready , false );
-			document.addEventListener( 'pause', App.phoneGapListener.pause , false );
-			document.addEventListener( 'resume', App.phoneGapListener.resume , false );
-			document.addEventListener( 'online', App.phoneGapListener.online , false );
-			document.addEventListener( 'offline', App.phoneGapListener.offline , false );
+		if( App.isCordova ){
+			document.addEventListener( 'deviceready', App.cordovaListener.deviceready , false );
+			document.addEventListener( 'pause', App.cordovaListener.pause , false );
+			document.addEventListener( 'resume', App.cordovaListener.resume , false );
+			document.addEventListener( 'online', App.cordovaListener.online , false );
+			document.addEventListener( 'offline', App.cordovaListener.offline , false );
 			if( !navigator.onLine ){
-				App.phoneGapListener.offline();
+				App.cordovaListener.offline();
 			}
 		}
 	},
@@ -1269,11 +1269,11 @@ App.phoneGapListener = {
  */
 App.playAudio = function(audio) {
 
-	if( App.isPhoneGap && App.isAndroid() ){
+	if( App.isCordova && App.isAndroid() ){
 		return;
 	}
 
-	var path = (App.isPhoneGap ? 'https://cockpit.la/assets/cockpit/audio/' : '/') + 'assets/cockpit/audio/';
+	var path = (App.isCordova ? 'https://cockpit.la/assets/cockpit/audio/' : '/') + 'assets/cockpit/audio/';
 	var sound = new Howl({
 		urls: [path + audio + '.mp3', path + audio + '.ogg']
 	}).play();
@@ -1284,7 +1284,7 @@ function handleOpenURL(url) {
 
 	var handler = 'cockpit://';
 
-	if (!App.isPhoneGap || url.indexOf(handler) < 0) {
+	if (!App.isCordova || url.indexOf(handler) < 0) {
 		return;
 	}
 
