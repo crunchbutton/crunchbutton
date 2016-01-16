@@ -4825,10 +4825,3 @@ a.button {
 .cordova.ios .snap-drawer {
 	padding-top: 2em;
 }
-
-.page-login body {
-	pointer-events: none;
-}
-.page-login .login-content input, .page-login .login-content button, .page-login .info a, .page-login .mfp-wrap {
-	pointer-events: all !important;
-}
