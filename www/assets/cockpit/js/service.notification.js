@@ -8,7 +8,7 @@ NGApp.factory('NotificationService', function($http) {
 	var ms = 5000;
 
 	service.check = function(fn) {
-		if (!window.Notification || App.isPhoneGap) {
+		if (!window.Notification || App.isCordova) {
 			return;
 		}
 
@@ -28,7 +28,7 @@ NGApp.factory('NotificationService', function($http) {
 	};
 	
 	service.notify = function(title, body, icon, fn) {
-		if (!window.Notification || App.isPhoneGap || document.hasFocus()) {
+		if (!window.Notification || App.isCordova || document.hasFocus()) {
 			return;
 		}
 		

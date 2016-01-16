@@ -29,7 +29,7 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 	}
 
 	service.home = function() {
-		if (App.isPhoneGap && cordova) {
+		if (App.isCordova && cordova) {
 			$('html, body, .snap-content-inner').animate({scrollTop: 0}, 200, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
 		} else if (App.isMobile()) {
 			service.menu();

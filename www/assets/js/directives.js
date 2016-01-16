@@ -297,7 +297,7 @@ NGApp.directive('ngScrollSpy', function () {
 
 
 
-			if (App.isPhoneGap) {
+			if (App.isCordova) {
 
 				var sp = {
 					min: -300,
@@ -430,7 +430,7 @@ NGApp.directive('ngSimulateReadOnly', function () {
 	return {
 		restrict: 'A',
 		link: function (scope, elem, attr) {
-			if( App.isMobile() || App.isPhoneGap ){
+			if( App.isMobile() || App.isCordova ){
 				angular.element(elem).bind('click keyup keydown change focus', function (evt) {
 					elem.val(attr.ngSimulateReadOnly);
 					elem.select();

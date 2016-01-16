@@ -132,7 +132,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 					service.running = true;
 					App.log.account({'userID': status.authResponse.userID, 'running': service.running}, 'facebook running');
 
-					// if it is phonegap call a special facebook connection
+					// if it is cordova call a special facebook connection
 					var data = {};
 
 					url = App.service + 'user/facebook?fbrtoken=' + service.token;

@@ -7,7 +7,7 @@ NGApp.factory('PushService', function($http, $location, $timeout, MainNavigation
 		plugin: null
 	};
 
-	if (!App.isPhoneGap || !window.parent.PushNotification) {
+	if (!App.isCordova || !window.parent.PushNotification) {
 		return service;
 	}
 

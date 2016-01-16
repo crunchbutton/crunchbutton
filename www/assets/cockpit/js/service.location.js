@@ -3,7 +3,7 @@
 
 NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountService) {
 
-	if (App.isPhoneGap && parent.window.plugins && parent.window.plugins.backgroundGeoLocation) {
+	if (App.isCordova && parent.window.plugins && parent.window.plugins.backgroundGeoLocation) {
 
 		var bgGeo = parent.window.plugins.backgroundGeoLocation;
 
@@ -138,7 +138,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 				service.locationDenied()
 			}, { enableHighAccuracy: true });
 		}
-		if (App.isPhoneGap && bgGeo) {
+		if (App.isCordova && bgGeo) {
 			watcher = true;
 			parent.window.navigator.geolocation.getCurrentPosition(function(pos) {
 				webLocationTrack(pos);
@@ -169,7 +169,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope, AccountS
 		parent.window.navigator.geolocation.clearWatch(watcher);
 		watcher = null;
 
-		if (App.isPhoneGap && bgGeo) {
+		if (App.isCordova && bgGeo) {
 			bgGeo.stop();
 		}
 	}

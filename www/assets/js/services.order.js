@@ -708,7 +708,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 							$rootScope.$safeApply( function(){
 								// Make sure that the form will be visible
 								service.showForm = true;
-								if (!App.isPhoneGap) {
+								if (!App.isCordova) {
 									$('[name="pay-address"]').focus();
 								}
 								// Write the found address at the address field, so the user can check it.

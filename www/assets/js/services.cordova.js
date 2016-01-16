@@ -1,22 +1,22 @@
 // Layout fixes
-NGApp.factory( 'PhoneGapService', function( $route, $rootScope ){
+NGApp.factory( 'CordovaService', function( $route, $rootScope ){
 
-	if( !App.isPhoneGap ){
+	if( !App.isCordova ){
 		return {};
 	}
 
 	service = {
-		isPhoneGap : App.isPhoneGap,
+		isCordova : App.isCordova,
 		isAndroid : App.isAndroid()
 	};
-	
+
 	$rootScope.$on('$routeChangeSuccess', function ( $currentRoute, $previousRoute ) {
 		service.routeChanged( $route.current.action );
 	} );
 
 	service.routeChanged = function( route ){
 		// hiden the keyboard accessory on the location page.
-		if (App.isPhoneGap && App.iOS() && navigator && navigator.keyboard) {
+		if (App.isCordova && App.iOS() && navigator && navigator.keyboard) {
 			if (route == 'location') {
 				navigator.keyboard.hide();
 			} else {
@@ -24,9 +24,9 @@ NGApp.factory( 'PhoneGapService', function( $route, $rootScope ){
 			}
 		}
 
-		if( App.isPhoneGap && !App.splashHidden && ( !route || route == 'home' ) ){
+		if( App.isCordova && !App.splashHidden && ( !route || route == 'home' ) ){
 			//navigator.splashscreen.show();
-		} else {			
+		} else {
 			setTimeout( function(){
 				navigator.splashscreen.hide();
 				App.splashHidden = true;
@@ -39,9 +39,9 @@ NGApp.factory( 'PhoneGapService', function( $route, $rootScope ){
 				if( service.isAndroid ){
 					// Fix the location background
 					setTimeout( function(){
-						$( '.home-top' ).css( 'background-position','top right' );	
+						$( '.home-top' ).css( 'background-position','top right' );
 					}, 100 );
-					
+
 				}
 				break;
 		}

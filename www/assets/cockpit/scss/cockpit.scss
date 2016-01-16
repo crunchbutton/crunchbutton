@@ -4136,7 +4136,7 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 	padding-top: 15px;
 }
 
-.phonegap .order-box-top .top-pad {
+.cordova .order-box-top .top-pad {
 	padding-top: 22px;
 	height: 4.4em;
 }
@@ -4203,7 +4203,7 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 	text-align:left !important;
 }
 
-.phonegap .top-pad {
+.cordova .top-pad {
 	height: 66px;
 }
 
@@ -4817,3 +4817,11 @@ a.button {
 	#username::-webkit-input-placeholder, #password::-webkit-input-placeholder{
 		color: transparent;
 	}
+
+
+.cordova .nav-top {
+	padding-top: 25px;
+}
+.cordova .snap-drawer {
+	padding-top: 2em;
+}
