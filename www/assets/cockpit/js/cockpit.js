@@ -673,6 +673,16 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$('body').addClass('cordova');
 	}
 
+	if (App.iOS()) {
+		$('body').addClass('ios');
+	}
+
+	if (App.isAndroid()) {
+		$('body').addClass('android');
+	}
+
+
+
 	$rootScope.instant = function() {
 		$('body').addClass('instant');
 		setTimeout(function(){
