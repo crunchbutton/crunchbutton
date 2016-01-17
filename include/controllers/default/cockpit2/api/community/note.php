@@ -5,7 +5,7 @@ class Controller_api_community_note extends Crunchbutton_Controller_RestAccount 
 	public function init() {
 
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'notes-all' ])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 		if( $this->method() == 'post' ){
@@ -17,14 +17,14 @@ class Controller_api_community_note extends Crunchbutton_Controller_RestAccount 
 			}
 
 			if (!$community->id_community) {
-				$this->error(404);
+				$this->error(404, true);
 			}
 
 			$note = $community->addNote( $this->request()[ 'note' ] );
 			echo json_encode( $note->exports() );exit;
 		}
 
-		$this->error(401);
+		$this->error(401, true);
 
 	}
 

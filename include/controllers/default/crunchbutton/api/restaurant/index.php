@@ -125,7 +125,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 		}
 
 		if (!$restaurant || !$restaurant->id_restaurant) {
-			$this->error(404);
+			$this->error(404, true);
 			exit;
 		}
 

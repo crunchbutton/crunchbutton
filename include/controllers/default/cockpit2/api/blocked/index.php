@@ -19,7 +19,7 @@ class Controller_Api_Blocked extends Crunchbutton_Controller_Rest {
 					}
 					echo json_encode( [ 'success' => $status ] );exit();
 				} else {
-					$this->error(404);
+					$this->error(404, true);
 				}
 			} else if ( $this->request()[ 'id_phone' ] || $this->request()[ 'phone' ] ) {
 				if( $this->request()[ 'id_phone' ] ){
@@ -37,17 +37,17 @@ class Controller_Api_Blocked extends Crunchbutton_Controller_Rest {
 					}
 					echo json_encode( [ 'success' => $status ] );exit();
 				} else {
-					$this->error(404);
+					$this->error(404, true);
 				}
 			}
 		} else {
-			$this->error(404);
+			$this->error(404, true);
 		}
 
 	}
 	private function _permissionDenied(){
 		if (!c::admin()->permission()->check(['global', 'customer-all', 'customer-block' ])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 	}
 }

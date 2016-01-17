@@ -49,7 +49,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 					}
 
 					if (!$staff->id_admin) {
-						$this->error(404);
+						$this->error(404, true);
 					}
 
 					switch (c::getPagePiece(3)) {
@@ -193,7 +193,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	private function _permissionDenied(){
 		if (!c::admin()->permission()->check(['global', 'permission-all', 'permission-users'])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 	}
 
@@ -466,7 +466,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	private function _isPost(){
 		if( $this->method() != 'post' ){
-			$this->error(404);
+			$this->error(404, true);
 		}
 	}
 

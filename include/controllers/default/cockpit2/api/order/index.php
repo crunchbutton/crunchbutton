@@ -71,11 +71,11 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 		}
 
 		if (!$order->id_order) {
-			$this->error(404);
+			$this->error(404, true);
 		}
 
 		if (!c::admin()->permission()->check(['global','orders-all','orders-list-page']) && $restaurant->id_restaurant != $order->id_restaurant) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 		// update an order
@@ -99,7 +99,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 			case 'refund-info':
 				if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
-					$this->error(401);
+					$this->error(401, true);
 				}
 
 				$out[ 'id_order' ] = $order->id_order;
@@ -114,18 +114,18 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 			case 'campus-cash':
 				if (!c::admin()->permission()->check(['global', 'campus-cash'])) {
-					$this->error(401);
+					$this->error(401, true);
 				}
 				if ($this->method() == 'post') {
 					$sha1 = $this->request()[ 'sha1' ];
 					echo json_encode( [ 'success' => $order->campus_cash_studentID( $sha1 ) ] );
 				} else {
-					$this->error(401);
+					$this->error(401, true);
 				}
 				break;
 			case 'refund':
 				if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
-					$this->error(401);
+					$this->error(401, true);
 				}
 
 				$reason = $this->request()[ 'reason' ];
@@ -156,7 +156,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 			case 'do_not_reimburse_driver':
 				if (!c::admin()->permission()->check(['global', 'support-all'])) {
-					$this->error(401);
+					$this->error(401, true);
 				}
 				$order->do_not_reimburse_driver = ( $order->do_not_reimburse_driver == 1 ? false : true );
 				$order->save();
@@ -165,7 +165,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 			case 'do_not_pay_driver':
 				if (!c::admin()->permission()->check(['global', 'support-all'])) {
-					$this->error(401);
+					$this->error(401, true);
 				}
 				$order->do_not_pay_driver = ( $order->do_not_pay_driver == 1 ? false : true );
 				$order->do_not_reimburse_driver = $order->do_not_pay_driver;
@@ -175,7 +175,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 			case 'do_not_pay_restaurant':
 				if (!c::admin()->permission()->check(['global', 'support-all'])) {
-					$this->error(401);
+					$this->error(401, true);
 				}
 				$order->do_not_pay_restaurant = ( $order->do_not_pay_restaurant == 1 ? 0 : 1 );
 				$order->save();
@@ -184,7 +184,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 			case 'approve_address':
 				if (!c::admin()->permission()->check(['global', 'support-all'])) {
-					$this->error(401);
+					$this->error(401, true);
 				}
 				if( $order->approve_address() ){
 					echo json_encode( [ 'success' => true ] );
@@ -195,7 +195,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 			case 'mark_cash_card_charged':
 				if (!c::admin()->permission()->check(['global', 'support-all'])) {
-					$this->error(401);
+					$this->error(401, true);
 				}
 				if( $order->mark_cash_card_charged() ){
 					echo json_encode( [ 'success' => true ] );
@@ -207,7 +207,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 			case 'resend_notification':
 				if ( !c::admin()->permission()->check(['global','orders-all','orders-notification'])) {
-					$this->error(401);
+					$this->error(401, true);
 				}
 				echo json_encode(['status' => $order->resend_notify() ? 'success' : 'error']);
 
@@ -215,7 +215,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 			case 'resend_notification_drivers':
 				if ( !c::admin()->permission()->check(['global','orders-all','orders-notification'])) {
-					$this->error(401);
+					$this->error(401, true);
 				}
 				echo json_encode(['status' => $order->resend_notify_drivers() ? 'success' : 'error']);
 

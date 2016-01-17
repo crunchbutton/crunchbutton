@@ -5,7 +5,7 @@ class Controller_api_pexcards extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
 		if (!c::admin()->permission()->check( ['global', 'drivers-all'])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 		$out = [];

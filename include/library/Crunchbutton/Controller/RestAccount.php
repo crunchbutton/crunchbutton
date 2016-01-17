@@ -12,7 +12,7 @@ class Crunchbutton_Controller_RestAccount extends Crunchbutton_Controller_Rest {
 		} else {
 			if (!c::admin()->id_admin) {
 				header('WWW-Authenticate: Basic realm="Crunchbutton - '.$_SERVER['PHP_AUTH_USER'].'"');
-				$this->error(401);
+				$this->error(401, true);
 			}
 		}
 

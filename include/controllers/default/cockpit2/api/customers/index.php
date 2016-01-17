@@ -8,7 +8,7 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 		}
 
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 

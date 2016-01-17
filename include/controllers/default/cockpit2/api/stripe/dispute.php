@@ -91,7 +91,7 @@ class Controller_Api_Stripe_Dispute extends Crunchbutton_Controller_Rest {
 	private function _evidence(){
 		$evidence = Crunchbutton_Stripe_Dispute_Evidence::o( c::getPagePiece( 4 ) );
 		if( !$evidence->id_stripe_dispute_evidence ){
-			$this->error(404);
+			$this->error(404, true);
 		}
 		return $evidence;
 	}
@@ -99,7 +99,7 @@ class Controller_Api_Stripe_Dispute extends Crunchbutton_Controller_Rest {
 	private function _dispute(){
 		$dispute = Crunchbutton_Stripe_Dispute::o( c::getPagePiece( 3 ) );
 		if( !$dispute->id_stripe_dispute ){
-			$this->error(404);
+			$this->error(404, true);
 		}
 		return $dispute;
 	}
@@ -120,7 +120,7 @@ class Controller_Api_Stripe_Dispute extends Crunchbutton_Controller_Rest {
 				echo json_encode( [ 'error' => 'invalid extension' ] );exit();
 			}
 		} else {
-			$this->error(404);
+			$this->error(404, true);
 		}
 	}
 
@@ -143,7 +143,7 @@ class Controller_Api_Stripe_Dispute extends Crunchbutton_Controller_Rest {
 
 	private function _permissionDenied(){
 		if (!c::admin()->permission()->check( [ 'global', 'disputes-all' ] ) ) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 	}
 }

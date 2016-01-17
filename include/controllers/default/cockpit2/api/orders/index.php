@@ -5,7 +5,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
 		if (!c::admin()->permission()->check(['global','orders-all','orders-list-page']) ) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 		if ($this->method() != 'get') {

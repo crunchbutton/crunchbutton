@@ -6,7 +6,7 @@ class Controller_api_delivery_signup extends Crunchbutton_Controller_RestAccount
 
 		if (!c::admin()->permission()->check( [ 'global', 'delivery-sign-up-all' ] ) ) {
 
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 		switch ( c::getPagePiece( 3 ) ) {
@@ -30,7 +30,7 @@ class Controller_api_delivery_signup extends Crunchbutton_Controller_RestAccount
 			$delivery_signup->save();
 			echo json_encode( [ 'success' => true ] );exit;
 		} else {
-			$this->error(401);
+			$this->error(401, true);
 		}
 	}
 

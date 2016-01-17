@@ -5,7 +5,7 @@ class Controller_api_community_notes extends Crunchbutton_Controller_RestAccount
 	public function init() {
 
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'notes-all' ])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 		$limit = $this->request()['limit'] ? $this->request()['limit'] : 20;

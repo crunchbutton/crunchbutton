@@ -5,7 +5,7 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
 		if (!c::admin()->permission()->check(['global', 'server-deploy-admin', 'server-deploy'])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 		switch (c::getPagePiece(2)) {
@@ -20,7 +20,7 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 					$server = Deploy_Server::byName(c::getPagePiece(3));
 				}
 				if (!$server->id_deploy_server) {
-					$this->error(404);
+					$this->error(404, true);
 				}
 				
 				switch (c::getPagePiece(4)) {
@@ -47,7 +47,7 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 			case 'version':
 				if ($this->method() == 'post' || $this->method() == 'delete') {
 					if (!c::admin()->permission()->check(['server-deploy-admin'])) {
-						$this->error(401);
+						$this->error(401, true);
 					}
 					
 					if ($this->method() == 'post') {
@@ -57,7 +57,7 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 							$server = Deploy_Server::byName($this->request()['id_deploy_server']);
 						}
 						if (!$server->id_deploy_server) {
-							$this->error(404);
+							$this->error(404, true);
 						}
 	
 						$date = $this->request()['date'];
@@ -88,7 +88,7 @@ class Controller_api_deploy extends Crunchbutton_Controller_RestAccount {
 					} else {						
 						$d = Deploy_Version::o(c::getPagePiece(3));
 						if (!$d->id_deploy_version) {
-							$this->error(404);
+							$this->error(404, true);
 
 						} elseif ($d->status != 'new') {
 							$this->error(406);
