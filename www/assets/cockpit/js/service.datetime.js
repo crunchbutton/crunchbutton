@@ -23,7 +23,7 @@ NGApp.factory('DateTimeService', function(AccountService) {
 
 		convertformat: function(date, zone, format) {
 			if( moment(date).tz(zone) ){
-				return moment(date).tz(zone).format(format || 'ha z');
+				return moment.tz(date, 'UTC').tz(zone).format(format || 'ha z');
 			}
 			return null;
 		}
