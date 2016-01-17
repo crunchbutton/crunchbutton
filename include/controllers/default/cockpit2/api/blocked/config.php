@@ -22,7 +22,7 @@ class Controller_Api_Blocked_Config extends Crunchbutton_Controller_Rest {
 	}
 	private function _permissionDenied(){
 		if (!c::admin()->permission()->check(['global', 'customer-all', 'customer-block' ])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 	}
 }

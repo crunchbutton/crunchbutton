@@ -5,7 +5,7 @@ class Controller_Api_Permission extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
 		if (!c::admin()->permission()->check(['global','permissions-all', 'permission-users'])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 		switch ( $this->method() ) {
@@ -27,7 +27,7 @@ class Controller_Api_Permission extends Crunchbutton_Controller_RestAccount {
 				if( $staff->id_admin ){
 					$this->_saveAdmin( $staff );
 				} else {
-					$this->error(404);
+					$this->error(404, true);
 				}
 				break;
 
@@ -37,11 +37,11 @@ class Controller_Api_Permission extends Crunchbutton_Controller_RestAccount {
 				if( $group->id_group ){
 					$this->_saveGroup( $group );
 				} else {
-					$this->error(404);
+					$this->error(404, true);
 				}
 				break;
 			default:
-				$this->error(404);
+				$this->error(404, true);
 				break;
 		}
 	}

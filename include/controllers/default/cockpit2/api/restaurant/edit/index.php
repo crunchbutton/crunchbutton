@@ -15,13 +15,13 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 		}
 
 		if (!c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud', 'restaurant-'.$restaurant->id_restaurant.'-edit', 'restaurant-'.$restaurant->id_restaurant.'-all'])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 		$this->restaurant = $restaurant;
 
 		if( !$this->restaurant->id_restaurant ){
-			$this->error(404);
+			$this->error(404, true);
 		}
 
 		switch (c::getPagePiece(3)) {
@@ -63,7 +63,7 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 	private function _new(){
 
 		if (!c::admin()->permission()->check(['global','restaurants-all', 'restaurants-crud', 'restaurants-create'])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 		$restaurant = new Restaurant;

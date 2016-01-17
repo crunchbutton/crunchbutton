@@ -11,11 +11,11 @@ class Controller_api_restaurant extends Crunchbutton_Controller_RestAccount {
 		}
 
 		if (!$restaurant->id_restaurant) {
-			$this->error(404);
+			$this->error(404, true);
 		}
 
 		if (!c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud', 'restaurant-'.$restaurant->id_restaurant.'-edit', 'restaurant-'.$restaurant->id_restaurant.'-all'])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 		$this->restaurant = $restaurant;
@@ -67,7 +67,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_RestAccount {
 
 	private function _s3all() {
 		if (!c::admin()->permission()->check(['global'])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 
@@ -87,7 +87,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_RestAccount {
 
 	private function _s3() {
 		if (!c::admin()->permission()->check(['global'])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 		$r = $this->restaurant->updateImage();

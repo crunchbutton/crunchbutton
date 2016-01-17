@@ -5,7 +5,7 @@ class Controller_api_community_chain extends Crunchbutton_Controller_RestAccount
 	public function init() {
 
 		if (!c::admin()->permission()->check(['global', 'community-all', 'chain-all', 'chain-view', 'chain-crud'])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 		switch ( $this->method() ) {
@@ -35,7 +35,7 @@ class Controller_api_community_chain extends Crunchbutton_Controller_RestAccount
 							}
 							echo json_encode( $out );exit;
 						} else {
-							$this->error(404);
+							$this->error(404, true);
 						}
 					break;
 
@@ -43,7 +43,7 @@ class Controller_api_community_chain extends Crunchbutton_Controller_RestAccount
 
 						$chain = Community_Chain::o( c::getPagePiece( 3 ) );
 						if (!$chain->id_chain) {
-							$this->error(404);
+							$this->error(404, true);
 						}
 						echo $chain->json();exit();
 				}
@@ -52,7 +52,7 @@ class Controller_api_community_chain extends Crunchbutton_Controller_RestAccount
 
 			case 'post':
 				if (!c::admin()->permission()->check(['global','chain-all', 'chain-crud'])) {
-					$this->error(401);
+					$this->error(401, true);
 				}
 
 				switch ( c::getPagePiece(3) ) {

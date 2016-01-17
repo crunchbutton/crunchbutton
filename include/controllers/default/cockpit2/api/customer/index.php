@@ -5,7 +5,7 @@ class Controller_api_customer extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 		$customer = User::uuid(c::getPagePiece(2));
@@ -24,7 +24,7 @@ class Controller_api_customer extends Crunchbutton_Controller_RestAccount {
 */
 
 		if (!$customer->id_user) {
-			$this->error(404);
+			$this->error(404, true);
 		}
 
 		$this->customer = $customer;

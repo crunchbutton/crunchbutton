@@ -29,11 +29,11 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 			}
 
 			if (!$driver) {
-				$this->error(404);
+				$this->error(404, true);
 			}
 
 			if( !$driver->isDriver() ){
-				$this->error(404);
+				$this->error(404, true);
 			}
 			$action = c::getPagePiece(3);
 		} else {

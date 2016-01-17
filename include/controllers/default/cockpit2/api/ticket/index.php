@@ -89,8 +89,7 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 
-		header('HTTP/1.0 409 Conflict');
-		exit;
+		$this->error(409, true);
 	}
 
 }

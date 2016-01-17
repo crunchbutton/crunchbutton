@@ -5,7 +5,7 @@ class Controller_api_suggestion extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
 		if (!c::admin()->permission()->check(['global', 'suggestions-all', 'suggestions-list-page', 'support-all', 'support-view', 'support-crud'])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 		$id_suggestion = $this->request()[ 'id_suggestion' ];

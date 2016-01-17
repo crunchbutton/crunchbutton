@@ -7,7 +7,7 @@ class Controller_api_profile extends Crunchbutton_Controller_Rest {
 				$this->_changePassword();
 				break;
 			default:
-				$this->error(404);
+				$this->error(404, true);
 				break;
 		}
 	}
@@ -52,7 +52,7 @@ class Controller_api_profile extends Crunchbutton_Controller_Rest {
 			}
 
 		}else {
-			$this->error(404);
+			$this->error(404, true);
 		}
 	}
 

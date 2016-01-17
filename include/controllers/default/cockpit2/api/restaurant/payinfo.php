@@ -114,11 +114,11 @@ class Controller_api_restaurant_payinfo extends Crunchbutton_Controller_RestAcco
 		}
 
 		if( !$restaurant->id_restaurant ){
-			$this->error(404);
+			$this->error(404, true);
 		}
 
 		if (!c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud', 'restaurant-'.$restaurant->id_restaurant.'-edit', 'restaurant-'.$restaurant->id_restaurant.'-all'])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 		return $restaurant;

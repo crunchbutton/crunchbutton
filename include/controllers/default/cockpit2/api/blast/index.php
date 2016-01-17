@@ -5,14 +5,14 @@ class Controller_api_blast extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
 		if (!c::admin()->permission()->check(['global', 'blast-all', 'blast-view' ])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 		switch ($this->method()) {
 			case 'delete':
 				$blast = Blast::o(c::getPagePiece(2));
 				if (!$blast->id_blast) {
-					$this->error(404);
+					$this->error(404, true);
 				}
 				$blast->status = 'canceled';
 				$blast->save();
@@ -21,7 +21,7 @@ class Controller_api_blast extends Crunchbutton_Controller_RestAccount {
 			case 'get':
 				$blast = Blast::o(c::getPagePiece(2));
 				if (!$blast->id_blast) {
-					$this->error(404);
+					$this->error(404, true);
 				}
 				switch (c::getPagePiece(3)) {
 					case 'users':

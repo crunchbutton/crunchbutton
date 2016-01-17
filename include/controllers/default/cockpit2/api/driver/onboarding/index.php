@@ -5,7 +5,7 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 	public function init() {
 
 		if (!c::admin() || !c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 		if ( c::getPagePiece( 3 ) && $this->method() == 'get' ) {

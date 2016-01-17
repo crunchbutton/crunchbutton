@@ -47,7 +47,7 @@ class Controller_api_metrics extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
 		if (!c::admin()->permission()->check(['global', 'metrics-all'])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 
 		try {
@@ -687,7 +687,7 @@ class _Community_Metric_Container {
 		$resp['meta']['labels'] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 		return $resp;
 
-		$this->error(404);
+		$this->error(404, true);
 
 	}
 
@@ -729,7 +729,7 @@ class _Community_Metric_Container {
 		$resp['meta']['labels'] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 		return $resp;
 
-		$this->error(404);
+		$this->error(404, true);
 
 	}
 

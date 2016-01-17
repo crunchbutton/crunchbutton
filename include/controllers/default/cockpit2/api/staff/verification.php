@@ -3,7 +3,7 @@
 class Controller_api_staff_verification extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 		if (!c::admin()->permission()->check(['global', 'permission-all', 'permission-users'])) {
-			$this->error(401);
+			$this->error(401, true);
 		}
 		
 		$admins = Admin::q('
