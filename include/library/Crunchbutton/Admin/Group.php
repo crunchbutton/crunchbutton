@@ -12,7 +12,7 @@ class Crunchbutton_Admin_Group extends Cana_Table_Trackchange {
 			->idVar('id_admin_group')
 			->load($id);
 	}
-	public function save(){
+	public function save($new = false){
 
 		$group = Group::o( $this->id_group );
 		if( $group->id_group ){
