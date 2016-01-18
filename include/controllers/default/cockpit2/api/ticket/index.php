@@ -25,7 +25,7 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 		}
 
 		if (get_class($ticket) != 'Crunchbutton_Support') {
-			$ticket = $ticket->get(0);
+			// $ticket = $ticket->get(0);
 		}
 
 		if ($this->method() == 'get') {
