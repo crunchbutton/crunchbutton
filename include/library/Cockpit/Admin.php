@@ -379,6 +379,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		}
 
 		$out = parent::exports( $ignore );
+
 		$out['shifts'] = [];
 
 		$out['working'] = false;
