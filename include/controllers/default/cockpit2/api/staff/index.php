@@ -561,7 +561,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			$q .= '
 				INNER JOIN admin_group ag1 ON ag1.id_admin=admin.id_admin AND ag1.type = ?
 			';
-			$keys[] = Crunchbutton_Group::TYPE_CAMPUS_MANAGER;
+			$keys[] = Crunchbutton_Group::TYPE_COMMUNITY_MANAGER;
 		}
 
 		if( $working != 'all' ){
