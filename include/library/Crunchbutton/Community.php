@@ -795,6 +795,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function reopenAutoClosedCommunities(){
+
 		$admin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN );
 		$id_admin = $admin->id_admin;
 		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE close_all_restaurants_id_admin = "' . $id_admin . '" OR close_3rd_party_delivery_restaurants_id_admin = "' . $id_admin . '" OR is_auto_closed = true' );
@@ -821,21 +822,27 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				if( $nextShifts && $nextShifts->count() ){
 
 					foreach( $nextShifts as $nextShift ){
+
 						if( $nextShift->id_community_shift ){
+
 							$createTicket = true;
 							$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-							$now->setTimezone( new DateTimeZone( Community_Shift::CB_TIMEZONE ) );
-							$dont_warn_till = $this->dontWarnTill();
 
-							if( $dont_warn_till && intval( $dont_warn_till->format( 'YmdHis' ) ) > intval( $now->format( 'YmdHis' ) ) ){
-								$createTicket = false;
+							$dont_warn_till = $this->dontWarnTill();
+							if( $dont_warn_till ){
+								$now->setTimezone( new DateTimeZone( Community_Shift::CB_TIMEZONE ) );
+								if( $dont_warn_till && intval( $dont_warn_till->format( 'YmdHis' ) ) > intval( $now->format( 'YmdHis' ) ) ){
+									$createTicket = false;
+								}
+								$now->setTimezone( new DateTimeZone( c::config()->timezone ) );
 							}
 
 							$date_start = $nextShift->dateStart( $this->timezone );
 							$date_start->setTimezone( new DateTimeZone( c::config()->timezone ) );
 							$date_end = $nextShift->dateEnd( $this->timezone );
 							$date_end->setTimezone( new DateTimeZone( c::config()->timezone ) );
-							if( $createTicket && $now->format( 'YmdHis' ) >= $date_start->format( 'YmdHis' )  && $now->format( 'YmdHis' ) <= $date_end->format( 'YmdHis' ) ){
+
+							if( $createTicket && $now->format( 'YmdHis' ) >= $date_start->format( 'YmdHis' ) && $now->format( 'YmdHis' ) <= $date_end->format( 'YmdHis' ) ){
 								$ticket = 'Hey! You should probably reopen ' . $this->name . ', which is currently closed, because there\'s a driver scheduled for right now!! But please double check to make sure this wasn\'t done on purpose. If it was done on purpose because the community is overwhelmed, then hustle to get us an additional driver! Do whatever it takes!';
 								echo $ticket;
 								echo "\n\n";
