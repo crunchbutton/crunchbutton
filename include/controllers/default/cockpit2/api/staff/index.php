@@ -523,10 +523,9 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		if ($type == 'driver') {
 			$q .= '
-				INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin
-				INNER JOIN `group` g ON g.id_group=ag.id_group AND g.name LIKE ?
+				INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin AND ag.type = ?
 			';
-			$keys[] = Crunchbutton_Group::DRIVER_GROUPS_PREFIX . '%';
+			$keys[] = Crunchbutton_Group::TYPE_DRIVER;
 
 			if ($community) {
 				$q .= '
@@ -551,20 +550,18 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 
-		if( !$community && $type == 'marketing-rep'  ){
+		if( $type == 'brand-representative'  ){
 			$q .= '
-				INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin
-				INNER JOIN `group` g ON g.id_group=ag.id_group AND g.type = ?
+				INNER JOIN admin_group ag1 ON ag1.id_admin=admin.id_admin AND ag1.type = ?
 			';
-			$keys[] = Crunchbutton_Group::TYPE_MARKETING_REP;
+			$keys[] = Crunchbutton_Group::TYPE_BRAND_REPRESENTATIVE;
 		}
 
-		if( !$community && $type == 'community-manager'  ){
+		if( $type == 'community-manager'  ){
 			$q .= '
-				INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin
-				INNER JOIN `group` g ON g.id_group=ag.id_group AND g.name = ?
+				INNER JOIN admin_group ag1 ON ag1.id_admin=admin.id_admin AND ag1.type = ?
 			';
-			$keys[] = Crunchbutton_Group::CAMPUS_MANAGER_GROUP;
+			$keys[] = Crunchbutton_Group::TYPE_CAMPUS_MANAGER;
 		}
 
 		if( $working != 'all' ){
@@ -599,20 +596,6 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				AND apt.using_pex = ?
 			';
 			$keys[] = $pexcard == 'yes' ? true : false;
-		}
-
-		if( $community && $type == 'marketing-rep'  ){
-			$q .= '
-				AND g.type = ?
-			';
-			$keys[] = Crunchbutton_Group::TYPE_MARKETING_REP;
-		}
-
-		if( $community && $type == 'community-manager'  ){
-			$q .= '
-				AND g.name = ?
-			';
-			$keys[] = Crunchbutton_Group::CAMPUS_MANAGER_GROUP;
 		}
 
 		if ($type == 'driver') {
