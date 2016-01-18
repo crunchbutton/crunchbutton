@@ -274,7 +274,7 @@ NGApp.controller('StaffCtrl', function ($rootScope, $scope, StaffService, ViewLi
 		var staffType = [];
 		staffType.push( { 'value': 'all', 'label': 'All' } );
 		staffType.push( { 'value': 'driver', 'label': 'Drivers' } );
-		staffType.push( { 'value': 'marketing-rep', 'label': 'Brand Representative' } );
+		staffType.push( { 'value': 'brand-representative', 'label': 'Brand Representative' } );
 		if( !$scope.query.community ){
 			staffType.push( { 'value': 'community-manager', 'label': 'Community Manager' } );
 		} else {
