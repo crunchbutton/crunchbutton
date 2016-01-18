@@ -19,15 +19,15 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 		}
 
 		$ticket = Support::o( c::getPagePiece( 2 ) );
-echo '<pre>';var_dump(1, $ticket->id_support );
+
 		if (!$ticket->id_support) {
 			$this->error(404, true);
 		}
-echo '<pre>';var_dump(2, $ticket->id_support );
+
 		if (get_class($ticket) != 'Crunchbutton_Support') {
 			$ticket = $ticket->get(0);
 		}
-echo '<pre>';var_dump(3, $ticket->id_support );
+
 		if ($this->method() == 'get') {
 			switch ( c::getPagePiece( 3 ) ) {
 
@@ -50,7 +50,6 @@ echo '<pre>';var_dump(3, $ticket->id_support );
 					break;
 
 				default:
-echo '<pre>';var_dump(4, $ticket->id_support );;
 					$out = $ticket->exports( [ 'exclude' => [ 'messages' => true ] ] );
 					$out[ 'order' ][ 'do_not_reimburse_driver' ] = ( intval( $out[ 'order' ][ 'do_not_reimburse_driver' ] ) > 0 ) ? true : false;
 					$out[ 'order' ][ 'do_not_pay_driver' ] = ( intval( $out[ 'order' ][ 'do_not_pay_driver' ] ) > 0 ) ? true : false;
