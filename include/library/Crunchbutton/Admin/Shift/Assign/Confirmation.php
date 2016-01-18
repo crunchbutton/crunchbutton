@@ -60,10 +60,18 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 	public function askDriverToConfirm( $assignment ){
 
+		if( !$assignment->id_admin_shift_assign ){
+			$assignment = Crunchbutton_Admin_Shift_Assign::o( $assignment );
+		}
+		if( !$assignment->id_admin_shift_assign ){
+			return;
+		}
+
 		// when a driver is added to a shift later than 15 minutes before it starts - they should be automatically checked in
 		$shift = $assignment->shift();
 		$startedAt = $shift->dateStart( c::config()->timezone );
 		$startedAt->modify( '-15 minutes' );
+
 		if( $assignment->date() >= $startedAt ){
 			self::confirm( $assignment, true );
 			return;
@@ -153,6 +161,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 		if( $lastTry->id_admin_shift_assign_confirmation ){
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 			$interval = $now->diff( $lastTry->date() );
+
 			if( Util::intervalToSeconds( $interval ) >= ( 5 * 60 ) ){
 				$admin = $assignment->admin();
 				$num = $admin->phone;
@@ -166,6 +175,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 	public function askByCalling( $assignment ){
 		$lastTry = self::lastConfirmationTryByAssignment( $assignment->id_admin_shift_assign );
 		if( $lastTry->id_admin_shift_assign_confirmation ){
+
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 			$interval = $now->diff( $lastTry->date() );
 
@@ -193,8 +203,6 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 	public function host_callback(){
 		if( c::getEnv() == 'live' ){
 			return 'live.ci.crunchbutton.crunchr.co';
-		} else if( c::getEnv() == 'dev' ){
-			return 'pererinha.dyndns-web.com';
 		} else {
 			return $_SERVER['HTTP_HOST'];
 		}
