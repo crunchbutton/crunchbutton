@@ -1007,9 +1007,15 @@ App.init = function(config) {
 		return;
 	}
 
-	if (App.isCordova && cordova && cordova.plugins && cordova.plugins.Keyboard) {
-		cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
+	if (App.isCordova && window.parent.cordova) {
+		window.cordova = window.parent.cordova;
+
+		if (cordova.plugins && cordova.plugins.Keyboard) {
+			cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
+		}
 	}
+
+
 
 	App.cordovaListener.init();
 
