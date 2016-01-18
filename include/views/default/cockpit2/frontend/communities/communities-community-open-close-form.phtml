@@ -65,7 +65,7 @@
 						<label class="switch-wrap">
 							<input type="checkbox" class="switch" ng-model="community.dont_warn_till_enabled"/><div></div>
 						</label>
-						<div class="label">If community is closed but has drivers, remind CS to reopen it at this time (pacific):</div>
+						<div class="label">Remind me/CS to reopen it at this time (Pacific):</div>
 					</li>
 
 					<li class="li-input  divider-line" ng-class="{'error': formOpenClose.dontWarnTill.$invalid}" ng-if="community.dont_warn_till_enabled">
@@ -73,6 +73,7 @@
 							<input type="datetime-local" ng-disabled="!community.dont_warn_till_enabled" ng-required="community.dont_warn_till_enabled" name="dontWarnTill" ng-model="community.dont_warn_till" placeholder="">
 						</div>
 						<div class="note">
+							(I'll be reminded only if the community is still closed AND has drivers scheduled)<br>
 							Reminder: give yourself extra time to get the community reopened by the time you promise customers
 						</div>
 					</li>
