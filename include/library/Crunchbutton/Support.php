@@ -889,7 +889,13 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 				$out['order']['_address'] = $_address;
 			}
 
-			$out['driver'] = $order->driver()->get(0)->exports( [ 'last-checkins' => true ]);
+			$driver = $order->driver();
+			if( $driver ){
+				$driver = $driver->get( 0 );
+				if( $driver->id_admin ){
+					$out['driver'] = $driver->exports( [ 'last-checkins' => true ]);
+				}
+			}
 			$out['restaurant'] = $order->restaurant()->properties();
 		}
 
