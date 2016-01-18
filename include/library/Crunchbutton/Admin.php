@@ -387,11 +387,16 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return $this->isBrandRepresentative();
 	}
 
+	// Legacy
 	public function isCampusManager(){
-		if (!isset($this->_isCampusManager)) {
-			$this->_isCampusManager = $this->is( Crunchbutton_Group::TYPE_CAMPUS_MANAGER );
+		return $this->isCommunityManager();
+	}
+
+	public function isCommunityManager(){
+		if (!isset($this->_isCommunityManager)) {
+			$this->_isCommunityManager = $this->is( Crunchbutton_Group::TYPE_COMMUNITY_MANAGER );
 		}
-		return $this->_isCampusManager;
+		return $this->_isCommunityManager;
 	}
 
 	public function isSupport( $onlyReturnTrueIfTheyAreWorking = false ) {

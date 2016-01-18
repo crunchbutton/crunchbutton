@@ -9,7 +9,7 @@ class Crunchbutton_Group extends Cana_Table {
 
 	const TYPE_MARKETING_REP = 'marketing-rep';
 	const TYPE_DRIVER = 'driver';
-	const TYPE_CAMPUS_MANAGER = 'campus-manager';
+	const TYPE_COMMUNITY_MANAGER = 'community-manager';
 	const TYPE_BRAND_REPRESENTATIVE = 'brand-representative';
 	const TYPE_SUPPORT = 'support';
 
@@ -26,8 +26,8 @@ class Crunchbutton_Group extends Cana_Table {
 		if( $this->name == self::TYPE_SUPPORT ){
 			return self::TYPE_SUPPORT;
 		}
-		if( $this->name == self::TYPE_CAMPUS_MANAGER ){
-			return self::TYPE_CAMPUS_MANAGER;
+		if( $this->name == self::CAMPUS_MANAGER_GROUP ){
+			return self::TYPE_COMMUNITY_MANAGER;
 		}
 		if( $this->type == self::TYPE_DRIVER ){
 			return self::TYPE_DRIVER;
