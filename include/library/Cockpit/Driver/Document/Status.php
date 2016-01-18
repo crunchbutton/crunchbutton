@@ -200,15 +200,7 @@ class Cockpit_Driver_Document_Status extends Cana_Table {
 	}
 
 	public function getFile() {
-		$file = tempnam(sys_get_temp_dir(), 'restaurant-image');
-		$fp = fopen($file, 'wb');
-		if (($object = S3::getObject(c::config()->s3->buckets->{'document-upload'}->name, $this->file, $fp)) !== false) {
-			//var_dump($object);
-		} else {
-			$file = false;
-		}
-
-		return $file;
+		return Crunchbutton_Upload::download( c::config()->s3->buckets->{'document-upload'}->name, $this->file );
 	}
 
 }
