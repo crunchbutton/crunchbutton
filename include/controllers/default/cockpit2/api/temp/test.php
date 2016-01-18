@@ -4,17 +4,15 @@ class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
 
 	public function init(){
 
-		$q = Crunchbutton_Queue_Event_Emit::o( 34 );
-		$q->run();
 
+		$admin = Admin::o( 1 );
+		echo $admin->name . "\n";
+		echo "isDriver: " . $admin->isDriver() . "\n";
+		echo "isMarketingRep: " . $admin->isMarketingRep() . "\n";
+		echo "isCampusManager: " . $admin->isCampusManager() . "\n";
+		echo "isSupport: " . $admin->isSupport() . "\n";
 		die('hard');
 
-			Event::create([
-				'room' => [
-					'ticket.'.$message->id_support,
-					'tickets'
-				]
-			], 'sms_status', [ 'id_support_message' => $message->id_support_message, 'status' => $this->status ] );
 
 	}
 }
