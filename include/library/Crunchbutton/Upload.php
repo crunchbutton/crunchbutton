@@ -13,6 +13,26 @@ class Crunchbutton_Upload {
 		}
 	}
 
+	public static function download( $bucket, $key ){
+
+		$file = tempnam(sys_get_temp_dir(), 'restaurant-image');
+		$fp = fopen($file, 'wb');
+
+		try {
+			$object = c::s3()->getObject([
+				'Bucket' => $bucket,
+				'Key'    => $key,
+				'SaveAs' => $fp
+			]);
+			$status = true;
+		} catch (Aws\Exception\S3Exception $e) {
+			$status = false;
+		}
+
+		return $file;
+
+	}
+
 	public function upload() {
 		$fileInfo = pathinfo($this->file);
 		$fullPath = trim($fileInfo['dirname'].'/'.$fileInfo['basename']);
