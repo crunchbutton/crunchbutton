@@ -343,6 +343,11 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return $this->_driver_group;
 	}
 
+	function createGroups(){
+		$this->groupOfDrivers();
+		$this->groupOfMarketingReps();
+	}
+
 	// this method will create (if necessary) and return a the driver's group
 	function groupOfDrivers(){
 		if (!isset($this->_groupOfDrivers)) {

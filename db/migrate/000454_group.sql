@@ -1,0 +1,1 @@
+UPDATE `group` SET type = 'driver' WHERE name LIKE 'drive%' AND ( type IS NULL OR `type` != 'driver' );

@@ -359,51 +359,50 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return $paymentType->amountPerOrder( $id_community );
 	}
 
+	public function is( $type ){
+		$query = 'SELECT * FROM admin_group ag WHERE ag.id_admin = ? AND ag.type = ? ORDER BY id_admin_group DESC LIMIT 1';
+		$adminGroup = Admin_Group::q( $query, [ $this->id_admin, $type ] )->get( 0 );
+		if( $adminGroup->id_admin_group ){
+			return true;
+		}
+		return false;
+	}
+
 	public function isDriver() {
 		if (!isset($this->_isDriver)) {
-			$query = '
-				SELECT COUNT(*) AS Total
-				FROM admin_group ag
-				INNER JOIN `group` g ON g.id_group = ag.id_group
-				WHERE
-					ag.id_admin = ?
-					AND g.name LIKE ?
-					AND g.name !=?
-			';
-			$result = c::db()->get( $query, [$this->id_admin, 'drivers-%', Crunchbutton_Community::CUSTOMER_SERVICE_COMMUNITY_GROUP]);
-			$this->_isDriver = ( $result->_items[0]->Total > 0 );
+			$this->_isDriver = $this->is( Crunchbutton_Group::TYPE_DRIVER );
 		}
 		return $this->_isDriver;
 	}
 
-	public function isMarketingRep(){
-		if (!isset($this->_isMarketingRep)) {
-			$query = '
-				SELECT COUNT(*) AS Total FROM admin_group ag
-				INNER JOIN `group` g ON g.id_group = ag.id_group
-				WHERE
-					ag.id_admin = ?
-					AND type = ?
-			';
-			$result = c::db()->get( $query, [$this->id_admin, Crunchbutton_Group::TYPE_MARKETING_REP]);
-			$this->_isMarketingRep = ( $result->_items[0]->Total > 0 );
+	public function isBrandRepresentative(){
+		if (!isset($this->_isBrandRepresentative)) {
+			$this->_isBrandRepresentative = $this->is( Crunchbutton_Group::TYPE_BRAND_REPRESENTATIVE );
 		}
-		return $this->_isMarketingRep;
+		return $this->_isBrandRepresentative;
+	}
+
+	// Legacy
+	public function isMarketingRep(){
+		return $this->isBrandRepresentative();
 	}
 
 	public function isCampusManager(){
 		if (!isset($this->_isCampusManager)) {
-			$query = '
-				SELECT COUNT(*) AS Total FROM admin_group ag
-				INNER JOIN `group` g ON g.id_group = ag.id_group
-				WHERE
-					ag.id_admin = ?
-					AND g.name = ?
-			';
-			$result = c::db()->get( $query, [$this->id_admin, Crunchbutton_Group::CAMPUS_MANAGER_GROUP]);
-			$this->_isCampusManager = ( $result->_items[0]->Total > 0 );
+			$this->_isCampusManager = $this->is( Crunchbutton_Group::TYPE_CAMPUS_MANAGER );
 		}
 		return $this->_isCampusManager;
+	}
+
+	public function isSupport( $onlyReturnTrueIfTheyAreWorking = false ) {
+		if( !$onlyReturnTrueIfTheyAreWorking ){
+			return $this->is( Crunchbutton_Group::TYPE_SUPPORT );
+		} else {
+			if( $this->isSupport() && Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $this->id_admin, null, Crunchbutton_Community::CUSTOMER_SERVICE_ID_COMMUNITY ) ){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public function marketingGroups(){
@@ -426,24 +425,6 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			}
 		}
 		return $cm;
-	}
-
-	public function isSupport( $onlyReturnTrueIfTheyAreWorking = false ) {
-		if ( !isset( $this->_isSupport ) ) {
-			$result = c::db()->get('SELECT COUNT(*) AS c FROM admin_group ag
-																LEFT JOIN `group` g using (id_group)
-																WHERE ag.id_admin = ?
-																AND g.name= ?', [$this->id_admin, Config::getVal( Crunchbutton_Support::CUSTOM_SERVICE_GROUP_NAME_KEY)]);
-			if( !$onlyReturnTrueIfTheyAreWorking ){
-				$this->_isSupport = $result->get( 0 )->c ? true : false;
-				return $this->_isSupport;
-			}
-			// Check if they are working based on their shift
-			// https://github.com/crunchbutton/crunchbutton/issues/2638#issuecomment-64863807
-			$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $this->id_admin );
-			$this->_isSupport = ( $shift->count() && $shift->id_community_shift ) ? true : false;
-		}
-		return $this->_isSupport;
 	}
 
 	public function communitiesHeDeliveriesFor() {

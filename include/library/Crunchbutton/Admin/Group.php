@@ -13,6 +13,12 @@ class Crunchbutton_Admin_Group extends Cana_Table_Trackchange {
 			->load($id);
 	}
 	public function save(){
+
+		$group = Group::o( $this->id_group );
+		if( $group->id_group ){
+			$this->type = $group->getType();
+		}
+
 		Crunchbutton_Admin_Group_Log::create( [ 'id_admin_assigned' => $this->id_admin, 'id_group' => $this->id_group, 'assigned' => 1 ] );
 		return parent::save();
 	}
