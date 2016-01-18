@@ -218,6 +218,11 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	public function phone(){
 		if( !$this->_phone ) {
 			$phone = Phone::o( $this->id_phone );
+			if( !$phone->id_phone ){
+				$phone = Phone::byPhone( $this->phone );
+				$this->id_phone = $phone->id_phone;
+				$this->save();
+			}
 			$phone = $phone->phone;
 			$this->_phone = Phone::formatted( $phone );
 		}
