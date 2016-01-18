@@ -190,7 +190,13 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 				break;
 
 			case 'pendency':
-					$admin = Crunchbutton_Admin::o( c::getPagePiece( 4 ) );
+
+					$admin = Crunchbutton_Admin::login( c::getPagePiece( 4 ) );
+
+					if( !$admin->id_admin ){
+						$admin = Crunchbutton_Admin::o( c::getPagePiece( 4 ) );
+					}
+
 					if( !$admin->id_admin ){
 						echo $this->_error();
 					}
