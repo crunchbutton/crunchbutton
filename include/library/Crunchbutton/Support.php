@@ -64,7 +64,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			}
 		} else {
 
-		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now = new DateTime( 'now', new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
 
 		$users = Admin::q( 'SELECT DISTINCT(a.id_admin), a.* FROM admin a
 														INNER JOIN admin_shift_assign asa ON asa.id_admin = a.id_admin
