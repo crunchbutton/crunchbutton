@@ -379,7 +379,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$user->save();
 
 		// Reload the user from db #1737
-		$user = new User(c::dbWrite()->get('select * from `user` where id_user=?', [$order->id_user])->get(0));
+		$user = new User(c::dbWrite()->get('select * from `user` where id_user=?', [$user->id_user])->get(0));
 
 		$this->id_user = $user->id_user;
 
@@ -658,7 +658,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$user->saving_from = $user->saving_from.'Order->process 2 - ';
 		$user->save();
 
-		$user = new User(c::dbWrite()->get('select * from `user` where id_user=?', [$order->id_user])->get(0));
+		$user = new User(c::dbWrite()->get('select * from `user` where id_user=?', [$user->id_user])->get(0));
 		$this->_user = $user;
 
 		// If the pay_type is card
@@ -792,45 +792,45 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		Log::debug( [ '$this->giftCardInviter' => $this->giftCardInviter, '$this->notes' => $this->notes ] );
 
 		// If the payment succeds then redeem the gift card
-		if ( trim( $this->notes ) != '' ){
+		if( $this->giftCardInviter ){
 
-			if( $this->giftCardInviter ){
+			// remove the code from notes
+			$__order = Order::o( $this->id_order );
+			$__order->notes = str_replace( $this->giftCardInviter[ 'word' ], '', $__order->notes );
+			$__order->save();
 
-				// remove the code from notes
-				$__order = Order::o( $this->id_order );
-				$__order->notes = str_replace( $this->giftCardInviter[ 'word' ], '', $__order->notes );
-				$__order->save();
+			$referral = new Crunchbutton_Referral();
+			$referral->id_admin_inviter = $this->giftCardInviter[ 'id_admin'];
+			$referral->id_user_inviter = $this->giftCardInviter[ 'id_user'];
+			$referral->id_user_invited = $this->id_user;
+			$referral->id_order = $this->id_order;
+			$referral->admin_credit = $this->giftCardInviter[ 'admin_credit'];
+			$referral->invite_code = $this->giftCardInviter[ 'word'];
+			$referral->new_user = 1;
+			$referral->date = date('Y-m-d H:i:s');
+			$referral->save();
 
-				$referral = new Crunchbutton_Referral();
-				$referral->id_admin_inviter = $this->giftCardInviter[ 'id_admin'];
-				$referral->id_user_inviter = $this->giftCardInviter[ 'id_user'];
-				$referral->id_user_invited = $this->id_user;
-				$referral->id_order = $this->id_order;
-				$referral->admin_credit = $this->giftCardInviter[ 'admin_credit'];
-				$referral->invite_code = $this->giftCardInviter[ 'word'];
-				$referral->new_user = 1;
-				$referral->date = date('Y-m-d H:i:s');
-				$referral->save();
+			$reward = new Crunchbutton_Reward;
+			// the new user earns discount
+			if( $this->giftCardInviter[ 'id_admin'] ){
+				$notes = 'Inviter ID: ' . $this->giftCardInviter[ 'id_admin'] . ' code: ' . $this->giftCardInviter[ 'word'];
+			}
 
-				$reward = new Crunchbutton_Reward;
-				// the new user earns discount
-				if( $this->giftCardInviter[ 'id_admin'] ){
-					$notes = 'Inviter ID: ' . $this->giftCardInviter[ 'id_admin'] . ' code: ' . $this->giftCardInviter[ 'word'];
-				}
+			$reward->saveRewardAsCredit( [ 	'id_user' => $user->id_user,
+																			'value' => $this->giftCardInviter[ 'value'],
+																			'id_order' => $this->id_order,
+																			'id_referral' => $referral->id_referral,
+																			'credit_type' => Crunchbutton_Credit::CREDIT_TYPE_CASH,
+																			'note' => $notes,
+																		] );
 
-				$reward->saveRewardAsCredit( [ 	'id_user' => $user->id_user,
-																				'value' => $this->giftCardInviter[ 'value'],
-																				'id_order' => $this->id_order,
-																				'id_referral' => $referral->id_referral,
-																				'credit_type' => Crunchbutton_Credit::CREDIT_TYPE_CASH,
-																				'note' => $notes,
-																			] );
 
-				if( $this->giftCardInviter[ 'id_admin'] ){
-					$credits_amount = $reward->adminRefersNewUserCreditAmount();
-					Log::debug([ 'id_admin' => $this->giftCardInviter[ 'id_admin'], '$credits_amount' => $credits_amount ]);
-				}
-			} else {
+			if( $this->giftCardInviter[ 'id_admin'] ){
+				$credits_amount = $this->giftCardInviter[ 'admin_credit'];
+				Log::debug([ 'id_admin' => $this->giftCardInviter[ 'id_admin'], '$credits_amount' => $credits_amount ]);
+			}
+		} else {
+			if( $this->notes ){
 				$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant, $this->phone );
 				$giftCardAdded = false;
 				foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
@@ -847,7 +847,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				$this->notes = $_order->notes;
 			}
 		}
-
 
 		$this->debitFromUserCredit( $user->id_user );
 
