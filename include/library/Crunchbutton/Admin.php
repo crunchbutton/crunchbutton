@@ -113,7 +113,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 
 	public static function login($login, $inactive = false) {
 		$status = ( $inactive ? '' : 'and active = true' );
-		return self::q('select * from admin where login = ? ' . $status . ' limit 1',[$login])->get(0);
+		return self::q('select * from admin where login = ? ' . $status . ' limit 1',[urldecode($login)])->get(0);
 	}
 
 	public function publicExports() {
