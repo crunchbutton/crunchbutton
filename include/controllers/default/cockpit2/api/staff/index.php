@@ -524,6 +524,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		if ($type == 'driver') {
 			$q .= '
 				INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin AND ag.type = ?
+				INNER JOIN `group` g ON g.id_group=ag.id_group
 			';
 			$keys[] = Crunchbutton_Group::TYPE_DRIVER;
 
@@ -542,9 +543,6 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				$q .= '
 					INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin
 					INNER JOIN `group` g ON g.id_group=ag.id_group
-				';
-
-				$q .= '
 					LEFT JOIN community ON community.id_community=g.id_community
 				';
 			}
@@ -680,11 +678,11 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		$query = str_replace('-WILD-', $wild , $q);
 
-
 		$r = c::db()->query($query, $keys );
 
 		$i = 1;
 		while ($s = $r->fetch()) {
+
 
 			if (!$export && !$getCount && $i == $limit + 1) {
 				$more = true;
@@ -693,7 +691,21 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 			$admin = Admin::o( $s );
 
-			$staff = $admin->exports(['permissions', 'groups', 'working' => ($working == 'all' ? false : true)]);
+//			$staff = $admin->exports(['permissions', 'groups', 'working' => ($working == 'all' ? false : true)]);
+
+
+			$staff = $admin->properties();
+			$staff['verified'] = $admin->paymentType()->verified ? true : false;
+			$staff['vehicle'] = $admin->vehicle();
+			$staff['status'] = $admin->status();
+			$staff['payment_type'] = $admin->paymentType()->payment_type;
+
+			if ($admin->communitiesHeDeliveriesFor()) {
+				foreach( $admin->communitiesHeDeliveriesFor() as $community ){
+					$staff['communities'][ $community->id_community ] = $community->name;
+				}
+			}
+
 
 			$staff['id_admin_payment_type'] = $s->id_admin_payment_type;
 			$staff['pexcard'] = ( $s->using_pex ) ? true : false;
@@ -761,7 +773,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 				$sentAllDocs = true;
 
-				$payment_type = $admin->payment_type();
+				$payment_type = $admin->paymentType();
 
 				// driver stuff
 				$staff[ 'send_text_about_schedule' ] = ( $s->send_text_about_schedule ? true : false );
@@ -812,11 +824,13 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			$pages = 1;
 		}
 
-		$out = [ 	'more' => $getCount ? $pages > $page : $more,
-							'count' => intval($count),
-							'pages' => $pages,
-							'page' => intval($page),
-							'results' => $data ];
+		$out = [
+			'more' => $getCount ? $pages > $page : $more,
+			'count' => intval($count),
+			'pages' => $pages,
+			'page' => intval($page),
+			'results' => $data
+		];
 
 		if( $brandreps ){
 			$community = Community::o( c::user()->getMarketingRepGroups() );

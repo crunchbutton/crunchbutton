@@ -128,7 +128,10 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function payment_type(){
-		return Crunchbutton_Admin_Payment_Type::byAdmin( $this->id_admin );
+		if (!isset($this->_payment_type)) {
+			$this->_payment_type = Crunchbutton_Admin_Payment_Type::byAdmin($this->id_admin);
+		}
+		return $this->_payment_type;
 	}
 
 	public function hasPaymentType(){
