@@ -823,8 +823,10 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 		$warningDrivers = false;
 		$warningCS = false;
 
-		$weekday = date( 'l' );
-		$time = date( 'Hi' );
+		$now = new DateTime( 'now', new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
+
+		$weekday = $now->format( 'l' );
+		$time = $now->format( 'Hi' );
 
 		// Messages defined here:
 		// https://github.com/crunchbutton/crunchbutton/issues/3084#issuecomment-44353387
@@ -1038,7 +1040,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 
 		$messagePattern = "Remember: you're scheduled to drive for Crunchbutton tomorrow, %s, from %s\nRemember to charge your phone!";
 
-		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+		$now = new DateTime( 'now', new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE  ) );
 		$now->modify( '+ 1 day' );
 
 		$adminsWithShifts = Crunchbutton_Admin::q( 'SELECT DISTINCT( asa.id_admin )
