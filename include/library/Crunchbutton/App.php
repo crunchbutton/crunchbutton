@@ -209,7 +209,9 @@ class Crunchbutton_App extends Cana_App {
 		$this->config($config);
 
 		if ($params['config']->db->writeDB) {
-			error_log('>> writedb');
+			if (getenv('DEBUG')) {
+				error_log('>> WRITEDB');
+			}
 			$write = $this->buildDb('writeDB');
 			$this->dbWrite($write);
 		}
