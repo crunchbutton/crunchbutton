@@ -49,6 +49,7 @@
 			<!-- host>_HOST_</host -->
 			<hostWrite>_HOST_</hostWrite>
 			<prefix></prefix>
+			<persistent>true</persistent>
 			<encrypted>true</encrypted>
 			<sslca>../ssl/rds-combined-ca-bundle.pem</sslca>
 		</live>
@@ -67,23 +68,16 @@
 			<db>crunchbutton_dev</db>
 			<host>_HOST_</host>
 			<prefix></prefix>
+			<persistent>true</persistent>
 			<encrypted>true</encrypted>
 			<sslca>../ssl/rds-combined-ca-bundle.pem</sslca>
 		</beta>
-		<ui1archive>
-			<user>***REMOVED***</user>
-			<pass>***REMOVED***</pass>
-			<db>crunchbutton_ui1_archive</db>
-			<host>_HOST_</host>
-			<prefix></prefix>
-			<encrypted>true</encrypted>
-			<sslca>../ssl/rds-combined-ca-bundle.pem</sslca>
-		</ui1archive>
 		<local>
 			<user>root</user>
 			<pass>root</pass>
 			<db>crunchbutton</db>
 			<host>127.0.0.1</host>
+			<persistent>true</persistent>
 			<hostWrite>127.0.0.1</hostWrite>
 			<prefix></prefix>
 		</local>
