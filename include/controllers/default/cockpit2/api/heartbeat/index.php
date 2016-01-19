@@ -56,29 +56,31 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 
-		$r['working'] = c::user()->isWorking();
+		if (c::user()->isDriver()) {
+			$r['working'] = c::user()->isWorking();
+		}
 
-		$storeLocation = c::user()->isWorking();
-		if( !$storeLocation ){
+		if ($r['working']) {
 			$shiftFinishedAt = c::user()->getLastWorkedTimeHours();
-			if( $shiftFinishedAt > 0 && $shiftFinishedAt <= 1 ){
+			if ($shiftFinishedAt > 0 && $shiftFinishedAt <= 1) {
 				$storeLocation = true;
 			}
 		}
 
+		if ($storeLocation) {
+			// location reporting
+			$lat = $this->request()['lat'] ? $this->request()['lat'] : $this->request()['latitude'];
+			$lon = $this->request()['lon'] ? $this->request()['lon'] : $this->request()['longitude'];
 
-		// location reporting
-		$lat = $this->request()['lat'] ? $this->request()['lat'] : $this->request()['latitude'];
-		$lon = $this->request()['lon'] ? $this->request()['lon'] : $this->request()['longitude'];
-
-		if ($lat && $lon && c::admin()->id_admin && $storeLocation ) {
-			(new Admin_Location([
-				'id_admin' => c::user()->id_admin,
-				'date' => date('Y-m-d H:i:s'),
-				'lat' => $lat,
-				'lon' => $lon,
-				'accuracy' => $this->request()['accuracy']
-			]))->save();
+			if ($lat && $lon && c::user()->id_admin && $storeLocation ) {
+				(new Admin_Location([
+					'id_admin' => c::user()->id_admin,
+					'date' => date('Y-m-d H:i:s'),
+					'lat' => $lat,
+					'lon' => $lon,
+					'accuracy' => $this->request()['accuracy']
+				]))->save();
+			}
 		}
 
 		echo json_encode($r);
