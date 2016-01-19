@@ -68,6 +68,8 @@ NGApp.factory('errorInterceptor', function($q) {
 	};
 	var unteruptable = [
 		App.service + 'config',
+		App.service + 'heartbeat',
+		App.service + 'tickets',
 		App.service + 'driver/orders/',
 		'/assets/view/'
 	];
