@@ -60,7 +60,7 @@ class Crunchbutton_Queue extends Cana_Table {
 			$q->status = self::STATUS_RUNNING;
 			$q->date_start = date('Y-m-d H:i:s');
 
-			$res = c::db()->query(
+			$res = c::dbWrite()->query(
 				'update queue set status=?, date_start=? where id_queue=? and status=?',
 				[$q->status, $q->date_start, $q->id_queue, self::STATUS_NEW]
 			);
