@@ -299,7 +299,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 				where
 					id_admin=?
 					and (oa.type='delivery-pickedup' or oa.type='delivery-accepted' or oa.type='delivery-delivered' or oa.type='delivery-rejected' or oa.type='delivery-transfered')
-					and o.date >= (curdate() - interval 50 day)
+					and o.date >= (curdate() - interval 1 day)
 				order by oa.timestamp asc
 			", [$this->id_admin]);
 			$orders = [];
