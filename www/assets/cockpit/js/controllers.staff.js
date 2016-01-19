@@ -328,9 +328,9 @@ NGApp.controller('StaffPexCardCtrl', function( $scope, StaffPayInfoService, PexC
 			PexCardService.admin_pexcard_remove( pexcard_id, function( json ){
 				if( json.success ){
 					load();
-					$scope.flash.setMessage( 'Driver assigned removed!', 'success' );
+					App.alert( 'Driver assigned removed!', 'success' );
 				} else {
-					$scope.flash.setMessage( 'Error removing assignment!', 'error' );
+					App.alert( 'Error removing assignment!', 'error' );
 				}
 			} );
 		}
@@ -344,12 +344,13 @@ NGApp.controller('StaffPexCardCtrl', function( $scope, StaffPayInfoService, PexC
 		}
 		$scope.isAdding = true;
 		PexCardService.add_funds( $scope.pexcard, function( data ){
+			$scope.isAdding = false;
 			if( data.error ){
 				App.alert( data.error);
-				$scope.isAdding = false;
 				return;
 			} else {
-				$scope.flash.setMessage( 'Funds Added!' );
+				App.alert( 'Funds Added!' );
+				$scope.submitted = false;
 				$scope.pexcard = {};
 				setTimeout( function(){ load(); $scope.isAdding = false; }, 1000 );
 			}
