@@ -2594,7 +2594,18 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	}
 
-	public function refund($amt, $note = null, $tell_driver = false) {
+	public function refund($amt, $note = null, $tell_driver = false, $id_admin = null, $que = true) {
+
+		if( $que ){
+			// check if the order really was refunded
+			$refunded = Crunchbutton_Order_Transaction::q( 'SELECT * FROM order_transaction WHERE id_order = ? AND type = ? ORDER BY id_order_transaction DESC LIMIT 1', [ $this->id_order, Crunchbutton_Order_Transaction::TYPE_REFUNDED ] )->get( 0 );
+			if( $refunded->id_order_transaction ){
+				return;
+			} else {
+				$this->refunded = 0;
+				$this->save();
+			}
+		}
 
 		if (!$this->refunded){
 
@@ -2634,10 +2645,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			if ($support) {
 				$support->addSystemMessage('Order refunded.');
 			}
+
 			$this->refunded = 1;
-			$this->do_not_reimburse_driver = 1;
-			$this->do_not_pay_driver = 1;
 			$this->save();
+
+			$id_admin = $id_admin ? $id_admin : c::user()->id_admin;
 
 			// saves an order transaction
 			$transaction = new Crunchbutton_Order_Transaction;
@@ -2649,7 +2661,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$transaction->id_order = $this->id_order;
 			$transaction->id_user_payment_type = $this->id_user_payment_type;
 			$transaction->source = Crunchbutton_Order_Transaction::SOURCE_CRUNCHBUTTON;
-			$transaction->id_admin = c::user()->id_admin;
+			$transaction->id_admin = $id_admin;
 			$transaction->save();
 
 			return (object)['status' => true];

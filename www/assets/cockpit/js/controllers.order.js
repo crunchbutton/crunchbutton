@@ -300,7 +300,7 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 	$scope.refund = function(){
 		OrderService.askRefund( $routeParams.id, $scope.order.delivery_service, $scope.order.restaurant.formal_relationship, function(){
 			$rootScope.closePopup();
-			setTimeout( function(){ App.alert( 'Order refunded' ); }, 300 );
+			setTimeout( function(){ App.alert( 'This order will be refunded soon!' ); }, 300 );
 			$rootScope.reload();
 		} );
 	}

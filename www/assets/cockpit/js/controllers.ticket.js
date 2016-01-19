@@ -79,7 +79,7 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	$scope.refund = function(){
 		OrderService.askRefund( $scope.ticket.order.id_order, $scope.ticket.order.delivery_service, $scope.ticket.restaurant.formal_relationship, function(){
 			$rootScope.closePopup();
-			setTimeout( function(){ App.alert( 'Order refunded' ); }, 300 );
+			setTimeout( function(){ App.alert( 'This order will be refunded soon!' ); }, 300 );
 			update();
 		} );
 	}
