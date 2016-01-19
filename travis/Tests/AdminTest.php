@@ -273,7 +273,8 @@ class AdminTest extends PHPUnit_Framework_TestCase
             'login' => null,
             'active' => 1,
             'timezone' => 'America/Los_Angeles',
-            'id_phone' => intval($p1id)
+            'id_phone' => intval($p1id),
+            'phone' => $p1->phone
         ]);
         $a1->save();
         $drivers[] = $a1;
@@ -291,7 +292,8 @@ class AdminTest extends PHPUnit_Framework_TestCase
             'login' => null,
             'active' => 1,
             'timezone' => 'America/Los_Angeles',
-            'id_phone' => $p2id
+            'id_phone' => $p2id,
+            'phone' => $p2->phone
         ]);
         $a2->save();
         $drivers[] = $a2;
