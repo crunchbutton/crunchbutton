@@ -3303,6 +3303,15 @@ body.ng-scope {
 .tickets-side-tickets-wrap {
 	padding: 10px 7px 7px 7px;
 }
+	.tickets-side-tickets-wrap .close-ticket{
+		float:right;
+		color:#d74924;
+		cursor:pointer;
+		font-size: 1.2em;
+		display: block;
+		width: 1.5em;
+		text-align: right;
+	}
 
 .tickets-side-item-unread .tickets-side-tickets-wrap {
 	border-right: 4px solid #de5750;
