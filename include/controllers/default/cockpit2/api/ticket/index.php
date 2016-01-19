@@ -33,8 +33,6 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 
 				case 'side-info':
 
-					$time_start = microtime(true);
-
 					$page = c::getPagePiece( 4 );
 
 					$data = $ticket->exportMessages( [ 'messages_page' => $page ] );
@@ -42,6 +40,7 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 					$out = [];
 
 					$out[ 'id_support' ] = $ticket->id_support;
+					$out[ 'status' ] = $ticket->status;
 
 					$out[ 'messages' ][ 'total' ] = $data[ 'total_messages' ];
 					$out[ 'messages' ][ 'list' ] = $data[ 'messages' ];

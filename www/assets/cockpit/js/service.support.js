@@ -105,7 +105,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 						messages.push( service.sideInfo.data.messages[ x ] );
 					}
 				}
-
 				service.sideInfo.data.messages = messages;
 				service.sideInfo.data.loaded = service.sideInfo.data.messages.length;
 				service.sideInfo.data.has_more = ( service.sideInfo.data.loaded >= service.sideInfo.data.total ) ? false : true;

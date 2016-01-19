@@ -231,6 +231,14 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	});
 
 
+	$rootScope.$on( 'ticketStatusUpdated', function(e, data) {
+		if( data.ignoreBroadcast ){
+			update( true );
+		} else {
+			update();
+		}
+	});
+
 	$scope.campus_cash_retrieving = false;
 
 	$scope.campus_cash = function (){
