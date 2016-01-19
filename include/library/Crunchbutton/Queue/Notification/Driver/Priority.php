@@ -3,6 +3,12 @@
 class Crunchbutton_Queue_Notification_Driver_Priority extends Crunchbutton_Queue {
 
 	public function run() {
+		$status = $this->order()->status()->last();
+
+		// dont send a notification if its already accepted
+		if ($status['status'] != 'new') {
+			return self::STATUS_STOPPED;
+		}
 
 		$driver = $this->driver();
 		$order = $this->order();
