@@ -123,7 +123,9 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 					$this->error(401, true);
 				}
 				break;
+
 			case 'refund':
+
 				if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
 					$this->error(401, true);
 				}
@@ -141,17 +143,27 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 					$reason = $this->request()[ 'reason_other' ];
 				}
 
-				$status = $order->refund( $amount, $reason, $tell_driver );
+				$info = json_encode( [ 'amount' => $amount, 'reason' => $reason, 'tell_driver' => $tell_driver, 'id_admin' => c::user()->id_admin ] );
+
+				// mark as refunded so cs can work on that
+				$order->refunded = 1;
+				$order->do_not_reimburse_driver = 1;
+				$order->do_not_pay_driver = 1;
+				$order->save();
+
+				$q = Queue::create([
+					'type' => Crunchbutton_Queue::TYPE_ORDER_REFUND,
+					'id_order' => $order->id_order,
+					'info' => $info
+				]);
+
 
 				if( $cancel_order ){
 					$order->setStatus( Crunchbutton_Order_Action::DELIVERY_CANCELED, false, null, null, true );
 				}
 
-				if( $status ){
-					echo json_encode( [ 'success' => true ] );
-				} else {
-					echo json_encode( [ 'error' => true ] );
-				}
+				echo json_encode( [ 'success' => true ] );
+
 				break;
 
 			case 'do_not_reimburse_driver':
