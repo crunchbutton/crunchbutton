@@ -527,7 +527,7 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
 
 
     // All drivers should see the order if an order action has been taken
-    //  and delivery logistics = null and order was placed less than a minute ago
+    //  and delivery logistics = null and order was placed less than 3 minutes ago
     public function testDriverOrdersWithOrderActionNewerNoDL()
     {
         $orders = [];
@@ -540,7 +540,7 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
         $ds = [$this->driver1, $this->driver2, $this->driver3];
 
         // Chipotle
-        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 30,
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 170,
             $this->community2, $chipotle_lat, $chipotle_lon, $ds,
             [Crunchbutton_Order_Priority::PRIORITY_HIGH, Crunchbutton_Order_Priority::PRIORITY_LOW,
                 Crunchbutton_Order_Priority::PRIORITY_LOW], 30, $this->driver1->id_admin,
@@ -574,7 +574,7 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
 
 
     // All drivers should see the order if the order has no associated priorities or order actions
-    //  and there is delivery logistics, when order was placed more than a minute ago.
+    //  and there is delivery logistics, when order was placed more than 3 minutes ago.
     public function testDriverOrdersWithNoPrioritiesOrOrderActionsOlderDL2()
     {
         $orders = [];
@@ -587,7 +587,7 @@ class DriverPriorityTest extends PHPUnit_Framework_TestCase
         $ds = [$this->driver1, $this->driver2, $this->driver3];
 
         // Chipotle
-        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 70,
+        $og = $this->createOrderGroupAndSave($this->user, $this->restaurant3, $now, 190,
             $this->community, $chipotle_lat, $chipotle_lon, $ds,
             [], 30);
         $orders[] = $og['o'];
