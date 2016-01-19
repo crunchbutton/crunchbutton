@@ -5,23 +5,26 @@
 			<a class="support-side-header-closed-tickets" href="/tickets">View all tickets</a>
 			<div class="divider"></div>
 			<div class="tickets-side-tickets">
-				<div ng-repeat="ticket in tickets" ng-if="ticket.status == 'open'" ng-click="loadTicket( ticket.id_support )" class="tickets-side-item" ng-class="{'tickets-side-item-unread': ( ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply' || ticket.last_reply_type == 'warning' ), 'tickets-side-item-read': ( ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply' )}">
+				<div ng-repeat="ticket in tickets" ng-if="ticket.status == 'open'" class="tickets-side-item" ng-class="{'tickets-side-item-unread': ( ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply' || ticket.last_reply_type == 'warning' ), 'tickets-side-item-read': ( ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply' )}">
+
 					<div class="tickets-side-tickets-wrap">
-						<a class="tickets-side-ticket" href="/ticket/{{ticket.id_support}}" eat-click>
-							<span ng-if="ticket.type == 'WARNING'">
-								<i>System</i>
-							</span>
-							<span ng-if="ticket.type != 'WARNING'">{{ticket.name}}</span>
-						</a>
-						<span class="tickets-side-time">{{ticket.timestamp_client * 1000 | date:'EEE MM/dd @ h:mm a'}}</span>
-						<div class="divider"></div>
-						<br>
-						<span class="tickets-side-message" ng-class="{ 'text-warning': ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply' || ticket.last_reply_type == 'warning', 'text-muted': ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply' }">{{ticket.message_client}}</span>
+						<i class="fa fa-times-circle-o close-ticket" title="Close issue" ng-click="closeTicket( ticket.id_support )"></i>
+						<div ng-click="loadTicket( ticket.id_support )">
+							<a class="tickets-side-ticket" href="/ticket/{{ticket.id_support}}" eat-click>
+								<span ng-if="ticket.type == 'WARNING'">
+									<i>System</i>
+								</span>
+								<span ng-if="ticket.type != 'WARNING'">{{ticket.name}}</span>
+							</a>
+							<span class="tickets-side-time">{{ticket.timestamp_client * 1000 | date:'EEE MM/dd @ h:mm a'}}</span>
+							<div class="divider"></div>
+							<br>
+							<span class="tickets-side-message" ng-class="{ 'text-warning': ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply' || ticket.last_reply_type == 'warning', 'text-muted': ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply' }">{{ticket.message_client}}</span>
 
-						<div ng-if="ticket.media" ng-repeat="image in ticket.media">
-							<img ng-if="image" class="support-side-image" src="{{image}}">
+							<div ng-if="ticket.media" ng-repeat="image in ticket.media">
+								<img ng-if="image" class="support-side-image" src="{{image}}">
+							</div>
 						</div>
-
 					</div>
 				</div>
 			</div>
