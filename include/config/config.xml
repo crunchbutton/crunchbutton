@@ -57,7 +57,8 @@
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton</db>
-			<host>_HOST_</host>
+			<host>crunchbutton2.cstvhlbo53mv.us-east-1.rds.amazonaws.com</host>
+			<hostWrite>_HOST_</hostWrite>
 			<prefix></prefix>
 			<encrypted>true</encrypted>
 			<sslca>../ssl/rds-combined-ca-bundle.pem</sslca>
