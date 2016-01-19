@@ -5,7 +5,7 @@
 			<a class="support-side-header-closed-tickets" href="/tickets">View all tickets</a>
 			<div class="divider"></div>
 			<div class="tickets-side-tickets">
-				<div ng-repeat="ticket in tickets" ng-click="loadTicket( ticket.id_support )" class="tickets-side-item" ng-class="{'tickets-side-item-unread': ( ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply' || ticket.last_reply_type == 'warning' ), 'tickets-side-item-read': ( ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply' )}">
+				<div ng-repeat="ticket in tickets" ng-if="ticket.status == 'open'" ng-click="loadTicket( ticket.id_support )" class="tickets-side-item" ng-class="{'tickets-side-item-unread': ( ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply' || ticket.last_reply_type == 'warning' ), 'tickets-side-item-read': ( ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply' )}">
 					<div class="tickets-side-tickets-wrap">
 						<a class="tickets-side-ticket" href="/ticket/{{ticket.id_support}}" eat-click>
 							<span ng-if="ticket.type == 'WARNING'">
