@@ -3453,6 +3453,14 @@ h1.driver-title {
 	font-size: 1.3em;
 }
 
+.support-close-issue {
+	float: right;
+	font-size: 1.3em;
+	text-decoration: underline;
+	margin-top: .3em;
+	cursor: pointer;
+}
+
 .support-chat-contents {
 	color: #000;
 	background: #fff;

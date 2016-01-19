@@ -66,6 +66,10 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, $location, Tick
 		TicketViewService.setViewTicket( id_support );
 	}
 
+	$rootScope.$on( 'updateSideTickets', function(e, data) {
+		getTickets();
+	});
+
 	$rootScope.$watch('supportMessages', function(newValue, oldValue) {
 		if (!newValue) {
 			return;
@@ -76,7 +80,7 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, $location, Tick
 	}, true);
 });
 
-NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $timeout, TicketService, TicketViewService, SocketService, MainNavigationService ) {
+NGApp.controller( 'SideTicketCtrl', function($scope, $route, $rootScope, $routeParams, $timeout, TicketService, TicketViewService, SocketService, MainNavigationService ) {
 
 	var id_support = null;
 
@@ -100,6 +104,14 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 		}
 	}
 
+	$scope.closeTicket = function(){
+		TicketService.openClose( id_support, function() {
+			$scope.setViewTicket( 0 );
+			$rootScope.$broadcast( 'updateSideTickets' );
+			$rootScope.$broadcast( 'ticketStatusUpdated', { ignoreBroadcast: true } );
+		} );
+	}
+
 	// $scope.$watchCollection( 'ticket', function( newValue, oldValue ) {
 	// 	if( newValue && newValue.total && !$rootScope.supportToggled ){
 	// 		$timeout( function(){
@@ -118,6 +130,7 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $rootScope, $routeParams, $
 		if( ticket.pexcard != $scope.ticket.pexcard ){
 			$scope.ticket.pexcard = ticket.pexcard;
 		}
+		$scope.ticket.status = ticket.status;
 	} );
 
 	$rootScope.$on( 'triggerTicketInfoUpdated', function(e, data) {
