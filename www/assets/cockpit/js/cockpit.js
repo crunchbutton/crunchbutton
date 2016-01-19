@@ -108,8 +108,9 @@ NGApp.factory('errorInterceptor', function($q) {
 		},
 		cancelers: [],
 		cancelAll: function() {
+			console.debug('>> canceling all requests...', errorInterceptor.cancelers);
 			for (var x in errorInterceptor.cancelers) {
-				console.debug('>> canceling all requests...');
+				console.debug('  canceling request: ', errorInterceptor.cancelers[x].url);
 				errorInterceptor.cancelers[x].canceler.resolve();
 			}
 		},
@@ -833,9 +834,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 	$scope.$on( '$routeChangeStart', function (event, next, current) {
 
-		if (errorInterceptor.isInteruptable($location.url())) {
+		//if (errorInterceptor.isInteruptable($location.url())) {
 			errorInterceptor.cancelAll();
-		}
+		//}
 
 		var run = function(){
 			if( $rootScope.configLoaded ){
