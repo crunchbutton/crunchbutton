@@ -1289,6 +1289,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					if( $hours[ $keyNext ][ 'open' ] <= $hours[ $key ][ 'close' ]
 							&& $hours[ $keyNext ][ 'close' ] - $hours[ $key ][ 'open' ] < 3600 ) {
 						$hours[ $key ][ 'close' ] = $hours[ $keyNext ][ 'close' ];
+						$hours[ $key ][ 'time_close' ] = $hours[ $keyNext ][ 'time_close' ];
 						unset( $hours[ $keyNext ] );
 						$reprocess = true;
 						$getNext = false;
