@@ -66,6 +66,13 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, $location, Tick
 		TicketViewService.setViewTicket( id_support );
 	}
 
+	$scope.closeTicket = function( id_support ){
+		TicketService.openClose( id_support, function() {
+			getTickets();
+			$rootScope.$broadcast( 'ticketStatusUpdated', { ignoreBroadcast: true } );
+		} );
+	}
+
 	$rootScope.$on( 'updateSideTickets', function(e, data) {
 		getTickets();
 	});
