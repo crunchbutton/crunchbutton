@@ -1202,6 +1202,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function preOrderHours(){
 
+		if( $this->_preOrderHours ){
+			return $this->_preOrderHours;
+		}
+
 		if( !$this->allowPreorder() ){
 			return false;
 		}
@@ -1210,12 +1214,17 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			return false;
 		}
 
+		$this->preOrderTimeToTime = null;
+
+		$timeToTime = null;
+
 		// get shift plus restaurant merged hours
 		$hours = Hour::hoursByRestaurant( $this, false, true );
 		$hours = $this->preOrderProcessHours( $hours );
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->setTimezone( new DateTimeZone( $this->timezone ) );
 		$days = [];
+
 		for( $i = 1; $i <= 4; $i++ ){
 
 			$label = $now->format( 'D M d' );
@@ -1225,20 +1234,40 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			if( $i == 2 ){
 				$label .= ' (Tomorrow)';
 			}
+
 			$day = [ 'value' => $now->format( 'Y-m-d' ), 'label' => $label, 'hours' => [] ];
 
 			foreach( $hours as $hour ){
 				if( $hour->date == $now->format( 'Y-m-d' ) ){
 					$label = $hour->time_open . ' - ' . $hour->time_close;
-					$day[ 'hours' ][] = [ 'label' => $label, 'value' => $hour->time_open ];
+					$day[ 'hours' ][] = [ 'label' => $label, 'value' => strtolower( $hour->time_open ) ];
 				}
 			}
 			if( sizeof( $day[ 'hours' ] ) > 0 ){
 				$days[] = $day;
+
+				if( !$timeToTime ){
+
+					$timeToTime = $now->format( 'D ' );;
+
+					$timeToTime .= trim( $day[ 'hours' ][ 0 ][ 'value' ] );
+					$timeToTime .= ' - ';
+					$timeToTimeEnd = $day[ 'hours' ][ count( $day[ 'hours' ] ) - 1 ][ 'label' ];
+					$timeToTimeEnd = explode( '-' , $timeToTimeEnd );
+					$timeToTimeEnd = trim( $timeToTimeEnd[ 1 ] );
+					$timeToTime .= $timeToTimeEnd;
+				}
 			}
 			$now->modify( '+ 1 day' );
 		}
-		return $days;
+
+		if( $timeToTime ){
+			$this->preOrderTimeToTime = $timeToTime;
+		}
+
+		$this->_preOrderHours = $days;
+
+		return $this->_preOrderHours;
 	}
 
 	public function preOrderProcessHours( $hours ){
