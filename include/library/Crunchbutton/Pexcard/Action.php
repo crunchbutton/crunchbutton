@@ -89,7 +89,8 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 		$q = Queue::create( [
 			'type' => Crunchbutton_Queue::TYPE_PEXCARD_ACTION,
 			'id_pexcard_action' => $this->id_pexcard_action,
-			'info' => $info
+			'info' => $info,
+			'seconds' => 5
 		] );
 	}
 
