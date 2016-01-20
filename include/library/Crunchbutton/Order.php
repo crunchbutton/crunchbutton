@@ -156,6 +156,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$delivery_service_markup = ( $this->restaurant()->delivery_service_markup ) ? $this->restaurant()->delivery_service_markup : 0;
 		$this->delivery_service_markup = $delivery_service_markup;
 
+		// #7404
+		$food_error = false;
+		$foodErrorDishes = [];
+
 		if ($processType == static::PROCESS_TYPE_RESTAURANT) {
 			$subtotal = $params['subtotal'];
 			$delivery_service_markup = $this->restaurant()->delivery_service_markup ? $this->restaurant()->delivery_service_markup : 0;
@@ -174,6 +178,13 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					$price_delivery_markup = $price_delivery_markup + ( $price_delivery_markup * $delivery_service_markup / 100 );
 					$price_delivery_markup = Crunchbutton_Restaurant::roundDeliveryMarkupPrice( $price_delivery_markup );
 				}
+
+				$_dish = Dish::o( $dish->id_dish );
+				if( $_dish->id_restaurant != $this->id_restaurant ){
+					$food_error = true;
+					$foodErrorDishes[] = $dish->id_dish;
+				}
+
 				$subtotal += number_format( $price, 2 );
 				$subtotal_plus_delivery_service_markup += number_format( $price_delivery_markup, 2 );
 				if ($d['options']) {
@@ -343,6 +354,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			} else {
 				$errors['payment_method'] = 'Please select a valid payment method.';
 			}
+		}
+
+		// Check if the food belongs to the restaurant - #7404
+		if ( $food_error ) {
+			$errors['food'] = 'There was an error processing your order. Please reload the page and tray again.';
+			$errors['foodDishes'] = $foodErrorDishes;
 		}
 
 		if ($errors) {

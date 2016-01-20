@@ -853,6 +853,10 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 						$rootScope.$broadcast( 'orderProcessingError', true );
 					}
 					if (json.status == 'false') {
+						if( json.errors[ 'foodDishes' ] ){
+							service.reviewFood( json.errors[ 'foodDishes' ] );
+							delete( json.errors[ 'foodDishes' ] );
+						}
 						service.errors(json.errors);
 						App.track('OrderError', json.errors);
 						// Log the error
@@ -1000,6 +1004,20 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 
 	} // end service.processOrder
+
+	service.reviewFood = function( foodList ){
+		var items = service.cart.getItems();
+		angular.forEach( items, function( item, key) {
+			if( item && item.id ){
+				for( x in foodList ){
+					var id_dish = foodList[ x ];
+					if( id_dish == item.id ){
+						service.cart.remove( key );
+					}
+				}
+			}
+		} );
+	}
 
 	service.tipChanged = function () {
 		service._tipHasChanged = true;
