@@ -226,7 +226,6 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 				$pexcard_action->action = $action;
 				$pexcard_action->status = Crunchbutton_Pexcard_Action::STATUS_SCHEDULED;
 				$pexcard_action->save();
-				$pexcard_action = Crunchbutton_Pexcard_Action::o( $pexcard_action->id_pexcard_action );
 
 				$pexcard_action->que();
 
