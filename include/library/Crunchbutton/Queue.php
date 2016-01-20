@@ -59,7 +59,7 @@ class Crunchbutton_Queue extends Cana_Table {
 		//$processid = uniqid();
 
 		foreach ($queue as $q) {
-			echo '  Starting #'.$q->id_queue. '...';
+			echo '  Starting #'.$q->id_queue. '...' . "\n";
 
 			$q->status = self::STATUS_RUNNING;
 			$q->date_start = date('Y-m-d H:i:s');
@@ -86,6 +86,7 @@ class Crunchbutton_Queue extends Cana_Table {
 			});
 
 			$queue_type = $q->queue_type()->type;
+			echo '  Type #'.$q->id_queue. '... ' . $queue_type . "\n";
 
 			// Legacy
 			if( !$queue_type && $q->type ){
@@ -93,6 +94,9 @@ class Crunchbutton_Queue extends Cana_Table {
 			}
 
 			$type = 'TYPE_CLASS_'.str_replace('-','_',strtoupper($queue_type));
+
+			echo '  Class #'.$q->id_queue. '... ' . $type . "\n";
+
 			$class = constant('self::'.$type);
 			if (!$class) {
 				$q->status = self::STATUS_FAILED;
@@ -100,6 +104,14 @@ class Crunchbutton_Queue extends Cana_Table {
 				$q->data = 'Invalid class type of: '.$queue_type;
 				continue;
 			}
+
+			echo '  Class #'.$q->id_queue. "... exists \n";
+			echo '  Class #'.$q->id_queue. "... properties " . json_encode( $q->properties() )  . " \n";
+			echo "-----------------------------------------------------------------------------------"
+			echo " \n"
+			echo " \n"
+			echo " \n"
+			echo " \n"
 
 			$q = new $class($q->properties());
 
