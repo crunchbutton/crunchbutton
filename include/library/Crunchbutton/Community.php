@@ -709,7 +709,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$alreadyUsed_closed[ $force_close->timestamp ] = true;
 			$output = [];
 			$closed_at = $force_close->date();
-			$output[ 'closed_at' ] = $closed_at->format( 'M jS Y g:i:s A T' );
+			$output[ 'closed_at_utc' ] = $closed_at->format( 'Y-m-d H:i:s' );
+			$closed_at->setTimezone( new DateTimeZone( $this->timezone ) );
+			$output[ 'closed_at' ] = $closed_at->format( 'M/d/Y h:i:s T' );
 			// $output[ 'closed_at_id_community_change' ] = $force_close->id_community_change_set;
 			$closed_by = $force_close->admin()->name;
 			if( !$closed_by ){
@@ -733,7 +735,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			if( $open && !$alreadyUsed_open[ $open->timestamp ] ){
 				$alreadyUsed_open[ $open->timestamp ] = true ;
 				$opened_at = $open->date();
-				$output[ 'opened_at' ] = $opened_at->format( 'M jS Y g:i:s A T' );
+				$output[ 'opened_at_utc' ] = $opened_at->format( 'Y-m-d H:i:s' );
+				$opened_at->setTimezone( new DateTimeZone( $this->timezone ) );
+				$output[ 'opened_at' ] = $opened_at->format( 'M/d/Y h:i:s T' );
+
 				// $output[ 'opened_at_id_community_change' ] = $open->id_community_change_set;
 				$opened_by = $open->admin()->name;
 				if( !$opened_by ){
