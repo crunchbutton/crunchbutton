@@ -18,6 +18,7 @@ class Crunchbutton_Queue extends Cana_Table {
 	const TYPE_CLASS_SETTLEMENT_RESTAURANT		= 'Crunchbutton_Queue_Settlement_Restaurant';
 	const TYPE_CLASS_RESTAURANT_TIME		= 'Crunchbutton_Queue_Restaurant_Time';
 	const TYPE_CLASS_EVENT_EMIT		= 'Crunchbutton_Queue_Event_Emit';
+	const TYPE_CLASS_PEXCARD_ACTION		= 'Crunchbutton_Queue_Pexcard_Action';
 
 	const TYPE_ORDER						= 'order';
 	const TYPE_CRON						= 'cron';
@@ -35,6 +36,7 @@ class Crunchbutton_Queue extends Cana_Table {
 	const TYPE_SETTLEMENT_RESTAURANT		= 'settlement-restaurant';
 	const TYPE_RESTAURANT_TIME		= 'restaurant-time';
 	const TYPE_EVENT_EMIT		= 'event-emit';
+	const TYPE_PEXCARD_ACTION		= 'pex-card-action';
 
 	const STATUS_NEW		= 'new';
 	const STATUS_SUCCESS	= 'success';
@@ -140,6 +142,10 @@ class Crunchbutton_Queue extends Cana_Table {
 
 	public function order() {
 		return Order::o($this->id_order);
+	}
+
+	public function pexcard_action() {
+		return Pexcard_Action::o($this->id_pexcard_action);
 	}
 
 	public function cron(){

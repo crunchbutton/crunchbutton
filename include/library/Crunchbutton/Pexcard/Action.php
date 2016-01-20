@@ -84,7 +84,15 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 		}
 	}
 
-	public function que( $force = false ){
+	public function que(){
+		$q = Queue::create([
+			'type' => Crunchbutton_Queue::TYPE_PEXCARD_ACTION,
+			'id_pexcard_action' => $this->id_pexcard_action,
+		]);
+	}
+
+	public function run( $force = false ){
+
 		if( $force || $this->status == Crunchbutton_Pexcard_Action::STATUS_SCHEDULED ){
 			$this->tries = ( !$this->tries ) ? 0 : $this->tries;
 			if( $this->tries < Crunchbutton_Pexcard_Action::MAX_TRIES ){
@@ -93,27 +101,25 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 				$this->tries = ( $this->tries + 1 );
 				$this->save();
 				$id_pexcard_action = $this->id_pexcard_action;
-				// Cana::timeout( function() use( $id_pexcard_action, $support ) {
-					$action = Crunchbutton_Pexcard_Action::o( $id_pexcard_action );
-					$pexcard = Cockpit_Admin_Pexcard::o( $action->id_admin_pexcard );
-					try {
-						$card = Crunchbutton_Pexcard_Card::fund( $pexcard->id_pexcard, $action->amount );
-						if( $card->body && ( $card->body->id || $card->body->AccountId ) ){
-							$action->status = Crunchbutton_Pexcard_Action::STATUS_DONE;
-							$action->response = json_encode( $card->body );
-							$action->status_date = date( 'Y-m-d H:i:s' );
-							$action->save();
-			 	 		} else {
-			 	 			$this->error( $card->Message );
-			 	 		}
-					} catch ( Exception $e ) {
+				$action = $this;
+				$pexcard = Cockpit_Admin_Pexcard::o( $action->id_admin_pexcard );
+				try {
+					$card = Crunchbutton_Pexcard_Card::fund( $pexcard->id_pexcard, $action->amount );
+					if( $card->body && ( $card->body->id || $card->body->AccountId ) ){
+						$action->status = Crunchbutton_Pexcard_Action::STATUS_DONE;
+						$action->response = json_encode( $card->body );
+						$action->status_date = date( 'Y-m-d H:i:s' );
+						$action->save();
+		 	 		} else {
+		 	 			$this->error( $card->Message );
+		 	 		}
+				} catch ( Exception $e ) {
+					$action->que();
+				} finally {
+					if( $action->status != Crunchbutton_Pexcard_Action::STATUS_DONE ){
 						$action->que();
-					} finally {
-						if( $action->status != $action->STATUS_DONE ){
-							$action->que();
-						}
 					}
-				// } );
+				}
 			} else {
 				$this->error( 'Exceeded the maximum (' . $action->MAX_TRIES . ') tries to add funds.' );
 			}
