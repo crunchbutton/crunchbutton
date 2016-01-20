@@ -15,6 +15,8 @@ class Cockpit_Driver_Info extends Cana_Table_Trackchange {
 	const CARRIER_TYPE_USCELLULAR = 'U.S. Cellular';
 	const CARRIER_TYPE_OTHER = 'Other';
 
+	const UNKNOWN_TYPE = 'Unknown';
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
@@ -25,28 +27,30 @@ class Cockpit_Driver_Info extends Cana_Table_Trackchange {
 
 
 	public function carrierTypes(){
-		return [ Cockpit_Driver_Info::CARRIER_TYPE_ATT,
-						 Cockpit_Driver_Info::CARRIER_TYPE_VERIZON,
-						 Cockpit_Driver_Info::CARRIER_TYPE_SPRINT,
-						 Cockpit_Driver_Info::CARRIER_TYPE_T_MOBILE,
-						 Cockpit_Driver_Info::CARRIER_TYPE_USCELLULAR,
-						 Cockpit_Driver_Info::CARRIER_TYPE_OTHER ];
+		return [ self::CARRIER_TYPE_ATT,
+						 self::CARRIER_TYPE_VERIZON,
+						 self::CARRIER_TYPE_SPRINT,
+						 self::CARRIER_TYPE_T_MOBILE,
+						 self::CARRIER_TYPE_USCELLULAR,
+						 self::CARRIER_TYPE_OTHER,
+						 self::UNKNOWN_TYPE ];
 	}
 
 	public function carrierTypeOther(){
-		return Cockpit_Driver_Info::CARRIER_TYPE_OTHER;
+		return self::CARRIER_TYPE_OTHER;
 	}
 
 	public function phoneTypes(){
-		return [ 	Cockpit_Driver_Info::PHONE_TYPE_IPHONE,
-							Cockpit_Driver_Info::PHONE_TYPE_ANDROID,
-							Cockpit_Driver_Info::PHONE_TYPE_BLACKBERRY,
-							Cockpit_Driver_Info::PHONE_TYPE_DUMBPHONE,
-							Cockpit_Driver_Info::PHONE_TYPE_OTHER ];
+		return [ 	self::PHONE_TYPE_IPHONE,
+							self::PHONE_TYPE_ANDROID,
+							self::PHONE_TYPE_BLACKBERRY,
+							self::PHONE_TYPE_DUMBPHONE,
+							self::PHONE_TYPE_OTHER,
+						 self::UNKNOWN_TYPE ];
 	}
 
 //	public function androidTypeOther(){
-//		return Cockpit_Driver_Info::ANDROID_TYPE_OTHER;
+//		return self::ANDROID_TYPE_OTHER;
 //	}//michal
 
 	public function iPhoneTypes(){
@@ -71,7 +75,7 @@ class Cockpit_Driver_Info extends Cana_Table_Trackchange {
 		}
 
 	public function androidTypes(){
-//		$addedSubtypes = Cockpit_Driver_Info::q( 'select phone_subtype from driver_info
+//		$addedSubtypes = self::q( 'select phone_subtype from driver_info
 //			where
 //			phone_type="android"
 //			and phone_subtype is not null
@@ -106,7 +110,7 @@ class Cockpit_Driver_Info extends Cana_Table_Trackchange {
 
 		sort( $types );
 		$types[] = 'Other';
-		//$types[] = Cockpit_Driver_Info::ANDROID_TYPE_OTHER;
+		//$types[] = self::ANDROID_TYPE_OTHER;
 		return $types;
 	}
 
@@ -127,11 +131,11 @@ class Cockpit_Driver_Info extends Cana_Table_Trackchange {
 	}
 
 	public function phoneTypeDefault(){
-		return Cockpit_Driver_Info::PHONE_TYPE_OTHER;
+		return self::PHONE_TYPE_OTHER;
 	}
 
 	public static function byAdmin( $id_admin ){
-		return Cockpit_Driver_Info::q( 'SELECT * FROM driver_info WHERE id_admin = ' . $id_admin );
+		return self::q( 'SELECT * FROM driver_info WHERE id_admin = ' . $id_admin );
 	}
 
 	public function stopHelpOutNotification(){
@@ -158,10 +162,10 @@ class Cockpit_Driver_Info extends Cana_Table_Trackchange {
 
 	public function exports(){
 		$out = $this->properties();
-		$types = Cockpit_Driver_Info::carrierTypes();
+		$types = self::carrierTypes();
 		if( !in_array( $out[ 'cell_carrier' ], $types ) ) {
 			 $out[ 'carrier_type_other' ] = $out[ 'cell_carrier' ];
-			 $out[ 'carrier_type' ] = Cockpit_Driver_Info::CARRIER_TYPE_OTHER;
+			 $out[ 'carrier_type' ] = self::CARRIER_TYPE_OTHER;
 		} else {
 			$out[ 'carrier_type' ] = $out[ 'cell_carrier' ];
 		}
