@@ -1214,6 +1214,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$hours = Hour::hoursByRestaurant( $this, false, true );
 		$hours = $this->preOrderProcessHours( $hours );
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->setTimezone( new DateTimeZone( $this->timezone ) );
 		$days = [];
 		for( $i = 1; $i <= 4; $i++ ){
 
