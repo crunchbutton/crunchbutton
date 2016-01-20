@@ -1254,7 +1254,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 					$timeToTime .= ' - ';
 					$timeToTimeEnd = $day[ 'hours' ][ count( $day[ 'hours' ] ) - 1 ][ 'label' ];
 					$timeToTimeEnd = explode( '-' , $timeToTimeEnd );
-					$timeToTimeEnd = trim( $timeToTimeEnd[ 1 ] );
+					$timeToTimeEnd = strtolower( trim( $timeToTimeEnd[ 1 ] ) );
 					$timeToTime .= $timeToTimeEnd;
 				}
 			}
