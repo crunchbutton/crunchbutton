@@ -109,7 +109,7 @@
 
 					<li class="li-input" ng-class="{'error':formSMS.message.$invalid}">
 						<div class="label" ng-show="!isModal">Message:</div>
-						<div class="input"><textarea name="message" required placeholder="Message" ng-model="sms.message"></textarea></div>
+						<div class="input"><textarea name="message" required placeholder="Message" ng-enter="sms.send();" ng-model="sms.message"></textarea></div>
 						<div class="box-error">
 							<small ng-show="formSMS.message.$error.required">Required.</small>
 						</div>
