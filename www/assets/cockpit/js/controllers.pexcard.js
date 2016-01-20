@@ -51,50 +51,6 @@ NGApp.controller( 'PexCardReportCtrl', function ( $scope, $filter, PexCardServic
 
 } );
 
-NGApp.controller( 'PexCardReportOldCtrl', function ( $scope, $filter, PexCardService ) {
-
-	$scope.range = {};
-
-	var start = new Date();
-	start.setDate( start.getDate() - 2 );
-	$scope.range.start = start;
-
-	var end = new Date();
-	end.setDate( end.getDate() - 1 );
-	$scope.range.end = end;
-
-	$scope.result = null;
-
-	$scope.report = function(){
-		report( false );
-	}
-
-	$scope.import_data = function(){
-		report( true );
-	}
-
-	var report = function( import_data ){
-
-		$scope.result = false;
-
-		if( $scope.form.$invalid ){
-			$scope.submitted = true;
-			return;
-		}
-
-		$scope.isProcessing = true;
-
-		var params = {  'start': $filter( 'date' )( $scope.range.start, 'MM/dd/yyyy'),
-										'end': $filter( 'date' )( $scope.range.end, 'MM/dd/yyyy'),
-										'import': import_data };
-
-		PexCardService.report( params, function( json ){
-			$scope.isProcessing = false;
-			$scope.result = json;
-		} );
-	}
-
-} );
 
 NGApp.controller( 'PexCardReportOldCtrl', function ( $scope, $filter, PexCardService ) {
 
