@@ -312,11 +312,24 @@ uis.controller('uiSelectCtrl',
         ctrl.activeIndex = 0;
       }
 
-      // Give it time to appear before focus
-      $timeout(function() {
+      var count = 0;
+
+      var checkFocus = function(){
+        count++;
+        if( count == 10 ){ return; }
+        if( !$( ctrl.searchInput ).is( ':focus' ) ){
+          $timeout(function() { checkFocus() }, 200 );
+        }
+      }
+
+      var focus = function(){
         ctrl.search = initSearchValue || ctrl.search;
         ctrl.searchInput[0].focus();
-      }, 1000);
+        $timeout(function() { checkFocus() }, 100 );
+      }
+
+      // Give it time to appear before focus
+      $timeout( function() { focus();}, 500 );
     }
   };
 
