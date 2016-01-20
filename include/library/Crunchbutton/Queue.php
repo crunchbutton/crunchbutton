@@ -107,7 +107,7 @@ class Crunchbutton_Queue extends Cana_Table {
 
 			echo '  Class #'.$q->id_queue. "... exists \n";
 			echo '  Class #'.$q->id_queue. "... properties " . json_encode( $q->properties() )  . " \n";
-			echo "-----------------------------------------------------------------------------------"
+			echo "-----------------------------------------------------------------------------------";
 			echo " \n"
 			echo " \n"
 			echo " \n"
