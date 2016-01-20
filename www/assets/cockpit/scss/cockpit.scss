@@ -2599,7 +2599,7 @@ b, strong{ font-weight: bold; }
 .box-content2{
 	background: #fff;
 	margin-bottom: 20px;
-	padding: 10px;
+	padding: 0;
 	border: 5px;
 	@include box-border-radius();
 }
@@ -2823,6 +2823,7 @@ canvas.chart {
 	clear: both;
 	margin-bottom: 1em;
 	width: 100%;
+	box-sizing: border-box;
 }
 
 .tripple-cols {
@@ -4815,6 +4816,9 @@ a.button {
 	align-items: flex-start;
 	text-align: center;
 	line-height: normal;
+	box-sizing: border-box;
+	letter-spacing: normal;
+    vertical-align: top;
 }
 
 #username{
@@ -4841,4 +4845,8 @@ a.button {
 }
 .cordova.ios .snap-drawer {
 	padding-top: 2em;
+}
+
+.no-box-content-color.double-cols {
+	margin-bottom: 0;
 }
