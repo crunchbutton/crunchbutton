@@ -36,7 +36,7 @@ class Crunchbutton_Queue extends Cana_Table {
 	const TYPE_SETTLEMENT_RESTAURANT		= 'settlement-restaurant';
 	const TYPE_RESTAURANT_TIME		= 'restaurant-time';
 	const TYPE_EVENT_EMIT		= 'event-emit';
-	const TYPE_PEXCARD_ACTION		= 'pex-card-action';
+	const TYPE_PEXCARD_ACTION		= 'pexcard-action';
 
 	const STATUS_NEW		= 'new';
 	const STATUS_SUCCESS	= 'success';
