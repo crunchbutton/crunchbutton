@@ -15,17 +15,7 @@
 			<div class="divider"></div>
 		</div>
 		<div class="no-box-content-color">
-			<ul class="ul-inputs">
-				<li class="li-input">
-					<div class="label">Start:</div>
-					<div class="input"><input type="date" name="staffName" ng-model="settings.start" ></div>
-				</li>
-				<li class="li-input">
-					<div class="label">End:</div>
-					<div class="input"><input type="date" name="staffName" ng-model="settings.end" ></div>
-				</li>
-				<!-- settings.communities::{{settings.communities}} -->
-
+				<ul class="ul-inputs">
 				<li class="li-input" ng-if="communities.length">
 
 					<div class="label">Communities:</div>
@@ -48,15 +38,31 @@
 
 					</div>
 				</li>
+			</ul>
+
+			<ul class="ul-inputs quadruple-cols">
+
+				<li class="li-input">
+					<div class="label">Start:</div>
+					<div class="input"><input type="date" name="staffName" ng-model="settings.start" ></div>
+				</li>
+				<li class="li-input">
+					<div class="label">End:</div>
+					<div class="input"><input type="date" name="staffName" ng-model="settings.end" ></div>
+				</li>
+
 				<li class="li-input">
 					<div class="label">Period:</div>
 					<div class="input"><select ng-options='period.symbol as period.description for period in availablePeriods' ng-model='settings.period' ng-change='refreshData("period change")'></select></div>
 				</li>
-				<li>
-					<label class="switch-wrap">
-						<input type="checkbox" ng-model='settings.combineCharts' ng-change='calculateCombinedData()' class="switch"/><div></div>
-					</label>
+				<li class="li-input">
 					<div class="label">Combine Charts</div>
+					<div class="input">
+						<label class="switch-wrap">
+							<input type="checkbox" ng-model='settings.combineCharts' ng-change='calculateCombinedData()' class="switch"/><div></div>
+						</label>
+					</div>
+
 				</li>
 			</ul>
 		</div>
@@ -101,10 +107,6 @@
 	</div>
 	<div class="divider"></div>
 	<div ng-if="settings.communities.length">
-
-		<h1 class="title"><i class="fa fa-bar-chart"></i>Charts</h1>
-
-		<div class="divider"></div>
 
 		<div class="support-boxes metrics-boxes">
 		<div ng-if='!settings.combineCharts' ng-repeat='community in orderedCommunities' class="support-box-wrap box-content2">
