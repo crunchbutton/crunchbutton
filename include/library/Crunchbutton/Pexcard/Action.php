@@ -93,6 +93,10 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 
 	public function run( $force = false ){
 
+		echo '### running ' . $this->id_pexcard_action . "\n";
+		echo '### status ' . $this->status . "\n";
+		echo '### tries ' . $this->tries . "\n";
+		echo '### amount ' . $this->amount . "\n";
 		if( $force || $this->status == Crunchbutton_Pexcard_Action::STATUS_SCHEDULED ){
 			$this->tries = ( !$this->tries ) ? 0 : $this->tries;
 			if( $this->tries < Crunchbutton_Pexcard_Action::MAX_TRIES ){
@@ -101,23 +105,28 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 				$this->tries = ( $this->tries + 1 );
 				$this->save();
 				$id_pexcard_action = $this->id_pexcard_action;
-				$action = $this;
-				$pexcard = Cockpit_Admin_Pexcard::o( $action->id_admin_pexcard );
+				echo '### status ' . $this->status . "\n";
+				$pexcard = Cockpit_Admin_Pexcard::o( $this->id_admin_pexcard );
 				try {
-					$card = Crunchbutton_Pexcard_Card::fund( $pexcard->id_pexcard, $action->amount );
+					$card = Crunchbutton_Pexcard_Card::fund( $pexcard->id_pexcard, $this->amount );
+					echo '### $card->body->id ' . $card->body->id . "\n";
+					echo '### $card->body->AccountId ' . $card->body->AccountId . "\n";
 					if( $card->body && ( $card->body->id || $card->body->AccountId ) ){
-						$action->status = Crunchbutton_Pexcard_Action::STATUS_DONE;
-						$action->response = json_encode( $card->body );
-						$action->status_date = date( 'Y-m-d H:i:s' );
-						$action->save();
+						$this->status = Crunchbutton_Pexcard_Action::STATUS_DONE;
+						$this->response = json_encode( $card->body );
+						$this->status_date = date( 'Y-m-d H:i:s' );
+						$this->save();
 		 	 		} else {
+		 	 			echo '### $card->Message ' . $card->Message . "\n";
 		 	 			$this->error( $card->Message );
 		 	 		}
 				} catch ( Exception $e ) {
-					$action->que();
+					echo '### $e ' . $e . "\n";
+					$this->que();
 				} finally {
-					if( $action->status != Crunchbutton_Pexcard_Action::STATUS_DONE ){
-						$action->que();
+					echo '### status ' . $this->status . "\n";
+					if( $this->status != Crunchbutton_Pexcard_Action::STATUS_DONE ){
+						$this->que();
 					}
 				}
 			} else {
