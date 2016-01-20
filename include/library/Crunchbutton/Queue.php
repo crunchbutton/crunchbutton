@@ -145,7 +145,7 @@ class Crunchbutton_Queue extends Cana_Table {
 	}
 
 	public function pexcard_action() {
-		return Pexcard_Action::o($this->id_pexcard_action);
+		return Crunchbutton_Pexcard_Action::o( $this->id_pexcard_action );
 	}
 
 	public function cron(){
