@@ -350,7 +350,7 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 
 	$scope.call.voip = function() {
 		CallService.register_voip( $scope.call, function( json ){} );
-		TwilioService.call($scope.call.phone);
+		TwilioService.call( $scope.call.phone );
 		App.dialog.close();
 	};
 

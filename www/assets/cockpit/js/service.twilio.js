@@ -4,15 +4,24 @@ NGApp.factory('TwilioService', function($resource, $rootScope, AccountService) {
 	var service = { connection: null };
 	var resource = $resource(App.service + 'twilio/client');
 
+	service.isReady = false;
+
 	service.init = function() {
 		resource.get([], function(res) {
 			service.token = res.token;
-			Twilio.Device.setup(service.token);
+			Twilio.Device.setup(service.token, {debug: true});
 		});
 
 	};
 
 	service.call = function(phone) {
+		if( !service.isReady ){
+			$rootScope.closePopup();
+			setTimeout( function(){
+				App.alert( 'Twilio service is not ready yet. <br>Please try it again later.' );
+			}, 500 );
+			return;
+		}
 		$rootScope.$broadcast('twilio-client-call-start');
 		service.connection = Twilio.Device.connect({
 			'PhoneNumber': phone
@@ -32,6 +41,7 @@ NGApp.factory('TwilioService', function($resource, $rootScope, AccountService) {
 	};
 
 	Twilio.Device.ready(function (device) {
+		service.isReady = true;
 		console.debug('Twilio client is ready');
 	});
 
