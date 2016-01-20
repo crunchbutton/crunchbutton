@@ -607,18 +607,18 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 		} );
 	}
 
-	var expandAll = function(){
+	var expandCollapseAll = function( expand ){
 		if( $scope.restaurant.categories.length ){
 			for( x in $scope.restaurant.categories ){
-				$scope.restaurant.categories[ x ].expanded = true;
+				$scope.restaurant.categories[ x ].expanded = expand;
 				if( $scope.restaurant.categories[ x ]._dishes.length ){
 					for( y in $scope.restaurant.categories[ x ]._dishes ){
-						$scope.restaurant.categories[ x ]._dishes[ y ].expanded = true;
+						$scope.restaurant.categories[ x ]._dishes[ y ].expanded = expand;
 						if( $scope.restaurant.categories[ x ]._dishes[ y ].options.selects.length ){
 							for( z in $scope.restaurant.categories[ x ]._dishes[ y ].options.selects ){
 								if( $scope.restaurant.categories[ x ]._dishes[ y ].options.selects[ z ].options.length ){
 									for( w in $scope.restaurant.categories[ x ]._dishes[ y ].options.selects[ z ].options ){
-										$scope.restaurant.categories[ x ]._dishes[ y ].options.selects[ z ].options[ w ].expanded = true;
+										$scope.restaurant.categories[ x ]._dishes[ y ].options.selects[ z ].options[ w ].expanded = expand;
 									}
 								}
 							}
@@ -627,12 +627,36 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 				}
 			}
 		}
+		$scope.all_expanded = expand;
+	}
+
+	$scope.expandCollapseAllCategory = function( category ){
+		category.all_expanded = ( !category.all_expanded ) ? true : false;
+		category.expanded = category.all_expanded;
+		for( y in category._dishes ){
+			category._dishes[ y ].expanded = category.all_expanded;
+			if( category._dishes[ y ].options.selects.length ){
+				for( z in category._dishes[ y ].options.selects ){
+					if( category._dishes[ y ].options.selects[ z ].options.length ){
+						for( w in category._dishes[ y ].options.selects[ z ].options ){
+							category._dishes[ y ].options.selects[ z ].options[ w ].expanded = category.all_expanded;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	$scope.all_expanded = false;
+
+	$scope.expandCollapseAll = function(){
+		expandCollapseAll( !$scope.all_expanded );
 	}
 
 	$scope.save = function(){
 		if( $scope.restaurant.id_restaurant ){
 			if( $scope.form.$invalid ){
-				expandAll();
+				expandCollapseAll( expand );
 				$scope.submitted = true;
 				App.alert( 'Please fill in all required fields! <br>' );
 				return;

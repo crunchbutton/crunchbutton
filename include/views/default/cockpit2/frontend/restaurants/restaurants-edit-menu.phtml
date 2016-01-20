@@ -16,6 +16,15 @@
 						</button>
 
 						<button ng-click="addCategory()" title="Add Category (ctrl+shift+c)" class="button button-small button-empty button-green"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Category</button>
+
+						<button ng-click="expandCollapseAll()" title="Collapse / Expand" class="button button-small button-empty button-green">
+
+							<span ng-if="!all_expanded"><i class="fa fa-expand"></i>&nbsp;&nbsp;Expand All</span>
+							<span ng-if="all_expanded"><i class="fa fa-compress"></i>&nbsp;&nbsp;Collapse All</span>
+
+
+						</button>
+
 					</div>
 				</div>
 				<div class="divider"></div>
@@ -51,6 +60,11 @@
 							<button ng-click="category.expanded = ( category.expanded ? false : true )" title="Collapse / Expand category details (ctrl+e)" class="button button-small button-empty button-green">
 								<i ng-if="!category.expanded" class="fa fa-expand"></i>
 								<i ng-if="category.expanded" class="fa fa-compress"></i>
+							</button>
+
+							<button ng-click="expandCollapseAllCategory( category )" title="Expand All" class="button button-small button-empty button-green">
+								<span ng-if="!category.all_expanded"><i class="fa fa-expand"></i>&nbsp;&nbsp;Expand All</span>
+								<span ng-if="category.all_expanded"><i class="fa fa-compress"></i>&nbsp;&nbsp;Collapse All</span>
 							</button>
 
 						</div>
