@@ -279,7 +279,8 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/pexcard/log', {
 			action: 'pexcard',
 			controller: 'PexCardLogCtrl',
-			templateUrl: '/assets/view/pexcard-log.html'
+			templateUrl: '/assets/view/pexcard-log.html',
+			reloadOnSearch: false
 		})
 		.when('/pexcard/config', {
 			action: 'pexcard',

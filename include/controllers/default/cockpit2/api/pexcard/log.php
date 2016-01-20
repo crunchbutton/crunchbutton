@@ -20,6 +20,8 @@ class Controller_api_PexCard_Log extends Crunchbutton_Controller_RestAccount {
 		$page = $this->request()['page'] ? $this->request()['page'] : 1;
 		$keys = [];
 
+		$page = intval( $page );
+
 		if ($page == 1) {
 			$offset = '0';
 		} else {
