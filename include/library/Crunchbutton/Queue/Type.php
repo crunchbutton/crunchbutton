@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Queue_Type extends Crunchbutton_Queue {
+class Crunchbutton_Queue_Type extends Cana_Table {
 
 	public function __construct($id = null) {
 		parent::__construct();

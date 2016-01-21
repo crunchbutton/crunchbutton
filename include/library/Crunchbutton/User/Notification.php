@@ -6,28 +6,28 @@ class Crunchbutton_User_Notification extends Cana_Table {
 	//const TYPE_EMAIL = 'email';
 	const TYPE_PUSH_IOS = 'push-ios';
 	const TYPE_PUSH_ANDROID = 'push-android';
-	
+
 	const DATA_TYPE_TEXT = 'text';
 	const DATA_TYPE_RECEIPT = 'receipt';
 	const DATA_TYPE_UPDATE = 'update';
-	
+
 	public function fallbackSend($data) {
 		$ns = $data['order']->user()->notifications();
 		if (!$n) {
 			return false;
 		}
-		
+
 		$ress = [];
-		
+
 		foreach ($ns as $n) {
 			$ress[] = $n->send($data) ? 0 : 1;
 		}
-		
+
 		return array_sum($ress) > 0 ? false : true;
 	}
 
 	public function send($data) {
-		
+
 		switch ($data['type']) {
 			case self::DATA_TYPE_TEXT:
 				$content = $data['content'];
@@ -69,7 +69,7 @@ class Crunchbutton_User_Notification extends Cana_Table {
 					$res = $this->sendPushAndroid($data, $content, $title);
 					break;
 			}
-	
+
 		return $res;
 	}
 
@@ -100,7 +100,7 @@ class Crunchbutton_User_Notification extends Cana_Table {
 
 		$mail = $this->value;
 		$admin = $this->admin();
-		Log::debug( [ 'order' => $order->id_order, 'action' => 'send mail to admin', 'mail' => $mail, 'type' => 'admin_notification' ]);
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'send mail to admin', 'mail' => $mail, 'type' => 'admin-notification' ]);
 		$cockpit_url = static::REPS_COCKPIT . $order->id_order;
 
 		$mail = new Email_Order( [	'order' => $order,
@@ -113,7 +113,7 @@ class Crunchbutton_User_Notification extends Cana_Table {
 	}
 */
 	public function sendPushIos($data, $message, $title, $link) {
-		
+
 		$r = Crunchbutton_Message_Push_Ios::send([
 			'to' => $this->value,
 			'message' => $message,
