@@ -378,11 +378,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			}
 
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-			if( $now > $shift->dateEnd( c::config()->timezone ) ){
-				$out[ 'editable' ] = false;
-			} else {
-				$out[ 'editable' ] = true;
-			}
+			$out[ 'editable' ] = true;
 
 			if( intval( $shift->dateStart()->format( 'Ymd' ) ) <= intval( date( 'Ymd' ) ) ){
 				$out[ 'shift_remove_permanency' ] = true;
@@ -609,11 +605,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 				if( $community->id_community ){
 					$shifts = [];
 					foreach( $days as $day ) {
-						if( intval( $now->format( 'Ymd' ) ) <= intval( $day->format( 'Ymd' ) ) ){
-							$editable = true;
-						} else {
-							$editable = false;
-						}
+						$editable = true;
 						$shifts[ $day->format( 'Ymd' ) ] = [ 'shifts' => [], 'editable' => $editable, 'date' => [ 'day' => $day->format( 'Y-m-d' ), 'formatted' => $day->format( 'M jS Y' ), 'tz' => $community->timezone ] ];
 					}
 					$communities[ $community->id_community ] = [ 'id_community' => $community->id_community, 'name' => $community->name, 'days' => $shifts ];
