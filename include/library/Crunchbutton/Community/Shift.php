@@ -105,7 +105,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 		return Crunchbutton_Community_Shift::q( $query, [$id_admin, $now->format( 'Y-m-d' )]);
 	}
 
-	public static function nextShiftByAdmin( $id_admin ){
+	public static function nextShiftByAdmin( $id_admin, $limit = false ){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		$admin = Admin::o( $id_admin );
 		if( $admin->timezone ){
@@ -119,6 +119,11 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 				ass.id_admin = ?
 				AND cs.date_start >= ?
 			ORDER BY cs.date_start ASC';
+
+		if( $limit ){
+			$query .= ' LIMIT ' . $limit;
+		}
+
 		return Crunchbutton_Community_Shift::q( $query, [$id_admin, $now->format( 'Y-m-d H:i' )])->get( 0 );
 	}
 

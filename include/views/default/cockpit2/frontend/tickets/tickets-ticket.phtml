@@ -476,37 +476,61 @@
 
 	<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
-				<h1>Last Shifts Status</h1>
+				<h1>Shifts</h1>
 				<div class="support-box-header-actions-wrap">
 					<div class="support-box-header-actions">
-						<span class="tag tag-red" ng-if="!ticket.staff.last_checkins.length">No Shifts</span>
+						<a href="/staff/{{ticket.order.driver.id_admin}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+						<a href ng-click="openStaffNoteContainer(ticket.order.driver.id_admin)"><button class="button button-small button-empty button-green"><i class="fa fa-file"></i>&nbsp;&nbsp;Add Note</button></a>
 					</div>
 				</div>
 				<div class="divider"></div>
 			</div>
 
-			<div class="no-box-content-color box-content-table" ng-if="ticket.staff.last_checkins.length">
+
+			<div class="no-box-content-color box-content-table" ng-if="ticket.driver.shifts.length || ticket.driver.last_checkins.length">
 				<table class="tb-zebra">
 					<tr>
 						<th>Time</th>
 						<th>Community</th>
 						<th>Confirmed</th>
 					</tr>
-					<tr ng-repeat="shift in ticket.staff.last_checkins">
-						<td>
-							<span class="listview-smaller">
-								<span class="listview-bold">Start</span>: {{shift.date_start | localtime | timestamp | date:'MM/dd hh:mm a'}}<br>
-								<span class="listview-bold">End</span>: {{shift.date_end | localtime | timestamp | date:'MM/dd hh:mm a'}}
-							</span>
-						</td>
-						<td><a href="/community/{{shift.id_community}}">{{shift.community_name}}</a></td>
-						<td>
-							<span class="tag tag-red" ng-if="!shift.confirmed">Not confirmed</span>
-							<span class="tag tag-green" ng-if="shift.confirmed">Checked in</span>
-						</td>
-					</tr>
+					<tbody ng-if="ticket.driver.shifts.length">
+						<tr ng-repeat="shift in ticket.driver.shifts">
+							<td>
+								<span class="listview-smaller">
+									<a href="/shifts/schedule?date={{shift.date}}&communities={{shift.id_community}}&id_community_shift={{shift.id_community_shift}}">
+										<span class="listview-bold">Start</span>: {{shift.date_start | localtime | timestamp | date:'MM/dd hh:mm a'}}<br>
+										<span class="listview-bold">End</span>: {{shift.date_end | localtime | timestamp | date:'MM/dd hh:mm a'}}
+									</a>
+								</span>
+							</td>
+							<td><a href="/community/{{shift.id_community}}">{{shift.community_name}}</a></td>
+							<td>
+								<span class="tag tag-red" ng-if="!shift.confirmed">Not confirmed</span>
+								<span class="tag tag-green" ng-if="shift.confirmed">Checked in</span>
+							</td>
+						</tr>
+					</tbody>
+					<tbody ng-if="ticket.driver.last_checkins.length">
+						<tr ng-repeat="shift in ticket.driver.last_checkins">
+							<td>
+								<span class="listview-smaller">
+									<a href="/shifts/schedule?date={{shift.date}}&communities={{shift.id_community}}&id_community_shift={{shift.id_community_shift}}">
+										<span class="listview-bold">Start</span>: {{shift.date_start | localtime | timestamp | date:'MM/dd hh:mm a'}}<br>
+										<span class="listview-bold">End</span>: {{shift.date_end | localtime | timestamp | date:'MM/dd hh:mm a'}}
+									</a>
+								</span>
+							</td>
+							<td><a href="/community/{{shift.id_community}}">{{shift.community_name}}</a></td>
+							<td>
+								<span class="tag tag-red" ng-if="!shift.confirmed">Not confirmed</span>
+								<span class="tag tag-green" ng-if="shift.confirmed">Checked in</span>
+							</td>
+						</tr>
+					</tbody>
 				</table>
 			</div>
+
 		</div>
 
 		<div class="support-box-wrap box-content2" ng-if="ticket.id_support" class="support-box-wrap">
