@@ -352,22 +352,17 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 			$drivers = $shift->community()->getDriversOfCommunity();
 
-			$week = $shift->week();
+			$week = $shift->weekThursday();
 			$year = $shift->year();
 
 			$out[ 'drivers' ] = [];
 
-			$shift_date = new DateTime( $shift->dateStart()->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+			$now = new DateTime( 'now', new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
 
-			if( $shift_date->format( 'l' ) == 'Thursday' ){
-				$thursday = $shift_date;
-			} else {
-				$shift_date->modify( 'last thursday' );
-				$thursday = $shift_date;
-			}
+			$thursday = $shift->firstDayOfWeekThursday();
 
 			$firstDayOfWeek = $thursday->format( 'Y-m-d' );
-			$thursday->modify( '+ 7 days' );
+			$thursday->modify( '+ 6 days' );
 			$lastDayOfWeek = $thursday->format( 'Y-m-d' );
 
 			$ranking = [];
@@ -413,7 +408,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 				$_driver = [ 'id_admin' => $driver->id_admin, 'name' => $driver->name, 'phone' => $driver->phone() ];
 				$prefs = Crunchbutton_Admin_Shift_Preference::shiftsByPeriod( $driver->id_admin, $firstDayOfWeek, $lastDayOfWeek );
 				Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $week, $year );
-				$driverShifts = Crunchbutton_Admin_Shift_Assign::shiftsByAdminPeriod( $driver->id_admin, $firstDayOfWeek, $lastDayOfWeek );
+				$driverShifts = Crunchbutton_Admin_Shift_Assign::shiftsByAdminPeriod( $driver->id_admin, $firstDayOfWeek, $lastDayOfWeek . ' 23:59:59' );
 				$_driver[ 'total_shifts' ] = $driverShifts->count();
 				$_driver[ 'total_shifts_want_work' ] = $totalShifts;
 				$_driver[ 'assigned' ] = ( Crunchbutton_Admin_Shift_Assign::adminHasShift( $driver->id_admin, $shift->id_community_shift ) ) ? true : false;

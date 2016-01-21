@@ -259,6 +259,28 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift WHERE cs.date_start >= \'' . $from . ' 00:00:00\' AND cs.date_end <= \'' . $to . ' 23:59:59\' AND asa.id_admin = ? ORDER BY cs.date_start ASC', [$id_admin]);
 	}
 
+	public function weekThursday(){
+		$date = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->dateStart()->format( 'Y-m-d H:i:s' ), new DateTimeZone( $this->timezone() ) );
+		if( intval( $date->format( 'N' ) ) >= 4 ){
+			return intval( $date->format( 'W' ) );
+		} else {
+			return intval( $date->format( 'W' ) ) - 1;
+		}
+	}
+
+	public function firstDayOfWeekThursday(){
+		$date = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->dateStart()->format( 'Y-m-d H:i:s' ), new DateTimeZone( $this->timezone() ) );
+
+		if( intval( $date->format( 'N' ) ) != 4 ){
+			if( intval( $date->format( 'N' ) ) > 4 ){
+				$date->modify( 'last thursday' );
+			} else {
+				$date->modify( 'last thursday' );
+			}
+		}
+		return $date;
+	}
+
 	public function week(){
 		// Start week at monday #2666
 		$date = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->dateStart()->format( 'Y-m-d H:i:s' ), new DateTimeZone( $this->timezone() ) );
