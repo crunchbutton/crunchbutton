@@ -45,6 +45,50 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		}
 	}
 
+	public function statistics( $days ){
+		$out = [];
+		$out[ 'orders' ] = intval( $this->totalOrdersDelivered( $days ) );
+		$out[ 'hours' ] = intval( $this->totalHoursWorked( $days ) );
+		$totalDeliveryTime = intval( $this->totalDeliveryTime( $days ) );
+		if( $out[ 'orders' ] && $out[ 'hours' ] ){
+			$out[ 'avg_orders_hours' ] = number_format( $out[ 'orders' ] / $out[ 'hours' ], 2 );
+		} else {
+			$out[ 'avg_orders_hours' ] = 0;
+		}
+
+		if( $totalDeliveryTime && $out[ 'orders'] ){
+			$out[ 'avg_delivery_time' ] = number_format( $totalDeliveryTime / $out[ 'orders' ], 2 );
+		} else {
+			$out[ 'avg_delivery_time' ] = 0;
+		}
+
+		return $out;
+	}
+
+	public function totalDeliveryTime( $days ){
+		$query = 'SELECT SUM( TIMESTAMPDIFF( MINUTE, o.date, oa.timestamp ) ) AS minutes
+								FROM order_action oa
+								INNER JOIN `order` o ON o.id_order = oa.id_order
+								WHERE oa.id_admin = ? AND oa.type = ? AND oa.timestamp BETWEEN DATE_SUB( NOW(), INTERVAL ? DAY) AND NOW()';
+		$result = c::db()->get( $query, [ $this->id_admin, Crunchbutton_Order_Action::DELIVERY_DELIVERED, $days ] );
+		return number_format( ( $result->_items[0]->minutes / 60 ), 2 );
+	}
+
+	public function totalHoursWorked( $days ){
+		$query = 'SELECT SUM( TIMESTAMPDIFF( MINUTE, cs.date_start, cs.date_end ) ) AS minutes
+								FROM community_shift cs
+								INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift AND asa.id_admin = ?
+								AND cs.date_start BETWEEN DATE_SUB( NOW(), INTERVAL ? DAY) AND NOW()';
+		$result = c::db()->get( $query, [ $this->id_admin, $days ] );
+		return number_format( ( $result->_items[0]->minutes / 60 ), 2 );
+	}
+
+	public function totalOrdersDelivered( $days ){
+		$query = 'SELECT COUNT(*) AS total FROM order_action WHERE id_admin = ? AND type = ? AND timestamp BETWEEN DATE_SUB( NOW(), INTERVAL ? DAY) AND NOW()';
+		$result = c::db()->get( $query, [ $this->id_admin, Crunchbutton_Order_Action::DELIVERY_DELIVERED, $days ] );
+		return $result->_items[0]->total;
+	}
+
 	public function unPaidPayments(){
 		$out = [];
 		$payments = Payment_Schedule::q( 'SELECT * FROM payment_schedule WHERE id_driver = ? AND ( status = ? OR status = ? ) ORDER BY id_payment_schedule DESC', [ $this->id_admin, Cockpit_Payment_Schedule::STATUS_SCHEDULED, Cockpit_Payment_Schedule::STATUS_ERROR ] );

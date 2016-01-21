@@ -4,8 +4,8 @@ class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
 
 	public function init(){
 
-		$q = Crunchbutton_Queue_Pexcard_Action::o( 2138852 );
-		$q->run();
+		$driver = Admin::o( 15082 );
+		echo '<pre>';var_dump( $driver->statistics( 60 ) );exit();
 
 	}
 }

@@ -410,6 +410,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 				Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $week, $year );
 				$driverShifts = Crunchbutton_Admin_Shift_Assign::shiftsByAdminPeriod( $driver->id_admin, $firstDayOfWeek, $lastDayOfWeek . ' 23:59:59' );
 				$_driver[ 'total_shifts' ] = $driverShifts->count();
+				$_driver[ 'statistics' ] = $driver->statistics( 60 );
 				$_driver[ 'total_shifts_want_work' ] = $totalShifts;
 				$_driver[ 'assigned' ] = ( Crunchbutton_Admin_Shift_Assign::adminHasShift( $driver->id_admin, $shift->id_community_shift ) ) ? true : false;
 				$_driver[ 'assigned_permanently' ] = ( Crunchbutton_Admin_Shift_Assign_Permanently::adminIsPermanently( $driver->id_admin, $shift->id_community_shift ) ) ? true : false;
