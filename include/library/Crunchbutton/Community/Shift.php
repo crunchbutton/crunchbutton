@@ -783,6 +783,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 	}
 
 	public static function communitiesWithShift(){
+
 		$now = new DateTime( 'now', new DateTimeZone( self::CB_TIMEZONE  ) );
 
 		$date_start = $now->format( 'Y-m-d' );
