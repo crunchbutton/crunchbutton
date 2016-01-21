@@ -108,7 +108,7 @@ NGApp.controller('ShiftChekinCtrl', function ( $scope, ShiftService, ViewListSer
 	}
 });
 
-NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, $routeParams, ShiftScheduleService, CommunityService ) {
+NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, $routeParams, $location, $filter, ShiftScheduleService, CommunityService ) {
 
 	$scope.options = { communities: [] };
 
@@ -139,6 +139,23 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, $routeParam
 				$scope.loaded = true;
 			}
 		} );
+		changeQuery();
+	}
+
+	var changeQuery = function(){
+		console.log('$scope.options.start',$scope.options.start);
+		var query = { date: null, communities: '' };
+		if( $scope.options.start ){
+			query.date = $filter( 'date' )( $scope.options.start, 'MM/dd/yyyy' );
+		}
+		var commas = '';
+		for( x in $scope.communities ){
+			if( $scope.options.communities.indexOf( $scope.communities[ x ].permalink ) >= 0 ){
+				query.communities += commas + $scope.communities[ x ].id_community;
+				commas = ',';
+			}
+		}
+		$location.search( query );
 	}
 
 	$scope.showPSTtz = false;
@@ -180,11 +197,32 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, $routeParam
 	}
 
 	var start = function(){
+
+		var query = $location.search();
+		var startDate = null;
+		var communities = new Array();
+
+		if( query.date ){
+			startDate = new Date( query.date );
+		}
+
+		if( query.communities ){
+			communities = query.communities.split( ',' );
+			for( x in communities ){
+				communities[ x ] = parseInt( communities[ x ] );
+			}
+		}
+
 		ShiftScheduleService.weekStart( function( json ){
-			if( json.start ){
-				$scope.options.start = new Date( json.start );
+
+			if( startDate ){
+				$scope.options.start = startDate;
 			} else {
-				$scope.options.start = new Date();
+				if( json.start ){
+					$scope.options.start = new Date( json.start );
+				} else {
+					$scope.options.start = new Date();
+				}
 			}
 
 			if( $scope.options.communities.length ){
@@ -196,6 +234,14 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, $routeParam
 		if( !$scope.communities ){
 			CommunityService.listPermalink( function( json ){
 				$scope.communities = json;
+				if( communities.length ){
+					for( x in $scope.communities ){
+						if( communities.indexOf( $scope.communities[ x ].id_community ) >= 0 ){
+							$scope.options.communities.push( $scope.communities[ x ].permalink );
+						}
+					}
+					$scope.loadShifts();
+				}
 			} );
 		}
 	}

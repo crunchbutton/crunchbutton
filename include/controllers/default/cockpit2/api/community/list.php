@@ -15,7 +15,7 @@ class Controller_api_community_list extends Crunchbutton_Controller_Rest {
 						$export = [];
 						foreach( $communities as $community ){
 							if( $community->name && $community->permalink ){
-								$export[] = array( 'permalink' => $community->permalink, 'name' => $community->name );
+								$export[] = array( 'permalink' => $community->permalink, 'name' => $community->name, 'id_community' => $community->id_community );
 							}
 						}
 						echo json_encode( $export );
