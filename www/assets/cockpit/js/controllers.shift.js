@@ -36,7 +36,6 @@ NGApp.controller('ShiftSettingsCtrl', function( $scope, ShiftSettingsService ) {
 			if( !json.error ){
 				$scope.config = json;
 				$scope.ready = true;
-				console.log('$scope.config',$scope.config);
 			}
 		} )
 	}
@@ -143,7 +142,6 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, $routeParam
 	}
 
 	var changeQuery = function(){
-		console.log('$scope.options.start',$scope.options.start);
 		var query = { date: null, communities: '' };
 		if( $scope.options.start ){
 			query.date = $filter( 'date' )( $scope.options.start, 'MM/dd/yyyy' );

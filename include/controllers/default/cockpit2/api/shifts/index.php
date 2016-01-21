@@ -367,7 +367,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			}
 
 			$firstDayOfWeek = $thursday->format( 'Y-m-d' );
-			$thursday->modify( '+ 6 days' );
+			$thursday->modify( '+ 7 days' );
 			$lastDayOfWeek = $thursday->format( 'Y-m-d' );
 
 			$ranking = [];
