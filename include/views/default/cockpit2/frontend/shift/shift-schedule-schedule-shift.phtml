@@ -84,6 +84,7 @@
 								</td>
 								<td>
 									{{driver.name}}
+									<br><a href ng-click="openCallTextModal(driver.phone)" class="listview-smaller">{{driver.phone | formatPhone}}</a>
 									<div ng-if="driver.id_admin_shift_assign_log">
 										<br>
 										<button ng-click='driver.removal_info = !driver.removal_info' class="button button-small button-empty button-border button-blue"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit removal info</button>
