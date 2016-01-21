@@ -120,6 +120,13 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, $routeParam
 		$scope.options.communities = [];
 	}
 
+	$scope.openCallTextModal = function( phone ){
+		$rootScope.closePopup();
+		setTimeout( function(){
+			$scope.callText( phone )
+		}, 500 );
+	}
+
 	$scope.loaded = false;
 
 	$scope.loadShifts = function(){
