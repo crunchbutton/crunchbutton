@@ -47,17 +47,17 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 	public function statistics( $days ){
 		$out = [];
-		$out[ 'orders' ] = intval( $this->totalOrdersDelivered( $days ) );
-		$out[ 'hours' ] = intval( $this->totalHoursWorked( $days ) );
-		$totalDeliveryTime = intval( $this->totalDeliveryTime( $days ) );
+		$out[ 'orders' ] = intval( $this->totalOrdersDeliveredPeriod( $days ) );
+		$out[ 'hours' ] = intval( $this->totalHoursWorkedPeriod( $days ) );
+		$totalDeliveryTimePeriod = intval( $this->totalDeliveryTimePeriod( $days ) );
 		if( $out[ 'orders' ] && $out[ 'hours' ] ){
 			$out[ 'avg_orders_hours' ] = number_format( $out[ 'orders' ] / $out[ 'hours' ], 2 );
 		} else {
 			$out[ 'avg_orders_hours' ] = 0;
 		}
 
-		if( $totalDeliveryTime && $out[ 'orders'] ){
-			$out[ 'avg_delivery_time' ] = number_format( $totalDeliveryTime / $out[ 'orders' ], 2 );
+		if( $totalDeliveryTimePeriod && $out[ 'orders'] ){
+			$out[ 'avg_delivery_time' ] = number_format( $totalDeliveryTimePeriod / $out[ 'orders' ], 2 );
 		} else {
 			$out[ 'avg_delivery_time' ] = 0;
 		}
@@ -65,7 +65,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		return $out;
 	}
 
-	public function totalDeliveryTime( $days ){
+	public function totalDeliveryTimePeriod( $days ){
 		$query = 'SELECT SUM( TIMESTAMPDIFF( MINUTE, o.date, oa.timestamp ) ) AS minutes
 								FROM order_action oa
 								INNER JOIN `order` o ON o.id_order = oa.id_order
@@ -74,7 +74,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		return number_format( ( $result->_items[0]->minutes / 60 ), 2 );
 	}
 
-	public function totalHoursWorked( $days ){
+	public function totalHoursWorkedPeriod( $days ){
 		$query = 'SELECT SUM( TIMESTAMPDIFF( MINUTE, cs.date_start, cs.date_end ) ) AS minutes
 								FROM community_shift cs
 								INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift AND asa.id_admin = ?
@@ -83,7 +83,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		return number_format( ( $result->_items[0]->minutes / 60 ), 2 );
 	}
 
-	public function totalOrdersDelivered( $days ){
+	public function totalOrdersDeliveredPeriod( $days ){
 		$query = 'SELECT COUNT(*) AS total FROM order_action WHERE id_admin = ? AND type = ? AND timestamp BETWEEN DATE_SUB( NOW(), INTERVAL ? DAY) AND NOW()';
 		$result = c::db()->get( $query, [ $this->id_admin, Crunchbutton_Order_Action::DELIVERY_DELIVERED, $days ] );
 		return $result->_items[0]->total;
