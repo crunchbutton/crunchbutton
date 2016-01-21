@@ -4728,6 +4728,12 @@ table.receipt{
 			opacity: 0.3;
 			filter: alpha(opacity=30); /* For IE8 and earlier */
 		}
+			.shift-highlighted.shift-has-drivers{
+				border: 3px solid #b0c0a3 !important;
+			}
+			.shift-highlighted.shift-no-driver{
+				border: 3px solid #bf8480 !important;
+			}
 	.shift-schedule .button-container{
 		text-align: center;
 		margin: .4em;

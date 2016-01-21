@@ -462,11 +462,12 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 			$next = Community_Shift::lastShiftsByAdmin($this->id_admin, 5);
 
-			if ($next) {
+			if ( $next ) {
 
 				foreach ($next as $s) {
 
 					$shift = $s->exports();
+					$shift[ 'date' ] = $s->dateStart()->format( 'm/d/Y' );
 
 					$shift[ 'confirmed' ] = intval( $s->confirmed );
 
@@ -502,6 +503,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 					$out['last_checkins'][] = $shift;
 				}
 			}
+
 		}
 
 		if ($params['working'] !== false) {
@@ -513,7 +515,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 				foreach ($next as $s) {
 
 					$shift = $s->exports();
-
+					$shift[ 'date' ] = $s->dateStart()->format( 'm/d/Y' );
 					$shift[ 'confirmed' ] = intval( $s->confirmed );
 
 					$date = new DateTime($shift['date_start'], new DateTimeZone($this->timezone));

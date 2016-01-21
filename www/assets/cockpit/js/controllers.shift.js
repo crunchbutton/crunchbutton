@@ -136,6 +136,9 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, $routeParam
 				$scope.days = json.days;
 				$scope.current_week = json.current_week;
 				$scope.loaded = true;
+				if( openShift ){
+					$scope.scheduleShift( openShift );
+				}
 			}
 		} );
 		changeQuery();
@@ -152,6 +155,9 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, $routeParam
 				query.communities += commas + $scope.communities[ x ].id_community;
 				commas = ',';
 			}
+		}
+		if( $scope.options.id_community_shift ){
+			query.id_community_shift = $scope.options.id_community_shift;
 		}
 		$location.search( query );
 	}
@@ -194,6 +200,8 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, $routeParam
 		}
 	}
 
+	var openShift = null;
+
 	var start = function(){
 
 		var query = $location.search();
@@ -202,6 +210,11 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, $routeParam
 
 		if( query.date ){
 			startDate = new Date( query.date );
+		}
+
+		if( query.id_community_shift ){
+			$scope.options.id_community_shift = query.id_community_shift;
+			openShift = $scope.options.id_community_shift;
 		}
 
 		if( query.communities ){
@@ -262,6 +275,7 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, $routeParam
 	$scope.scheduleShift = function( id_community_shift ){
 		var params = { id_community_shift: id_community_shift }
 		$rootScope.$broadcast( 'openScheduleShiftContainer', params );
+		openShift = null;
 	}
 
 	$scope.editShift = function( id_community_shift ){

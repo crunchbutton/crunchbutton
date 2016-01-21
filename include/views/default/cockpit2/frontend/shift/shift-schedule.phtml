@@ -81,7 +81,7 @@
 						<td></td>
 						<td ng-repeat="day in community.days">
 							<div ng-if="day.shifts.length">
-								<div ng-repeat="shift in day.shifts" class="shift unselectable" ng-class="{'shift-hidden':shift.hidden, 'shift-has-drivers': shift.drivers, 'shift-no-driver': !shift.drivers}">
+								<div ng-repeat="shift in day.shifts" class="shift unselectable" ng-class="{'shift-hidden':shift.hidden, 'shift-has-drivers': shift.drivers, 'shift-no-driver': !shift.drivers, 'shift-highlighted': ( options.id_community_shift == shift.id_community_shift )}">
 									<span title="Period"><i class="fa fa-clock-o"></i></span>
 									<span class="period" ng-if="!showPSTtz">{{shift.period}} <span class="tz">({{shift.tz}})</span></span>
 									<span class="period" ng-if="showPSTtz">{{shift.period_pst}} <span class="tz">(PST)</span></span>
