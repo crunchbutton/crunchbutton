@@ -59,6 +59,7 @@ NGApp.factory('ShiftScheduleService', function(ResourceFactory, $routeParams, $r
 		'removeShift' : { method: 'POST', params : { action: 'remove-shift' } },
 		'removeRecurringShift' : { method: 'POST', params : { action: 'remove-recurring-shift' } },
 		'saveDriverNote' : { method: 'POST', params : { action: 'save-driver-note' } },
+		'communitiesWithShift' : { method: 'POST', params : { action: 'communities-shift' }, isArray: true },
 	});
 
 	service.removeShift = function( params, callback) {
@@ -75,6 +76,12 @@ NGApp.factory('ShiftScheduleService', function(ResourceFactory, $routeParams, $r
 
 	service.weekStart = function( callback) {
 		shift.weekStart( {}, function(data) {
+			callback(data);
+		});
+	}
+
+	service.communitiesWithShift = function( callback) {
+		shift.communitiesWithShift( {}, function(data) {
 			callback(data);
 		});
 	}
