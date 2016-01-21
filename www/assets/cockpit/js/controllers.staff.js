@@ -103,6 +103,7 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 		load();
 	});
 
+
 	$scope.openStaffNoteContainer = function( id_admin ){
 		$rootScope.$broadcast( 'openStaffNoteContainer', id_admin );
 	}
@@ -230,6 +231,15 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 NGApp.controller('StaffCtrl', function ($rootScope, $scope, StaffService, ViewListService, CommunityService) {
 
 	angular.extend( $scope, ViewListService );
+
+	$scope.openStaffNoteContainer = function( id_admin ){
+		$rootScope.$broadcast( 'openStaffNoteContainer', id_admin );
+	}
+
+	$rootScope.$on( 'staffNoteSaved', function(e, data) {
+		$scope.staff.note = data;
+	});
+
 
 	$scope.view({
 		scope: $scope,

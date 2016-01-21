@@ -193,6 +193,28 @@
 			</div>
 		</div>
 
+		<div class="support-box-wrap box-content2">
+			<a name="deliveryBasics" class="mobile-anchor"></a>
+			<div class="support-box-wrap-header">
+				<h1>Note</h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<button ng-click="openStaffNoteContainer(staff.id_admin);" class="button button-small button-empty button-green"><i class="fa fa-pencil"></i></i>&nbsp;&nbsp;Edit</button></a>
+
+					</div>
+				</div>
+				<div class="divider"></div>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+				<br>
+				<p>
+					{{staff.note.text}}
+				</p>
+
+			</div>
+		</div>
 
 
 		<div class="support-box-wrap box-content2">
@@ -414,6 +436,7 @@
 
 	<ng-include src="'/assets/view/staff-group.html'"></ng-include>
 	<ng-include src="'/assets/view/staff-community.html'"></ng-include>
+	<ng-include src="'/assets/view/listview-admin-notes.html'"></ng-include>
 
 
 	<? /*
