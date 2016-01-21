@@ -1,20 +1,25 @@
 <?php
 
 class Crunchbutton_Log extends Cana_Table {
-	public static function __callStatic($func, $args) {
+
+	public static function __callStatic( $func, $args ) {
 
 		$data = $args[0];
+
 		$data['env'] = c::getEnv();
+
+		$type = Log_Type::byType( $args[0]['type'] );
+
+		unset( $data[ 'type' ] );
 
 		$log = new Log;
 		$log->level = $func;
-		$log->type = $args[0]['type'];
+		$log->id_log_type = $type->id_log_type;
 		$log->data = json_encode( $data );
 		$log->date = date('Y-m-d H:i:s');
 		$log->save();
 
 		if ($log->level == 'critical') {
-			// send notifications
 
 			$info = json_decode( $log->data );
 			$body = 'Critical error! Type: ' . $log->type . "\n";

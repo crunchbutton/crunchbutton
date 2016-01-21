@@ -25,7 +25,7 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 				]);
 
 			} catch (Exception $e) {
-				Log::debug( [ 'card error' => 'balanced', 'Exception' => $e->description, 'type' => 'card error' ]);
+				Log::debug( [ 'card error' => 'balanced', 'Exception' => $e->description, 'type' => 'card-error' ]);
 				$errors[] = 'Your card was declined. Please try again!';
 				// $e->description
 				$success = false;
@@ -48,7 +48,7 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 				]);
 
 			} catch (Exception $e) {
-				Log::debug( [ 'card error' => 'balanced', 'Exception' => $e->description, 'type' => 'card error' ]);
+				Log::debug( [ 'card error' => 'balanced', 'Exception' => $e->description, 'type' => 'card-error' ]);
 				$errors[] = 'Your card was declined. Please try again!';
 				$success = false;
 			}

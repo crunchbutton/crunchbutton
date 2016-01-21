@@ -339,7 +339,7 @@ class Crunchbutton_Promo extends Cana_Table
 			'promo_id' => $gift->id_promo,
 			'promo_code' => $gift->code,
 			'method' => '$promo->notifyEMAIL()',
-			'type' => 'promo_email'
+			'type' => 'promo-email'
 		]);
 
 		$env = c::getEnv();
