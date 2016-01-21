@@ -235,15 +235,25 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, $routeParam
 			CommunityService.listPermalink( function( json ){
 				$scope.communities = json;
 				if( communities.length ){
-					for( x in $scope.communities ){
-						if( communities.indexOf( $scope.communities[ x ].id_community ) >= 0 ){
-							$scope.options.communities.push( $scope.communities[ x ].permalink );
+					parseCommunities( communities );
+				} else {
+					ShiftScheduleService.communitiesWithShift( function( json ){
+						if( json.length ){
+							parseCommunities( json );
 						}
-					}
-					$scope.loadShifts();
+					} );
 				}
 			} );
 		}
+	}
+
+	var parseCommunities =  function( communities ){
+		for( x in $scope.communities ){
+			if( communities.indexOf( $scope.communities[ x ].id_community ) >= 0 ){
+				$scope.options.communities.push( $scope.communities[ x ].permalink );
+			}
+		}
+		$scope.loadShifts();
 	}
 
 	$scope.addShift = function( id_community, name, date ){

@@ -21,6 +21,9 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			case 'week-start':
 				$this->_weekStart();
 				break;
+			case 'communities-shift':
+				$this->_communitiesWithShift();
+				break;
 			case 'show-hide-shift':
 				$this->_showHideShift();
 				break;
@@ -535,6 +538,15 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 		echo json_encode( [ 'error' => true ] );exit;
+	}
+
+	private function _communitiesWithShift(){
+		$out = [];
+		$communities = Community_Shift::communitiesWithShift();
+		foreach( $communities as $community ){
+			$out[] = $community->id_community;
+		}
+		echo json_encode( $out );
 	}
 
 	private function _weekStart(){

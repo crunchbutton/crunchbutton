@@ -782,6 +782,21 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 		return $orders;
 	}
 
+	public static function communitiesWithShift(){
+		$now = new DateTime( 'now', new DateTimeZone( self::CB_TIMEZONE  ) );
+
+		$date_start = $now->format( 'Y-m-d' );
+		$now->modify( '+ 6 days' );
+		$date_end = $now->format( 'Y-m-d' );
+
+		return Community::q( 'SELECT DISTINCT( c.id_community ), c.* FROM community c
+														INNER JOIN community_shift cs ON cs.id_community = c.id_community
+														INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
+														WHERE cs.date_start >= ?  AND cs.date_end <= ?', [ $date_start, $date_end ] );
+
+
+	}
+
 	public static function getShiftsStatus( $id_admin ){
 		// Start week on Thursday #3084
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
