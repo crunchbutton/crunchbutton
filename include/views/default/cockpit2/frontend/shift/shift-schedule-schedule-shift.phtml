@@ -89,6 +89,11 @@
 										<br>
 										<button ng-click='driver.removal_info = !driver.removal_info' class="button button-small button-empty button-border button-blue"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit removal info</button>
 									</div>
+									<div class="listview-smaller">
+										Orders/Hr: {{driver.statistics.avg_orders_hours}}<br>
+										Avg Delivery Time: {{driver.statistics.avg_delivery_time}} min<br>
+										Total Orders: {{driver.statistics.orders}}<br>
+									</div>
 								</td>
 								<td>
 									<span class="tag tag-green" ng-if="driver.ranking == 1">Yes, definitely</span>
