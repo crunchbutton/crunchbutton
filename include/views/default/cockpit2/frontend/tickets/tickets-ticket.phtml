@@ -137,7 +137,23 @@
 					</div>
 				</div>
 				<br>
-				<button class="button button-empty button-border button-orange" ng-if="ticket.user.id_user" ng-class="{'button-disabled': isRefunding || ticket.order.refunded}" ng-click="refund()"><i class="fa fa-heart"></i>&nbsp;&nbsp;Refund</button>
+
+
+
+				<br><br>
+				<div class="tripple-cols">
+
+					<button class="button button-empty button-border button-orange" ng-if="ticket.user.id_user" ng-class="{'button-disabled': isRefunding || ticket.order.refunded}" ng-click="refund()"><i class="fa fa-heart"></i>&nbsp;&nbsp;Refund</button>
+
+					<button title="Resend Driver Notifiction" ng-click="resend_notification_drivers();" class="button button-empty button-border button-green" ng-class="{'button-disabled': isDriverNotifying || !ticket.order.delivery_service || (ticket.order.delivery_service && ( ticket.order.status.status == 'pickedup' || ticket.order.status.status == 'accepted' || ticket.order.status.status == 'delivered' || ticket.order.status.status == 'transfered' ))}"><i class="fa fa-car"></i><span class="label">&nbsp;&nbsp;Notify</span></button>
+
+					<button title="Resend Restaurant Notification" ng-click="resend_notification();" class="button button-empty button-border button-blue" ng-class="{'button-disabled': isRestaurantNotifying || ticket.order.confirmed || (ticket.restaurant.delivery_service && !ticket.restaurant.formal_relationship && !ticket.restaurant.order_notifications_sent)}"><i class="fa fa-coffee"></i><span class="label">&nbsp;&nbsp;Notify</span></button>
+
+
+				</div>
+				<div class="divider"></div>
+
+
 			</div>
 		</div>
 

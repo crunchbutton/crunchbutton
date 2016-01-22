@@ -84,6 +84,20 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		} );
 	}
 
+	$scope.resend_notification_drivers = function(){
+		$scope.isDriverNotifying = true;
+		OrderService.resend_notification_drivers( $scope.ticket.order, function(result) {
+			$scope.isDriverNotifying = false;
+		});
+	}
+
+	$scope.resend_notification = function(){
+		$scope.isRestaurantNotifying = true;
+		OrderService.resend_notification( $scope.ticket.order, function(result) {
+			$scope.isRestaurantNotifying = false;
+		});
+	}
+
 	$scope.do_not_pay_driver = function(){
 		OrderService.do_not_pay_driver( $scope.ticket.order.id_order, function( result ){
 			if( result.success ){
