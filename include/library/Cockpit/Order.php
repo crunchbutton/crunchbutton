@@ -396,6 +396,8 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 	public function textCustomer( $text, $force = false ){
 
+		echo "$text\n\n";
+
 		switch ( $text ) {
 
 			case Cockpit_Order::I_AM_5_MINUTES_AWAY:
@@ -403,6 +405,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 				if( !$force ){
 					$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND type = ? LIMIT 1', [$this->id_order, Crunchbutton_Order_Action::DELIVERY_ORDER_TEXT_5_MIN])->get(0);
 					if( $action->id_order_action ){
+						echo "Already sent \n";
 						return true;
 					}
 				}
