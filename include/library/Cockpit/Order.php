@@ -411,13 +411,15 @@ class Cockpit_Order extends Crunchbutton_Order {
 				echo "$pattern \n";
 				$driver = $this->driver();
 
-				echo "driver->id_admin: $driver->id_admin \n";
-
 				if( $driver->id_admin ){
+
+					echo "driver->id_admin: $driver->id_admin \n";
+					echo "driver->phone: $driver->phone \n";
 
 					$message = sprintf( $pattern, $driver->firstName() );
 
 					echo "message: $message\n";
+					echo "order->phone: $this->phone\n";
 
 					Crunchbutton_Message_Sms::send( [
 						'to' => $this->phone,
