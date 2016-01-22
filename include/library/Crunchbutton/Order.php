@@ -1714,8 +1714,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 	}
 
-
-
 	public function driver(){
 		if( !$this->_driver && $this->id_order ){
 			$this->_driver = Admin::q('SELECT a.* FROM order_action oa INNER JOIN admin a ON a.id_admin = oa.id_admin WHERE oa.id_order = ? AND type != "delivery-rejected" ORDER BY id_order_action DESC LIMIT 1', [$this->id_order]);
@@ -3195,6 +3193,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 		return false;
 	}
+
 
 	public function textCustomerAboutDriver(){
 
