@@ -153,7 +153,7 @@ class Crunchbutton_Queue extends Cana_Table {
 	}
 
 	public function order() {
-		return Order::o($this->id_order);
+		return Cockpit_Order::o($this->id_order);
 	}
 
 	public function pexcard_action() {
