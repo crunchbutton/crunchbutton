@@ -1,11 +1,12 @@
 
-NGApp.directive('chatSend', function(TicketViewService) {
+NGApp.directive('chatSend', function(TicketViewService, $rootScope) {
 	return {
 		restrict: 'A',
 		link: function(scope, element, attrs) {
 			element.bind('keydown keypress', function (e) {
 				if (e.which == 13) {
 					if( element.val() != '' ){
+						$rootScope.$broadcast( 'replyStarted' );
 						TicketViewService.send(element.val());
 						e.preventDefault();
 						element.val('');

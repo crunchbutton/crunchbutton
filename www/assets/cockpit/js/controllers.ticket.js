@@ -147,15 +147,20 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	$scope.saveComment = function( close ){
 
 		if( $scope.comment.isSaving ){
+			$scope.isCommenting = false;
+			$scope.isClosing = false;
 			return;
 		}
 		if( close && $scope.ticket.status != 'open' ){
+			$scope.isClosing = false;
 			return;
 		}
 		if( $scope.comment.text ){
 			$scope.comment.isSaving = true;
 			TicketService.message( { 'id_support': id_support, 'body': $scope.comment.text, 'note': true }, function( json ){
 				$scope.comment.isSaving = false;
+				$scope.isCommenting = false;
+				$scope.isClosing = false;
 				if( close ){
 					if( $scope.ticket.status == 'open' ){
 						$scope.openCloseTicket();
@@ -173,10 +178,12 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	}
 
 	$scope.comment = function(){
+		$scope.isCommenting = true;
 		$scope.saveComment( false );
 	}
 
 	$scope.close_and_comment = function(){
+		$scope.isClosing = true;
 		$scope.saveComment( true );
 	}
 

@@ -588,19 +588,15 @@
 
 				<div class="double-cols">
 					<button ng-click="close_and_comment();" class="button button-border button-empty button-orange" ng-class="{ 'button-disabled': ticket.status == 'closed'}">
-					<span ng-if="comment.text && ticket.status == 'open'">Comment &amp; </span>Close</button>
-					<button ng-click="comment();" class="button button-empty button-border button-green" ng-class="{'button-disabled': !comment.text}">Comment</button>
-				</div>
-
-				<div class="field-row field-container field-row-button field-two-rows" ng-if="!comment.isSaving">
-
-				</div>
-				<div ng-if="comment.isSaving">
-					<div colspan="2">
-						<button class="button">
-							<i class="fa fa-circle-o-notch fa-spin"></i> Saving
-						</button>
-					</div>
+						<span ng-if="!isClosing">
+							<span ng-if="comment.text && ticket.status == 'open'">Comment &amp; </span>Close
+						</span>
+						<span ng-if="isClosing"><i class="fa fa-spinner fa-spin"></i> Closing</span>
+					</button>
+					<button ng-click="comment();" class="button button-empty button-border button-green" ng-class="{'button-disabled': !comment.text}">
+						<span ng-if="!isCommenting">Comment</span>
+						<span ng-if="isCommenting"><i class="fa fa-spinner fa-spin"></i> Commenting</span>
+					</button>
 				</div>
 
 			</div>

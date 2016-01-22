@@ -196,6 +196,15 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $route, $rootScope, $routeP
 		}
 	} );
 
+
+	$rootScope.$on( 'replyStarted', function(e, data) {
+		$scope.isReplying = true;
+	});
+
+	$rootScope.$on( 'replyFinished', function(e, data) {
+		$scope.isReplying = false;
+	});
+
 	$scope.send = TicketViewService.send;
 	loadData();
 	socketStuff();
