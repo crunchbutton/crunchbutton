@@ -234,7 +234,7 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	};
 
 	$scope.openCloseTicket = function(){
-		TicketService.openClose( id_support, function() { update(); } );
+		TicketService.openClose( id_support, function() { update( true ); } );
 	}
 
 	$scope.$on('mapInitialized', function(event, map) {
