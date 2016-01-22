@@ -213,7 +213,6 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 																															'id_session_twilio' => $twilio_session->id_session_twilio ] );
 		} else {
 			if( $support->status == Crunchbutton_Support::STATUS_CLOSED ){
-				$support->status = Crunchbutton_Support::STATUS_OPEN;
 				if( !$params[ 'ignoreFistMessage' ] ){
 					$support->addSystemMessage( 'Ticket reopened at cockpit' );
 				}
@@ -222,6 +221,8 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 					$support->addSystemMessage( 'Chat started by fake sms' );
 				}
 			}
+			$support->status = Crunchbutton_Support::STATUS_OPEN;
+			$support->save();
 		}
 		if( $params[ 'ignoreReply' ] ){
 			// to prevent the support ticket to open
