@@ -64,9 +64,11 @@ class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 				exit;
 			}
 
-			foreach ($msg as $m) {
-				if ($m->stop) {
-					exit;
+			if( count( $msg ) ){
+				foreach ($msg as $m) {
+					if ($m->stop) {
+						exit;
+					}
 				}
 			}
 		}
