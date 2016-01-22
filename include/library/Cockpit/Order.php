@@ -402,22 +402,22 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 			case Cockpit_Order::I_AM_5_MINUTES_AWAY:
 
-				if( !$force ){
-					$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND type = ? LIMIT 1', [$this->id_order, Crunchbutton_Order_Action::DELIVERY_ORDER_TEXT_5_MIN])->get(0);
-					if( $action->id_order_action ){
-						echo "Already sent \n";
-						return true;
-					}
-				}
+				// if( !$force ){
+				// 	$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND type = ? LIMIT 1', [$this->id_order, Crunchbutton_Order_Action::DELIVERY_ORDER_TEXT_5_MIN])->get(0);
+				// 	if( $action->id_order_action ){
+				// 		echo "Already sent \n";
+				// 		return true;
+				// 	}
+				// }
 
 				$pattern = "Your driver, %s, is about 5 minutes away and will contact you soon!";
 				echo "$pattern \n";
 				$driver = $this->driver();
 
-				if( $driver->id_admin ){
+				echo "driver->id_admin: $driver->id_admin \n";
+				echo "driver->phone: $driver->phone \n";
 
-					echo "driver->id_admin: $driver->id_admin \n";
-					echo "driver->phone: $driver->phone \n";
+				if( $driver->id_admin ){
 
 					$message = sprintf( $pattern, $driver->firstName() );
 
