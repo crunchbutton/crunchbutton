@@ -8,11 +8,11 @@ class Crunchbutton_Log extends Cana_Table {
 
 		$data['env'] = c::getEnv();
 
-		// $type = Log_Type::byType( $args[0]['type'] );
+		$type = Log_Type::byType( $args[0]['type'] );
 
 		$log = new Log;
 		$log->level = $func;
-		// $log->id_log_type = $type->id_log_type;
+		$log->id_log_type = $type->id_log_type;
 		$log->type = $args[0]['type'];
 		$log->data = json_encode( $data );
 		$log->date = date('Y-m-d H:i:s');
