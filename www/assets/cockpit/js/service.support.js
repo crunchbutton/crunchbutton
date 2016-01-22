@@ -212,15 +212,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 						updateSmsStatus( d );
 					} )
-					/*.on( 'change_ticket_status', function( d ){
-						console.log('1change_ticket_status >>>>> ');
-						console.log('1change_ticket_status >>>>> ');
-						console.log('1change_ticket_status >>>>> ');
-						console.log('1change_ticket_status >>>>> ');
-						console.log('1change_ticket_status >>>>> ');
-						$rootScope.$broadcast( 'updateHeartbeat' );
-					} )*/
-					;
+
 			}
 
 		} else {
@@ -263,7 +255,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		},
 		// callback
 		function(d) {
-			console.log('message added:::');
 			if(!d.status){
 				d.status = 'queued';
 			}
@@ -285,6 +276,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 				service.sideInfo.add_message( { body: message, name: AccountService.user.firstName, timestamp: new Date().getTime(), sending: true, guid: guid, status: 'queued' } );
 			});
 		}
+		$rootScope.$broadcast( 'replyFinished' );
 	};
 
 	service.scroll = function(instant) {

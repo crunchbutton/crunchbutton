@@ -95,9 +95,13 @@
 
 				<div class="divider"></div>
 
+				<div class="support-replying-issue" ng-if="isReplying"><i class="fa fa-spinner fa-spin"></i> Replying</div>
+
 				<div ng-if="ticket.status == 'open'">
 					<span ng-click="closeTicket();" class="support-close-issue">Close Ticket</a>
 				</div>
+				<div class="divider"></div>
+
 
 			</div>
 		</td>
