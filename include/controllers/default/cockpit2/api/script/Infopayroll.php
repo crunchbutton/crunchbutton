@@ -45,9 +45,10 @@ class Controller_Api_Script_Infopayroll extends Crunchbutton_Controller_RestAcco
 			$address = $driver->payment_type()->address;
 			$address = str_replace( "\n", "", $address );
 			$address = str_replace( ",", ";", $address );
+			$name = $payment->name ? $payment->name : $driver->name;
 			$ssn = $driver->ssn();
 			$out[] = join( ',', [	$payment->id_driver,
-														$payment->name,
+														$name,
 														$address,
 														$ssn,
 														$payment->payment
