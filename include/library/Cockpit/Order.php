@@ -393,6 +393,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 		return $out;
 	}
 
+
 	public function textCustomer( $text, $force = false ){
 
 		switch ( $text ) {
@@ -407,11 +408,16 @@ class Cockpit_Order extends Crunchbutton_Order {
 				}
 
 				$pattern = "Your driver, %s, is about 5 minutes away and will contact you soon!";
+				echo "$pattern \n";
 				$driver = $this->driver();
+
+				echo "driver->id_admin: $driver->id_admin \n";
 
 				if( $driver->id_admin ){
 
 					$message = sprintf( $pattern, $driver->firstName() );
+
+					echo "message: $message\n";
 
 					Crunchbutton_Message_Sms::send( [
 						'to' => $this->phone,
