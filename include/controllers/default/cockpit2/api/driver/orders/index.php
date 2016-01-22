@@ -140,8 +140,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 								// create the queue
 								$q = Queue::create([
 									'type' => Crunchbutton_Queue::TYPE_NOTIFICATION_MINUTES_WAY,
-									'id_order' => $order->id_order,
-									'seconds' => 0
+									'id_order' => $order->id_order
 								]);
 								break;
 						}
