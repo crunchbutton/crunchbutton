@@ -240,12 +240,20 @@
 						</div>
 					</div>
 
+					<div class="field-row" ng-if="ticket.staff.email">
+						<div class="field-key">Email</div>
+						<div class="field-value">
+							<a href="mailto:{{ticket.staff.email}}:">{{ticket.staff.email}}</a>
+						</div>
+					</div>
+
 					<div class="field-row" ng-if="ticket.staff.is_driver">
 						<div class="field-key">Driver</div>
 						<div class="field-value">
 							<span class="tag tag-green">Yes</span>
 						</div>
 					</div>
+
 					<div class="field-row" ng-if="ticket.staff.is_marketing_rep">
 						<div class="field-key">Brand Representative</div>
 						<div class="field-value">
@@ -300,6 +308,12 @@
 					<div class="field-row">
 						<div class="field-key">Address</div>
 						<div class="field-value"><a href ng-click="routeAddress(ticket.user.address)">{{ticket.user.address}}</a></div>
+					</div>
+					<div class="field-row" ng-if="ticket.user.email">
+						<div class="field-key">Email</div>
+						<div class="field-value">
+							<a href="mailto:{{ticket.user.email}}:">{{ticket.user.email}}</a>
+						</div>
 					</div>
 				</div>
 				<br>
