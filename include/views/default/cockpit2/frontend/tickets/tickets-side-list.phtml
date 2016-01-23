@@ -14,7 +14,10 @@
 								<span ng-if="ticket.type == 'WARNING' && ticket.last_reply != 'client'">
 									<i>System</i>
 								</span>
-								<span ng-if="ticket.type != 'WARNING' && ticket.last_reply == 'client'">{{ticket.name}}</span>
+								<span ng-if="ticket.type == 'WARNING' && ticket.last_reply == 'client' && ticket.name">
+									{{ticket.name}}
+								</span>
+								<span ng-if="ticket.type != 'WARNING'">{{ticket.name}}</span>
 							</a>
 							<span class="tickets-side-time">{{ticket.timestamp_client * 1000 | date:'EEE MM/dd @ h:mm a'}}</span>
 							<div class="divider"></div>
