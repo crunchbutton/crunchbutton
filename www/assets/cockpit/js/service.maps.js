@@ -363,10 +363,14 @@ NGApp.factory('MapService', function($rootScope, $resource, $routeParams, $templ
 
 			directionsService.route(routeParams, function(response, status) {
 				console.debug('Got directions response: ', response);
+				var legs = null;
+				if( response.routes && response.routes[0] && response.routes[0].legs ){
+					legs = response.routes[0].legs;
+				}
 				$rootScope.$broadcast('order-route', {
 					order: params.order,
 					restaurant: params.restaurant,
-					legs: response.routes[0].legs
+					legs: legs
 				});
 
 				if (status === google.maps.DirectionsStatus.OK) {
