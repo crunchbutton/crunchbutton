@@ -509,13 +509,13 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		';
 
 		$q .= '
-			INNER JOIN admin_payment_type apt ON apt.id_admin = admin.id_admin
-			INNER JOIN phone p ON admin.id_phone = p.id_phone
+			left JOIN admin_payment_type apt ON apt.id_admin = admin.id_admin
+			left JOIN phone p ON admin.id_phone = p.id_phone
 		';
 
 		if( $group ){
 			$q .= '
-				INNER JOIN admin_group ag ON ag.id_admin = admin.id_admin AND ag.id_group = ?
+				left JOIN admin_group ag ON ag.id_admin = admin.id_admin AND ag.id_group = ?
 			';
 			$keys[] = $group;
 		}
@@ -523,8 +523,8 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		if ($type == 'driver') {
 			$q .= '
-				INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin AND ag.type = ?
-				INNER JOIN `group` g ON g.id_group=ag.id_group
+				left JOIN admin_group ag ON ag.id_admin=admin.id_admin AND ag.type = ?
+				left JOIN `group` g ON g.id_group=ag.id_group
 			';
 			$keys[] = Crunchbutton_Group::TYPE_DRIVER;
 
@@ -541,8 +541,8 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			if ($community) {
 
 				$q .= '
-					INNER JOIN admin_group ag ON ag.id_admin=admin.id_admin
-					INNER JOIN `group` g ON g.id_group=ag.id_group
+					left JOIN admin_group ag ON ag.id_admin=admin.id_admin
+					left JOIN `group` g ON g.id_group=ag.id_group
 					LEFT JOIN community ON community.id_community=g.id_community
 				';
 			}
@@ -550,22 +550,22 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 		if( $type == 'brand-representative'  ){
 			$q .= '
-				INNER JOIN admin_group ag1 ON ag1.id_admin=admin.id_admin AND ag1.type = ?
+				left JOIN admin_group ag1 ON ag1.id_admin=admin.id_admin AND ag1.type = ?
 			';
 			$keys[] = Crunchbutton_Group::TYPE_BRAND_REPRESENTATIVE;
 		}
 
 		if( $type == 'community-manager'  ){
 			$q .= '
-				INNER JOIN admin_group ag1 ON ag1.id_admin=admin.id_admin AND ag1.type = ?
+				left JOIN admin_group ag1 ON ag1.id_admin=admin.id_admin AND ag1.type = ?
 			';
 			$keys[] = Crunchbutton_Group::TYPE_COMMUNITY_MANAGER;
 		}
 
 		if( $working != 'all' ){
 			$q .= '
-							INNER JOIN admin_shift_assign asa ON asa.id_admin = admin.id_admin
-							INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift AND DATE( cs.date_start ) = DATE( NOW() )
+							left JOIN admin_shift_assign asa ON asa.id_admin = admin.id_admin
+							left JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift AND DATE( cs.date_start ) = DATE( NOW() )
 					';
 		}
 
