@@ -169,7 +169,9 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 			if (AccountService.isSupport) {
 
-				service.socket.emit('event.subscribe', 'ticket.update');
+				setTimeout(function() {
+					service.socket.emit('event.subscribe', 'ticket.update');
+				}, 1000 );
 
 				SocketService.listen('ticket.update', $rootScope).on( 'change_ticket_status', function(){
 					console.log( 'change_ticket_status' );
