@@ -68,6 +68,8 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope,
 			}
 		}
 
+		service.socket.emit('event.subscribe', 'tickets.update');
+
 
 		// @todo: test better
 		scope.$on('$destroy', function() {
