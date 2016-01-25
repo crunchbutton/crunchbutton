@@ -87,8 +87,6 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 
 		$driver->save();
 
-		$driver = Admin::o( $driver->id_admin );
-
 		if( !$driver->login ){
 			// create an username
 			$driver->login = $driver->createLogin();
