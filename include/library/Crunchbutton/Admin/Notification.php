@@ -311,19 +311,20 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$message = 'Reps failed to pickup order #' . $order->id_order . '. Restaurant ' . $order->restaurant()->name . ' / Customer ' . $order->name . ' https://cockpit.la/' . $order->id_order;
 
 		// Get drivers name
-		// Get drivers name
-		if(is_null($drivers) ){
-			$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder( $order->id_order );
-		}
+		$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder( $order->id_order );
 
-        $driversToNotify = [];
+		$_driver = null;
+
+    $driversToNotify = [];
 		if( $drivers ){
 			foreach( $drivers as $driver ){
 				foreach( $driver->activeNotifications() as $adminNotification ){
 					$driversToNotify[ $driver->id_admin ] = $driver->name . ': ' . $driver->phone();
+					$_driver = $driver;
 				}
 			}
 		}
+
 		$drivers_list = "";
 		$commas = "";
 		foreach( $driversToNotify as $key => $val ){
@@ -344,8 +345,12 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			$sms_message .= "\nD: " . $drivers_list;
 		}
 
+		if( count( $driversToNotify ) == 1 ){
+			$phone = $_driver->phone();
+		}
+
 		// Reps failed to pickup order texts changes #2802
-		Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $sms_message, 'bubble' => true ] );
+		Crunchbutton_Support::createNewWarning( [ 'body' => $sms_message, 'phone' => $phone, 'bubble' => true ] );
 
 		Crunchbutton_Message_Sms::send([
 			'to' => Crunchbutton_Support::getUsers(),
