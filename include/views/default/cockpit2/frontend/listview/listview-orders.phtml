@@ -83,7 +83,7 @@
 						<br>
 						<div ng-if="order.preordered">
 						<span class="tag tag-purple">Pre ordered</span>
-							to {{order.date_delivery | timestamp | date:'MM/dd @ h:mm a'}}
+							to {{order.date_delivery | localtime:'MM/dd @ h:mm a'}}
 						</div>
 					</td>
 					<td nowrap class="tb-v-center tb-right">
