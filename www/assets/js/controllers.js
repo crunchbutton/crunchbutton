@@ -982,6 +982,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 				$scope.restaurant = restaurant;
 				$scope.restaurant.open();
 				$scope.open = $scope.restaurant._open;
+				loadPreOrderInfo( restaurant );
 				if (!$scope.$$phase){
 					$scope.$apply();
 				}
@@ -1056,11 +1057,13 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		if( OrderService.restaurant && OrderService.restaurant.id_restaurant && OrderService.restaurant.id_restaurant == $scope.restaurant.id_restaurant ){
 			updateRestaurantStatus = $timeout( function(){
 				$scope.restaurant.open();
-				$scope.restaurant.reloadHours( true, function(){
+				$scope.restaurant.reloadHours( true, function( restaurant ){
+					$scope.restaurant = restaurant;
 					var open = $scope.restaurant._open;
 					if ($scope.open != open) {
 						$scope.open = open;
 					}
+					loadPreOrderInfo( $scope.restaurant );
 					if (!$scope.$$phase){
 						$scope.$apply();
 					}
@@ -1320,6 +1323,15 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		}
 	}
 
+	var loadPreOrderInfo = function( restaurant ){
+		if( restaurant.allow_preorder && restaurant._preOrderDays.length ){
+			$scope.order._preOrderDays = restaurant._preOrderDays;
+			$scope.order.form.deliveryDay = $scope.order._preOrderDays[ 0 ].value;
+			$scope.deliveryDayChanged();
+		}
+	}
+
+
 	// Event will be called after the restaurant load
 	$scope.$on( 'restaurantLoaded', function(e, data) {
 
@@ -1329,11 +1341,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 		$scope.restaurant = data.restaurant;
 
-		if( data.restaurant.allow_preorder && data.restaurant._preOrderDays.length ){
-			$scope.order._preOrderDays = data.restaurant._preOrderDays;
-			$scope.order.form.deliveryDay = $scope.order._preOrderDays[ 0 ].value;
-			$scope.deliveryDayChanged();
-		}
+		loadPreOrderInfo( data.restaurant );
 
 		$rootScope.$broadcast( 'updateQuote', $scope.restaurant.id_community );
 

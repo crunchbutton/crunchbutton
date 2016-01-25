@@ -337,6 +337,10 @@ var Restaurant = function(id) {
 				cache: false
 			} ).success( function ( hours ) {
 				var gmt = hours.gmt;
+				var allow_preorder = hours.allow_preorder;
+				var _preOrderDays = hours._preOrderDays;
+				var preOrderTimeToTime = hours.preOrderTimeToTime;
+				var force_pre_order = hours.force_pre_order;
 				var hours = hours.hours;
 				if( gmt ){
 					dateTime.updateGMT( gmt );
@@ -345,6 +349,8 @@ var Restaurant = function(id) {
 				if( hours && hours.constructor === Array ){
 					self.cachedAt = now;
 					self.hours = hours;
+					self.allow_preorder = allow_preorder;
+					self._preOrderDays = _preOrderDays;
 					self._hours_processed = false;
 					self.processHours();
 					if( callback ){
