@@ -322,7 +322,8 @@ class Crunchbutton_Reward extends Cana_Table{
 		}
 
 		if( $code ){
-			if( !Crunchbutton_Reward::validateInviteCode( $code ) ){
+			$referral = new Crunchbutton_Reward;
+			if( !$referral->validateInviteCode( $code ) ){
 				return $code;
 			} else {
 				$step++;
