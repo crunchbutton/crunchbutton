@@ -1311,13 +1311,18 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 	$scope.deliveryDayChanged = function(){
 		$scope.order._preOrderHours = [];
+		var _tempDeliveryHours = $scope.order.form.deliveryHour;
 		$scope.order.form.deliveryHour = null;
 		for( x in $scope.order._preOrderDays ){
 			var day = $scope.order._preOrderDays[ x ];
 			if( $scope.order.form.deliveryDay == day.value ){
 				$scope.order._preOrderHours = day[ 'hours' ];
 				if( $scope.order._preOrderHours.length ){
-					$scope.order.form.deliveryHour = $scope.order._preOrderHours[ 0 ].value
+					for( y in $scope.order._preOrderHours ){
+						if( $scope.order._preOrderHours[ y ].value == _tempDeliveryHours ){
+							$scope.order.form.deliveryHour = _tempDeliveryHours;
+						}
+					}
 				}
 			}
 		}

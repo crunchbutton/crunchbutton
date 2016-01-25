@@ -1221,6 +1221,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		// get shift plus restaurant merged hours
 		$hours = Hour::hoursByRestaurant( $this, false, true );
 		$hours = $this->preOrderProcessHours( $hours );
+
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->setTimezone( new DateTimeZone( $this->timezone ) );
 		$days = [];
@@ -1274,6 +1275,35 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		$_hours = [];
 		$_segments = [];
+
+
+		if( !$this->delivery_service ){
+			$_hours = [];
+			$now = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
+			$weekdays = [ 'mon' => 'Monday', 'tue' => 'Tuesday', 'wed' => 'Wednesday', 'thu' => 'Thursday', 'fri' => 'Friday', 'sat' => 'Saturday', 'sun' => 'Sunday' ];
+			foreach( $hours as $hour ){
+				if( $now->format( 'l' ) == $weekdays[ $hour->day ] ){
+					$date = clone $now;
+					$deliveryEstimate = clone $now;
+					$time = explode( ':', $hour->time_open );
+					$date->setTime( $time[ 0 ], $time[ 1 ] );
+					$deliveryEstimate->modify( '+ ' . $this->delivery_estimated_time . ' minutes' );
+					if( $date < $deliveryEstimate ){
+						$minutes = round( $deliveryEstimate->format( 'i' ) / 10, 0 )  * 10;
+						if( $minutes >= 60 ){
+							$minutes -= 60;
+							$deliveryEstimate->modify( '+ 1 hour' );
+						}
+						$hour->time_open = $deliveryEstimate->format( 'H' ) . ':' . $minutes;
+					}
+				} else {
+					$date = new DateTime( 'next ' . $hour->day, new DateTimeZone( $this->timezone ) );
+				}
+				$hour = ( object ) [ 'day' => $hour->day, 'time_open' => $hour->time_open, 'time_close' => $hour->time_close, 'date' => $date->format( 'Y-m-d' ) ];
+				$_hours[] = $hour;
+			}
+			$hours = $_hours;
+		}
 
 		foreach( $hours as $hour ){
 
@@ -1330,7 +1360,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		if( $community->allRestaurantsClosed() || $community->allThirdPartyDeliveryRestaurantsClosed() ){
 			return false;
 		}
-		return $community->allow_preorder && $this->delivery_service && $this->allow_preorder;
+		return $community->allow_preorder && $this->allow_preorder;
 	}
 
 	public function preorderMinAfterCommunityOpen(){
