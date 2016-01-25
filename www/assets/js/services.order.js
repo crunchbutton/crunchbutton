@@ -239,6 +239,11 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			service.showForm = true;
 		}
 
+		if (service.account.user && service.account.user.last_order_pre_ordered && service.restaurant.allow_preorder ) {
+			service.toogleDeliveryTime( 'pre-order' );
+			service.showForm = true;
+		}
+
 		// Load the order
 		if (service.cart.hasItems()) {
 			service.reloadOrder();

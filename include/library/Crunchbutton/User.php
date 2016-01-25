@@ -65,7 +65,7 @@ class Crunchbutton_User extends Cana_Table {
 	}
 
 	public function lastOrder() {
-		$order = Order::q('select * from `order` where id_user=? and id_user is not null order by date desc limit 1', [$this->id_user]);
+		$order = Order::q('select * from `order` where id_user=? and id_user is not null order by id_order desc limit 1', [$this->id_user]);
 		return $order;
 	}
 
@@ -245,6 +245,11 @@ class Crunchbutton_User extends Cana_Table {
 				$out[ 'last_order' ] = array( 'address' => $lastOrder->address, 'communities' => $communities );
 			} else {
 				$out[ 'last_order' ] = false;
+			}
+
+			$lastOrderEver = $this->lastOrder();
+			if( $lastOrderEver->preordered ){
+				$out[ 'last_order_pre_ordered' ] = true;
 			}
 
 			$lastNote = $this->getLastNote();

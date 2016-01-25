@@ -80,7 +80,27 @@ class Controller_api_restaurant_hours extends Crunchbutton_Controller_Rest {
 				$hours = $r->hours_next_24_hours( $no_utc );
 				if( !$hours ){ $hours = []; }
 				$utc_str = gmdate( 'Y/n/d/H/i/s', time() );
+
 				$hours = [ 'hours' => $hours, 'gmt' => $utc_str ];
+
+				if( $r->allowPreorder() ){
+					$hours[ 'allow_preorder' ] = true;
+					$hours[ '_preOrderDays' ] = $r->preOrderHours();
+					if( $r->preOrderTimeToTime ){
+						$hours[ 'preOrderTimeToTime' ] = 'Pre-order for delivery ' . $r->preOrderTimeToTime;
+					}
+					if( !$hours[ '_preOrderDays' ] ){
+						$hours[ 'allow_preorder' ] = false;
+					}
+				} else {
+					$hours[ 'allow_preorder' ] = false;
+				}
+
+				if( !$hours[ '_open' ] && $hours[ 'allow_preorder' ] ){
+					$hours[ 'force_pre_order' ] = true;
+				}
+
+
 				echo json_encode( $hours );exit;;
 				break;
 
