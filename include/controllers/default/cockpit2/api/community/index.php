@@ -45,7 +45,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 								break;
 
 							case 'closelog':
-								$log = $community->forceCloseLog( true, false, 20 );
+								$log = $community->forceCloseLog( true, false, 40 );
 								$out = [];
 								foreach( $log as $closed ){
 									$out[] = $closed->exports();
