@@ -457,6 +457,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 	}
 
 	public function createRecurringEvent( $date ){
+
 		// Search for recurring events
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$day = new DateTime( $date, new DateTimeZone( c::config()->timezone ) );
@@ -499,6 +500,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 					', [$shift->id_community_shift, $hours[ 'start' ], $hours[ 'end' ]]);
 
 					if( !$checkShift->id_community_shift ){
+
 						$newShift = new Crunchbutton_Community_Shift();
 						$newShift->id_community = $shift->id_community;
 						$newShift->date_start = $hours[ 'start' ];
@@ -510,7 +512,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 						}
 
 						// Create the permanent assigments
-						$permanentlys = Crunchbutton_Admin_Shift_Assign_Permanently::getByShift( $shift->id_community_shift, $date );
+						$permanentlys = Crunchbutton_Admin_Shift_Assign_Permanently::getByShift( $shift->id_community_shift );
 						foreach( $permanentlys as $permanently ){
 							if( $permanently->id_admin ){
 								if( !Crunchbutton_Admin_Shift_Assign_Permanently_Removed::wasRemoved( $newShift->id_community_shift, $permanently->id_admin ) ){
@@ -526,7 +528,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 
 						if( $now < $checkShift->dateStart()->get( 0 ) ){
 							// Create the permanent assigments
-							$permanentlys = Crunchbutton_Admin_Shift_Assign_Permanently::getByShift( $shift->id_community_shift, $date );
+							$permanentlys = Crunchbutton_Admin_Shift_Assign_Permanently::getByShift( $shift->id_community_shift );
 							foreach( $permanentlys as $permanently ){
 								if( $permanently->id_admin ){
 									if( !Crunchbutton_Admin_Shift_Assign::adminHasShift( $permanently->id_admin, $checkShift->id_community_shift ) ){

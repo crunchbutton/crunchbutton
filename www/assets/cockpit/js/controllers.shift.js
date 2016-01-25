@@ -403,7 +403,7 @@ NGApp.controller('ShiftScheduleScheduleShiftCtrl', function ( $scope, $rootScope
 
 	$scope.assignDriver = function( driver ){
 		if( driver.assigned_permanently ){
-			driver.assigned_permanently = false;
+			driver.keep_permanency = true;
 		}
 		processShiftAssignmentUpdate( driver );
 	}
@@ -411,11 +411,17 @@ NGApp.controller('ShiftScheduleScheduleShiftCtrl', function ( $scope, $rootScope
 	$scope.assignDriverPermanently = function( driver ){
 		if( driver.assigned_permanently ){
 			driver.assigned = true;
-		}
-		if( !driver.assigned_permanently && $scope.shift.shift_remove_permanency ){
-			driver.assigned = false;
+			driver.keep_permanency = true;
+		} else {
+			driver.keep_permanency = false;
 		}
 		processShiftAssignmentUpdate( driver );
+	}
+
+ 	logDriver = function( driver ){
+ 		console.log('driver.assigned',driver.assigned);
+ 		console.log('driver.keep_permanency',driver.keep_permanency);
+ 		console.log('driver.assigned_permanently',driver.assigned_permanently);
 	}
 
 	$scope.saveDriverNote = function( driver ){
@@ -436,7 +442,7 @@ NGApp.controller('ShiftScheduleScheduleShiftCtrl', function ( $scope, $rootScope
 	}
 
 	var updateShiftAssignment = function( driver, callback ){
-		var params = { id_admin: driver.id_admin, id_community_shift: $scope.shift.id_community_shift, assigned: driver.assigned, permanent: driver.assigned_permanently };
+		var params = { id_admin: driver.id_admin, id_community_shift: $scope.shift.id_community_shift, assigned: driver.assigned, permanent: driver.assigned_permanently, keep_permanency: driver.keep_permanency };
 		if( !driver.assigned ){
 			params.reason = driver.reason;
 			params.reason_other = driver.reason_other;
@@ -462,6 +468,7 @@ NGApp.controller('ShiftScheduleScheduleShiftCtrl', function ( $scope, $rootScope
 	}
 
 	var processShiftAssignmentUpdate = function( driver ){
+		logDriver( driver );
 		if( driver.assigned ){
 			updateShiftAssignment( driver );
 		} else {

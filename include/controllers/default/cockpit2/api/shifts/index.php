@@ -48,6 +48,9 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			case 'remove-recurring-shift':
 				$this->_removeRecurringShift();
 				break;
+			case 'remove-shift':
+				$this->_removeShift();
+				break;
 		}
 	}
 
@@ -109,6 +112,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			$id_admin = $this->request()[ 'id_admin' ];
 			$permanent = $this->request()[ 'permanent' ];
 			$assigned = $this->request()[ 'assigned' ];
+			$keep_permanency = $this->request()[ 'keep_permanency' ];
 
 			// assign shift or change the permanency
 			if( $assigned ){
@@ -132,7 +136,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 						$this->_removePermanency( $shift, $id_admin );
 					}
 				}
-			// remove assinment
+			// remove assignment
 			} else {
 				$assignment = Crunchbutton_Admin_Shift_Assign::q( "SELECT * FROM admin_shift_assign WHERE id_admin = ? AND id_community_shift = ? LIMIT 1", [ $id_admin, $id_community_shift ] )->get( 0 );
 				if( $assignment->id_admin_shift_assign ){
@@ -140,7 +144,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 					// prevent the shift to be added again
 					Crunchbutton_Admin_Shift_Assign_Permanently_Removed::add( $shift->id_community_shift, $id_admin );
 					// remove permanency
-					if( $assignment->isPermanent() ){
+					if( $assignment->isPermanent() && !$keep_permanency ){
 						$this->_removePermanency( $shift, $id_admin );
 					}
 					$params = [];
