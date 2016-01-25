@@ -256,6 +256,11 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs WHERE cs.date_start >= \'' . $from . ' 00:00:00\' AND cs.date_end <= \'' . $to . ' 23:59:59\' AND id_community = ? ORDER BY cs.date_start ASC', [$id_community]);
 	}
 
+	public function activeShiftsByCommunityPeriod( $id_community, $from, $to ){
+		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs WHERE cs.date_start >= \'' . $from . ' 00:00:00\' AND cs.date_end <= \'' . $to . ' 23:59:59\' AND id_community = ? AND active = 1 AND hidden = 0 AND created_by_driver = 0 ORDER BY cs.date_start ASC', [$id_community]);
+	}
+
+
 	public function assignedShiftsByCommunityPeriod( $id_community, $from, $to ){
 		return Crunchbutton_Community_Shift::q( 'SELECT DISTINCT( cs.id_community_shift ), cs.* FROM community_shift cs  INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift WHERE cs.date_start >= \'' . $from . ' 00:00:00\' AND cs.date_end <= \'' . $to . ' 23:59:59\' AND id_community = ? ORDER BY cs.date_start ASC', [$id_community]);
 	}
@@ -938,57 +943,61 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 		foreach( $communities as $community ){
 
 			// Check if the community has shift for current week
-			$shifts = Crunchbutton_Community_Shift::shiftsByCommunityPeriod( $community->id_community, $from->format( 'Y-m-d' ), $to->format( 'Y-m-d' ) );
+			$shifts = Crunchbutton_Community_Shift::activeShiftsByCommunityPeriod( $community->id_community, $from->format( 'Y-m-d' ), $to->format( 'Y-m-d' ) );
 
-			$drivers = $community->getDriversOfCommunity();
+			if( $shifts->count() > 0 ){
 
-			echo "\n";
-			$log = $community->name . ' has ' .  $drivers->count() . ' drivers';
-			Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
-			echo $log."\n";
-			echo "\n";
+				$drivers = $community->getDriversOfCommunity();
 
-			foreach( $drivers as $driver ){
+				echo "\n";
+				$log = $community->name . ' has ' .  $drivers->count() . ' drivers';
+				Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
+				echo $log."\n";
+				echo "\n";
 
-				if( !$driver->isDriver() ){
-					continue;
-				}
+				foreach( $drivers as $driver ){
 
-				$receiveSMS = $driver->getConfig( Crunchbutton_Admin::CONFIG_RECEIVE_DRIVER_SCHEDULE_SMS_WARNING );
-				if( $receiveSMS->id_admin_config ){
-					$receiveSMS = $receiveSMS->value;
-				} else {
-					$receiveSMS = false;
-				}
-				if( $receiveSMS ){
+					if( !$driver->isDriver() ){
+						continue;
+					}
 
-					$preferences = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $_week, $_year );
+					$receiveSMS = $driver->getConfig( Crunchbutton_Admin::CONFIG_RECEIVE_DRIVER_SCHEDULE_SMS_WARNING );
+					if( $receiveSMS->id_admin_config ){
+						$receiveSMS = $receiveSMS->value;
+					} else {
+						$receiveSMS = false;
+					}
+					if( $receiveSMS ){
 
-					$log = 'driver set up to RECEIVE sms: ' . $driver->name . ' - ' . $community->name;
-					Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
-					echo $log."\n";
-					if( $preferences->completed == 1 ){
-						$log = 'driver Already finished its schedule: ' . $driver->name;
+						$preferences = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $_week, $_year );
+
+						$log = 'driver set up to RECEIVE sms: ' . $driver->name . ' - ' . $community->name;
 						Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
 						echo $log."\n";
-					} else {
-						$rankedShifts = self::getShiftsStatus( $driver->id_admin );
-						if( $rankedShifts && $rankedShifts->count() ){
-							$log = 'driver Already ranked some shifts: ' . $driver->name . ': ' . $rankedShifts->count();
+						if( $preferences->completed == 1 ){
+							$log = 'driver Already finished its schedule: ' . $driver->name;
 							Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
 							echo $log."\n";
 						} else {
-							$driversWillReceiveTheNotification[] = array(  'id_admin' => $driver->id_admin, 'name' => $driver->name, 'txt' => $driver->txt, 'phone' => $driver->phone );
+							$rankedShifts = self::getShiftsStatus( $driver->id_admin );
+							if( $rankedShifts && $rankedShifts->count() ){
+								$log = 'driver Already ranked some shifts: ' . $driver->name . ': ' . $rankedShifts->count();
+								Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
+								echo $log."\n";
+							} else {
+								$driversWillReceiveTheNotification[] = array(  'id_admin' => $driver->id_admin, 'name' => $driver->name, 'txt' => $driver->txt, 'phone' => $driver->phone );
+							}
 						}
+					} else {
+						$log = 'driver set up to NOT receive sms: ' . $driver->name;
+						Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
+						echo $log."\n";
 					}
-				} else {
-					$log = 'driver set up to NOT receive sms: ' . $driver->name;
-					Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
-					echo $log."\n";
 				}
-			}
-			if( $shifts->count() == 0 ){
-				$communitiesWithoutShift[] = $community->name;
+				if( $shifts->count() == 0 ){
+					$communitiesWithoutShift[] = $community->name;
+				}
+
 			}
 		}
 
