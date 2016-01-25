@@ -4,10 +4,8 @@ class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
 
 	public function init(){
 
-		Event::emit([
-			'room' => [ 'tickets', 'ticket.update' ]
-		], 'change_ticket_status', [] );
-
+		$set = new Settlement;
+		echo '<pre>';var_dump( $set->payDriver( 52919 ) );exit();;
 
 	}
 }
