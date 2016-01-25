@@ -93,8 +93,6 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 		}
 		$driver->save();
 
-		$driver = Cockpit_Admin::o( $driver->id_admin );
-
 		// create an username
 		$driver->login = $driver->createLogin();
 		$driver->save();
