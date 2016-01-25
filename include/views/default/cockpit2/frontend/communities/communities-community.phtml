@@ -30,6 +30,13 @@
 						<div class="field-value">{{community.permalink}}</div>
 					</div>
 					<div class="field-row">
+						<div class="field-key">Active</div>
+						<div class="field-value">
+							<span class="tag tag-red" ng-if="!community.active">Inactive</span>
+							<span class="tag tag-green" ng-if="community.active">Active</span>
+						</div>
+					</div>
+					<div class="field-row">
 						<div class="field-key">Status</div>
 						<div class="field-value">
 							<span class="tag tag-red" ng-if="community.close_all_restaurants && community.is_auto_closed || community.close_3rd_party_delivery_restaurants">Closed</span>
