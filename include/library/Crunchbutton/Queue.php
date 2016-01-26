@@ -19,6 +19,7 @@ class Crunchbutton_Queue extends Cana_Table {
 	const TYPE_CLASS_RESTAURANT_TIME		= 'Crunchbutton_Queue_Restaurant_Time';
 	const TYPE_CLASS_EVENT_EMIT		= 'Crunchbutton_Queue_Event_Emit';
 	const TYPE_CLASS_PEXCARD_ACTION		= 'Crunchbutton_Queue_Pexcard_Action';
+	const TYPE_CLASS_PEXCARD_REMOVE_FUNDS		= 'Crunchbutton_Queue_Pexcard_Remove_Funds';
 
 	const TYPE_ORDER						= 'order';
 	const TYPE_CRON						= 'cron';
@@ -37,6 +38,7 @@ class Crunchbutton_Queue extends Cana_Table {
 	const TYPE_RESTAURANT_TIME		= 'restaurant-time';
 	const TYPE_EVENT_EMIT		= 'event-emit';
 	const TYPE_PEXCARD_ACTION		= 'pexcard-action';
+	const TYPE_PEXCARD_REMOVE_FUNDS		= 'pexcard-remove-funds';
 
 	const STATUS_NEW		= 'new';
 	const STATUS_SUCCESS	= 'success';

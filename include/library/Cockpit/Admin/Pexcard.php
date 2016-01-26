@@ -124,6 +124,30 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 		}
 	}
 
+	public function pexCardRemoveCardAllFundsDaily(){
+		$cards = self::q( 'SELECT * FROM admin_pexcard' );
+		foreach( $cards as $card ){
+			if( !$card->isBusinessCard() ){
+				$card->createQueRemoveFunds();
+			}
+		}
+	}
+
+	public function createQueRemoveFunds(){
+		$info = json_encode( [ 'id_admin_pexcard' => $this->id_admin_pexcard ] );
+		$q = Queue::create([
+			'type' => Crunchbutton_Queue::TYPE_CLASS_PEXCARD_REMOVE_FUNDS,
+			'info' => $info
+		]);
+	}
+
+	public function runQueRemoveFunds(){
+		$info = $this->load_card_info();
+		if( $info->availableBalance > 0 ){
+			$this->pexCardRemoveLeftFunds( $info->availableBalance );
+		}
+	}
+
 	public function pexCardRemoveLeftFunds( $amount ){
 		if( $this->isBusinessCard() ){
 			return;
