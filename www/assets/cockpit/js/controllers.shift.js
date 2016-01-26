@@ -144,6 +144,10 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, $routeParam
 		changeQuery();
 	}
 
+	$scope.$on( 'modalClosed', function(e, data) {
+		changeQuery();
+	});
+
 	var changeQuery = function(){
 		var query = { date: null, communities: '' };
 		if( $scope.options.start ){
@@ -273,6 +277,9 @@ NGApp.controller('ShiftScheduleCtrl', function ( $scope, $rootScope, $routeParam
 	}
 
 	$scope.scheduleShift = function( id_community_shift ){
+		var query = $location.search();
+		query.id_community_shift = id_community_shift;
+		$location.search( query );
 		var params = { id_community_shift: id_community_shift }
 		$rootScope.$broadcast( 'openScheduleShiftContainer', params );
 		openShift = null;
