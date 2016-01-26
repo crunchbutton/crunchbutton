@@ -124,7 +124,7 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 		}
 	}
 
-	public function pexCardRemoveCardAllFundsDaily(){
+	public static function pexCardRemoveCardAllFundsDaily(){
 		$cards = self::q( 'SELECT * FROM admin_pexcard' );
 		foreach( $cards as $card ){
 			if( !$card->isBusinessCard() ){
@@ -134,6 +134,7 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 	}
 
 	public function createQueRemoveFunds(){
+		echo "creating remove funds que # $this->id_admin_pexcard \n";
 		$info = json_encode( [ 'id_admin_pexcard' => $this->id_admin_pexcard ] );
 		$q = Queue::create([
 			'type' => Crunchbutton_Queue::TYPE_PEXCARD_REMOVE_FUNDS,
@@ -142,9 +143,13 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 	}
 
 	public function runQueRemoveFunds(){
+		echo "running remove funds que # $this->id_admin_pexcard \n";
 		$info = $this->load_card_info();
 		if( $info->availableBalance > 0 ){
+			echo "funds to remove $info->availableBalance \n\n";
 			$this->pexCardRemoveLeftFunds( $info->availableBalance );
+		} else {
+			echo "no funds to remove \n\n";
 		}
 	}
 
