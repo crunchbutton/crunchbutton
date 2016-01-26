@@ -136,7 +136,7 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 	public function createQueRemoveFunds(){
 		$info = json_encode( [ 'id_admin_pexcard' => $this->id_admin_pexcard ] );
 		$q = Queue::create([
-			'type' => Crunchbutton_Queue::TYPE_CLASS_PEXCARD_REMOVE_FUNDS,
+			'type' => Crunchbutton_Queue::TYPE_PEXCARD_REMOVE_FUNDS,
 			'info' => $info
 		]);
 	}
