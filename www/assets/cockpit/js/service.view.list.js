@@ -24,6 +24,15 @@ NGApp.factory('ViewListService', function($rootScope, $location, $timeout) {
 			return q;
 		};
 
+		var hasValues = function(){
+			for (var x in scope.query) {
+				if( scope.query[x] ){
+					return true;
+				}
+			}
+			return false;
+		}
+
 		var timeoutPromise = null;
 
 		var watch = function() {
@@ -36,13 +45,14 @@ NGApp.factory('ViewListService', function($rootScope, $location, $timeout) {
 					return;
 				}
 
-				if (!previous) {
+				if (!previous && !searchHasChanged) {
 					$location.search(scope.query).replace();
 				} else {
 					$location.search(scope.query);
 				}
 
 				previous = getQuery();
+
 				update();
 			}, 10 );
 		};
@@ -64,6 +74,13 @@ NGApp.factory('ViewListService', function($rootScope, $location, $timeout) {
 				}
 			}
 		};
+
+		var searchHasChanged = false
+		scope.$watch('query.search', function( newValue, oldValue ){
+			if( newValue || oldValue ){
+				searchHasChanged = true;
+			}
+		});
 
 		scope.count = 0;
 		scope.pages = 0;
