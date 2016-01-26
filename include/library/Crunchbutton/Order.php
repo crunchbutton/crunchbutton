@@ -94,7 +94,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		} elseif ($params['delivery_type'] != self::SHIPPING_DELIVERY ) {
 			// log when an order is not delivery nor takeout
 			Crunchbutton_Log::error([
-				'type'         => 'wrong delivery type',
+				'type'         => 'wrong-delivery-type',
 				'order_params' => $params,
 			]);
 		}
@@ -130,7 +130,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			} else {
 				// log when an order is not delivery nor takeout
 				Crunchbutton_Log::error([
-					'type'         => 'wrong delivery type',
+					'type'         => 'wrong-delivery-type',
 					'order_params' => $params,
 				]);
 			}
@@ -142,7 +142,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			} else {
 				// log when an order is not delivery nor takeout
 				Crunchbutton_Log::error([
-					'type'         => 'wrong delivery type',
+					'type'         => 'wrong-delivery-type',
 					'order_params' => $params,
 				]);
 			}
@@ -580,7 +580,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		// failed to process the card
 		if ($res !== true) {
-			Log::debug( [
+			Log::error( [
 				'action' 				=> 'credit card error',
 				'address' 			=> $params['address'],
 				'phone' 				=> $params['phone'],

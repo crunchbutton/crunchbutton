@@ -2,6 +2,11 @@
 
 class Crunchbutton_Log extends Cana_Table {
 
+	const LEVEL_CRITICAL = 'critical';
+	const LEVEL_DEBUG = 'debug';
+	const LEVEL_ERROR = 'error';
+	const LEVEL_WARNING = 'warning';
+
 	public static function __callStatic( $func, $args ) {
 
 		$data = $args[0];
