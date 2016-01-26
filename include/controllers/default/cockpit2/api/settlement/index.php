@@ -3,6 +3,10 @@
 class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
+		// @remove -- remove it before commit
+		$this->_restaurantBegin();
+		exit;
+		// @remove -- remove it before commit
 
 		$this->resultsPerPage = 20;
 
@@ -213,12 +217,18 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$id_restaurant = $this->request()['id_restaurant'];
 		$pay_type = ( $this->request()['pay_type'] == 'all' ) ? '' : $this->request()['pay_type'];
 
+		// @remove -- remove it before commit
+		$start = '12/06/2015';
+		$end = '01/02/2016';
+		// @remove -- remove it before commit
+
 		if( !$start || !$end ){
 			$this->_error();
 		}
 
 		$settlement = new Settlement( [ 'payment_method' => $pay_type, 'start' => $start, 'end' => $end, 'id_restaurant' => $id_restaurant ] );
 		$restaurants = $settlement->startRestaurant();
+
 		$out = [ 'restaurants' => [] ];
 		// default notes
 		$out = [ 'notes' => Crunchbutton_Settlement::DEFAULT_NOTES ];
