@@ -7,10 +7,12 @@ class Crunchbutton_Log_Monitor_Credit_Card_Fail extends Crunchbutton_Log_Monitor
 
 	public function monitor(){
 
-		$query = 'SELECT * FROM log WHERE type = ? AND data LIKE ?';
+		$type = Crunchbutton_Log_Type::byType( 'order-log' );
+
+		$query = 'SELECT * FROM log WHERE id_log_type = ? AND level = ?';
 
 		// search criteria
-		$keys = [ 'order-log', '%credit card error%' ];
+		$keys = [ $type->id_log_type, Crunchbutton_Log::LEVEL_ERROR ];
 
 		// run the query
 		$logs = $this->runQuery( $query, $keys, self::type() );
