@@ -628,19 +628,14 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 				return $a[ 'name' ] > $b[ 'name' ];
 			} );
 
-			$_communities = [];
-
-			foreach( $communities as $community ){
-				$_communities[ $community[ 'id_community' ] ] = $community;
-			}
-
-			$communities = $_communities;
-
 			foreach( $days as $day ) {
 				$segments = Crunchbutton_Community_Shift::shiftsByDay( $day->format( 'Y-m-d' ) );
 				foreach( $segments as $segment ){
-					if( $communities[ $segment->id_community ] ){
-						$communities[ $segment->id_community ]['days'][ $day->format( 'Ymd' ) ][ 'shifts' ][] = $this->_parseSegment( $segment );
+					foreach( $communities as $key => $val ){
+						$id_community = $val[ 'id_community' ];
+						if( $id_community == $segment->id_community ){
+							$communities[ $key ]['days'][ $day->format( 'Ymd' ) ][ 'shifts' ][] = $this->_parseSegment( $segment );
+						}
 					}
 				}
 			}
