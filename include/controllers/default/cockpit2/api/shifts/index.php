@@ -391,9 +391,10 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			$_drivers = [];
 
 			foreach( $drivers as $driver ){
-
+				$maxShifts = 0;
 				$totalShifts = Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $week, $year )->get( 0 );
 				if( $totalShifts->shifts_from || $totalShifts->shifts_to ){
+					$maxShifts = $totalShifts->shifts_to;
 					if( $totalShifts->shifts_to == 100 ){
 						$totalShifts->shifts_to = 'As many as possible!';
 					}
@@ -415,6 +416,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 				$driverShifts = Crunchbutton_Admin_Shift_Assign::shiftsByAdminPeriod( $driver->id_admin, $firstDayOfWeek, $lastDayOfWeek . ' 23:59:59' );
 				$_driver[ 'total_shifts' ] = $driverShifts->count();
 				$_driver[ 'statistics' ] = $driver->statistics( 60 );
+				$_driver[ 'max_shifts' ] = $maxShifts;
 				$_driver[ 'total_shifts_want_work' ] = $totalShifts;
 				$_driver[ 'assigned' ] = ( Crunchbutton_Admin_Shift_Assign::adminHasShift( $driver->id_admin, $shift->id_community_shift ) ) ? true : false;
 				$_driver[ 'assigned_permanently' ] = ( Crunchbutton_Admin_Shift_Assign_Permanently::adminIsPermanently( $driver->id_admin, $shift->id_community_shift ) ) ? true : false;
@@ -475,7 +477,11 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 			usort( $_drivers, function( $a, $b ) {
 				if( $a[ 'sort' ] == $b[ 'sort' ] ){
-					return $a[ 'name' ] > $b[ 'name' ];
+					if( $a[ 'max_shifts' ] == $b[ 'max_shifts' ] ){
+						return $a[ 'name' ] > $b[ 'name' ];
+					} else {
+						return $a[ 'max_shifts' ] < $b[ 'max_shifts' ];
+					}
 				}
 				return $a[ 'sort' ] < $b[ 'sort' ];
 			} );
