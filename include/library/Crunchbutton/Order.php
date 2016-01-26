@@ -3688,7 +3688,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 			$status = $this->status()->last();
 
+			if( $status[ 'status' ] == 'delivered' ){
+				return;
+			}
+
 			if( $status && $status[ 'driver' ] ){
+
 				$driver = Admin::o( $status[ 'driver' ] );
 
 				$notifications = $driver->getNotifications();
