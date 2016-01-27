@@ -25,19 +25,18 @@ App.hideKeyboard = function(){
 		field.onfocus = function(){
 			//this timeout of 200ms is nessasary for Android 2.3.x
 			setTimeout(function() {
-
 				field.setAttribute('style', 'display:none;');
 				setTimeout(function() {
 					document.body.removeChild(field);
 					document.body.focus();
-				}, 14);
+				}, 10);
 
-			}, 200);
+			}, 10);
 		};
 		//focusing it
 		field.focus();
 
-	}, 50);
+	}, 10);
 }
 
 App.isNarrowScreen = function(){
