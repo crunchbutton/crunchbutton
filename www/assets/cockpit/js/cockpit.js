@@ -1365,7 +1365,7 @@ if (parent.window.getAppVersion) {
 $( document ).click(function( event ) {
 	if ( !$( event.target ).is( 'input, textarea' ) ) {
 		document.activeElement.blur();
-		App.hideKeyboard();
+		// App.hideKeyboard();
   }
 } );
 window.addEventListener( 'focus', function(){ App.rootScope.$broadcast( 'window-focus' ); });
