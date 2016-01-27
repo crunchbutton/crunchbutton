@@ -74,6 +74,9 @@ i {
 	body {
 		background: $navColor;
 	}
+	.shift-schedule-rating-botton{
+		font-size: .8em;
+	}
 }
 
 ol, ul {
@@ -4834,6 +4837,14 @@ a.button {
     vertical-align: top;
 }
 
+.shift-schedule-rating-botton{
+	text-align: left !important;
+	background: #FFF;
+}
+.shift-schedule-rating-botton-space{
+	height: 80px;
+}
+
 #username{
 	-webkit-user-select: text !important;
 	-khtml-user-select: text !important;
@@ -4867,5 +4878,5 @@ a.button {
 .quadruple-cols .switch-wrap {
 	float:left;
 }
-.left{ float:left; }
+.left{ float:left !important; }
 
