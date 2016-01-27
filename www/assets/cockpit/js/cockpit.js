@@ -1361,8 +1361,13 @@ if (parent.window.getAppVersion) {
 		App.version = v;
 	});
 }
+
 var prevFocus = null;
-$( document ).click(function( event ) {
+// cockpit app: still can't type username or password fields #7398
+$( document ).click( function( event ) {
+	if( !App.isCordova ){
+		return;
+	}
 	var hideKeyboard = false;
 	if( prevFocus && $( prevFocus ).is( 'input, textarea' ) ){
 		hideKeyboard = true;
