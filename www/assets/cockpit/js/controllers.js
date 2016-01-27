@@ -96,11 +96,17 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 	$scope.loggingIn = false;
 
 	var l;
+
 	setTimeout( function(){ l = Ladda.create( $( '.button-login .ladda-button' ).get( 0 ) ); }, 700 );
 
 	$scope.newuser = !$.totalStorage('hasLoggedIn');
 
 	$scope.login = function() {
+
+		document.activeElement.blur();
+
+		App.hideKeyboard();
+
 		if( !$scope.username ){
 			App.alert('Please enter your username', '', false, function() {
 				if (!App.isCordova) {
