@@ -1362,23 +1362,22 @@ if (parent.window.getAppVersion) {
 	});
 }
 
-var prevFocus = null;
 // cockpit app: still can't type username or password fields #7398
+var prevFocus = null;
 $( document ).click( function( event ) {
 	if( !App.isCordova ){
 		return;
 	}
 	var hideKeyboard = false;
-	if( prevFocus && $( prevFocus ).is( 'input, textarea' ) ){
+	if( prevFocus && $( prevFocus ).is( ':text, textarea' ) ){
 		hideKeyboard = true;
 	}
-	if ( !$( event.target ).is( 'input, textarea' ) ) {
+	if( !$( event.target ).is( ':text, textarea' ) ) {
 		document.activeElement.blur();
 		if( hideKeyboard ){
 			App.hideKeyboard();
 		}
   }
-
   prevFocus = event.target;
 } );
 window.addEventListener( 'focus', function(){ App.rootScope.$broadcast( 'window-focus' ); });
