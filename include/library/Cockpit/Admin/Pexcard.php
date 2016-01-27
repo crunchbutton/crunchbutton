@@ -145,7 +145,6 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 	public function runQueRemoveFunds(){
 		echo "running remove funds que # $this->id_admin_pexcard \n";
 		$info = $this->load_card_info();
-		echo '<pre>';var_dump( $info );exit();
 		if( $info->availableBalance > 0 ){
 			echo "funds to remove $info->availableBalance \n\n";
 			$this->pexCardRemoveLeftFunds( $info->availableBalance );
