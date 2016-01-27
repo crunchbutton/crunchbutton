@@ -1372,7 +1372,7 @@ $( document ).click( function( event ) {
 	if( prevFocus && $( prevFocus ).is( ':text, :password, textarea' ) ){
 		hideKeyboard = true;
 	}
-	if( !$( event.target ).is( ':text, :password, textarea' ) ) {
+	if( !$( event.target ).is( ':text, :password, textarea, select' ) ) {
 		document.activeElement.blur();
 		if( hideKeyboard ){
 			App.hideKeyboard();
