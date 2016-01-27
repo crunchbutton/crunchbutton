@@ -1364,7 +1364,7 @@ if (parent.window.getAppVersion) {
 var prevFocus = null;
 $( document ).click(function( event ) {
 	var hideKeyboard = false;
-	if( prevFocus && $( event.target ).is( 'input, textarea' ) ){
+	if( prevFocus && $( prevFocus ).is( 'input, textarea' ) ){
 		hideKeyboard = true;
 	}
 	if ( !$( event.target ).is( 'input, textarea' ) ) {
