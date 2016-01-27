@@ -3,6 +3,7 @@
 class Crunchbutton_Queue_Cron extends Crunchbutton_Queue {
 
 	public function run() {
+		echo "\n\n\n";
 		echo "Cron starting:\n";
 		$cron = $this->cron();
 		echo "Cron Class: {$cron->class} \n";
@@ -14,6 +15,7 @@ class Crunchbutton_Queue_Cron extends Crunchbutton_Queue {
 				if( method_exists( $job, 'run' ) ){
 					echo "Cron running: \n";
 					$job->run();
+					echo "Cron running finished\n----------------------";
 				}
 			}
 		}

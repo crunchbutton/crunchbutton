@@ -48,6 +48,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 	}
 
 	public function que(){
+		echo "\n\n";
 		echo "updating next time ... \n";
 		if( $this->update_next_time() ){
 			echo "saving status ... \n";
@@ -65,6 +66,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 					echo "class {$this->class} is a Crunchbutton_Cron_Log ... \n";
 					if( method_exists( $job, 'run' ) ){
 						$q = Queue::create( [ 'type' => Crunchbutton_Queue::TYPE_CRON, 'id_cron_log' => $this->id_cron_log ] );
+						echo "creating a cron log $q->id_cron_log... \n";
 						// $job->run();
 					} else {
 						echo "class {$this->class} dont have a method run ... \n";
