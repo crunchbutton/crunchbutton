@@ -1361,11 +1361,19 @@ if (parent.window.getAppVersion) {
 		App.version = v;
 	});
 }
-
+var prevFocus = null;
 $( document ).click(function( event ) {
+	var hideKeyboard = false;
+	if( prevFocus && $( event.target ).is( 'input, textarea' ) ){
+		hideKeyboard = true;
+	}
 	if ( !$( event.target ).is( 'input, textarea' ) ) {
 		document.activeElement.blur();
-		// App.hideKeyboard();
+		if( hideKeyboard ){
+			App.hideKeyboard();
+		}
   }
+
+  prevFocus = event.target;
 } );
 window.addEventListener( 'focus', function(){ App.rootScope.$broadcast( 'window-focus' ); });
