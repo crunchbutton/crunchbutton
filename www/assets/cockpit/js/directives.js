@@ -774,6 +774,13 @@ NGApp.directive( 'stickyBottom', function ( $document ) {
 			restrict: 'A',
 			link: function ( scope, elem, attrs, ctrl ) {
 
+				if( App.isMobile() ){
+					setTimeout( function() {
+						angular.element( '.stick-botton-spacer' ).hide();
+					}, 1000 );
+					return;
+				}
+
 				$document.bind('scroll', function () {
 					setHeight();
         });
