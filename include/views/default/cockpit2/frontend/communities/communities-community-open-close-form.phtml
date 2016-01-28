@@ -115,7 +115,12 @@
 						<ul class="drivers-list">
 							<li ng-repeat="driver in drivers">
 								<label>
-									<input type="checkbox" ng-click="updateDriversCount();" ng-model="driver.down_to_help_out" style="width:20px;"><strong>{{driver.name}}</strong>: {{driver.phone}}
+									<span ng-if="!driver.working">
+										<input type="checkbox" ng-click="updateDriversCount();" ng-model="driver.down_to_help_out" style="width:20px;"><strong>{{driver.name}}</strong>: {{driver.phone}}
+									</span>
+									<span ng-if="driver.working">
+										<strong>{{driver.name}}</strong>: {{driver.phone}} <span class="italic">(working)</span>
+									</span>
 								</label>
 								<div ng-if="driver.note">{{driver.note}}</div>
 							</li>
