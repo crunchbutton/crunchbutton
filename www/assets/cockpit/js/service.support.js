@@ -165,6 +165,10 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 				$rootScope.$apply();
 			});
 
+			SocketService.listen( 'user.preference.' + AccountService.user.id_admin, $rootScope).on( 'user.preference', function( payload ){
+				AccountService.user.prefs[payload.key] = payload.value;
+				$rootScope.$apply();
+			} )
 
 			if (AccountService.isSupport) {
 
@@ -177,7 +181,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 				SocketService.listen('tickets', $rootScope)
 					.on('message', function(d) {
-
+console.log('Message',d);
 						console.debug('Recieved chat message: ', d);
 
 						if (notified.indexOf(d.id_support_message) > -1) {
