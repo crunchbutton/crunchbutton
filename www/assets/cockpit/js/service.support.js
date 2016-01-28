@@ -203,7 +203,7 @@ console.log('Message',d);
 						if (d.from == 'rep' ) {
 							return;
 						}
-
+console.log('AccountService.user',AccountService.user);
 						if( AccountService.user && AccountService.user.prefs && AccountService.user.prefs[ 'notification-desktop-support-all' ] === false ){
 							return;
 						}
