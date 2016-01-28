@@ -878,6 +878,11 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 	});
 
+	$rootScope.$on( 'user-preference', function(e, data) {
+		AccountService.user.prefs[data.key] = data.value;
+	});
+
+
 });
 
 App.alert = function(txt, title, useNativeAlert, fn, unselectable ) {

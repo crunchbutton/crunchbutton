@@ -129,6 +129,8 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 		// hopefully this doesnt break anything
 		//$rootScope.reload();
 
+		$rootScope.$broadcast( 'userAuthUpdated', service.user );
+
 	} );
 
 	return service;

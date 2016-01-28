@@ -154,17 +154,16 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 	var notified  = new Array();
 
-	$rootScope.$on('userAuth', function(e, data) {
+	$rootScope.$on('userAuthUpdated', function(e, data) {
 
 		if (AccountService.user && AccountService.user.id_admin) {
 
+			service.socket.emit('event.subscribe', 'user.preference.' + AccountService.user.id_admin );
+
 			service.socket.on('user.preference', function(payload) {
-				console.debug('Recieved preference update', payload);
 				AccountService.user.prefs[payload.key] = payload.value;
 				$rootScope.$apply();
 			});
-
-
 
 
 			if (AccountService.isSupport) {
@@ -172,7 +171,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 				service.socket.emit('event.subscribe', 'ticket.update');
 
 				SocketService.listen('ticket.update', $rootScope).on( 'change_ticket_status', function(){
-					console.log( 'ticket.update: change_ticket_status' );
 					$rootScope.$broadcast( 'updateSideTickets' );
 					$rootScope.$broadcast( 'updateHeartbeat' );
 				} )
@@ -199,6 +197,10 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 						// https://github.com/crunchbutton/crunchbutton/issues/7579#issuecomment-172934677
 						if (d.id_admin) {
+							return;
+						}
+
+						if( AccountService.user && AccountService.user.prefs && AccountService.user.prefs[ 'notification-desktop-support-all' ] === false ){
 							return;
 						}
 
