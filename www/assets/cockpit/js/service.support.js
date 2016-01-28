@@ -197,7 +197,8 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 							// service.sideInfo.force_first_page();
 						}
 
-						if (d.id_admin == AccountService.user.id_admin) {
+						// https://github.com/crunchbutton/crunchbutton/issues/7579#issuecomment-172934677
+						if (d.id_admin) {
 							return;
 						}
 
