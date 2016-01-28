@@ -36,18 +36,6 @@ NGApp.factory('SocketService', function(eventSocket, AccountService, $rootScope,
 		service.connected = true;
 		$rootScope.socketConnected = true;
 
-		if( AccountService && AccountService.user && AccountService.user.id_admin ){
-
-			service.socket.emit( 'event.subscribe', 'user.preference.' + AccountService.user.id_admin);
-
-			if (AccountService.user && AccountService.user.prefs && ( AccountService.user.prefs['notification-desktop-support-all'] == '1' || AccountService.user.prefs['notification-desktop-support-all'] === true )) {
-				console.debug('Subscribing to all tickets');
-				service.socket.emit('event.subscribe', 'ticket.all');
-			} else {
-				console.debug('Unsubscribing to all tickets');
-				service.socket.emit('event.unsubscribe', 'ticket.all');
-			}
-		}
 	});
 
 
