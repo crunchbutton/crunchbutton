@@ -287,13 +287,13 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 
 			$message = $this->createAlert( $rule[ 'alert' ], array( $order->name, $order->phone, $order->restaurant()->name, $order->id_order ) );
 
-			// Send sms
-			$phones = $this->getSetting( $rule[ 'settings' ][ 'warning-phone' ] );
-			if( $phones && trim( $phones ) != '' ){
-				$phones = explode( ',', $phones );
-				foreach( $phones as $phone ){
-					$this->notify_sms( $phone, $message );
-				}
+			$send_to = array();
+			$customerService = Crunchbutton_Support::getUsers();
+			foreach( $customerService as $name => $phone ){
+				$send_to[ $phone ] = $message;
+			}
+			foreach( $send_to as $send_to ){
+				$this->notify_sms( $phone, $message );
 			}
 
 			// Send email
