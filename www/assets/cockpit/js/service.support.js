@@ -161,34 +161,19 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			service.socket.emit('event.subscribe', 'user.preference.' + AccountService.user.id_admin );
 
 			SocketService.listen( 'user.preference.' + AccountService.user.id_admin, $rootScope).on( 'user.preference', function( payload ){
-				console.log('payload',payload);
-				console.log('payload',payload);
-				console.log('payload',payload);
-				console.log('payload',payload);
-				console.log('payload',payload);
-				// AccountService.user.prefs['notification-desktop-support-all'] = payload;
+				AccountService.user.prefs[ payload.key ] = payload.value;
 			} );
 
 			if (AccountService.isSupport) {
 
-				// if( AccountService.user && AccountService.user.prefs && AccountService.user.prefs[ 'notification-desktop-support-all' ] === true ){
-				// 	console.debug('Subscribing to all tickets: auth event');
-				// 	service.socket.emit('event.subscribe', 'ticket.all');
-				// 	service.socket.emit('event.subscribe', 'tickets');
-				// } else {
-				// 	console.debug('Unsubscribing to all tickets: auth event');
-				// 	service.socket.emit('event.unsubscribe', 'ticket.all');
-				// 	service.socket.emit('event.unsubscribe', 'tickets');
-				// }
-
-				service.socket.emit('event.subscribe', 'ticket.update');
-
+				// Update tickets status at side bar
 				SocketService.listen('ticket.update', $rootScope).on( 'change_ticket_status', function(){
 					$rootScope.$broadcast( 'updateSideTickets' );
 					$rootScope.$broadcast( 'updateHeartbeat' );
 				} )
 
 				SocketService.listen('tickets', $rootScope)
+
 					.on('message', function(d) {
 
 						if( AccountService.user && AccountService.user.prefs && AccountService.user.prefs[ 'notification-desktop-support-all' ] === false ){
@@ -205,26 +190,16 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 						notified.push(d.id_support_message);
 
 						// update the chat room
-						console.log('service.sideInfo.id_support',service.sideInfo.id_support);
-						console.log('d.id_support',d.id_support);
 						if( service.sideInfo.id_support && d.id_support && parseInt( service.sideInfo.id_support ) != parseInt( d.id_support ) ){
 							console.log('force_first_page??');
 							// service.sideInfo.force_first_page();
 						}
-console.log('d.from',d.from);
+
 						// https://github.com/crunchbutton/crunchbutton/issues/7579#issuecomment-172934677
 						if (d.from == 'rep' ) {
 							return;
 						}
-console.log('d.id_support',d.id_support);
-console.log('service.scope.viewTicket',service.scope.viewTicket);
-						if (d.id_support == service.scope.viewTicket) {
-							//App.playAudio('support-message-recieved');
-						} else {
-							//App.playAudio('support-message-new');
-						}
-console.log('d.name',d.name);
-console.log('d.body',d.body);
+
 						NotificationService.notify(d.name, d.body, null, function() {
 							try{
 								if( document.getElementById('support-chat-box') ){
