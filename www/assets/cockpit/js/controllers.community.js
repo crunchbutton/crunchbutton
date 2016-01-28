@@ -325,7 +325,7 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 		if( $scope.drivers.length ){
 			var count = 0;
 			angular.forEach( $scope.drivers, function(staff, key) {
-				if( staff.down_to_help_out ){
+				if( staff.down_to_help_out && !staff.working ){
 					count++;
 				}
 			} );
@@ -336,7 +336,7 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 	$scope.sendTextMessage = function(){
 		var phones = [];
 		angular.forEach($scope.drivers, function(staff, key) {
-			if( staff.down_to_help_out ){
+			if( staff.down_to_help_out && !staff.working ){
 				phones.push( staff.phone );
 			}
 		} );
