@@ -161,28 +161,25 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			service.socket.emit('event.subscribe', 'user.preference.' + AccountService.user.id_admin );
 
 			SocketService.listen( 'user.preference.' + AccountService.user.id_admin, $rootScope).on( 'user.preference', function( payload ){
-				if( AccountService.user.prefs['notification-desktop-support-all'] ){
-					console.debug('Subscribing to all tickets: socket event');
-					service.socket.emit('event.subscribe', 'ticket.all');
-					service.socket.emit('event.subscribe', 'tickets');
-				} else {
-					console.debug('Unsubscribing to all tickets: socket event');
-					service.socket.emit('event.unsubscribe', 'ticket.all');
-					service.socket.emit('event.unsubscribe', 'tickets');
-				}
+				console.log('payload',payload);
+				console.log('payload',payload);
+				console.log('payload',payload);
+				console.log('payload',payload);
+				console.log('payload',payload);
+				// AccountService.user.prefs['notification-desktop-support-all'] = payload;
 			} );
 
 			if (AccountService.isSupport) {
 
-				if( AccountService.user && AccountService.user.prefs && AccountService.user.prefs[ 'notification-desktop-support-all' ] === true ){
-					console.debug('Subscribing to all tickets: auth event');
-					service.socket.emit('event.subscribe', 'ticket.all');
-					service.socket.emit('event.subscribe', 'tickets');
-				} else {
-					console.debug('Unsubscribing to all tickets: auth event');
-					service.socket.emit('event.unsubscribe', 'ticket.all');
-					service.socket.emit('event.unsubscribe', 'tickets');
-				}
+				// if( AccountService.user && AccountService.user.prefs && AccountService.user.prefs[ 'notification-desktop-support-all' ] === true ){
+				// 	console.debug('Subscribing to all tickets: auth event');
+				// 	service.socket.emit('event.subscribe', 'ticket.all');
+				// 	service.socket.emit('event.subscribe', 'tickets');
+				// } else {
+				// 	console.debug('Unsubscribing to all tickets: auth event');
+				// 	service.socket.emit('event.unsubscribe', 'ticket.all');
+				// 	service.socket.emit('event.unsubscribe', 'tickets');
+				// }
 
 				service.socket.emit('event.subscribe', 'ticket.update');
 
@@ -195,10 +192,9 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 					.on('message', function(d) {
 
 						if( AccountService.user && AccountService.user.prefs && AccountService.user.prefs[ 'notification-desktop-support-all' ] === false ){
-console.log('ignore messages');
 							return;
 						}
-console.log('receive messages');
+
 						console.debug('Recieved chat message: ', d);
 
 						if (notified.indexOf(d.id_support_message) > -1) {
