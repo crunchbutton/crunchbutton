@@ -3518,6 +3518,7 @@ h1.driver-title {
 }
 
 .support-chat-contents-message {
+	font-size: 1.1em;
 	margin-bottom: 1.1em;
 	line-height: 1.6em;
 	border: 1px solid black;
@@ -3528,7 +3529,7 @@ h1.driver-title {
 }
 
 .support-chat-contents-message-customer {
-	color: #2c596d;
+	color: #0C374A;
 	background: #fafeff;
 	border-color: #b5cdd7;
 
@@ -3540,7 +3541,7 @@ h1.driver-title {
 }
 
 .support-chat-contents-message-support {
-	color: #993b00;
+	color: #441B02;
 	background: #fffbfa;
 	border-color: #f4ba97;
 }
@@ -3548,7 +3549,7 @@ h1.driver-title {
 	font-style: italic;
 }
 .support-chat-contents-message-system, .support-chat-contents-message-note {
-	color: #454545;
+	color: #000;
 	font-style: italic;
 	border-color: #b5b5b5;
 	background-color: #f9f9f9;
