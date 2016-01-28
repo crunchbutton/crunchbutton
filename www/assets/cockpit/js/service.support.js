@@ -200,7 +200,7 @@ console.log('Message',d);
 						}
 
 						// https://github.com/crunchbutton/crunchbutton/issues/7579#issuecomment-172934677
-						if (d.id_admin) {
+						if (d.from == 'rep' ) {
 							return;
 						}
 
