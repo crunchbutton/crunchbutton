@@ -152,7 +152,17 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 	$scope.welcome = Math.floor( ( Math.random() * 8 ) + 1 );
 });
 
-NGApp.controller( 'ProfileCtrl', function ($scope) {});
+NGApp.controller( 'ProfileCtrl', function ($scope, NotificationService, MainNavigationService) {
+
+	$scope.notification = function(){
+		NotificationService.notify('Incoming call', 'Something', null, function() {
+			MainNavigationService.link('/profile/');
+			$rootScope.$safeApply();
+	});
+	}
+
+
+});
 
 NGApp.controller( 'ProfilePasswordCtrl', function ($scope, ProfileService) {
 
