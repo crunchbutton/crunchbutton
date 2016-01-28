@@ -987,7 +987,6 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 	var docs = function(){
 		// Load the docs
 		var id_admin = $scope.driver.id_admin;
-		console.log('id_admin',id_admin);
 		DriverOnboardingService.docs.list( id_admin, function( data ){
 			$scope.documents = data;
 		} );

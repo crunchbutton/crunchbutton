@@ -14,7 +14,7 @@
 
 				<div class="support-box-header-actions-wrap">
 					<div class="support-box-header-actions">
-						<a href ng-click="openStaffNoteContainer(staff.id_admin)"><button class="button button-small button-empty button-green"><i class="fa fa-file"></i>&nbsp;&nbsp;Add Note</button></a>
+						<a ng-if="staff.login" href ng-click="openStaffNoteContainer(staff.id_admin)"><button class="button button-small button-empty button-green"><i class="fa fa-file"></i>&nbsp;&nbsp;Add Note</button></a>
 					</div>
 				</div>
 				<div class="divider"></div>
@@ -84,7 +84,7 @@
 				</div>
 
 				<br><br>
-				<div class="tripple-cols">
+				<div class="tripple-cols" ng-if="staff.login">
 
 					<a href="/settlement/list?limit=20&page=1&fullcount=false&search=&type=driver&status=0&payment_type=0&date=&id_driver={{staff.id_admin}}" class="button button-empty button-border button-orange"><i class="fa fa-university"></i>&nbsp;&nbsp;Payments</a>
 
@@ -100,7 +100,7 @@
 
 
 
-		<div class="support-box-wrap box-content2" ng-if="staff.isMarketingRep || staff.isDriver">
+		<div class="support-box-wrap box-content2" ng-if="staff.isMarketingRep || staff.isDriver && staff.login">
 			<div class="support-box-wrap-header">
 				<h1>
 					<span ng-if="staff.isDriver">Driver Info</span>
@@ -204,7 +204,7 @@
 			<a name="deliveryBasics" class="mobile-anchor"></a>
 			<div class="support-box-wrap-header">
 				<h1>Note</h1>
-				<div class="support-box-header-actions-wrap">
+				<div class="support-box-header-actions-wrap" ng-if="staff.login">
 					<div class="support-box-header-actions">
 						<button ng-click="openStaffNoteContainer(staff.id_admin);" class="button button-small button-empty button-green"><i class="fa fa-pencil"></i></i>&nbsp;&nbsp;Edit</button></a>
 
@@ -224,7 +224,7 @@
 		</div>
 
 
-		<div class="support-box-wrap box-content2">
+		<div class="support-box-wrap box-content2" ng-if="staff.login">
 			<div class="support-box-wrap-header">
 				<h1>Permissions</h1>
 				<div class="support-box-header-actions-wrap">
@@ -250,7 +250,7 @@
 			</div>
 		</div>
 
-		<div class="support-box-wrap box-content2">
+		<div class="support-box-wrap box-content2" ng-if="staff.login">
 			<div class="support-box-wrap-header">
 				<h1>Payment Info</h1>
 				<div class="support-box-header-actions-wrap">
@@ -297,7 +297,7 @@
 
 		</div>
 
-		<div class="support-box-wrap box-content2">
+		<div class="support-box-wrap box-content2" ng-if="staff.login">
 
 			<div class="support-box-wrap-header">
 				<h1>Additional Info</h1>
@@ -389,7 +389,7 @@
 			</div>
 		</div>
 
-		<div class="support-box-wrap box-content2" ng-if="staff.docs">
+		<div class="support-box-wrap box-content2" ng-if="staff.docs && staff.login">
 			<div class="support-box-wrap-header">
 				<h1>Documents</h1>
 				<div class="support-box-header-actions-wrap">
