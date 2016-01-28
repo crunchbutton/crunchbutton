@@ -161,10 +161,12 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			service.socket.emit('event.subscribe', 'user.preference.' + AccountService.user.id_admin );
 
 			service.socket.on('user.preference', function(payload) {
+				console.log('on: payload',payload);
 				AccountService.user.prefs[payload.key] = payload.value;
 			});
 
 			SocketService.listen( 'user.preference.' + AccountService.user.id_admin, $rootScope).on( 'user.preference', function( payload ){
+				console.log('listen: payload',payload);
 				AccountService.user.prefs[payload.key] = payload.value;
 			} )
 
