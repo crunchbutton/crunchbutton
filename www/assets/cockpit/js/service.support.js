@@ -167,18 +167,24 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 			SocketService.listen( 'user.preference.' + AccountService.user.id_admin, $rootScope).on( 'user.preference', function( payload ){
 				if( AccountService.user.prefs['notification-desktop-support-all'] ){
-					console.log('event>>>>');
-					console.debug('Subscribing to all tickets');
+					console.debug('Subscribing to all tickets: socket event');
 					service.socket.emit('event.subscribe', 'ticket.all');
 				} else {
-					console.log('event>>>>');
-					console.debug('Unsubscribing to all tickets');
+					console.debug('Unsubscribing to all tickets: socket event');
 					service.socket.emit('event.unsubscribe', 'ticket.all');
 				}
-
-			} )
+			} );
 
 			if (AccountService.isSupport) {
+
+
+				if( AccountService.user && AccountService.user.prefs && AccountService.user.prefs[ 'notification-desktop-support-all' ] === true ){
+					console.debug('Subscribing to all tickets: auth event');
+					service.socket.emit('event.subscribe', 'ticket.all');
+				} else {
+					console.debug('Unsubscribing to all tickets: auth event');
+					service.socket.emit('event.unsubscribe', 'ticket.all');
+				}
 
 				service.socket.emit('event.subscribe', 'ticket.update');
 
@@ -254,18 +260,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			element.attr( 'title', 'Status: ' + status );
 		}
 	}
-
-	$rootScope.$watch('account.user.prefs["notification-desktop-support-all"]', function(e, value) {
-		if ( value === true) {
-			console.log('watch >>>>');
-			console.debug('Subscribing to all tickets');
-			service.socket.emit('event.subscribe', 'tickets');
-		} else {
-			console.log('watch >>>>');
-			console.debug('Unsubscribing to all tickets');
-			service.socket.emit('event.unsubscribe', 'tickets');
-		}
-	});
 
 	service.send = function(message, add_as_note, callback) {
 		var add_as_note = ( add_as_note ? true : false );
