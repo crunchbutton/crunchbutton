@@ -2818,7 +2818,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function community() {
-		return Community::o($this->id_community);
+		if( !$this->_community ){
+			$this->_community = Community::o($this->id_community);;
+		}
+		return $this->_community;
 	}
 
 	public function hasGiftCard(){

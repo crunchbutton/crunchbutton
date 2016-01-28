@@ -30,6 +30,10 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		$export = $this->request()['export'] ? true : false;
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
 
+		if( intval( $limit ) > 200 && !$export ){
+			$limit = 200;
+		}
+
 		$campusManager = $this->request()['campusManager'] ? $this->request()['campusManager'] : false;
 
 		if ( !c::admin()->permission()->check(['global','orders-all'] ) && c::admin()->isCampusManager() || $campusManager ) {
