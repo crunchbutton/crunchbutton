@@ -169,9 +169,11 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 				if( AccountService.user.prefs['notification-desktop-support-all'] ){
 					console.debug('Subscribing to all tickets: socket event');
 					service.socket.emit('event.subscribe', 'ticket.all');
+					service.socket.emit('event.subscribe', 'tickets');
 				} else {
 					console.debug('Unsubscribing to all tickets: socket event');
 					service.socket.emit('event.unsubscribe', 'ticket.all');
+					service.socket.emit('event.unsubscribe', 'tickets');
 				}
 			} );
 
@@ -181,9 +183,11 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 				if( AccountService.user && AccountService.user.prefs && AccountService.user.prefs[ 'notification-desktop-support-all' ] === true ){
 					console.debug('Subscribing to all tickets: auth event');
 					service.socket.emit('event.subscribe', 'ticket.all');
+					service.socket.emit('event.subscribe', 'tickets');
 				} else {
 					console.debug('Unsubscribing to all tickets: auth event');
 					service.socket.emit('event.unsubscribe', 'ticket.all');
+					service.socket.emit('event.unsubscribe', 'tickets');
 				}
 
 				service.socket.emit('event.subscribe', 'ticket.update');
