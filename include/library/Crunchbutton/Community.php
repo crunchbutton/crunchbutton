@@ -78,7 +78,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$keys = [ Cockpit_Community_Status_Log::TYPE_ALL_RESTAURANTS, Cockpit_Community_Status_Log::TYPE_3RD_PARY_DELIRERY_RESTAURANTS, Cockpit_Community_Status_Log::TYPE_AUTO_CLOSED ];
 			$newKeys = $this->properties();
 			$oldKeys = $current->properties();
-
+Log::debug( [ 'old' => $oldKeys, 'new' => $newKeys ] );
 			foreach ( $keys as $key ) {
 				$newKeys[ $key ] = strval( $newKeys[ $key ] ) ? true : false;
 				$oldKeys[ $key ] = strval( $oldKeys[ $key ] ) ? true : false;
