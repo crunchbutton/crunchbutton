@@ -66,7 +66,7 @@ class Crunchbutton_Log_Monitor extends Cana_Table {
 	public function dateStartLimit( $type ){
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-		$now->modify( '- 15 min' );
+		$now->modify( '-1 hour' );
 		return $now->format( 'Y-m-d H:i' );
 
 		$log_monitor = Crunchbutton_Log_Monitor::q( 'SELECT * FROM log_monitor WHERE type = ? ORDER BY id_log DESC LIMIT 1', [ $type ] )->get( 0 );
@@ -80,10 +80,17 @@ class Crunchbutton_Log_Monitor extends Cana_Table {
 		if( $logs && $logs->count() ){
 			foreach( $logs as $log ){
 				if( !self::checkIfExists( $log->id_log, $type ) ){
+					$info = json_decode( $log->data );
+					if( $info->phone ){
+						$phone = Phone::byPhone( $info->phone );
+					}
 					$log_monitor = new Crunchbutton_Log_Monitor;
 					$log_monitor->id_log = $log->id_log;
 					$log_monitor->type = $type;
 					$log_monitor->date = $log->date;
+					if( $phone->id_phone ){
+						$log_monitor->id_phone = $phone->id_phone;
+					}
 					$log_monitor->save();
 				}
 			}
