@@ -85,13 +85,13 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 											'new' => $newKeys[ $key ],
 											'_new' => ( strval( $newKeys[ $key ] ) ? true : false ),
 											'_old' => ( strval( $oldKeys[ $key ] ) ? true : false ),
+											'type' => 'close-log'
 											 ] );
 
 				$newKeys[ $key ] = strval( $newKeys[ $key ] ) ? true : false;
 				$oldKeys[ $key ] = strval( $oldKeys[ $key ] ) ? true : false;
 				if( $newKeys[ $key ] !== $oldKeys[ $key ] ){
 					$close = $newKeys[ $key ];
-
 					$params = [ 'type' => $key, 'close' => $close, 'properties' => $newKeys ];
 					Cockpit_Community_Status_Log::register( $params );
 				}
