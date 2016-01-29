@@ -115,7 +115,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 
 			// dont message yourself
 			if (c::admin()->id_admin && Phone::dirty(c::admin()->txt) == $t) {
-				continue;
+				// continue;
 			}
 
 			// dont message our own numbers
@@ -168,7 +168,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 					$ret[] = $_ret;
 
 				} catch (Exception $e) {
-
+echo '<pre>';var_dump( $e );exit();
 					Log::error([
 						'action' => 'sending sms',
 						'to' => $t,
