@@ -78,6 +78,23 @@
 						</div>
 					</li>
 
+
+					<li class="li-input divider-line" ng-show="community.close_all_restaurants || community.close_3rd_party_delivery_restaurants" >
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="community.reopen_at_enabled"/><div></div>
+						</label>
+						<div class="label">Reopen the community at this time ({{community.timezone}}):</div>
+					</li>
+
+					<li class="li-input  divider-line" ng-class="{'error': formOpenClose.dontWarnTill.$invalid}" ng-if="community.reopen_at_enabled">
+						<div class="input">
+							<input type="datetime-local" ng-disabled="!community.reopen_at_enabled" ng-required="community.reopen_at_enabled" name="dontWarnTill" ng-model="community.reopen_at" placeholder="">
+						</div>
+						<div class="note">
+							It will remove the force-close at the defined time.
+						</div>
+					</li>
+
 					<li class="li-input  divider-line" ng-class="{'error': formOpenClose.reason.$invalid}" ng-show="status_changed && ( community.close_all_restaurants || community.close_3rd_party_delivery_restaurants )">
 						<div class="label">Reason for closing:</div>
 						<div class="input">

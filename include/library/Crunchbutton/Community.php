@@ -228,6 +228,22 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$out[ 'dont_warn_till' ] = null;
 		}
 
+		if( $out[ 'reopen_at' ] ){
+			$_reopen_at = $this->reopenAt();
+			$out[ 'reopen_at_utc' ] = [ 	'y' => $_reopen_at->format( 'Y' ), 'm' => $_reopen_at->format( 'm' ), 'd' => $_reopen_at->format( 'd' ), 'h' => $_reopen_at->format( 'H' ), 'i' => $_reopen_at->format( 'i' ) ];
+			$out[ 'reopen_at_utc_formated' ] = $_reopen_at->format( 'M jS Y g:i:s A T' );
+
+
+			$_reopen_at = $this->reopenAt( true );
+			$out[ 'reopen_at' ] = [ 	'y' => $_reopen_at->format( 'Y' ), 'm' => $_reopen_at->format( 'm' ), 'd' => $_reopen_at->format( 'd' ), 'h' => $_reopen_at->format( 'H' ), 'i' => $_reopen_at->format( 'i' ) ];
+			$out[ 'reopen_at_formated' ] = $_reopen_at->format( 'M jS Y g:i:s A T' );
+			$out[ 'reopen_at_enabled' ] = true;
+
+		} else {
+			$out[ 'reopen_at_utc' ] = null;
+			$out[ 'reopen_at' ] = null;
+		}
+
 		$out[ 'driver_group' ] = $this->driver_group()->name;
 		$out[ 'amount_per_order' ] = floatval( $this->amount_per_order );
 
@@ -268,6 +284,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			'driver_restaurant_name',
 			'auto_close',
 			'dont_warn_till',
+			'reopen_at',
 			'is_auto_closed',
 			'delivery_logistics',
 			'id_driver_group',
@@ -326,8 +343,19 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function dontWarnTill(){
-		if( $this->dont_warn_till ){
-			return new DateTime( $this->dont_warn_till, new DateTimeZone( Community_Shift::CB_TIMEZONE ) );
+		if( $this->dont_warn_till && !$this->_dont_warn_till ){
+			$this->_dont_warn_till = new DateTime( $this->dont_warn_till, new DateTimeZone( Community_Shift::CB_TIMEZONE ) );
+		}
+		return $this->_dont_warn_till;
+	}
+
+	public function reopenAt( $community_tz = false ){
+		if( $this->reopen_at ){
+			$date = new DateTime( $this->reopen_at, new DateTimeZone( c::config()->timezone ) );
+			if( $community_tz ){
+				$date->setTimezone( new DateTimeZone( $this->timezone ) );
+			}
+			return $date;
 		}
 		return null;
 	}
@@ -737,95 +765,6 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return Cockpit_Community_Status_Log::q( 'SELECT * FROM community_status_log WHERE id_community = ? AND closed_date >= ? ORDER BY id_community_status_log DESC', [ $this->id_community, $limit_date->format( 'Y-m-d' ) ] );
 	}
 
-	public function old_forceCloseLog( $echo = true, $remove_unclosed = false, $days = 30 ){
-
-		$limit_date = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-		$limit_date->modify( '- ' . $days . ' days' );
-
-		$force_closed_times = Crunchbutton_Community_Changeset::q('
-			SELECT ccs.*, cc.field FROM community_change cc
-			INNER JOIN community_change_set ccs ON ccs.id_community_change_set = cc.id_community_change_set AND id_community = ?
-			AND ( cc.field = ? OR cc.field = ? OR cc.field = ? )
-			AND cc.new_value = \'1\' AND date( timestamp ) > ?
-			ORDER BY timestamp DESC
-		', [$this->id_community, 'close_all_restaurants', 'close_3rd_party_delivery_restaurants', 'is_auto_closed', $limit_date->format( 'Y-m-d' )]);
-		$out = [];
-		$alreadyUsed_open = [];
-		$alreadyUsed_closed = [];
-
-		foreach( $force_closed_times as $force_close ){
-
-			if( $alreadyUsed_closed[ $force_close->timestamp ] ){
-
-			}
-			$alreadyUsed_closed[ $force_close->timestamp ] = true;
-			$output = [];
-			$closed_at = $force_close->date();
-			$output[ 'closed_at_utc' ] = $closed_at->format( 'Y-m-d H:i:s' );
-			$closed_at->setTimezone( new DateTimeZone( $this->timezone ) );
-			$output[ 'closed_at' ] = $closed_at->format( 'M/d/Y h:i:s T' );
-			// $output[ 'closed_at_id_community_change' ] = $force_close->id_community_change_set;
-			$closed_by = $force_close->admin()->name;
-			if( !$closed_by ){
-				// it probably was closed by auto shutdown
-				$closed_by = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN )->name;
-			}
-			$output[ 'closed_by' ] = $closed_by;
-
-			if( $force_close->field == 'close_all_restaurants' ){
-				$output[ 'type' ] = Crunchbutton_Community::TITLE_CLOSE_ALL_RESTAURANTS;
-			} else if ( $force_close->field == 'close_3rd_party_delivery_restaurants' ){
-				$output[ 'type' ] = Crunchbutton_Community::TITLE_CLOSE_3RD_PARY_RESTAURANTS;
-			} else if ( $force_close->field == 'is_auto_closed' ){
-				$output[ 'type' ] = Crunchbutton_Community::TITLE_CLOSE_AUTO_CLOSED;
-			}
-
-			$output[ 'note' ] = $this->closedNote( $force_close->id_community_change_set, $force_close->field );
-
-			$open = $this->_openedAt( $closed_at->format( 'Y-m-d H:i:s' ), $force_close->field );
-
-			if( $open && !$alreadyUsed_open[ $open->timestamp ] ){
-				$alreadyUsed_open[ $open->timestamp ] = true ;
-				$opened_at = $open->date();
-				$output[ 'opened_at_utc' ] = $opened_at->format( 'Y-m-d H:i:s' );
-				$opened_at->setTimezone( new DateTimeZone( $this->timezone ) );
-				$output[ 'opened_at' ] = $opened_at->format( 'M/d/Y h:i:s T' );
-
-				// $output[ 'opened_at_id_community_change' ] = $open->id_community_change_set;
-				$opened_by = $open->admin()->name;
-				if( !$opened_by ){
-					// it probably was closed by auto shutdown
-					$opened_by = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN )->name;
-				}
-				$output[ 'opened_by' ] = $opened_by;
-				$interval = $opened_at->diff( $closed_at );
-				$output[ 'how_long' ] = Crunchbutton_Util::format_interval( $interval );
-			} else {
-
-				if( $remove_unclosed ){
-					$output = false;
-				} else {
-					if( !$this->$force_close->field ){
-						$output[ 'how_long' ] = 'No records, probably variable was changed directly at database or it is still closed.';
-					} else {
-						$output[ 'how_long' ] = 'It is still closed!';
-					}
-				}
-			}
-
-			// Reason
-			$output[ 'reason' ] = Cockpit_Community_Closed_Reason::reasonByCommunityDate( $this->id_community, $force_close->date()->format( 'Y-m-d H:i:s' ) );
-
-			if( $output ){
-				$out[] = $output;
-			}
-		}
-		if( $echo ){
-			echo json_encode( $out );exit;
-		}
-		return $out;
-	}
-
 	public static function closedNote( $id_community_change_set, $field ){
 		$field = ( $field == 'is_auto_closed' ? 'close_3rd_party_delivery_restaurants' : $field );
 		$field = $field . '_note';
@@ -852,6 +791,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		foreach( $communities as $community ){
 			$community->shutDownCommunity( $dt );
 		}
+		// Remove force close from communities
+		Community::removeForceClose();
+
 		// Call the method that reopen auto closed communities with drivers
 		Crunchbutton_Community::reopenAutoClosedCommunities();
 	}
@@ -867,6 +809,27 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE close_all_restaurants = 1 OR close_3rd_party_delivery_restaurants = 1' );
 		foreach( $communities as $community ){
 			$community->checkIfClosedCommunityHasDrivers();
+		}
+	}
+
+	public static function removeForceClose(){
+		$communities = Community::q( 'SELECT * FROM community WHERE close_all_restaurants = 1 OR close_3rd_party_delivery_restaurants = 1 AND reopen_at IS NOT NULL' );
+		if( $communities->count() ){
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			foreach( $communities as $community ){
+				$reopen_at = $community->reopenAt();
+				if( $reopen_at && $now->format( 'YmdHis' ) >= $reopen_at->format( 'YmdHis' ) ){
+					$community->close_all_restaurants = 0;
+					$community->close_3rd_party_delivery_restaurants = 0;
+					$community->reopen_at = null;
+					$community->save();
+
+					$ticket = 'The "force close" of the community ' . $community->name . ' was removed. ';
+					echo $ticket;
+					echo "\n\n";
+					Crunchbutton_Support::createNewWarning(  [ 'body' => $ticket, 'bubble' => true ] );
+				}
+			}
 		}
 	}
 
@@ -1314,7 +1277,6 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$hours = [];
 		$weekdays = [ 'mon' => 0, 'tue' => 1, 'wed' => 2, 'thu' => 3, 'fri' => 4, 'sat' => 5, 'sun' => 6 ];
 		foreach( $shiftsForNextWeek as $hour ){
-			// echo '<pre>';var_dump( $hour );exit();
 			$open = explode( ':', $hour->time_open );
 			$close = explode( ':', $hour->time_close );
 			$day = $hour->day;

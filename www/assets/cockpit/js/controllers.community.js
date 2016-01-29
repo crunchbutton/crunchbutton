@@ -167,6 +167,10 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 			$scope.community.dont_warn_till = null;
 		}
 
+		if( !$scope.community.reopen_at_enabled ){
+			$scope.community.reopen_at = null;
+		}
+
 		if( $scope.form.$invalid ){
 			$scope.submitted = true;
 			return;
@@ -176,6 +180,10 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 
 		if( $scope.community.dont_warn_till_enabled && $scope.community.dont_warn_till ){
 			$scope.community.dont_warn_till_fmt = $filter( 'date' )( $scope.community.dont_warn_till, 'yyyy-MM-dd HH:mm:ss' )
+		}
+
+		if( $scope.community.reopen_at_enabled && $scope.community.reopen_at ){
+			$scope.community.reopen_at_fmt = $filter( 'date' )( $scope.community.reopen_at, 'yyyy-MM-dd HH:mm:ss' )
 		}
 
 		CommunityService.save( $scope.community, function( json ){
@@ -245,6 +253,18 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 					$scope.community.dont_warn_till = null;
 					$scope.community.dont_warn_till_enabled = 0;
 				}
+				if( $scope.community.reopen_at ){
+					var reopen_at = new Date( 	$scope.community.reopen_at.y,
+																					( $scope.community.reopen_at.m -1 ),
+																					$scope.community.reopen_at.d,
+																					$scope.community.reopen_at.h,
+																					$scope.community.reopen_at.i );
+					$scope.community.reopen_at = reopen_at;
+					$scope.community.reopen_at_enabled = 1;
+				} else {
+					$scope.community.reopen_at = null;
+					$scope.community.reopen_at_enabled = 0;
+				}
 				angular.forEach( d._restaurants, function( restaurant, id_restaurant ) {
 					$scope.restaurants.push( { 'id_restaurant' : restaurant.id_restaurant, 'name' : restaurant.name } );
 				} );
@@ -302,11 +322,24 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 				$scope.community.dont_warn_till = dont_warn_till;
 			}
 
+			if( $scope.community.reopen_at ){
+				var reopen_at = new Date( 	$scope.community.reopen_at.y,
+																( $scope.community.reopen_at.m -1 ),
+																$scope.community.reopen_at.d,
+																$scope.community.reopen_at.h,
+																$scope.community.reopen_at.i );
+				$scope.community.reopen_at = reopen_at;
+			}
+
 			$scope.close_3rd_party_delivery_restaurants_original = d.close_3rd_party_delivery_restaurants;
 			$scope.close_all_restaurants_original = d.close_all_restaurants;
 
 			if( !$scope.community.dont_warn_till ){
 				$scope.community.dont_warn_till = ( new Date() );
+			}
+
+			if( !$scope.community.reopen_at ){
+				$scope.community.reopen_at = ( new Date() );
 			}
 
 			$scope.status_changed = false;
@@ -378,6 +411,10 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 			$scope.community.dont_warn_till = null;
 		}
 
+		if( !$scope.community.reopen_at_enabled ){
+			$scope.community.reopen_at = null;
+		}
+
 		if( $scope.formOpenClose.$invalid ){
 			$scope.formOpenCloseSubmitted = true;
 			return;
@@ -389,6 +426,12 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 			$scope.community.dont_warn_till_fmt = null;
 		}
 
+		if( $scope.community.reopen_at_enabled && $scope.community.reopen_at ){
+			$scope.community.reopen_at_fmt = $filter( 'date' )( $scope.community.reopen_at, 'yyyy-MM-dd HH:mm:ss' )
+		} else {
+			$scope.community.reopen_at_fmt = null;
+		}
+
 		$scope.isSavingOpenClose = true;
 		CommunityService.saveOpenClose( $scope.community, function( json ){
 			$scope.isSavingOpenClose = false;
@@ -397,7 +440,9 @@ NGApp.controller('CommunityOpenCloseCtrl', function ($scope, $routeParams, $root
 			} else {
 				$rootScope.closePopup();
 				$rootScope.$broadcast( 'communityOpenClosedSaved', json );
-				window.open( 'https://crunchbutton.com/' + $scope.community.permalink );
+				if( $rootScope.isLive ){
+					window.open( 'https://crunchbutton.com/' + $scope.community.permalink );
+				}
 			}
 		} );
 	}
