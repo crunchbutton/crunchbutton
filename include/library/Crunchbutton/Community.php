@@ -79,7 +79,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			$new = $this->properties();
 			$old = $current->properties();
 			foreach ( $keys as $key ) {
-				$new[ $key ] = ( intval( $new[ $key ] ) === 1 || $new[ $key ] === true || $new[ $key ] === 'true' ) ? true : false;
+				$new[ $key ] = intval( $new[ $key ] ) ? true : false;
 				if( $new[ $key ] != $old[ $key ] ){
 					$close = $new[ $key ];
 					$params = [ 'type' => $key, 'close' => $close, 'properties' => $new ];
@@ -723,7 +723,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	public function forceCloseLog( $days = 30 ){
 		$limit_date = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$limit_date->modify( '- ' . $days . ' days' );
-		return Cockpit_Community_Status_Log::q( 'SELECT * FROM community_status_log WHERE id_community = ? AND closed_date >= ? ORDER BY id_community_status_log DESC', [ $this->id_community, $limit_date->format( 'Y-m-d' ) ] );
+		return Cockpit_Community_Status_Log::q( 'SELECT * FROM community_status_log WHERE id_community = ? AND closed_date >= ? ORDER BY id_community_status_log ASC', [ $this->id_community, $limit_date->format( 'Y-m-d' ) ] );
 	}
 
 	public function old_forceCloseLog( $echo = true, $remove_unclosed = false, $days = 30 ){
