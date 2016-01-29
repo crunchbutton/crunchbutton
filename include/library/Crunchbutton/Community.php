@@ -70,7 +70,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return $this->_restaurantsByLoc;
 	}
 
-	public function save(){
+	public function save($new = false){
 
 		// close logs
 		if( $this->id_community ){
