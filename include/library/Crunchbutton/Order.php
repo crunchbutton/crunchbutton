@@ -108,6 +108,18 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$errors['set-processor'] = Crunchbutton_User_Payment_Type::processor();
 		}
 
+
+
+		if( $this->preordered ){
+			if( !$params['deliveryDay'] ){
+				$errors['preorder_day'] = 'Please select the desired delivery day.';
+			}
+			if( !$params['deliveryHour'] ){
+				$errors['preorder_hour'] = 'Please select the desired delivery hour.';
+			}
+
+		}
+
 		if( $processType == static::PROCESS_TYPE_WEB ){
 			// Check if the restaurant is active #2938
 			if(!$this->restaurant()->active){
