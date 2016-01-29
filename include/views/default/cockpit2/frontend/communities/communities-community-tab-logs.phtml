@@ -19,7 +19,7 @@
 			</span></td>
 			<td><span class="listview-smaller">{{c.closed_by}}</span></td>
 			<td>
-				<span class="listview-smaller">{{c.note}}</span>
+				<span class="listview-smaller" ng-bind-html="c.note"></span>
 				<span ng-if="c.reason" class="listview-smaller"><br>{{c.reason}}</span>
 			</td>
 			<td><span class="listview-smaller">{{c.how_long}}</span></td>

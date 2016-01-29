@@ -47,7 +47,7 @@ class Cockpit_Community_Status_Log extends Cana_Table {
 				break;
 		}
 
-		$out[ 'note' ] = $this->notes;
+		$out[ 'note' ] = nl2br( $this->notes );
 
 		$out[ 'closed_by' ] = $this->closed_by()->name;
 		$out[ 'opened_by' ] = $this->opened_by()->name;
@@ -65,7 +65,7 @@ class Cockpit_Community_Status_Log extends Cana_Table {
 		if( !$this->_reason && $this->id_community_closed_reason ){
 			$reason = Cockpit_Community_Closed_Reason::o( $this->id_community_closed_reason );
 			if( $reason->id_community_closed_reason ){
-				$out = $reason->reason;
+				$out = 'Reason: ' . $reason->reason;
 				if( $reason->id_driver ){
 					$out .= ' :' . $reason->driver()->name;
 				}
@@ -143,6 +143,13 @@ class Cockpit_Community_Status_Log extends Cana_Table {
 
 			if( $log->notes ){
 				$log->notes = 'Close: ' . $log->notes;
+			}
+			if( $params[ 'properties' ][ 'reopen_at' ] ){
+				$reopen_at = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+				if( $params[ 'properties' ][ 'timezone' ] ){
+					$reopen_at->setTimezone( new DateTimeZone( $params[ 'properties' ][ 'timezone' ] ) );
+				}
+				$log->notes .= "\nThe force close will be removed at: " . $reopen_at->format( 'M jS Y g:i:s A T' );;
 			}
 
 			$log->closed_date = date( 'Y-m-d H:i:s' );
