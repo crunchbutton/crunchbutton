@@ -3,7 +3,7 @@
 		<table class="thead">
 			<tr>
 				<th>Name</th>
-				<th ng-if="!community">Info</th>
+				<th>Info</th>
 				<th class="tb-small tb-center">Payment</th>
 				<th class="tb-small tb-center" ng-if="query.working != 'all'">Working</th>
 				<th class="tb-small tb-center">Pex</th>
@@ -18,7 +18,7 @@
 						<br><span class="listview-smaller">{{s.login}}</span>
 						<br><a href ng-click="callText(s.phone)" class="listview-smaller">{{s.phone | formatPhone}}</a>
 					</td>
-					<td ng-if="!community">
+					<td>
 						<span class="listview-bold">{{s.type}}</span>
 						<span ng-if="!community"><br>
 							<span>
@@ -34,6 +34,7 @@
 							</span>
 						</span>
 						<div>
+
 							<span class="tag tag-empty tag-green" ng-if="s.active">Active</span>
 							<span class="tag tag-empty tag-red" ng-if="!s.active">Inactive</span>
 
@@ -51,7 +52,7 @@
 						<span class="tag tag-red" ng-if="!s.verified">Unverified</span>
 					</td>
 					<td nowrap class="tb-center tb-v-center" ng-if="query.working != 'all'">
-						<span class="tag tag-purple" ng-if= tb-small"s.working_today && !s.working">Today</span>
+						<span class="tag tag-purple" ng-if="s.working_today && !s.working">Today</span>
 						<span class="tag tag-orange" ng-if="s.working">Now</span>
 						<span class="tag tag-lightgrey" ng-if="!s.working_today && !s.working">No</span>
 					</td>

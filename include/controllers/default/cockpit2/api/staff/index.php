@@ -483,6 +483,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$group = $this->request()['group'] ? $this->request()['group'] : null;
 		$send_text = $this->request()['send_text'] ? $this->request()['send_text'] : null;
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
+		$place = ( $this->request()['place'] ? $this->request()['place'] : null );
 		$keys = [];
 
 		if( ( !c::admin()->permission()->check(['global']) && c::admin()->isCampusManager() ) ){
@@ -645,9 +646,21 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 			GROUP BY `admin`.id_admin
 		';
 
-		$q .= '
-			ORDER BY `admin`.name ASC
-		';
+		switch ( $place ) {
+			case 'community':
+				$q .= '
+					ORDER BY `admin`.active DESC, `admin`.name ASC
+				';
+				break;
+
+			default:
+				$q .= '
+					ORDER BY `admin`.name ASC
+				';
+				break;
+		}
+
+
 
 		if ($working == 'all') {
 			$q .= '
