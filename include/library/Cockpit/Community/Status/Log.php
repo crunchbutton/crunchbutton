@@ -166,6 +166,11 @@ class Cockpit_Community_Status_Log extends Cana_Table {
 			} else {
 				$log->opened_by = c::admin()->id_admin;
 			}
+
+			if( !$log->opened_by ){
+				$log->opened_by = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN )->id_admin;
+			}
+
 			$log->opened_date = date( 'Y-m-d H:i:s' );
 		}
 		$log->type = $params[ 'type' ];

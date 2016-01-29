@@ -23,7 +23,7 @@
 				<span ng-if="c.reason" class="listview-smaller"><br>{{c.reason}}</span>
 			</td>
 			<td><span class="listview-smaller">{{c.how_long}}</span></td>
-			<td nowrap=""><span class="listview-smallest">
+			<td nowrap=""><span class="listview-smallest" ng-if="c.opened_at_utc">
 				{{c.opened_at_utc | localtime:'MMM/DD/YY hh:mm:ss (Z)'}}
 				<br>
 				{{c.opened_at}}
