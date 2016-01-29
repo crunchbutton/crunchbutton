@@ -124,9 +124,9 @@
 
 								<div class="customer-pointer">
 									{{order.name}}
-									<span ng-if="order.preordered && order.preordered.could_be_accepted">
-										(<i class="fa fa-clock-o"></i> Pre order. Expected Delivery: {{order.preordered.date_delivery}})
-									</span>
+									<div class="pre-order-text" ng-if="order.preordered && order.preordered.could_be_accepted">
+										<i class="fa fa-clock-o"></i> Pre order. <br> Expected Delivery: {{order.preordered.date_delivery}}
+									</div>
 								</div>
 
 								<div class="phone-pointer" ng-if="order.status.status == 'new' || order.status.driver.id_admin == account.user.id_admin">

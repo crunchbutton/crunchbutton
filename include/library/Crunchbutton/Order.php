@@ -27,7 +27,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	const STATUS_REFUNDED_TOTAL = 'Refunded';
 	const STATUS_REFUNDED_PARTIALLY = 'Partially Refunded';
 
-	const PRE_ORDER_INTERVAL = '+ 1 hour';
+	const PRE_ORDER_INTERVAL = '+ 60 minutes';
 	const PRE_ORDER_DELIVERY_WINDOW = '+ 15 minutes';
 
 	/**
