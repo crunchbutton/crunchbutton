@@ -70,6 +70,41 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return $this->_restaurantsByLoc;
 	}
 
+	public function save(){
+
+		// close logs
+		if( $this->id_community ){
+			$current = Community::q( 'SELECT * FROM community WHERE id_community = ? ', [ $this->id_community ] )->get( 0 );
+			$keys = [ Cockpit_Community_Status_Log::TYPE_ALL_RESTAURANTS, Cockpit_Community_Status_Log::TYPE_3RD_PARY_DELIRERY_RESTAURANTS, Cockpit_Community_Status_Log::TYPE_AUTO_CLOSED ];
+			$new = $this->properties();
+			$old = $current->properties();
+			foreach ( $keys as $key ) {
+				$new[ $key ] = ( intval( $new[ $key ] ) === 1 || $new[ $key ] === true || $new[ $key ] === 'true' ) ? true : false;
+				if( $new[ $key ] != $old[ $key ] ){
+					$close = $new[ $key ];
+					$params = [ 'type' => $key, 'close' => $close, 'properties' => $new ];
+					Cockpit_Community_Status_Log::register( $params );
+				}
+			}
+
+			$note_keys = [ Cockpit_Community_Status_Log::NOTE_ALL_RESTAURANTS, Cockpit_Community_Status_Log::NOTE_3RD_PARY_DELIRERY_RESTAURANTS, Cockpit_Community_Status_Log::NOTE_AUTO_CLOSED ];
+			$old = $current->properties();
+			foreach ( $keys as $key ) {
+				// if it is close, check if the message was changed
+				if( $old[ $key ] ){
+					foreach ( $note_keys as $note_key ) {
+						if( $new[ $note_key ] != $old[ $note_key ] ){
+							$close = $new[ $key ];
+							$params = [ 'type' => $key, 'note' => $new[ $note_key ], 'properties' => $new ];
+							Cockpit_Community_Status_Log::registerNote( $params );
+						}
+					}
+				}
+			}
+		}
+		parent::save();
+	}
+
 	public function type() {
 		if (!isset($this->_type)) {
 			$rs = $this->restaurants();
@@ -685,7 +720,13 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return $out;
 	}
 
-	public function forceCloseLog( $echo = true, $remove_unclosed = false, $days = 30 ){
+	public function forceCloseLog( $days = 30 ){
+		$limit_date = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$limit_date->modify( '- ' . $days . ' days' );
+		return Cockpit_Community_Status_Log::q( 'SELECT * FROM community_status_log WHERE id_community = ? AND closed_date >= ? ORDER BY id_community_status_log DESC', [ $this->id_community, $limit_date->format( 'Y-m-d' ) ] );
+	}
+
+	public function old_forceCloseLog( $echo = true, $remove_unclosed = false, $days = 30 ){
 
 		$limit_date = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$limit_date->modify( '- ' . $days . ' days' );
@@ -1071,7 +1112,6 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				// remove notes from #6788
 				$this->close_all_restaurants_note = '';
 				$this->close_3rd_party_delivery_restaurants_note = '';
-				$this->save();
 
 				$ticket = '';
 
@@ -1092,6 +1132,18 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 						$ticket .= 'Because it has no next shift with drivers.';
 					}
 				}
+
+				$reason = new Cockpit_Community_Closed_Reason;
+				$reason->id_admin = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN )->id_admin;
+				$reason->id_community = $this->id_community;
+				$reason->reason = $ticket;
+				$reason->type = Cockpit_Community_Closed_Reason::TYPE_AUTO_CLOSED;
+				$reason->date = date( 'Y-m-d H:i:s' );
+				$reason->save();
+
+				$this->id_community_closed_reason = $reason->id_community_closed_reason;
+
+				$this->save();
 
 				echo $ticket;
 				echo "\n";
