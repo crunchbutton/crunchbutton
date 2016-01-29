@@ -76,29 +76,29 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		if( $this->id_community ){
 			$current = Community::q( 'SELECT * FROM community WHERE id_community = ? ', [ $this->id_community ] )->get( 0 );
 			$keys = [ Cockpit_Community_Status_Log::TYPE_ALL_RESTAURANTS, Cockpit_Community_Status_Log::TYPE_3RD_PARY_DELIRERY_RESTAURANTS, Cockpit_Community_Status_Log::TYPE_AUTO_CLOSED ];
-			$new = $this->properties();
-			$old = $current->properties();
+			$newKeys = $this->properties();
+			$oldKeys = $current->properties();
+
 			foreach ( $keys as $key ) {
-				$new[ $key ] = intval( $new[ $key ] );
-				$old[ $key ] = intval( $old[ $key ] );
-				if( $new[ $key ] != $old[ $key ] ){
-					$close = $new[ $key ];
-					$params = [ 'type' => $key, 'close' => $close, 'properties' => $new ];
+				$newKeys[ $key ] = strval( $newKeys[ $key ] ) ? true : false;
+				$oldKeys[ $key ] = strval( $oldKeys[ $key ] ) ? true : false;
+				if( $newKeys[ $key ] != $oldKeys[ $key ] ){
+					$close = $newKeys[ $key ];
+					$params = [ 'type' => $key, 'close' => $close, 'properties' => $newKeys ];
 					Cockpit_Community_Status_Log::register( $params );
 				}
 			}
 
 			$note_keys = [ Cockpit_Community_Status_Log::NOTE_ALL_RESTAURANTS, Cockpit_Community_Status_Log::NOTE_3RD_PARY_DELIRERY_RESTAURANTS, Cockpit_Community_Status_Log::NOTE_AUTO_CLOSED ];
-			$old = $current->properties();
 			foreach ( $keys as $key ) {
 				// if it is close, check if the message was changed
-				$new[ $key ] = intval( $new[ $key ] );
-				$old[ $key ] = intval( $old[ $key ] );
-				if( $old[ $key ] && !$new[ $key ] ){
+				$newKeys[ $key ] = strval( $newKeys[ $key ] ) ? true : false;
+				$oldKeys[ $key ] = strval( $oldKeys[ $key ] ) ? true : false;
+				if( $oldKeys[ $key ] && !$newKeys[ $key ] ){
 					foreach ( $note_keys as $note_key ) {
-						if( $new[ $note_key ] != $old[ $note_key ] ){
-							$close = $new[ $key ];
-							$params = [ 'type' => $key, 'note' => $new[ $note_key ], 'properties' => $new ];
+						if( $newKeys[ $note_key ] != $oldKeys[ $note_key ] ){
+							$close = $newKeys[ $key ];
+							$params = [ 'type' => $key, 'note' => $newKeys[ $note_key ], 'properties' => $newKeys ];
 							Cockpit_Community_Status_Log::registerNote( $params );
 						}
 					}
