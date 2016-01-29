@@ -45,10 +45,10 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 								break;
 
 							case 'closelog':
-								$log = $community->forceCloseLog( true, false, 40 );
+								$logs = $community->forceCloseLog( 30 );
 								$out = [];
-								foreach( $log as $closed ){
-									$out[] = $closed->exports();
+								foreach( $logs as $log ){
+									$out[] = $log->exports();
 								}
 								echo json_encode( $out );exit;
 								break;
@@ -247,8 +247,6 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 							$community->dont_warn_till = null;
 						}
 
-						$community->save();
-
 						if( $status_changed && $community->close_3rd_party_delivery_restaurants || $community->close_all_restaurants ){
 							$reason = new Cockpit_Community_Closed_Reason;
 							$reason->id_admin = c::user()->id_admin;
@@ -270,7 +268,11 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 							$reason->type = ( $community->close_all_restaurants ? Cockpit_Community_Closed_Reason::TYPE_ALL_RESTAURANTS : Cockpit_Community_Closed_Reason::TYPE_3RD_PARTY_DELIVERY_RESTAURANTS );
 							$reason->date = date( 'Y-m-d H:i:s' );
 							$reason->save();
+
+							$community->id_community_closed_reason = $reason->id_community_closed_reason;
 						}
+
+						$community->save();
 
 						if( $community->id_community ){
 							echo json_encode( [ 'id_community' => $community->id_community ] );
