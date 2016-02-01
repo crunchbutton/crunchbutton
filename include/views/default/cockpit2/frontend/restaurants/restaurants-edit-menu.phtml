@@ -78,7 +78,9 @@
 						<ul ng-class="{'submitted':submitted}" class="ul-inputs inputs-group-dish divider">
 							<li class="li-input li-input-dish" ng-class="{'error':innerFormDish.dishName.$invalid}">
 								<div class="input">
-									<input type="text" name="dishName" element='{"category":{{category.sort}},"dish":{{dish.sort}}}' class="mousetrap" ng-enter="addDish( category )" required ng-model="dish.name" id="dish-{{dish._rand}}" placeholder="Dish name">
+									<input type="text"
+									space-left="dish.name" space-left-class="space-left-dish-name" space-left-width="285" name="dishName"
+									element='{"category":{{category.sort}},"dish":{{dish.sort}}}' class="mousetrap" ng-enter="addDish( category )" required ng-model="dish.name" id="dish-{{dish._rand}}" placeholder="Dish name">
 								</div>
 								<div class="box-error">
 									<small ng-show="innerFormDish.dishName.$error.required">Required.</small>
