@@ -384,7 +384,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 				$could_be_accepted = true;
 			}
 			$date_delivery->setTimezone(  new DateTimeZone( $this->restaurant()->timezone )  );
-			$date_delivery = $date_delivery->format( 'H:i A' );
+			$date_delivery = $date_delivery->format( 'h:i A' );
 			$preordered = [ 'could_be_accepted' => $could_be_accepted, 'date_delivery' => $date_delivery ];
 			$out[ 'preordered' ] = $preordered;
 		}
