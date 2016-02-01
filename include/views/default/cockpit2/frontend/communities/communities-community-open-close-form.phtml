@@ -25,7 +25,9 @@
 
 					<li class="li-input  divider-line" ng-show="community.is_auto_closed" ng-class="{'error':formOpenClose.autoClosedMessage.$invalid}">
 						<div class="label">Auto closed message:</div>
-						<div class="input"><input type="text" name="autoClosedMessage" ng-model="community.driver_restaurant_name" ng-required="community.is_auto_closed"></div>
+						<div class="input"><input type="text" name="autoClosedMessage" ng-model="community.driver_restaurant_name" ng-required="community.is_auto_closed"
+							space-left="community.driver_restaurant_name" space-left-class="space-left-community-message" space-left-width="270"
+						></div>
 						<div class="box-error">
 							<small ng-show="formOpenClose.autoClosedMessage.$error.required">Required.</small>
 						</div>
@@ -40,10 +42,13 @@
 
 					<li class="li-input  divider-line" ng-show="community.close_all_restaurants" ng-class="{'error':formOpenClose.communityCloseAllRestaurantsNote.$invalid}">
 						<div class="label">Close All Restaurants Note (follow this same format. e.g. - "Launching Mon 2/2 6PM-12AM"):</div>
-						<div class="input"><input type="text" name="communityCloseAllRestaurantsNote" ng-model="community.close_all_restaurants_note" ng-required="community.close_all_restaurants"></div>
+						<div class="input"><input type="text" name="communityCloseAllRestaurantsNote" ng-model="community.close_all_restaurants_note" ng-required="community.close_all_restaurants"
+						space-left="community.close_all_restaurants_note" space-left-class="space-left-community-message" space-left-width="270"
+						></div>
 						<div class="box-error">
 							<small ng-show="formOpenClose.communityCloseAllRestaurantsNote.$error.required">Required.</small>
 						</div>
+
 					</li>
 
 					<li class="li-input divider-line">
@@ -55,7 +60,9 @@
 
 					<li class="li-input  divider-line" ng-show="community.close_3rd_party_delivery_restaurants" ng-class="{'error':formOpenClose.communityClose3rdPartyRestaurantsNote.$invalid}">
 						<div class="label">Close 3rd Party Delivery Restaurants Note on Driver Restaurant Title (follow this same format. e.g. - "Launching Mon 2/2 6PM-12AM"):</div>
-						<div class="input"><input type="text" name="communityClose3rdPartyRestaurantsNote" ng-model="community.close_3rd_party_delivery_restaurants_note" ng-required="community.close_3rd_party_delivery_restaurants"></div>
+						<div class="input"><input type="text" name="communityClose3rdPartyRestaurantsNote" ng-model="community.close_3rd_party_delivery_restaurants_note" ng-required="community.close_3rd_party_delivery_restaurants"
+							space-left="community.close_3rd_party_delivery_restaurants" space-left-class="space-left-community-message" space-left-width="270"
+						></div>
 						<div class="box-error">
 							<small ng-show="formOpenClose.communityClose3rdPartyRestaurantsNote.$error.required">Required.</small>
 						</div>

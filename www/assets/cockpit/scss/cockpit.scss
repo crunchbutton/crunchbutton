@@ -4902,7 +4902,6 @@ a.button {
 		margin-top: 0;
 		box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.15);
 	}
-
 	.restaurant-preview .restaurants-open .restaurants-name {
 		padding: .6em 0 0 .4em;
 		font-size: 1.4em;
@@ -4923,3 +4922,28 @@ a.button {
 		background-position: center center !important;
 		box-shadow: inset rgba(0,0,0,0.3) 0 0 40px;
 	}
+
+.space-left-bar{
+	height: 4px;
+}
+	.space-left-bar.ok{
+		background: $buttonGreen
+	}
+	.space-left-bar.warning{
+		background: #999900;
+	}
+	.space-left-bar.no{
+		background: $buttonRed;
+	}
+.space-left-dish-name{
+	font-family: 'Open Sans', 'Droid Sans', Helvetica;
+	font-size: 14.112px;
+	letter-spacing: 0.36px;
+	font-weight: bold;
+}
+.space-left-community-message{
+	font-family: 'Open Sans', 'Droid Sans', Helvetica;
+	font-size: 10.8px;
+	font-weight: 600;
+	letter-spacing: 0.36px;
+}
