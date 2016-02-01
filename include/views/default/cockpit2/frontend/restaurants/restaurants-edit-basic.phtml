@@ -24,16 +24,6 @@
 								<div class="notes">Displayed to customers and the restaurant.</div>
 							</li>
 
-							<li class="li-input" ng-class="{'error':form.restaurantPermalink.$invalid}">
-								<div class="label">Permalink:</div>
-								<div class="input"><input type="text" permalink-validation ng-model="restaurant._permalink" name="restaurantPermalink" ng-model="restaurant._permalink" required placeholder="Permalink"></div>
-								<div class="box-error">
-									<small ng-show="form.restaurantPermalink.$error.required">Required.</small>
-									<small ng-show="form.restaurantPermalink.$error.permalinkValidation">Use lowercase letters, numbers and dashes.</small>
-								</div>
-								<div class="notes">crunchbutton.com/food-delivery/<strong>whateveryouwritehere</strong></div>
-							</li>
-
 							<li class="li-input" ng-class="{'error':form.restaurantShortDescription.$invalid}">
 								<div class="label">Text under Restaurant Name on Choose Restaurant Page:</div>
 								<div class="input"><input type="text" name="restaurantShortDescription" ng-model="restaurant.short_description" maxlength="45" required></div>
@@ -43,6 +33,16 @@
 								<div class="notes">
 									Choose something funny, awesome, and cool, but descriptive like “delicious chijapanesethai in yo mouth" or "chicken tikka delicious". Text size limit 45 chars.
 								</div>
+							</li>
+
+							<li class="li-input" ng-class="{'error':form.restaurantPermalink.$invalid}">
+								<div class="label">Permalink:</div>
+								<div class="input"><input type="text" permalink-validation ng-model="restaurant._permalink" name="restaurantPermalink" ng-model="restaurant._permalink" required placeholder="Permalink"></div>
+								<div class="box-error">
+									<small ng-show="form.restaurantPermalink.$error.required">Required.</small>
+									<small ng-show="form.restaurantPermalink.$error.permalinkValidation">Use lowercase letters, numbers and dashes.</small>
+								</div>
+								<div class="notes">crunchbutton.com/food-delivery/<strong>whateveryouwritehere</strong></div>
 							</li>
 
 							<li class="li-input" ng-class="{'error':form.restaurantForceCloseTagline.$invalid}">
@@ -215,6 +215,27 @@
 
 					</div>
 
+				</div>
+
+
+				<div class="support-box-wrap box-content2">
+					<div class="support-box-wrap-header">
+						<h1>Preview</h1>
+						<div class="divider"></div>
+					</div>
+					<div class="no-box-content-color">
+						<div class="restaurant-preview">
+							<div class="restaurants-item">
+								<div class="restaurants-open">
+									<div class="restaurants-item-content">
+										<div class="restaurants-pic" style="background-image: url({{restaurant.image.normal}});"></div>
+										<h2 class="restaurants-name">{{restaurant.name}}</h2>
+										<h3 class="restaurants-description">{{restaurant.short_description}}</h3>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 
 				<div class="support-box-wrap box-content2">
