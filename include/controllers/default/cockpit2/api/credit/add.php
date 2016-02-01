@@ -53,15 +53,29 @@ class Controller_api_credit_add extends Crunchbutton_Controller_RestAccount {
 		$giftcard->issued = Crunchbutton_Promo::ISSUED_CREDIT;
 		$giftcard->save();
 
+		$user = User::o( $id_user );
+
 		if( $add_as_credit ){
 			$credit = $giftcard->addCredit( $id_user, 0, $note );
 			$message = '$' . $credit->value . ' credit added to ' . $credit->user()->name . '!';
+			$_message = 'Credit $' . $value . ' added to customer ' . $user->name . '!';
+		} else {
+			$_message = 'Gift card $' . $value . ' created to customer ' . $user->name . '!';
 		}
+
+		$_message .= ' Promo #' . $giftcard->id_promo .'. ';
+
+		if( $note ){
+			$_message .= "\nNote: " . $note;
+		}
+
 		if( $send_notification ){
+
+			$_message .= "\nNotification sent by sms.";
+
 			if( $add_as_credit ){
 				$credit->notifySMS();
 			} else {
-				$user = User::o( $giftcard->id_user );
 				if( $user->phone ){
 					$giftcard->phone = $user->phone;
 					$giftcard->code = $giftcard->promoCodeGeneratorUseChars( Crunchbutton_Promo::NUMBERS, 7, $giftcard->id_promo, '' );
@@ -73,6 +87,11 @@ class Controller_api_credit_add extends Crunchbutton_Controller_RestAccount {
 				}
 			}
 		}
+
+		$lastOrder = $user->lastOrder();
+
+		Crunchbutton_Support::createNewWarning(  [ 'dont_open_ticket' => true, 'body' => $_message, 'phone' => $user->phone, 'id_order' => $lastOrder->id_order ] );
+
 		echo json_encode( [ 'success' => $message ] );
 		exit();
 	}
