@@ -40,6 +40,13 @@ NGApp.directive('supportChatContents', function( $window, $rootScope ) {
 					setTimeout( function(){ fixHeight() }, 500 );
 				}
 			});
+			// define the style for future elements
+			var width = $( '.support-chat-contents' ).width();
+			if( $( '#support-chat-contents-message-style' ) ){
+				$( '#support-chat-contents-message-style' ).remove();
+			}
+			var style = $('<style id="support-chat-contents-message-style">.support-chat-contents-message { width: ' + ( width - 20 ) + 'px !important; }</style>');
+			$('html > head').append(style);
 
 			var fixHeight = function(){
 				var height = $window.innerHeight + 8;
