@@ -4,7 +4,7 @@
 	<div class="box-content2 box-content-table box-search-bar table-sticky-dependant">
 		<table>
 			<tr>
-				<td colspan="6">
+				<td colspan="8">
 					<div title="More options" class="search-bar-options" ng-class="{'orange':show_more_options}" ng-click="moreOptions()">
 						<i class="fa" ng-class="{'fa-search':show_more_options, 'fa-search-plus':!show_more_options}"></i>
 					</div>&nbsp;&nbsp;<input type="text" ng-model="query.search" id="search" tabindex="1" placeholder="Search tickets">
@@ -31,9 +31,16 @@
 				</td>
 				<th>Type</th>
 				<td>
-					<select ng-model="query.type" name="searchType" tabindex="3">
+					<select ng-model="query.type" name="searchType" tabindex="4">
 						<option value="all">All</option>
 						<option value="system">System</option>
+					</select>
+				</td>
+				<th>Order by</th>
+				<td>
+					<select ng-model="query.order" name="searchType" tabindex="5">
+						<option value="support">Ticket</option>
+						<option value="message">Message</option>
 					</select>
 				</td>
 			</tr>
