@@ -114,7 +114,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 		switch ( $order ) {
 			case 'message':
 				$q .= '
-					ORDER BY sm.id_support_message DESC
+					ORDER BY smr.id_support_message DESC
 				';
 				break;
 
