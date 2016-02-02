@@ -1240,6 +1240,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 			$day = [ 'value' => $now->format( 'Y-m-d' ), 'label' => $label, 'hours' => [] ];
 
+			$day[ 'hours' ][] = [ 'label' => 'Desired Time', 'value' => false ];
+
 			foreach( $hours as $hour ){
 				if( $hour->day == strtolower( $now->format( 'D' ) ) ){
 					$store = true;
@@ -1258,7 +1260,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				}
 			}
 
-			if( sizeof( $day[ 'hours' ] ) > 0 ){
+			if( sizeof( $day[ 'hours' ] ) > 1 ){
+
 				$days[] = $day;
 
 				if( !$timeToTime ){
