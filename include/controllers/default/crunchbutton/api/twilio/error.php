@@ -9,7 +9,7 @@ class Controller_api_twilio_error extends Crunchbutton_Controller_Rest {
 
 			case 'notification':
 
-				$twilio = new Services_Twilio( c::config()->twilio->{ $env }->sid, c::config()->twilio->{ $env }->token );
+				$twilio = c::twilio();
 
 				// Get the Callsid
 				$CallSid = $_REQUEST[ 'CallSid' ];
@@ -47,7 +47,7 @@ class Controller_api_twilio_error extends Crunchbutton_Controller_Rest {
 
 		$env = c::getEnv();
 
-		$twilio = new Services_Twilio( c::config()->twilio->{ $env }->sid, c::config()->twilio->{ $env }->token );
+		$twilio = c::twilio();
 
 		$sms_error = Crunchbutton_Message_Sms::greeting();
 

@@ -723,7 +723,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 			$env = c::getEnv();
 
-			$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+			$twilio = c::twilio();
 
 			$id_support = $this->id_support;
 
