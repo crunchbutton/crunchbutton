@@ -130,6 +130,10 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 							case 'do-payment':
 								$this->_driverDoPayment();
 								break;
+							case 'force-payment':
+								$this->_driverDoForcePayment();
+								break;
+
 							case 'old-payments':
 								$this->_driverOldPayments();
 								break;
@@ -910,6 +914,31 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 			echo json_encode( $summary );
 		} else {
 			$this->_error();
+		}
+	}
+
+	private function _driverDoForcePayment(){
+		$id_payment_schedule = c::getPagePiece( 4 );
+		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
+		if( $schedule->id_payment_schedule ){
+			if( $schedule->status == Cockpit_Payment_Schedule::STATUS_DONE ){
+				echo json_encode( [ 'error' => 'Payment already done!' ] );
+				exit;
+			}
+			if( $schedule->status == Cockpit_Payment_Schedule::STATUS_PROCESSING ){
+				echo json_encode( [ 'error' => 'Payment already in process!' ] );
+				exit;
+			}
+			$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
+			$schedule->log = 'Schedule created';
+			$schedule->save();
+
+			$settlement = new Settlement;
+			$settlement->payDriver( $schedule->id_payment_schedule );
+
+			echo json_encode( [ 'success' => true ] );
+		} else {
+			echo json_encode( [ 'error' => 'Payment schedule not found!' ] );
 		}
 	}
 
