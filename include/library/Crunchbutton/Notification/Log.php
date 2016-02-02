@@ -41,7 +41,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			// Issue #1250 - make Max CB a phone call in addition to a text
 			$env = c::getEnv();
 
-			$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+			$twilio = c::twilio();
 
 
 			$url = 'http://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcalling';
@@ -279,7 +279,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 		return;
 
 		$env = c::getEnv();
-		$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+		$twilio = c::twilio();
 
 		$url = 'http://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcalling?id_notification=' . $log->id_notification;
 

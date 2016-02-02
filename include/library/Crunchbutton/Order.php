@@ -1800,7 +1800,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$log->save();
 
 
-		$twilio = new Services_Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+		$twilio = c::twilio();
 
 		$call = $twilio->account->calls->create(
 			c::config()->twilio->{$env}->outgoingRestaurant,
@@ -1965,7 +1965,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed sending sms', 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
 
-		$twilio = new Services_Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+		$twilio = c::twilio();
 
 		if( $env == 'live' ){
 
