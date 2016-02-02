@@ -14,10 +14,12 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 		$phone = Phone::byPhone( $params['from'] );
 
 		$this->order = Order::q('select * from `order` where phone=? order by date desc limit 1',[$params['from']])->get(0);
-		$this->support = Support::q('SELECT s.* FROM support_message sm
+		$this->support = Support::q('SELECT * FROM support_message sm
 																		INNER JOIN support s ON s.id_support = sm.id_support
-																		AND s.id_phone = ? AND TIMESTAMPDIFF( hour, sm.date, NOW() ) < 24
-																		ORDER BY sm.date DESC LIMIT 1',[ $phone->id_phone ])->get(0);
+																		AND s.id_phone = ?
+																		AND TIMESTAMPDIFF( hour, sm.date, NOW() ) < 24
+																		ORDER BY sm.id_support_message DESC
+																		LIMIT 1',[ $phone->id_phone ])->get(0);
 
 		$response = [];
 
