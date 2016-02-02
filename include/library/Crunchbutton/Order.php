@@ -957,6 +957,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		Crunchbutton_Order_Data::register( $this );
 
+		$this->createTicketForNotGeomatchedOrder();
+
 		return true;
 	}
 
@@ -3595,23 +3597,29 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->modify( '- 5 min' );
 		$orders = Order::q( 'SELECT * FROM `order` WHERE date > ? AND ( geomatched IS NULL OR geomatched = 0 )', [ $now->format( 'Y-m-d H:i:s' ) ] );
-		$pattern = "%s just did Place Order Anyway! Order details: Order %d in the %s community to this address %s. Please double check that this address is close enough to be delivered (if it's just slightly out of range it may be fine), and cancel the order if necessary. Thanks!";
 		foreach( $orders as $order ){
 			if( !$order->orderHasGeomatchedTicket() ){
-				$message = sprintf( $pattern, $order->name, $order->id_order, $order->community()->name, $order->address );
-				echo $message . "\n";
-				Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
-				$action = new Crunchbutton_Order_Action;
-				$action->id_order = $order->id_order;
-				$action->timestamp = date( 'Y-m-d H:i:s' );
-				$action->type = Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED;
-				$action->save();
+				$order->createTicketForNotGeomatchedOrder();
+			}
+		}
+	}
 
-				if( !$order->id_address ){
-					$address = Address::byAddress( $order->address );
-					$order->id_address = $address->id_address;
-					$order->save();
-				}
+	public function createTicketForNotGeomatchedOrder(){
+		$order = $this;
+		if( !$order->geomatched && !$order->orderHasGeomatchedTicket() ){
+			$pattern = "%s just did Place Order Anyway! Order details: Order %d in the %s community to this address %s. Please double check that this address is close enough to be delivered (if it's just slightly out of range it may be fine), and cancel the order if necessary. Thanks!";
+			$message = sprintf( $pattern, $order->name, $order->id_order, $order->community()->name, $order->address );
+			Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
+			$action = new Crunchbutton_Order_Action;
+			$action->id_order = $order->id_order;
+			$action->timestamp = date( 'Y-m-d H:i:s' );
+			$action->type = Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED;
+			$action->save();
+
+			if( !$order->id_address ){
+				$address = Address::byAddress( $order->address );
+				$order->id_address = $address->id_address;
+				$order->save();
 			}
 		}
 	}
