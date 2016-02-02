@@ -35,6 +35,10 @@ class Crunchbutton_Support_Message extends Cana_Table {
 
 		parent::save();
 
+		if( $this->ignore_broadcast === true ){
+			$new = false;
+		}
+
 		if ($new) {
 			Event::create([
 				'room' => [
