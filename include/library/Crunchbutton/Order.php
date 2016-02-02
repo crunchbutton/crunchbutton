@@ -3565,7 +3565,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 					if( $order->calcDistance() === false ){
 						$pattern = "%s just placed an order, the system could not calculate delivery radius! Order details: Order %d in the %s community to this address %s. Please double check that this address is close enough to be delivered (if it's just slightly out of range it may be fine), and cancel the order if necessary. Thanks!";
-						$message = sprintf( $pattern, $order->name, $distance, $order->id_order, $order->community()->name, $order->address );
+						$message = sprintf( $pattern, $order->name, $order->id_order, $order->community()->name, $order->address );
 					} else {
 						$distance = number_format( $order->calcDistance(), 2 ) . ' miles';
 						$pattern = "%s just placed an order out of delivery radius! Distance %s. Order details: Order %d in the %s community to this address %s. Please double check that this address is close enough to be delivered (if it's just slightly out of range it may be fine), and cancel the order if necessary. Thanks!";
