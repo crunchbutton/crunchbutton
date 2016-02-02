@@ -1019,7 +1019,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 
 		$env = c::getEnv();
 
-		$twilio = new Services_Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+		$twilio = c::twilio();
 
 		// removed this sms for while
 
@@ -1175,7 +1175,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 	public function shiftMessageWarning( $message, $admin ){
 
 		$env = c::getEnv();
-		$twilio = new Services_Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+		$twilio = c::twilio();
 
 		$txt = $admin->txt;
 		$phone = $admin->phone;
@@ -1503,7 +1503,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 
 		$env = c::getEnv();
 
-		$twilio = new Services_Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+		$twilio = c::twilio();
 
 		$minutes = 15;
 

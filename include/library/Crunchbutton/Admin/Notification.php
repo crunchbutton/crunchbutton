@@ -307,7 +307,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	public function alertDispatch( Crunchbutton_Order $order, $drivers=null) {
 
 		$env = c::getEnv();
-		$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+		$twilio = c::twilio();
 		$message = 'Reps failed to pickup order #' . $order->id_order . '. Restaurant ' . $order->restaurant()->name . ' / Customer ' . $order->name . ' https://cockpit.la/' . $order->id_order;
 
 		// Get drivers name
@@ -380,7 +380,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 			echo $message."\n";
 			Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'num' => $num, 'type' => 'delivery-driver' ]);
-			$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+			$twilio = c::twilio();
 			$call = $twilio->account->calls->create(
 				c::config()->twilio->{$env}->outgoingDriver,
 				'+1'.$num,
@@ -546,7 +546,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 						$num = $phoneNumber;
 						$url = 'http://'.$this->host_callback().'/api/order/'.$order->id_order.'/'.$call;
 						Log::debug( [ 'order' => $order->id_order, 'action' => 'send call to admin', 'num' => $num, 'host' => $this->host_callback(), 'env' => $env, 'url' => $url, 'type' => 'admin-notification' ]);
-						$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+						$twilio = c::twilio();
 						$call = $twilio->account->calls->create(
 							c::config()->twilio->{$env}->outgoingDriver,
 							'+1'.$num,
@@ -589,7 +589,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		$group = Group::byName( Crunchbutton_Config::getVal( Crunchbutton_Admin_Notification::REPS_NONE_WORKING_GROUP_NAME_KEY ) );
 		$users = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );
-		$twilio = new Services_Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+		$twilio = c::twilio();
 
 		if( $order->restaurant()->community && $order->restaurant()->community != '' ){
 			$community = '(' . $order->restaurant()->community . ') ';
@@ -662,7 +662,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send call to admin', 'num' => $num, 'host' => $this->host_callback(), 'env' => $env, 'url' => $url, 'type' => 'admin-notification' ]);
 
-		$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+		$twilio = c::twilio();
 		$call = $twilio->account->calls->create(
 			c::config()->twilio->{$env}->outgoingDriver,
 			'+1'.$num,
