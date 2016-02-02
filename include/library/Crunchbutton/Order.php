@@ -117,7 +117,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			if( !$params['deliveryHour'] ){
 				$errors['preorder_hour'] = 'Please select the desired delivery hour.';
 			}
-
+			if( $this->date_delivery ){
+				$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+				if( $now < $this->date_delivery ){
+					$errors['preorder_prev_date'] = 'The desired delivery hour should not be in the past.';
+				}
+			}
 		}
 
 		if( $processType == static::PROCESS_TYPE_WEB ){
