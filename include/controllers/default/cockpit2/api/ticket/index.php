@@ -62,11 +62,11 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 			if( $ticket->status == Crunchbutton_Support::STATUS_CLOSED ){
 				$ticket->status = Crunchbutton_Support::STATUS_OPEN;
 				$ticket->save();
-				$ticket->addSystemMessage( c::admin()->name . ' opened this ticket' );
+				$ticket->addSystemMessage( c::admin()->name . ' opened this ticket.', false, true );
 			} else {
 				$ticket->status = Crunchbutton_Support::STATUS_CLOSED;
 				$ticket->save();
-				$ticket->addSystemMessage( c::admin()->name . ' closed this ticket' );
+				$ticket->addSystemMessage( c::admin()->name . ' closed this ticket.', false, true );
 			}
 			$ticket->emitStatusChanged();
 			echo json_encode( [ 'success' => true ] );exit;
