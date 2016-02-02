@@ -11,7 +11,6 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 		$admin = $this->request()['admin'] ? $this->request()['admin'] : 'all';
 		$page = $this->request()['page'] ? $this->request()['page'] : 1;
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
-		$order = $this->request()['order'] ? $this->request()['order'] : 'support';
 		$keys = [];
 
 		if ($page == 1) {
@@ -106,26 +105,10 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 				$count = $c->c;
 			}
 		}
-
+//			#, sm.id_support_message
 		$q .= '
 			GROUP BY s.id_support
-		';
-
-		switch ( $order ) {
-			case 'message':
-				$q .= '
-					ORDER BY smr.id_support_message DESC
-				';
-				break;
-
-			default:
-				$q .= '
-					ORDER BY s.id_support DESC
-				';
-				break;
-		}
-
-		$q .= '
+			ORDER BY s.id_support DESC
 			LIMIT '.intval($getCount ? $limit : $limit+1).'
 			OFFSET '.intval($offset).'
 		';
