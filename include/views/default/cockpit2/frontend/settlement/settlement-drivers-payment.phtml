@@ -46,6 +46,11 @@
 							<br/>
 							<strong ng-click="do_payment()" class="orange link">Try send payment</strong>
 						</span>
+						<span ng-if="( result.status == 'scheduled' )" >
+							<br/>
+							<strong ng-click="force_payment()" class="orange link">Force payment</strong>
+						</span>
+
 					</td>
 				</tr>
 				<tr ng-if="result.log">

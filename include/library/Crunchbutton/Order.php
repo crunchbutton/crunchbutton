@@ -3592,7 +3592,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 	}
 
-
 	public function ticketsForNotGeomatchedOrders(){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->modify( '- 5 min' );
