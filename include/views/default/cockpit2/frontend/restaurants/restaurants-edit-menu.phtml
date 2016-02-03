@@ -115,7 +115,7 @@
 									<i ng-if="dish.expanded" class="fa fa-compress"></i>
 								</button>
 
-								<button ng-click="dishActionStart(dish, category)" title="Copy this dish or its options (ctrl+shift+o)" class="button button-small button-empty button-green"><i class="fa fa-gear"></i></button>
+								<button ng-click="dishActionStart(dish, category)" title="Move/Copy this dish or its options (ctrl+shift+o)" class="button button-small button-empty button-green"><i class="fa fa-gear"></i></button>
 							</li>
 						</ul>
 
@@ -339,6 +339,31 @@
 							<button class="button button-empty button-border button-green button-full" ng-click="dishActionCopyOptions();">&nbsp;&nbsp;Copy</button>
 						</li>
 						<li class="li-input" ng-show="dishActionIsCopying">
+							<i class="fa fa-circle-o-notch fa-spin"></i>
+						</li>
+					</ul>
+				</div>
+			</ng-form>
+			<br><br>
+			<ng-form name="formDishActionsCopyDish">
+				<div class="ul-inputs">
+					<ul ng-class="{'submitted':formDishActionsCopyDishSubmitted}" class="ul-inputs">
+						<li class="li-input li-input-dish" ng-class="{'error':formDishActionsCopyDish.category.$invalid}">
+							<div class="label">Copy/Duplicate this dish to another category</div>
+							<div class="input">
+								<select ng-model="dishActionCopyToCategory" name="category" required>
+									<option ng-repeat="category in restaurant.categories" value="{{category.sort}}">{{category.name}}</option>
+								</select>
+							</div>
+							<div class="notes">(option names and prices can be changed independently)</div>
+							<div class="box-error">
+								<small ng-show="formDishActionsCopyDish.dish.$error.required">Required.</small>
+							</div>
+						</li>
+						<li class="li-input" ng-show="!dishActionIsCopyingDish">
+							<button class="button button-empty button-border button-green button-full" ng-click="dishActionCopyDish();">&nbsp;&nbsp;Copy</button>
+						</li>
+						<li class="li-input" ng-show="dishActionIsCopyingDish">
 							<i class="fa fa-circle-o-notch fa-spin"></i>
 						</li>
 					</ul>
