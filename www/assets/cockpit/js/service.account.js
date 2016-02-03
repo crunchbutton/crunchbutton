@@ -4,6 +4,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 	var user = $resource( App.service + ':action', { action: '@action' }, {
 			// actions
 			'login' : { 'method': 'POST', params : { 'action' : 'login' } },
+			'remind' : { 'method': 'POST', params : { 'action' : 'remind' } },
 			'logout' : { 'method': 'GET', params : { 'action' : 'logout' } },
 		}
 	);
@@ -61,6 +62,16 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource, MainNavi
 			}
 		} );
 	};
+	service.remind = function( phone, callback ) {
+		// App.isCordova
+		user.remind( { 'phone': phone }, function( json ){
+			if( json ){
+				callback( json );
+			}
+		} );
+	};
+
+
 
 	service.logout = function() {
 		user.logout( {}, function(){
