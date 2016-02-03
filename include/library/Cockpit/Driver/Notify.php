@@ -5,6 +5,7 @@ class Cockpit_Driver_Notify extends Cana_Table {
 	const TYPE_SETUP = 'setup';
 	const TYPE_WELCOME = 'welcome';
 	const TYPE_ACCESS_INFO = 'access-info';
+	const TYPE_FORGOT_PASS = 'forgot-pass';
 	const ORDER_TEST = '22890'; // id_order sent to drivers play with - Issue #2969 - step 3
 
 	public function send( $id_admin, $message, $additional = false ){
@@ -44,6 +45,14 @@ class Cockpit_Driver_Notify extends Cana_Table {
 			case Cockpit_Driver_Notify::TYPE_ACCESS_INFO:
 				$message_type = Cockpit_Driver_Notify::TYPE_ACCESS_INFO;
 				$message = "Welcome " . $first_name . "\nYour username is {$username}.";
+				$message .= "\n" . "Your password is {$additional}.";
+				$message .= "\n" . "Url http://cockpit.la/";
+				// $message .= "\n" . "Make sure to enable push and location services.";
+				break;
+
+			case Cockpit_Driver_Notify::TYPE_FORGOT_PASS:
+				$message_type = Cockpit_Driver_Notify::TYPE_ACCESS_INFO;
+				$message = "Hey " . $first_name . "\nYour username is {$username}.";
 				$message .= "\n" . "Your password is {$additional}.";
 				$message .= "\n" . "Url http://cockpit.la/";
 				// $message .= "\n" . "Make sure to enable push and location services.";
