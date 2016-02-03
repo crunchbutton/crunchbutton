@@ -17,7 +17,7 @@ class Controller_api_remind extends Crunchbutton_Controller_Rest {
 				$staff->pass = $staff->makePass( $random_pass );
 				$staff->save();
 
-				Cockpit_Driver_Notify::send( $staff->id_admin, Cockpit_Driver_Notify::TYPE_ACCESS_INFO, $random_pass );
+				Cockpit_Driver_Notify::send( $staff->id_admin, Cockpit_Driver_Notify::TYPE_FORGOT_PASS, $random_pass );
 
 				echo json_encode( [ 'success' => 'You will receive your username and password soon.' ] );exit;
 
