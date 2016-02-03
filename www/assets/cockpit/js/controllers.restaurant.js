@@ -976,6 +976,53 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 		return;
 	}
 
+	$scope.dishActionCopyDish = function(){
+		if( $scope.formDishActionsCopyDish.$invalid ){
+			$scope.formDishActionsCopyDishSubmitted = true;
+			return;
+		}
+
+		$scope.dishActionIsCopyingDish = true;
+
+		var dish = null;
+		var category = $scope.restaurant.categories[ $scope.dishActionCategory.sort - 1 ];
+		var dishes = $scope.restaurant.categories[ $scope.dishActionCategory.sort - 1 ]._dishes;
+		for( x in dishes ){
+			if( dishes[ x ].sort == $scope.dishActionDish.sort ){
+				var dish = dishes[ x ];
+				continue;
+			}
+		}
+
+		var dishFrom = angular.copy( dish );
+
+		var categoryTo = $scope.restaurant.categories[ $scope.dishActionCopyToCategory - 1 ];
+
+		$scope.addDish( categoryTo );
+		var dishTo = categoryTo._dishes[ categoryTo._dishes.length - 1 ];
+
+		var keys = [ 'description', 'name', 'price', 'top', 'top_name', 'type', 'changeable_price', 'active', 'image', 'expand_view' ];
+		for( x in keys ){
+			dishTo[ keys[ x ] ] = dishFrom[ keys[ x ] ];
+		}
+
+		var dishFrom = $scope.dishActionDish;
+		var categoryFrom = $scope.dishActionCategory;
+
+		if( categoryTo._rand == categoryFrom._rand ){
+			dishTo[ 'name' ] += ' (duplicated)';
+		}
+
+		copyDishOptions( dishFrom, category, dishTo, categoryTo );
+
+		categoryTo.expanded = true;
+
+		$scope.closePopup();
+		$scope.dishActionIsCopyingDish = false;
+
+		return;
+	}
+
 	$scope.dishActionCopyOptions = function(){
 		if( $scope.formDishActionsCopyOptions.$invalid ){
 			$scope.formDishActionsCopyOptionsSubmitted = true;
@@ -991,6 +1038,14 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 		var categoryTo = $scope.restaurant.categories[ destiny[ 0 ] - 1 ];
 		var dishTo = categoryTo._dishes[ destiny[ 1 ] - 1 ];
 
+		copyDishOptions( dish, category, dishTo, categoryTo );
+
+		$scope.closePopup();
+		$scope.dishActionIsCopying = false;
+		return;
+	}
+
+	var copyDishOptions = function( dish, category, dishTo, categoryTo ){
 		// copy checkboxes
 		if( dish.options && dish.options.checkboxes && dish.options.checkboxes.length ){
 			for( x in dish.options.checkboxes ){
@@ -1025,10 +1080,6 @@ NGApp.controller('RestaurantEditMenuCtrl', function ( $scope, RestaurantEditServ
 				}
 			}
 		}
-
-		$scope.closePopup();
-		$scope.dishActionIsCopying = false;
-		return;
 	}
 
 	// Restaurant menu shortcuts
