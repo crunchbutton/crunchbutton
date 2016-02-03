@@ -1123,6 +1123,10 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 					$message->body == Crunchbutton_Support_Message::TICKET_CREATED_COCKPIT_BODY ){
 					continue;
 				}
+
+				$date = $message->date();
+				$date->setTimezone( new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
+
 				$date = $message->date()->format( 'g:i a' );
 				if( !$data[ 'date' ] ){
 					$data[ 'date' ]	= $message->date()->format( 'M jS g:i a' );

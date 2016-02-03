@@ -26,7 +26,6 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, TicketSe
 			type: 'all',
 			status: 'all',
 			admin: 'all',
-			order: 'support',
 			fullcount: false
 		},
 		update: function() {
