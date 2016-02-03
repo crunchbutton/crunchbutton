@@ -159,7 +159,7 @@ class Cockpit_Community_Status_Log extends Cana_Table {
 			$log = self::q( 'SELECT * FROM community_status_log WHERE id_community = ? AND type = ? AND opened_by IS NULL ORDER BY id_community_status_log DESC LIMIT 1', [ $params[ 'properties' ][ 'id_community' ], $params[ 'type' ] ] );
 			if( !$log->id_community_status_log ){
 				$log = new Cockpit_Community_Status_Log;
-				$log->notes = 'Unkown when it was closed.';
+				$log->notes = 'Unknown when it was closed.';
 			}
 			if( $params[ 'type' ] == self::TYPE_AUTO_CLOSED ){
 				$log->opened_by = Admin::login( Crunchbutton_Community::AUTO_SHUTDOWN_COMMUNITY_LOGIN )->id_admin;
