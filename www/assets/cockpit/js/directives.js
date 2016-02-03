@@ -271,6 +271,14 @@ NGApp.factory('ResourceFactory', ['$q', '$resource',
 	}
 ]);
 
+NGApp.directive( 'ngFormatPhone', function( $filter ) {
+	return function( scope, element, attrs ) {
+		element.bind( 'keyup', function( event ) {
+			element.val( $filter( 'formatPhone' )( element.val() ) );
+		} );
+	};
+} );
+
 NGApp.filter('formatTimezone', function() {
 	return function(timezone) {
 		if (!timezone) {
