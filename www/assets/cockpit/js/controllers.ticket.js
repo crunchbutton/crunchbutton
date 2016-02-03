@@ -6,14 +6,22 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			templateUrl: '/assets/view/tickets.html',
 			reloadOnSearch: false
 
-		}).when('/ticket/:id', {
+		})
+		.when('/tickets/beta', {
+			action: 'tickets-beta',
+			controller: 'TicketsCtrl',
+			templateUrl: '/assets/view/tickets.html',
+			reloadOnSearch: false
+
+		})
+		.when('/ticket/:id', {
 			action: 'ticket',
 			controller: 'TicketCtrl',
 			templateUrl: '/assets/view/tickets-ticket.html'
 		});
 }]);
 
-NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, TicketService, TicketViewService, ViewListService, StaffService) {
+NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, $location, TicketService, TicketViewService, ViewListService, StaffService) {
 
 	$rootScope.title = 'Tickets';
 
@@ -33,11 +41,25 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, TicketSe
 		}
 	});
 
+	$scope.beta = false;
+
+	if( $location.path() == '/tickets/beta' ){
+		$scope.beta = true;
+	}
+
 	var update = function(){
-		TicketService.list($scope.query, function(d) {
-			$scope.lotsoftickets = d.results;
-			$scope.complete(d);
-		});
+
+		if( $scope.beta ){
+			TicketService.list_beta($scope.query, function(d) {
+				$scope.lotsoftickets = d.results;
+				$scope.complete(d);
+			});
+		} else {
+			TicketService.list($scope.query, function(d) {
+				$scope.lotsoftickets = d.results;
+				$scope.complete(d);
+			});
+		}
 	}
 
 	$scope.closeTicket = function( id_support ){
