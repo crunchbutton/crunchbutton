@@ -33,7 +33,7 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, $locatio
 			search: '',
 			type: 'all',
 			status: 'all',
-			admin: 'all',
+			admin: null,
 			fullcount: false
 		},
 		update: function() {
@@ -48,7 +48,6 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	}
 
 	var update = function(){
-
 		if( $scope.beta ){
 			TicketService.list_beta($scope.query, function(d) {
 				$scope.lotsoftickets = d.results;
