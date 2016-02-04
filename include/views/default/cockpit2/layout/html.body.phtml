@@ -553,6 +553,9 @@
 								<i ng-if="!isMute" class="fa fa-microphone"></i>
 								<i ng-if="isMute" class="fa fa-microphone-slash"></i>
 							</div>
+							<div class="clickable notification notification-support" ng-if="account.user.permissions.GLOBAL" ng-click="navigation.link('/support/phone', 'instant')">
+								<i class="fa fa-phone-square"></i>
+							</div>
 							<div ng-if="account.isDriver" class="clickable notification notification-orders" ng-click="navigation.link('/drivers/orders', 'instant')">
 								<div class="badge" ng-show="newDriverOrders.count">{{newDriverOrders.count}}</div>
 								<i class="fa fa-truck"></i>
