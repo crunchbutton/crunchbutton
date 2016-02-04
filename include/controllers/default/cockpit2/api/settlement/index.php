@@ -3,10 +3,6 @@
 class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
-		// @remove -- remove it before commit
-		$this->_restaurantBegin();
-		exit;
-		// @remove -- remove it before commit
 
 		$this->resultsPerPage = 20;
 

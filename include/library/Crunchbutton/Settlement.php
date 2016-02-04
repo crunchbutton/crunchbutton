@@ -159,10 +159,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 										AND o.name NOT LIKE "%test%"
 										AND r.name NOT LIKE "%test%"
 									ORDER BY o.date ASC';
-// @remove -- remove it before commit
-$query = 'select * from `order` o
-inner join payment_schedule_order pso on pso.id_order = o.id_order and pso.id_payment_schedule = 53483';
-// @remove -- remove it before commit
 		return Order::sq( $query );
 	}
 
@@ -211,9 +207,6 @@ inner join payment_schedule_order pso on pso.id_order = o.id_order and pso.id_pa
 		$q .= ' AND restaurant.id_restaurant AND restaurant.name NOT LIKE "%test%"
 						GROUP BY restaurant.id_restaurant
 						 ORDER BY (CASE WHEN p_id_rest IS NULL THEN 1 ELSE 0 END) ASC, restaurant.name ASC';
-// @remove -- remove it before commit
-$q = 'SELECT * FROM restaurant WHERE id_restaurant = 45';
-// @remove -- remove it before commit
 		return Restaurant::q( $q );
 	}
 
@@ -221,9 +214,6 @@ $q = 'SELECT * FROM restaurant WHERE id_restaurant = 45';
 	// this method receives the restaurant orders and run the math
 	public function restaurantsProcessOrders( $orders, $recalculatePaidOrders = false ){
 		// start all with 0
-// @remove -- remove it before commit
-$recalculatePaidOrders = true;
-// @remove -- remove it before commit
 		$restaurant = [];
 
 		$pay = [ 'card_subtotal' => 0, 'cash_reimburse' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'promo_gift_card' => 0, 'apology_gift_card' => 0, 'order_payment' => 0, 'cash_subtotal' => 0 ];
@@ -262,9 +252,7 @@ $recalculatePaidOrders = true;
 		}
 ;		// sum
 		$pay[ 'total_due' ] = round( $this->orderCalculateTotalDue( $pay ), 2 );
-// @remove -- remove it before commit
-echo json_encode($pay);exit;
-// @remove -- remove it before commit
+
 		$this->log( 'restaurantsProcessOrders', array_merge( $restaurant, $pay ) );
 		return $pay;
 	}
@@ -571,10 +559,8 @@ echo json_encode($pay);exit;
 									$pay[ 'amount_per_order' ] +
 									$pay[ 'tip' ] +
 									$pay[ 'customer_fee' ] +
-// @remove -- remove it before commit
-// added this line
+									// here
 									$pay[ 'delivery_fee' ] +
-// @remove -- remove it before commit
 									$pay[ 'markup' ] +
 									$pay[ 'credit_charge' ] +
 									$pay[ 'restaurant_fee' ] +
