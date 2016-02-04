@@ -1,0 +1,91 @@
+<?php
+
+foreach ($dishes as $dish) { ?>
+	<tr>
+		<td class="fooditem">1</td>
+		<td class="fooditem"><?php
+			$food = $dish->name;
+			$restaurant_price = $dish->price->final_price;
+			$customer_price = $dish->price->regular;
+
+			$withoutDefaultOptions = '';
+			$selectOptions = '';
+			$withOptions = '';
+
+			if( count( $dish->options->without_default_options ) ){
+				foreach( $dish->options->without_default_options as $option ){
+					$withoutDefaultOptions .= '<i style="font-weight:600;">&nbsp;No&nbsp;';
+					$withoutDefaultOptions .= $option->name.', ';
+				}
+				if( $withoutDefaultOptions != '' ){
+					$withoutDefaultOptions = substr($withoutDefaultOptions, 0, -2);
+					$withoutDefaultOptions .= '</i>';
+				}
+			}
+
+			if( count( $dish->options->with_option ) ){
+				foreach( $dish->options->with_option as $option ){
+					if( $option->parent ){
+						if( $selectOptions == '' ){
+							$selectOptions .= '&nbsp;&nbsp;';
+						}
+						$selectOptions .= '<i style="font-weight:600;">' . $option->parent->name . ': ';
+						$selectOptions .= $option->name.', ';
+					} else {
+						if( $withOptions == '' ){
+							$withOptions .= '<i style="font-weight:600;">&nbsp;&nbsp;With:&nbsp;';
+						}
+						$withOptions .= $option->name.', ';
+					}
+				}
+				if( $withOptions != '' ){
+					$withOptions = substr($withOptions, 0, -2);
+					$withOptions .= '</i>';
+				}
+				if( $selectOptions != '' ){
+					$selectOptions = substr($selectOptions, 0, -2);
+					$selectOptions .= '</i>';
+				}
+			}
+
+			if ( $withOptions == '' && $withoutDefaultOptions == '' && $selectOptions == '' ) {
+				$food .= '.';
+			} else {
+				$food .= ': ';
+			}
+
+			if( $withOptions != '' ){
+				$withOptions .= '.';
+			}
+
+			if( $withoutDefaultOptions != '' ){
+				$withoutDefaultOptions .= '.';
+			}
+
+			if( $selectOptions != '' ){
+				$selectOptions .= '.';
+			}
+
+			$food .= $withoutDefaultOptions;
+			$food .= $withOptions;
+			$food .= $selectOptions;
+
+		?>
+		<?php echo $food; ?>
+		</td>
+		<td style="width: 1%;" class="fooditem">
+			$<?php
+			if( $isRestaurant ){
+				echo number_format( $restaurant_price, 2 );
+			} else {
+				echo number_format( $customer_price, 2 );
+			}
+			?>
+		</td>
+		<?php if( $isDriverCockpit ) { ?>
+		<td class="fooditem" style="font-size:12px;color:#666;">
+			$<?php echo number_format( $restaurant_price, 2 ); ?>
+		</td>
+		<?php } ?>
+	</tr>
+<?php } ?>

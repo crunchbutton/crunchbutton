@@ -1,28 +1,29 @@
 <div class="login-wrap" ng-controller="LoginCtrl" ng-class="{'logged-in': account.loggedin, 'logged-out': !account.loggedin}">
 	<div class="login-content hide-before-init fade-in-enter">
+
 		<div class="logo" ng-if="newuser">
 			<span class="item">Welcome to Cockpit</span>
 		</div>
-		<div class="logo" ng-switch="welcome" ng-if="!newuser">
 
-			<span class="item" ng-switch-when="1">well, <span class="green">hello</span> there<span class="dot">!</span></span>
-			<span class="item" ng-switch-when="2">aren't you looking <span class="green">lovely</span> today<span class="dot">!</span></span>
-			<span class="item" ng-switch-when="3">hey, <span class="green">friend</span><span class="dot">!</span></span>
-			<span class="item" ng-switch-when="4"><span class="green">welcome</span><span class="dot">!</span></span>
-			<span class="item" ng-switch-when="5">you are <span class="green">beautiful</span><span class="dot">.</span></span>
-			<span class="item" ng-switch-when="6">i believe in <span class="green">you</span><span class="dot">.</span></span>
-			<span class="item" ng-switch-when="7"><span class="green">you</span> can do it<span class="dot">!</span></span>
-			<span class="item" ng-switch-when="8">smile &nbsp;&nbsp;<span class="green">:)</span></span>
-			<span class="item" ng-switch-when="9">follow your <span class="green">dreams</span><span class="dot">.</span></span>
-			<span ng-switch-default>cockpit<span class="dot">.</span><span class="green">la</span></span>
-		</div>
+		<div ng-show="showing == 'login'">
 
-		<div class="dialog-message dialog-message-error" ng-show="error && !loggingIn">
-			Invalid username or password
-		</div>
+			<div class="logo" ng-switch="welcome" ng-if="!newuser">
 
-		<form name="form">
+				<span class="item" ng-switch-when="1">well, <span class="green">hello</span> there<span class="dot">!</span></span>
+				<span class="item" ng-switch-when="2">aren't you looking <span class="green">lovely</span> today<span class="dot">!</span></span>
+				<span class="item" ng-switch-when="3">hey, <span class="green">friend</span><span class="dot">!</span></span>
+				<span class="item" ng-switch-when="4"><span class="green">welcome</span><span class="dot">!</span></span>
+				<span class="item" ng-switch-when="5">you are <span class="green">beautiful</span><span class="dot">.</span></span>
+				<span class="item" ng-switch-when="6">i believe in <span class="green">you</span><span class="dot">.</span></span>
+				<span class="item" ng-switch-when="7"><span class="green">you</span> can do it<span class="dot">!</span></span>
+				<span class="item" ng-switch-when="8">smile &nbsp;&nbsp;<span class="green">:)</span></span>
+				<span class="item" ng-switch-when="9">follow your <span class="green">dreams</span><span class="dot">.</span></span>
+				<span ng-switch-default>cockpit<span class="dot">.</span><span class="green">la</span></span>
+			</div>
 
+			<div class="dialog-message dialog-message-error" ng-show="error && !loggingIn">
+				Invalid username or password
+			</div>
 
 				<div class="input-wrap">
 					<label for="username">
@@ -44,27 +45,53 @@
 					<span class="ladda-label">Sign In</span>
 				</button>
 			</div>
-		</form>
 
-		<div class="info">
+			<div class="login-forgot">
+				<div ng-click="toggle( 'forgot' )" class="login-option login-option-user">Forgot?</div>
+			</div>
 
-
-			<a href="/info"><div class="login-option login-option-user"><div class="circle"><i class="fa fa-truck"></i></div><br>Cockpit Information</div></a>
-			<? if (c::config()->bundle) : ?>
-				<? if (c::app()->detect()->match('android')) : ?>
-					<a href="https://play.google.com/store/apps/details?id=com.crunchbutton" target="_system">
+			<div class="info">
+				<a href="/info"><div class="login-option login-option-user"><div class="circle"><i class="fa fa-truck"></i></div><br>Cockpit Information</div></a>
+				<? if (c::config()->bundle) : ?>
+					<? if (c::app()->detect()->match('android')) : ?>
+						<a href="https://play.google.com/store/apps/details?id=com.crunchbutton" target="_system">
+					<? else : ?>
+						<a href="https://itunes.apple.com/app/id721780390" target="_system">
+					<? endif ; ?>
 				<? else : ?>
-					<a href="https://itunes.apple.com/app/id721780390" target="_system">
+					<a href="http://crunchbutton.com/app" target="_system">
 				<? endif ; ?>
-			<? else : ?>
-				<a href="http://crunchbutton.com/app" target="_system">
-			<? endif ; ?>
-				<div class="login-option login-option-user">
-					<div class="circle"><i class="fa fa-cutlery"></i></div>
-					<br>
-					Crunchbutton App
-				</div>
-			</a>
+					<div class="login-option login-option-user">
+						<div class="circle"><i class="fa fa-cutlery"></i></div>
+						<br>
+						Crunchbutton App
+					</div>
+				</a>
+			</div>
+
+		</div>
+
+		<div ng-show="showing == 'forgot'">
+
+			<div class="input-wrap">
+				<label for="phone">
+					<span class="label">Phone:</span>
+					<span class="field"><input onclick="this.focus();" id="phone" ng-enter="remind();" type="tel" ng-format-phone name="phone" tabindex="1" ng-model="phone" <? if (!$this->export) : ?>autofocus="autofocus"<? endif ; ?> autocorrect="off" autocapitalize="off"></span>
+				</label>
+			</div>
+
+			<div class="find-restaurants button-remind">
+				<button class="ladda-button button orange" ng-click="remind()" tabindex="3" data-color="orange" data-style="zoom-in">
+					<span class="ladda-label">Remind me</span>
+				</button>
+			</div>
+
+			<div class="login-forgot">
+				<div ng-click="toggle( 'login' )" class="login-option login-option-user"><i class="fa fa-arrow-left"></i>&nbsp;Never mind</div>
+			</div>
+
+			<div class="login-forgot-message" ng-show="message">{{message}}</div>
+
 
 		</div>
 	</div>

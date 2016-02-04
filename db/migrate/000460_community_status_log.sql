@@ -1,0 +1,1 @@
+ALTER TABLE `community` ADD  `reopen_at` datetime DEFAULT null;

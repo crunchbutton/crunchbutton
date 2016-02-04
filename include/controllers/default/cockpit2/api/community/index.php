@@ -45,10 +45,10 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 								break;
 
 							case 'closelog':
-								$log = $community->forceCloseLog( true, false, 40 );
+								$logs = $community->forceCloseLog( 30 );
 								$out = [];
-								foreach( $log as $closed ){
-									$out[] = $closed->exports();
+								foreach( $logs as $log ){
+									$out[] = $log->exports();
 								}
 								echo json_encode( $out );exit;
 								break;
@@ -79,6 +79,22 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 											$out[ 'dont_warn_till_enabled' ] = true;
 										} else {
 											$out[ 'dont_warn_till' ] = null;
+										}
+
+										if( $out[ 'reopen_at' ] ){
+
+											$_reopen_at = $community->reopenAt();
+											$out[ 'reopen_at_utc' ] = [ 	'y' => $_reopen_at->format( 'Y' ), 'm' => $_reopen_at->format( 'm' ), 'd' => $_reopen_at->format( 'd' ), 'h' => $_reopen_at->format( 'H' ), 'i' => $_reopen_at->format( 'i' ) ];
+											$out[ 'reopen_at_utc_formated' ] = $_reopen_at->format( 'M jS Y g:i:s A T' );
+
+											$_reopen_at = $community->reopenAt( true );
+											$out[ 'reopen_at' ] = [ 	'y' => $_reopen_at->format( 'Y' ), 'm' => $_reopen_at->format( 'm' ), 'd' => $_reopen_at->format( 'd' ), 'h' => $_reopen_at->format( 'H' ), 'i' => $_reopen_at->format( 'i' ) ];
+											$out[ 'reopen_at_formated' ] = $_reopen_at->format( 'M jS Y g:i:s A T' );
+
+											$out[ 'reopen_at_enabled' ] = true;
+										} else {
+											$out[ 'reopen_at_utc' ] = null;
+											$out[ 'reopen_at' ] = null;
 										}
 
 										echo json_encode( $out );exit;
@@ -118,6 +134,19 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 											$out[ 'dont_warn_till_enabled' ] = true;
 										} else {
 											$out[ 'dont_warn_till' ] = null;
+										}
+
+										if( $out[ 'reopen_at' ] ){
+											$_reopen_at = $community->reopenAt();
+											$out[ 'reopen_at_utc' ] = [ 	'y' => $_reopen_at->format( 'Y' ), 'm' => $_reopen_at->format( 'm' ), 'd' => $_reopen_at->format( 'd' ), 'h' => $_reopen_at->format( 'H' ), 'i' => $_reopen_at->format( 'i' ) ];
+											$out[ 'reopen_at_utc_formated' ] = $_reopen_at->format( 'M jS Y g:i:s A T' );
+											$_reopen_at = $community->reopenAt( true );
+											$out[ 'reopen_at' ] = [ 	'y' => $_reopen_at->format( 'Y' ), 'm' => $_reopen_at->format( 'm' ), 'd' => $_reopen_at->format( 'd' ), 'h' => $_reopen_at->format( 'H' ), 'i' => $_reopen_at->format( 'i' ) ];
+											$out[ 'reopen_at_formated' ] = $_reopen_at->format( 'M jS Y g:i:s A T' );
+											$out[ 'reopen_at_enabled' ] = true;
+										} else {
+											$out[ 'reopen_at_utc' ] = null;
+											$out[ 'reopen_at' ] = null;
 										}
 
 										echo json_encode( $out );exit;
@@ -247,7 +276,18 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 							$community->dont_warn_till = null;
 						}
 
-						$community->save();
+						$reopen_at = $this->request()[ 'reopen_at_fmt' ];
+						if( $reopen_at && ( $community->close_all_restaurants || $community->close_3rd_party_delivery_restaurants ) ){
+							$reopen_at = new DateTime( $reopen_at, new DateTimeZone( $community->timezone ) );
+							$reopen_at->setTimezone( new DateTimeZone( c::config()->timezone ) );
+							$community->reopen_at = $reopen_at->format( 'Y-m-d H:i:s' );
+						} else {
+							$community->reopen_at = null;
+						}
+
+						if( intval( $this->request()[ 'reopen_at_enabled' ] ) == 0 ){
+							$community->reopen_at = null;
+						}
 
 						if( $status_changed && $community->close_3rd_party_delivery_restaurants || $community->close_all_restaurants ){
 							$reason = new Cockpit_Community_Closed_Reason;
@@ -270,7 +310,11 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 							$reason->type = ( $community->close_all_restaurants ? Cockpit_Community_Closed_Reason::TYPE_ALL_RESTAURANTS : Cockpit_Community_Closed_Reason::TYPE_3RD_PARTY_DELIVERY_RESTAURANTS );
 							$reason->date = date( 'Y-m-d H:i:s' );
 							$reason->save();
+
+							$community->id_community_closed_reason = $reason->id_community_closed_reason;
 						}
+
+						$community->save();
 
 						if( $community->id_community ){
 							echo json_encode( [ 'id_community' => $community->id_community ] );

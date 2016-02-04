@@ -15,7 +15,7 @@ class Crunchbutton_Log_Type extends Cana_Table {
 			$name = self::TYPE_UNKNOWN;
 		}
 
-		$name = preg_replace( '/[^a-z\d _]/i', '', $name );
+		$name = preg_replace( '/[^a-z\d- _]/i', '', $name );
 		$name = preg_replace( '/[ _]/i', '-', $name );
 
 		$type = Crunchbutton_Log_Type::q( 'SELECT * FROM log_type WHERE type = ? ORDER BY id_log_type DESC LIMIT 1 ', [ $name ] );

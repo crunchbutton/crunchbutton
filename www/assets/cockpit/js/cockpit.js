@@ -41,7 +41,7 @@ var NGApp = angular.module('NGApp', ['chart.js', 'ngRoute', 'ngResource', 'ngAni
 });
 
 NGApp.constant('angularMomentConfig', {
-    timezone: 'America/Los_Angeles'
+		timezone: 'America/Los_Angeles'
 });
 
 NGApp.config(function($compileProvider){
@@ -878,6 +878,11 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 	});
 
+	$rootScope.$on( 'user-preference', function(e, data) {
+		AccountService.user.prefs[data.key] = data.value;
+	});
+
+
 });
 
 App.alert = function(txt, title, useNativeAlert, fn, unselectable ) {
@@ -1326,34 +1331,34 @@ function handleOpenURL(url) {
 
 
 NGApp.filter('propsFilter', function() {
-  return function(items, props) {
-    var out = [];
+	return function(items, props) {
+		var out = [];
 
-    if (angular.isArray(items)) {
-      items.forEach(function(item) {
-        var itemMatches = false;
+		if (angular.isArray(items)) {
+			items.forEach(function(item) {
+				var itemMatches = false;
 
-        var keys = Object.keys(props);
-        for (var i = 0; i < keys.length; i++) {
-          var prop = keys[i];
-          var text = props[prop].toLowerCase();
-          if (item[prop].toString().toLowerCase().indexOf(text) !== -1) {
-            itemMatches = true;
-            break;
-          }
-        }
+				var keys = Object.keys(props);
+				for (var i = 0; i < keys.length; i++) {
+					var prop = keys[i];
+					var text = props[prop].toLowerCase();
+					if (item[prop].toString().toLowerCase().indexOf(text) !== -1) {
+						itemMatches = true;
+						break;
+					}
+				}
 
-        if (itemMatches) {
-          out.push(item);
-        }
-      });
-    } else {
-      // Let the output be the input untouched
-      out = items;
-    }
+				if (itemMatches) {
+					out.push(item);
+				}
+			});
+		} else {
+			// Let the output be the input untouched
+			out = items;
+		}
 
-    return out;
-  };
+		return out;
+	};
 });
 
 if (parent.window.getAppVersion) {
@@ -1362,4 +1367,22 @@ if (parent.window.getAppVersion) {
 	});
 }
 
+// cockpit app: still can't type username or password fields #7398
+var prevFocus = null;
+$( document ).click( function( event ) {
+	if( !App.isCordova ){
+		return;
+	}
+	var hideKeyboard = false;
+	if( prevFocus && $( prevFocus ).is( ':text, :password, textarea' ) ){
+		hideKeyboard = true;
+	}
+	if( !$( event.target ).is( ':text, :password, textarea, select' ) ) {
+		document.activeElement.blur();
+		if( hideKeyboard ){
+			App.hideKeyboard();
+		}
+	}
+	prevFocus = event.target;
+} );
 window.addEventListener( 'focus', function(){ App.rootScope.$broadcast( 'window-focus' ); });

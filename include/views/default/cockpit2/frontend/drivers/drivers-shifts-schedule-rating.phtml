@@ -63,7 +63,7 @@
 					</table>
 				</div>
 			</div>
-			<br><br><br><br><br><br><br><br>
+			<div class="shift-schedule-rating-botton-space stick-botton-spacer"></div>
 
 		</div>
 
@@ -73,25 +73,56 @@
 
 	</div>
 
+
+
+	<div class="support-box-wrap box-content2" sticky-bottom="80">
+		<div class="no-box-content-color">
+			<p class="left shift-schedule-rating-botton">
+				<br>
+				If possible, I'd like to work
+					<select style="width:50px;" ng-model="options.shifts_from" ng-change="fixOptionTo()" ng-options="option.value as option.label for option in shiftsToWorkFrom"></select> <br>
+					 to
+					<select style="width:50px;" ng-model="options.shifts_to" ng-options="option.value as option.label for option in shiftsToWorkTo"></select>
+					shifts this week.
+			</p>
+			<ul class="ul-inputs">
+				<li class="li-input" ng-show="!isSaving">
+					<button class="button save" ng-click="save();">Save</button>
+				</li>
+				<li class="li-input" ng-show="isSaving">
+					<i class="fa fa-circle-o-notch fa-spin"></i>
+				</li>
+			</ul>
+		</div>
+	</div>
 </div>
 
-<div class="support-box-wrap box-content2" sticky-bottom="80">
-	<div class="no-box-content-color">
-		<p class="left">
-			<br>
-			If possible, I'd like to work
-				<select ng-model="options.shifts_from" ng-change="fixOptionTo()" ng-options="option.value as option.label for option in shiftsToWorkFrom"></select>
-				 to
-				<select ng-model="options.shifts_to" ng-options="option.value as option.label for option in shiftsToWorkTo"></select>
-				shifts this week.
-		</p>
-		<ul class="ul-inputs">
-			<li class="li-input" ng-show="!isSaving">
-				<button class="button save" ng-click="save();">Save</button>
-			</li>
-			<li class="li-input" ng-show="isSaving">
-				<i class="fa fa-circle-o-notch fa-spin"></i>
-			</li>
-		</ul>
+
+<div class="driver-shift-preferences-help zoom-anim-dialog mfp-hide dialog" ng-controller="DriversShiftsScheduleRatingHelpCtrl">
+	<p>
+		For each shift you must choose one of these following options:
+	</p>
+	<div class="schedule-buttons-help">
+
+		<button title="Yes, definitely!" class="button schedule-action-yes active">
+			<i class="fa fa-thumbs-o-up"></i>
+		</button>
+		Yes, definitely!
+		<br>
+		<button title="I'm available" class="button schedule-action-maybe active">
+			<i class="fa fa-thumbs-o-up"></i>
+		</button>
+		I'm available
+		<br>
+		<button title="I'm not available" class="button schedule-action-no active">
+			<i class="fa fa-thumbs-o-down"></i>
+		</button>
+		I'm not available
 	</div>
+	<p>
+	<label>
+		<input type="checkbox" ng-model="hide_shift_preferences_help"/> Do not show message again.
+	</label>
+	</p>
+	<button class="button cancel" ng-click="closePopup();">Close</button>
 </div>

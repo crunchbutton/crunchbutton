@@ -5,7 +5,7 @@ class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 
 		$from = Phone::clean($request['From']);
 		$to = Phone::clean($request['To']);
-		$body = trim($request['Body']);
+		$body = $request['Body']; //trim($request['Body']);
 		$admin = Admin::getByPhone($from, true);
 		$numMedia = trim($request['NumMedia']);
 

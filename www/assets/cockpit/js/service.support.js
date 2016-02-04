@@ -154,31 +154,31 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 	var notified  = new Array();
 
-	$rootScope.$on('userAuth', function(e, data) {
+	$rootScope.$on('userAuthUpdated', function(e, data) {
 
 		if (AccountService.user && AccountService.user.id_admin) {
 
-			service.socket.on('user.preference', function(payload) {
-				console.debug('Recieved preference update', payload);
-				AccountService.user.prefs[payload.key] = payload.value;
-				$rootScope.$apply();
-			});
+			service.socket.emit('event.subscribe', 'user.preference.' + AccountService.user.id_admin );
 
-
-
+			SocketService.listen( 'user.preference.' + AccountService.user.id_admin, $rootScope).on( 'user.preference', function( payload ){
+				AccountService.user.prefs[ payload.key ] = payload.value;
+			} );
 
 			if (AccountService.isSupport) {
 
-				service.socket.emit('event.subscribe', 'ticket.update');
-
+				// Update tickets status at side bar
 				SocketService.listen('ticket.update', $rootScope).on( 'change_ticket_status', function(){
-					console.log( 'ticket.update: change_ticket_status' );
 					$rootScope.$broadcast( 'updateSideTickets' );
 					$rootScope.$broadcast( 'updateHeartbeat' );
 				} )
 
 				SocketService.listen('tickets', $rootScope)
+
 					.on('message', function(d) {
+
+						if( AccountService.user && AccountService.user.prefs && AccountService.user.prefs[ 'notification-desktop-support-all' ] === false ){
+							return;
+						}
 
 						console.debug('Recieved chat message: ', d);
 
@@ -190,21 +190,14 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 						notified.push(d.id_support_message);
 
 						// update the chat room
-						console.log('service.sideInfo.id_support',service.sideInfo.id_support);
-						console.log('d.id_support',d.id_support);
 						if( service.sideInfo.id_support && d.id_support && parseInt( service.sideInfo.id_support ) != parseInt( d.id_support ) ){
 							console.log('force_first_page??');
 							// service.sideInfo.force_first_page();
 						}
 
-						if (d.id_admin == AccountService.user.id_admin) {
+						// https://github.com/crunchbutton/crunchbutton/issues/7579#issuecomment-172934677
+						if (d.from == 'rep' ) {
 							return;
-						}
-
-						if (d.id_support == service.scope.viewTicket) {
-							//App.playAudio('support-message-recieved');
-						} else {
-							//App.playAudio('support-message-new');
 						}
 
 						NotificationService.notify(d.name, d.body, null, function() {
@@ -240,16 +233,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			element.attr( 'title', 'Status: ' + status );
 		}
 	}
-
-	$rootScope.$watch('account.user.prefs["notification-desktop-support-all"]', function(e, value) {
-		if (value == '1') {
-			console.debug('Subscribing to all tickets');
-			service.socket.emit('event.subscribe', 'tickets');
-		} else {
-			console.debug('Unsubscribing to all tickets');
-			service.socket.emit('event.unsubscribe', 'tickets');
-		}
-	});
 
 	service.send = function(message, add_as_note, callback) {
 		var add_as_note = ( add_as_note ? true : false );

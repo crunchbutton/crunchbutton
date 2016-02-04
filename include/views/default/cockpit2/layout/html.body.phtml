@@ -7,7 +7,6 @@
 				<div class="menu-tab" ng-if="account.isDriver || account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'driver')}" ng-click="menu.toggle='driver'">
 					<i class="fa fa-truck"></i>
 				</div>
-
 				<div class="menu-tab" ng-if="account.isMarketingRep || account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'marketing-rep')}" ng-click="menu.toggle='marketing-rep'">
 					<i class="fa fa-male"></i>
 				</div>
@@ -432,6 +431,15 @@
 					</table>
 				</a>
 
+				<a href="/tickets/beta" ng-click="instant()" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': ( navigation.page == 'tickets-beta')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-comments-o"></i></td>
+							<td class="side-menu-label">Tickets (beta) <i class="fa fa-flask"></i></a></td>
+						</tr>
+					</table>
+				</a>
+
 				<a href="/suggestions" ng-click="instant()" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'suggestions')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
@@ -544,6 +552,9 @@
 							<div class="clickable hide-mobile notification notification-mute" ng-click="twilio.mute()" ng-if="callStatus == 'connected'">
 								<i ng-if="!isMute" class="fa fa-microphone"></i>
 								<i ng-if="isMute" class="fa fa-microphone-slash"></i>
+							</div>
+							<div class="clickable notification notification-support" ng-if="account.user.permissions.GLOBAL" ng-click="navigation.link('/support/phone', 'instant')">
+								<i class="fa fa-phone-square"></i>
 							</div>
 							<div ng-if="account.isDriver" class="clickable notification notification-orders" ng-click="navigation.link('/drivers/orders', 'instant')">
 								<div class="badge" ng-show="newDriverOrders.count">{{newDriverOrders.count}}</div>

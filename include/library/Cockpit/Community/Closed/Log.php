@@ -1,7 +1,5 @@
 <?php
 
-ini_set( 'max_execution_time', 1000 );
-
 class Cockpit_Community_Closed_Log extends Cana_Table {
 
 	const TYPE_ALL_RESTAURANTS = 'all_restaurants';
@@ -28,7 +26,8 @@ class Cockpit_Community_Closed_Log extends Cana_Table {
 	}
 
 	public function forceCloseHoursLog( $community ){
-
+		// deprecated #7615
+		return;
 		if( !$community->timezone ){
 			return false;
 		}

@@ -153,7 +153,7 @@
 
 				<br><br>
 				<div class="quadruple-cols">
-					<button title="Refund Order" class="button button-empty button-border button-orange" ng-if="order.user.id_user" ng-class="{'button-disabled': isRefunding || order.refunded}" ng-click="refund()"><i class="fa fa-heart"></i><span class="label">&nbsp;&nbsp;Refund</span></button>
+					<button title="Refund Order" class="button button-empty button-border button-orange" ng-if="order.user.id_user" ng-class="{'button-disabled': isRefunding || order.refunded || order.pay_type != 'card'}" ng-click="refund()"><i class="fa fa-heart"></i><span class="label">&nbsp;&nbsp;Refund</span></button>
 					<button title="Resend Driver Notifiction" ng-click="resend_notification_drivers();" class="button button-empty button-border button-green" ng-class="{'button-disabled': isDriverNotifying || !order.delivery_service || (order.delivery_service && ( order.status.status == 'pickedup' || order.status.status == 'accepted' || order.status.status == 'delivered' || order.status.status == 'transfered' ))}"><i class="fa fa-car"></i><span class="label">&nbsp;&nbsp;Notify</span></button>
 					<button title="Resend Restaurant Notification" ng-click="resend_notification();" class="button button-empty button-border button-blue" ng-class="{'button-disabled': isRestaurantNotifying || order.confirmed || (order.restaurant.delivery_service && !order.restaurant.formal_relationship && !order.restaurantorder_notifications_sent)}"><i class="fa fa-coffee"></i><span class="label">&nbsp;&nbsp;Notify</span></button>
 					<button title="Issue Gift Card" ng-click="creditDialog( order.id_user );" class="button button-empty button-border button-orange"><i class="fa fa-gift"></i><span class="label">&nbsp;Gift Card</span></button>
@@ -267,70 +267,7 @@
 		</div>
 
 		<? /* contents */ ?>
-		<div class="support-box-wrap box-content2" ng-if="order.user.id_user">
-			<div class="support-box-wrap-header">
-				<h1>Contents</h1>
-				<div class="divider"></div>
-			</div>
-
-			<div class="no-box-content-color">
-				<table align="right" class="basic-table detail">
-					<tr>
-						<td class="topitem order-contents-item-qty">Qty</td>
-						<td class="topitem itemname">Item</td>
-						<td class="topitem itemname"></td>
-						<td class="topitem itemprice">Store Price</td>
-					</tr>
-					<tr ng-repeat="dish in order._dishes_qty">
-						<td class="fooditem order-contents-item-qty" ng-class="{'order-contents-item-qty-highlight': dish.quantity > 1 }">{{dish.quantity}}</td>
-						<td class="fooditem dish-name">
-							<b>{{dish.name}}</b>
-							<div>{{dish.options.select_options}}</div>
-							<div>{{dish.options.with_option}}</div>
-							<div>{{dish.options.without_default_options}}</div>
-						</td>
-						<td class="fooditem dish-price-unity">
-							<span ng-if="dish.quantity > 1">
-								{{dish.quantity}} * ${{dish.price.regular_unity | formatPrice}}
-							</span>
-						</td>
-						<td class="fooditem dish-price">
-							${{dish.price.regular | formatPrice}}
-							<span ng-if="dish.price.regular_new" title="Price changed to: ${{dish.price.regular_new | formatPrice}}">*</span>
-						</td>
-					</tr>
-					<tr><td><br></td></tr>
-
-					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Subtotal:</td><td nowrap class="dish-price">${{order.price | number:2}}</td></tr>
-					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Markup:</td><td nowrap class="dish-price">${{order.delivery_service_markup_value || 0 | number:2}} ({{order.delivery_service_markup || 0}}%)</td></tr>
-					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Service Fee:</td><td nowrap class="dish-price">${{order.price * (order.service_fee/100) | number:2}} ({{order.service_fee || 0}}%)</td></tr>
-					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Delivery Fee:</td><td nowrap class="dish-price">${{order.delivery_fee || 0 | number:2}}</td></tr>
-					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Tax:</td><td nowrap class="dish-price">${{order.price * (order.tax/100) | number:2}} ({{order.tax}}%)</td></tr>
-					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Tip:</td><td nowrap class="dish-price">${{order._tip || 0 | number:2}}
-							<span ng-if="order.tip_type == 'percent'">({{order.tip}}%)</span>
-							<span ng-if="order.tip_type != 'percent'">({{ order._tip/order.price*100  | number:2 }}%)</span>
-						</td></tr>
-					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Gift Card (Credit):</td><td nowrap class="dish-price">${{order.credit || 0 | number:2}} </td></tr>
-					<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Total (Charged):</td><td nowrap class="dish-price">${{order.charged || 0 | number:2}} </td></tr>
-
-					<tr class="listview-smaller"><td></td><td colspan="2" class="listview-bold" style="text-align: right">Total:</td><td class="listview-bold " nowrap>${{order.final_price_plus_delivery_markup | number:2}}</td></tr>
-				</table>
-
-
-				<div class="no-box-content-color">
-					<div class="field-container">
-						<div class="field-row">
-							<div class="field-note">
-								* Item prices are estimates and do not necessarily reflect what the user was charged.
-							</div>
-						</div>
-					</div>
-					<br>
-				</div>
-
-			</div>
-			<div class="divider"></div>
-		</div>
+		<ng-include src="'/assets/view/orders-order-contents.html'"></ng-include>
 
 		<? /* customer */ ?>
 		<div class="support-box-wrap box-content2" ng-if="order.user.id_user">

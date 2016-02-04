@@ -1,0 +1,123 @@
+<?php
+$dishes = $order->dishes( true );
+// force load the dishes #5297
+if( !$dishes || !$dishes->count() ){
+	$dishes = Order_Dish::q( 'SELECT * FROM order_dish WHERE id_order = ?', [$order->id_order]);
+}
+foreach ($dishes as $dish) { ?>
+	<tr>
+		<td class="fooditem">1</td>
+		<td class="fooditem"><?php
+			$food = $dish->dish()->name;
+			$price = $dish->dish()->price;
+			$regular_price = $dish->dish()->price;
+			// add the delivery markup
+			if( $delivery_service_markup > 0 && $price > 0 ){
+				$price = $price + number_format( ( $dish->dish()->price * $delivery_service_markup / 100 ), 2 );
+				$price = Crunchbutton_Restaurant::roundDeliveryMarkupPrice( $price, 2 );
+			}
+			$regular_price = number_format( $regular_price, 2 );
+
+			$options = $dish->options();
+
+			if (gettype($options) == 'array') {
+				$options = i::o($options);
+			}
+
+			$withOptions = '';
+
+			$selectOptions = '';
+
+			if ($options->count()) {
+
+				foreach ($dish->options() as $option) {
+					if ($option->option()->type == 'select') {
+						continue;
+					}
+					// $price += $option->option()->price;
+					$regular_price += $option->option()->price;
+					// add the delivery markup
+					if( $option->option()->price > 0 ){
+						if( $delivery_service_markup > 0 ){
+							$option_price = Crunchbutton_Restaurant::roundDeliveryMarkupPrice( $option->option()->price + ( $option->option()->price * $delivery_service_markup / 100 ), 2 );
+							$price = $price + $option_price;
+						} else {
+							$price = $price + $option->option()->price;
+						}
+					}
+					if($option->option()->id_option_parent) {
+						$optionGroup = Crunchbutton_Option::o($option->option()->id_option_parent);
+						// $withOptions .= "$optionGroup->name: ";
+						if( $selectOptions == '' ){
+							$selectOptions .= '&nbsp;&nbsp;';
+						}
+						$selectOptions .= '<i style="font-weight:600;">' . $optionGroup->name . ': ';
+						$selectOptions .= $option->option()->name.', ';
+					} else {
+						if( $withOptions == '' ){
+							$withOptions .= '<i style="font-weight:600;">&nbsp;&nbsp;With:&nbsp;';
+						}
+						$withOptions .= $option->option()->name.', ';
+					}
+					$regular_price = number_format( $regular_price, 2 );
+				}
+				$withOptions = substr($withOptions, 0, -2);
+				$selectOptions = substr($selectOptions, 0, -2);
+				if( $withOptions != '' ){
+					$withOptions .= '</i>';
+				}
+			}
+
+			$withoutDefaultOptions = '';
+			if( $dish->id_order_dish && $dish->id_dish ){
+				$optionsNotChoosen = $dish->optionsDefaultNotChoosen();
+				$commas = ' ';
+				if( $optionsNotChoosen->count() ){
+					foreach( $optionsNotChoosen as $dish_option ){
+						$withoutDefaultOptions .= $commas . '<i style="font-weight:600;">&nbsp;No ' . $dish_option->option()->name . '</i>';
+						$commas = ', ';
+					}
+				}
+			}
+
+			if ( $withOptions == '' && $withoutDefaultOptions == '' && $selectOptions == '' ) {
+				$food .= '.';
+			} else {
+				$food .= ': ';
+			}
+
+			if( $withOptions != '' ){
+				$withOptions .= '.';
+			}
+
+			if( $withoutDefaultOptions != '' ){
+				$withoutDefaultOptions .= '.';
+			}
+
+			if( $selectOptions != '' ){
+
+				$selectOptions .= '.';
+			}
+
+			$food .= $withoutDefaultOptions;
+			$food .= $withOptions;
+			$food .= $selectOptions;
+			?>
+			<?php echo $food; ?>
+		</td>
+		<td style="width: 1%;" class="fooditem">
+			$<?php
+			if( $isRestaurant ){
+				echo number_format( $regular_price, 2 );
+			} else {
+				echo number_format( $price, 2 );
+			}
+			?>
+		</td>
+		<?php if( $isDriverCockpit ) { ?>
+		<td class="fooditem" style="font-size:12px;color:#666;">
+			$<?php echo number_format( $regular_price, 2 ); ?>
+		</td>
+		<?php } ?>
+	</tr>
+<?php } ?>

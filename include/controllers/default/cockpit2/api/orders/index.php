@@ -4,7 +4,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		if (!c::admin()->permission()->check(['global','orders-all','orders-list-page']) ) {
+		if ( !c::admin()->permission()->check(['global','orders-all','orders-list-page'] ) && !c::admin()->isCommunityManager() ) {
 			$this->error(401, true);
 		}
 
@@ -29,6 +29,10 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		$type = $this->request()['type'] ? $this->request()['type'] : 'all';
 		$export = $this->request()['export'] ? true : false;
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
+
+		if( intval( $limit ) > 200 && !$export ){
+			$limit = 200;
+		}
 
 		$campusManager = $this->request()['campusManager'] ? $this->request()['campusManager'] : false;
 
@@ -78,13 +82,6 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		}
 
 //			LEFT JOIN ( SELECT MAX( id_support ) AS id_support, id_order FROM support WHERE id_order IS NOT NULL GROUP BY id_order ) support ON support.id_order = `order`.id_order
-
-		if (!c::admin()->permission()->check(['global', 'orders-all', 'orders-list-page'])) {
-			// Order::deliveryOrders( $lastHours );
-			$q .= '
-				AND order_admin.id_admin = "'.c::admin()->id_admin.'"
-			';
-		}
 
 		if ($user) {
 			$q .= '
@@ -271,6 +268,16 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 			if( $o->preordered && $o->preordered_date ){
 				$o->date = $o->preordered_date;
 			}
+
+			// remove unnecessary properties
+			if( $campusManager ){
+				$remove = [ 'price', 'price_plus_delivery_markup', 'final_price', 'final_price_plus_delivery_markup', 'delivery_service_markup', 'delivery_service_markup_value', 'tax', 'tip', 'txn', 'delivery_fee', 'processor', 'tip_type', 'pay_if_refunded', 'id_agent', 'id_session', 'fee_restaurant', 'paid_with_cb_card', 'id_user_payment_type', 'asked_to_call', 'lon', 'lat', 'reimburse_cash_order', 'do_not_pay_restaurant', 'do_not_pay_driver', 'reward_delivery_free', 'likely_test', 'geomatched', 'id_phone', 'id_user', 'service_fee', 'do_not_reimburse_driver', 'id_address', 'preordered' ];
+				foreach( $remove as $key ){
+					unset( $o->$key );
+				}
+
+			}
+
 			$data[] = $o;
 			$i++;
 		}

@@ -193,7 +193,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 				self::create( [ 'id_admin_shift_assign' => $assignment->id_admin_shift_assign, 'type' => self::TYPE_CALL ] );
 
-				$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+				$twilio = c::twilio();
 
 				$call = $twilio->account->calls->create( c::config()->twilio->{$env}->outgoingDriver, '+1'.$num, $url, [ 'IfMachine' => 'Hangup' ] );
 			}
@@ -274,7 +274,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 		$env = c::getEnv();
 
-		$twilio = new Services_Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+		$twilio = c::twilio();
 
 		$minutes = 15;
 

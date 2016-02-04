@@ -77,7 +77,7 @@ class Crunchbutton_User extends Cana_Table {
 		if (!isset($this->_orders)) {
 			if ($type == 'compact') {
 				$q = "
-					select o.date, o.id_order, o.uuid, r.name as restaurant_name, r.permalink as restaurant_permalink, r.timezone as timezone, 'compressed' as type, o.preordered_date, o.preordered from `order` o
+					select 1 as `compressed`, o.date, o.id_order, o.uuid, r.id_restaurant, r.name as restaurant_name, r.permalink as restaurant_permalink, r.timezone as timezone, 'compressed' as type, o.preordered_date, o.preordered from `order` o
 					inner join restaurant r on r.id_restaurant = o.id_restaurant
 					where
 						id_user=?
@@ -507,6 +507,7 @@ class Crunchbutton_User extends Cana_Table {
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 			$now->modify( '-2 hours' );
 			$date = $now->format( 'Y-m-d H:i:s' );
+
 			$lastOrder = Order::q( 'SELECT * FROM `order` WHERE id_user = ? AND date >= ? ORDER BY id_order DESC LIMIT 1', [ $this->id_user, $date ] )->get( 0 );
 
 			if( $lastOrder->id_order ){
@@ -531,6 +532,15 @@ class Crunchbutton_User extends Cana_Table {
 
 				$message .= '. Check with the customer to see what info should be used for this current order #' . $lastOrder->id_order . ' placed at ' . $lastOrder->date()->format( 'M jS Y g:i:s A' );
 
+				$status = $lastOrder->status()->last();
+
+				if( $status ){
+					$message .= '. Order status: ' . $status[ 'status' ];
+					if( $status[ 'status' ] == 'accepted' || $status[ 'status' ] == 'pickedup' || $status[ 'status' ] == 'transfered' && $status[ 'driver' ] ){
+						$message .= ' by driver: ' . $status[ 'driver' ][ 'name' ] . ' / ' . $status[ 'driver' ][ 'phone' ] . '.';
+						$message .= ' Please inform the driver of this change.';
+					}
+				}
 
 				Crunchbutton_Support::createNewWarning( [ 'id_order' => $lastOrder->id_order, 'body' => $message, 'bubble' => true ] );
 

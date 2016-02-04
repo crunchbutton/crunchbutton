@@ -41,4 +41,10 @@ RUN cd /app && php composer.phar install --no-dev --optimize-autoloader --prefer
 RUN mkdir /tmp/data && chmod 0777 /tmp/data
 RUN mkdir /tmp/min && chmod 0777 /tmp/min
 
+# twilio ssl fix
+ADD ssl/twilio.der.crt /usr/local/share/ca-certificates/twilio.der.crt
+RUN chmod 0644 /usr/local/share/ca-certificates/twilio.der.crt
+RUN chown root.root /usr/local/share/ca-certificates/twilio.der.crt
+RUN /usr/sbin/update-ca-certificates
+
 CMD /app/cli/build.sh && nginx && php-fpm

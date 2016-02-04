@@ -155,10 +155,14 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 
 	public static function nextShiftsByCommunities( $communities ){
 		if( count( $communities ) > 0 ){
-			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$now->setTimezone( new DateTimeZone( self::CB_TIMEZONE ) );
+
 			$now_formated = $now->format( 'Y-m-d' );
+			$now_formated .= ' 00:00:01';
 			$now->modify( '+ 7 days' );
 			$next_days_formated = $now->format( 'Y-m-d' );
+			$next_days_formated .= ' 23:59:59';
 			$query = '
 				SELECT cs.* FROM community_shift cs
 				WHERE
@@ -1015,7 +1019,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 
 		$env = c::getEnv();
 
-		$twilio = new Services_Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+		$twilio = c::twilio();
 
 		// removed this sms for while
 
@@ -1171,7 +1175,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 	public function shiftMessageWarning( $message, $admin ){
 
 		$env = c::getEnv();
-		$twilio = new Services_Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+		$twilio = c::twilio();
 
 		$txt = $admin->txt;
 		$phone = $admin->phone;
@@ -1499,7 +1503,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 
 		$env = c::getEnv();
 
-		$twilio = new Services_Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+		$twilio = c::twilio();
 
 		$minutes = 15;
 

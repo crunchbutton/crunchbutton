@@ -941,6 +941,19 @@ NGApp.controller( 'SettlementDriversScheduledViewCtrl', function ( $scope, $rout
 		} );
 	}
 
+	$scope.force_payment = function(){
+		$scope.makeBusy();
+		SettlementService.drivers.force_payment( $routeParams.id, function( json ){
+			if( json.error ){
+				App.alert( 'Oops, something bad happened: ' + json.error + '. It may have created a ticket.' );
+				load();
+				$scope.unBusy();
+			} else {
+				load();
+			}
+		} );
+	}
+
 	$scope.do_payment = function(){
 		$scope.makeBusy();
 		SettlementService.drivers.do_payment( $routeParams.id, function( json ){

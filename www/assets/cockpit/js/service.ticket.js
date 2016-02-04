@@ -36,7 +36,13 @@ NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParam
 		'tickets_query' : {
 			method: 'GET',
 			params : {}
+		},
+		'tickets_query_beta' : {
+			url: App.service + 'tickets/beta/',
+			method: 'GET',
+			params : {}
 		}
+
 	});
 
 	// @todo: there is a bug when calling the same service using resourcefactory. it cancels it out
@@ -49,6 +55,12 @@ NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParam
 
 	service.list = function(params, callback) {
 		tickets.tickets_query(params).$promise.then(function success(data, responseHeaders) {
+			callback(data);
+		});
+	}
+
+	service.list_beta = function(params, callback) {
+		tickets.tickets_query_beta(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
 		});
 	}

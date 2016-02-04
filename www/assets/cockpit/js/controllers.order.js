@@ -158,6 +158,9 @@ NGApp.controller('OrdersCtrl', function ($rootScope, $scope, $location, OrderSer
 	options.push( { value: '50', label: '50' } );
 	options.push( { value: '100', label: '100' } );
 	options.push( { value: '200', label: '200' } );
+	options.push( { value: '300', label: '300 (exports only)' } );
+	options.push( { value: '400', label: '400 (exports only)' } );
+	options.push( { value: '500', label: '500 (exports only)' } );
 	$scope.limits = options;
 
 });

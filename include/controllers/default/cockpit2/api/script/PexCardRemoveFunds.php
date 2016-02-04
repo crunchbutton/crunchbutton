@@ -7,7 +7,7 @@ class Controller_Api_Script_PexCardRemoveFunds extends Crunchbutton_Controller_R
 		$total = 0;
 		foreach( $cards as $card ){
 			$pexcard = $card;
-			if( !$card->isBusinessCard() && $card->isTestCard() ){
+			if( !$card->isBusinessCard() && !$card->isTestCard() ){
 				$driver = $card->admin();
 				if( !$driver->isWorking() ){
 					$card = $card->load_card_info();

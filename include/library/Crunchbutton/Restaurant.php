@@ -1221,10 +1221,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		// get shift plus restaurant merged hours
 		$hours = Hour::hoursByRestaurant( $this, false, true );
 		$hours = $this->preOrderProcessHours( $hours );
-
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->setTimezone( new DateTimeZone( $this->timezone ) );
 		$days = [];
+
+		$today = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$today->setTimezone( new DateTimeZone( $this->timezone ) );
 
 		for( $i = 1; $i <= 4; $i++ ){
 
@@ -1238,13 +1240,28 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 			$day = [ 'value' => $now->format( 'Y-m-d' ), 'label' => $label, 'hours' => [] ];
 
+			$day[ 'hours' ][] = [ 'label' => 'Desired Time', 'value' => false ];
+
 			foreach( $hours as $hour ){
-				if( $hour->date == $now->format( 'Y-m-d' ) ){
-					$label = $hour->time_open . ' - ' . $hour->time_close;
-					$day[ 'hours' ][] = [ 'label' => $label, 'value' => strtolower( $hour->time_open ) ];
+				if( $hour->day == strtolower( $now->format( 'D' ) ) ){
+					$store = true;
+					if( $hour->day == strtolower( $today->format( 'D' ) ) ){
+						// just to make sure it will not add an old hour
+						$compare = DateTime::createFromFormat( 'Y-m-d h:i A', $today->format( 'Y-m-d ' ) . $hour->time_close, new DateTimeZone( $this->timezone ) );
+						if( $today > $compare ){
+							$store = false;
+						}
+					}
+					if( $store ){
+						$label = $hour->time_open . ' - ' . $hour->time_close;
+						$day[ 'hours' ][] = [ 'label' => $label, 'value' => strtolower( $hour->time_open ) ];
+					}
+
 				}
 			}
-			if( sizeof( $day[ 'hours' ] ) > 0 ){
+
+			if( sizeof( $day[ 'hours' ] ) > 1 ){
+
 				$days[] = $day;
 
 				if( !$timeToTime ){
@@ -1276,7 +1293,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$_hours = [];
 		$_segments = [];
 
-
 		if( !$this->delivery_service ){
 			$_hours = [];
 			$now = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
@@ -1305,9 +1321,16 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$hours = $_hours;
 		}
 
+		$today = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$today->setTimezone( new DateTimeZone( $this->timezone ) );
+
 		foreach( $hours as $hour ){
 
 			$interval = Crunchbutton_Order::PRE_ORDER_DELIVERY_WINDOW;
+
+			if( $hour->day == strtolower( $today->format( 'D' ) ) ){
+				$hour->date = $today->format( 'Y-m-d' );
+			}
 
 			$now = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
 			$open = new DateTime( $hour->date . ' ' . $hour->time_open, new DateTimeZone( $this->timezone ) );
@@ -1334,24 +1357,35 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				}
 			}
 
-			$more = true;
-			while ( $more ) {
-				$_close = clone $open;
-				$_close->modify( $interval );
-				if( $_close <= $close ){
+			$i_open = intval( $open->format( 'YmdHi' ) );
+			$i_close = intval( $close->format( 'YmdHi' ) );
+
+			$start = clone $open;
+
+			$count = 0;
+			$continue = true;
+			while( $continue ){
+
+				$end = clone $start;
+				$end->modify( $interval );
+
+				if( $i_close >= intval( $end->format( 'YmdHi' ) ) ){
 					$_hour = clone $hour;
-					$_hour->time_open = $open->format( 'h:i A' );
-					$_hour->time_close = $_close->format( 'h:i A' );
+					$_hour->time_open = $start->format( 'h:i A' );
+					$_hour->time_close = $end->format( 'h:i A' );
+					// $_hour->i_time_open = intval( $start->format( 'YmdHi' ) );
+					// $_hour->i_time_close = intval( $end->format( 'YmdHi' ) );
 					$_segments[] = $_hour;
-					$open = $_close;
+					$start = $end;
 				}
+				// dogwatch
 				$count++;
-				if( $count == 24 ){
-					$more = false;
+				if( $count >= 96 ){
+					$continue = false;
 				}
+
 			}
 		}
-		// echo json_encode( $_segments );exit;
 		return $_segments;
 	}
 

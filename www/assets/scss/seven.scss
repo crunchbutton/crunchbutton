@@ -2663,9 +2663,15 @@ sup {
 	margin-top: .4em;
 }
 
-.order-change-info-link{
+.order-change-info-link, .order-change-info-link-mobile{
 	font-size:1.4em;
 	color: #00bea0 !important;
+}
+.order-change-info-link-mobile{
+	font-size:1.6em;
+	color: #00bea0 !important;
+	display:block;
+	text-align:center;
 }
 
 .order-icon {

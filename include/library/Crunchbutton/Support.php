@@ -556,7 +556,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		}
 	}
 
-	public function addSystemMessage( $body, $bubble = false ) {
+	public function addSystemMessage( $body, $bubble = false, $ignore_broadcast = false ) {
 		$messageParams[ 'id_admin' ] = null;
 		if( $bubble ){
 			$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_WARNING;
@@ -566,6 +566,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		$messageParams[ 'from' ] = Crunchbutton_Support_Message::TYPE_FROM_SYSTEM;
 		$messageParams[ 'visibility' ] = Crunchbutton_Support_Message::TYPE_VISIBILITY_INTERNAL;
 		$messageParams[ 'body' ] = $body;
+		$messageParams[ 'ignore_broadcast' ] = $ignore_broadcast;
 		$this->addMessage( $messageParams );
 	}
 
@@ -599,6 +600,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		$message->subject = $params[ 'subject' ];
 		$today = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$message->date = $today->format( 'Y-m-d H:i:s' );
+		$message->ignore_broadcast = $params[ 'ignore_broadcast' ];
 		$message->save();
 
 		// Relate the admin with the message
@@ -721,7 +723,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 			$env = c::getEnv();
 
-			$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+			$twilio = c::twilio();
 
 			$id_support = $this->id_support;
 
@@ -1121,6 +1123,10 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 					$message->body == Crunchbutton_Support_Message::TICKET_CREATED_COCKPIT_BODY ){
 					continue;
 				}
+
+				$date = $message->date();
+				$date->setTimezone( new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
+
 				$date = $message->date()->format( 'g:i a' );
 				if( !$data[ 'date' ] ){
 					$data[ 'date' ]	= $message->date()->format( 'M jS g:i a' );

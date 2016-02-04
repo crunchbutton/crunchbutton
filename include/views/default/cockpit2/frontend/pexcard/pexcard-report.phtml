@@ -134,7 +134,7 @@
 					<th colspan="4"><strong>Amount</strong></th>
 				</tr>
 				<tr class="tb-mini-grid" ng-repeat="transaction in driver.transactions" ng-show="driver.details">
-					<td colspan="3">{{transaction.date}}</td>
+					<td colspan="3">{{transaction.date | localtime:'MM/DD h:mm a'}}</td>
 					<td colspan="3">{{transaction.description}}</td>
 					<td colspan="4" positive-or-negative-color="{{transaction.amount}}">$ {{transaction.amount | formatPrice}}</td>
 				</tr>
@@ -154,7 +154,7 @@
 					<td colspan="1">
 						<a href="/order/{{order.id_order}}">{{order.id_order}}</a>
 					</td>
-					<td colspan="1">{{order.date}}</td>
+					<td colspan="1">{{order.date | localtime:'MM/DD h:mm a'}}</td>
 					<td colspan="2">{{order.restaurant}}</td>
 					<td colspan="2" positive-or-negative-color="{{order.amount}}">$ {{order.amount | formatPrice}}</td>
 					<td colspan="1">
@@ -189,7 +189,7 @@
 					<td colspan="1">
 						<a href="/order/{{order.id_order}}">{{order.id_order}}</a>
 					</td>
-					<td colspan="1">{{order.date}}</td>
+					<td colspan="1">{{order.date | localtime:'MM/DD h:mm a'}}</td>
 					<td colspan="2">{{order.restaurant}}</td>
 					<td colspan="2" positive-or-negative-color="{{order.amount}}">$ {{order.amount | formatPrice}}</td>
 					<td colspan="1">
