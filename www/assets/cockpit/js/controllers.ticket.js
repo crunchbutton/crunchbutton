@@ -237,6 +237,9 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		$scope.comment.isSaving = false;
 		TicketService.get( id_support, function(ticket) {
 			$scope.ticket = ticket;
+			if( ticket.order ){
+				$scope.order = ticket.order;
+			}
 			$scope.loading = false;
 			if (!cleanup) {
 				if( ticket && ticket.order ){
