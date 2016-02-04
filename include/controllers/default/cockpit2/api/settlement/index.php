@@ -217,11 +217,6 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$id_restaurant = $this->request()['id_restaurant'];
 		$pay_type = ( $this->request()['pay_type'] == 'all' ) ? '' : $this->request()['pay_type'];
 
-		// @remove -- remove it before commit
-		$start = '12/06/2015';
-		$end = '01/02/2016';
-		// @remove -- remove it before commit
-
 		if( !$start || !$end ){
 			$this->_error();
 		}

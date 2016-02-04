@@ -250,7 +250,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		foreach ( $pay as $key => $val ) {
 			$pay[ $key ] = round( $val, 2 );
 		}
-;		// sum
+
 		$pay[ 'total_due' ] = round( $this->orderCalculateTotalDue( $pay ), 2 );
 
 		$this->log( 'restaurantsProcessOrders', array_merge( $restaurant, $pay ) );
@@ -559,7 +559,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 									$pay[ 'amount_per_order' ] +
 									$pay[ 'tip' ] +
 									$pay[ 'customer_fee' ] +
-									// here
+									// added the delivery fee - We're paying 1st party restaurants incorrectly #7430
 									$pay[ 'delivery_fee' ] +
 									$pay[ 'markup' ] +
 									$pay[ 'credit_charge' ] +
