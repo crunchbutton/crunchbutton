@@ -49,59 +49,60 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 
 	public function que(){
 		echo "\n\n";
+		$cronJob = Crunchbutton_Cron_Log::o( $this->id_cron_log );
 		echo "updating next time ... \n";
-		if( $this->update_next_time() ){
+		if( $cronJob->update_next_time() ){
 			echo "saving status ... \n";
 
-			$this->current_status = Crunchbutton_Cron_Log::CURRENT_STATUS_RUNNING;
-			$this->save();
+			$cronJob->current_status = Crunchbutton_Cron_Log::CURRENT_STATUS_RUNNING;
+			$cronJob->save();
 
-
-			if( class_exists( $this->class ) ){
-				echo "class {$this->class} exists ... \n";
-				$job = new $this->class;
-				$job->id_cron_log = $this->id_cron_log;
+			if( class_exists( $cronJob->class ) ){
+				echo "class {$cronJob->class} exists ... \n";
+				$job = new $cronJob->class;
+				$job->id_cron_log = $cronJob->id_cron_log;
 
 				if( is_a( $job, 'Crunchbutton_Cron_Log' ) ){
-					echo "class {$this->class} is a Crunchbutton_Cron_Log ... \n";
+					echo "class {$cronJob->class} is a Crunchbutton_Cron_Log ... \n";
 					if( method_exists( $job, 'run' ) ){
-						$q = Queue::create( [ 'type' => Crunchbutton_Queue::TYPE_CRON, 'id_cron_log' => $this->id_cron_log ] );
+						$q = Queue::create( [ 'type' => Crunchbutton_Queue::TYPE_CRON, 'id_cron_log' => $cronJob->id_cron_log ] );
 						echo "creating a cron log $q->id_cron_log... \n";
 						// $job->run();
 					} else {
-						echo "class {$this->class} dont have a method run ... \n";
-						$this->log( 'run', 'error: ' . $this->class . ' doesnt have the method run' );
+						echo "class {$cronJob->class} dont have a method run ... \n";
+						$cronJob->log( 'run', 'error: ' . $cronJob->class . ' doesnt have the method run' );
 					}
 				} else {
-					echo "class {$this->class} isnt a Crunchbutton_Cron_Log ... \n";
-					$this->log( 'run', 'error: ' . $this->class . ' isnt instance of Crunchbutton_Cron_Log' );
+					echo "class {$cronJob->class} isnt a Crunchbutton_Cron_Log ... \n";
+					$cronJob->log( 'run', 'error: ' . $cronJob->class . ' isnt instance of Crunchbutton_Cron_Log' );
 				}
 			} else {
-				echo "class {$this->class} didnt find ... \n";
-				$this->log( 'run', 'error: ' . $this->class . ' doesnt exist' );
+				echo "class {$cronJob->class} didnt find ... \n";
+				$cronJob->log( 'run', 'error: ' . $cronJob->class . ' doesnt exist' );
 			}
 		}
 	}
 
 	public function should_start(){
 
+		$cronJob = Cron_Log::o( $this->id_cron_log );
+
 		// now
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-
 		// if it didn't have a next time it might be the first time it is running
-		if( !$this->next_time() ){
-			if( !$this->update_next_time() ){
+		if( !$cronJob->next_time() ){
+			if( !$cronJob->update_next_time() ){
 				return false;
 			}
 		}
 
-		if( $now > $this->next_time( true ) ){
+		if( $now > $cronJob->next_time( true ) ){
 			// make sure it is not running
-			if( $this->current_status != Crunchbutton_Cron_Log::CURRENT_STATUS_RUNNING ){
+			if( $cronJob->current_status != Crunchbutton_Cron_Log::CURRENT_STATUS_RUNNING ){
 				return true;
 			} else {
 				// if it is time to run again and the last job didn't finished, some problem occurred
-				$this->error_warning();
+				$cronJob->error_warning();
 				return true;
 			}
 		}
@@ -113,17 +114,19 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 
-		$date = ( $this->next_time() ) ? $this->next_time() : $this->start_date();
+		$cronJob = Cron_Log::o( $this->id_cron_log );
+
+		$date = ( $cronJob->next_time() ) ? $cronJob->next_time() : $cronJob->start_date();
 
 		$watch_dog = 1;
 
 		if( $date < $now ){
-			$next_time = $date->modify( '+ ' .  ( $this->interval_unity ) . ' ' . ( $this->interval ) );
+			$next_time = $date->modify( '+ ' .  ( $cronJob->interval_unity ) . ' ' . ( $cronJob->interval ) );
 			while ( $now > $next_time ) {
-				$next_time = $date->modify( '+ ' .  ( $this->interval_unity ) . ' ' . ( $this->interval ) );
+				$next_time = $date->modify( '+ ' .  ( $cronJob->interval_unity ) . ' ' . ( $cronJob->interval ) );
 				$watch_dog++;
 				if( $watch_dog >= 10000 ){
-					$message = 'The cron task "' . $this->description . '" have a problem updating the next_time and didn\'t run. If you get this message tell it to the devs. Thank you.';
+					$message = 'The cron task "' . $cronJob->description . '" have a problem updating the next_time and didn\'t run. If you get this message tell it to the devs. Thank you.';
 					Crunchbutton_Cron_Log::warning( [ 'body' => $message ] );
 					return false;
 				}
@@ -132,8 +135,8 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 			$next_time = $date;
 		}
 
-		$this->next_time = $next_time->format( 'Y-m-d H:i:s' );
-		$this->save();
+		$cronJob->next_time = $next_time->format( 'Y-m-d H:i:s' );
+		$cronJob->save();
 
 		return true;
 	}
@@ -142,29 +145,31 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 
+		$cronJob = Cron_Log::o( $this->id_cron_log );
+
 		// Create a support ticket
-		$last_time_it_started = $this->next_time();
-		$message = 'The cron task "' . $this->description . '" started running at ' . $last_time_it_started->format('M jS Y g:i:s A') . ' and didn\'t finish yet.' . "\n" . 'Please check it, it seems an error has occurred.';
+		$last_time_it_started = $cronJob->next_time();
+		$message = 'The cron task "' . $cronJob->description . '" started running at ' . $last_time_it_started->format('M jS Y g:i:s A') . ' and didn\'t finish yet.' . "\n" . 'Please check it, it seems an error has occurred.';
 		$message .= "\n";
 		$message .= "Now is:" . $now->format('M jS Y g:i:s A');
 		$message .= "\n\n";
-		$message .= json_encode( $this->properties() );
+		$message .= json_encode( $cronJob->properties() );
 
 		Crunchbutton_Cron_Log::warning( [ 'body' => $message ] );
 
 		// change the current status to let it start
-		$this->status = Crunchbutton_Cron_Log::CURRENT_STATUS_IDLE;
-		$this->save();
+		$cronJob->status = Crunchbutton_Cron_Log::CURRENT_STATUS_IDLE;
+		$cronJob->save();
 	}
 
 	// called when the cron finish running
 	public function finished(){
 		$this->log( 'finished', 'finished' );
-		$job = Crunchbutton_Cron_Log::o( $this->id_cron_log );
-		$job->finished = date('Y-m-d H:i:s');
-		$job->interactions = ( !$job->interactions ? 1 : $job->interactions + 1 );
-		$job->current_status = Crunchbutton_Cron_Log::CURRENT_STATUS_IDLE;
-		$job->save();
+		$cronJob = Crunchbutton_Cron_Log::o( $this->id_cron_log );
+		$cronJob->finished = date('Y-m-d H:i:s');
+		$cronJob->interactions = ( !$cronJob->interactions ? 1 : $cronJob->interactions + 1 );
+		$cronJob->current_status = Crunchbutton_Cron_Log::CURRENT_STATUS_IDLE;
+		$cronJob->save();
 	}
 
 	public function start_date() {
