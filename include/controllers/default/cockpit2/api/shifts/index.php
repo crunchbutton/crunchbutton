@@ -4,7 +4,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		if( !c::admin()->permission()->check( ['global', 'support-all', 'support-view', 'support-crud' ] ) ){
+		if( !c::admin()->permission()->check( ['global', 'support-all' ] ) ){
 			$this->error( 401 );
 		}
 
