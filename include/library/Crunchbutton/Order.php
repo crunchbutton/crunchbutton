@@ -2606,9 +2606,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function tellDriverTheOrderWasCanceled(){
-		$driver = $this->getDeliveryDriver();
 
-		if( $driver->id_admin && $driver->phone ){
+		$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND ( type = ? OR type = ? OR type = ? ) ORDER BY id_order_action DESC LIMIT 1 ', [ $this->id_order, Crunchbutton_Order_Action::DELIVERY_ACCEPTED, Crunchbutton_Order_Action::DELIVERY_PICKEDUP, Crunchbutton_Order_Action::DELIVERY_TRANSFERED ] )->get( 0 );
+
+		if( $action->id_admin ){
+
+			$driver = Admin::o( $action->id_admin );
 
 			$sendMessageToDriver = true;
 
