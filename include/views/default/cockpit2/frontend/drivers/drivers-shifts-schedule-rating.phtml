@@ -96,3 +96,33 @@
 		</div>
 	</div>
 </div>
+
+
+<div class="driver-shift-preferences-help zoom-anim-dialog mfp-hide dialog" ng-controller="DriversShiftsScheduleRatingHelpCtrl">
+	<p>
+		For each shift you must choose one of these following options:
+	</p>
+	<div class="schedule-buttons-help">
+
+		<button title="Yes, definitely!" class="button schedule-action-yes active">
+			<i class="fa fa-thumbs-o-up"></i>
+		</button>
+		Yes, definitely!
+		<br>
+		<button title="I'm available" class="button schedule-action-maybe active">
+			<i class="fa fa-thumbs-o-up"></i>
+		</button>
+		I'm available
+		<br>
+		<button title="I'm not available" class="button schedule-action-no active">
+			<i class="fa fa-thumbs-o-down"></i>
+		</button>
+		I'm not available
+	</div>
+	<p>
+	<label>
+		<input type="checkbox" ng-model="hide_shift_preferences_help"/> Do not show message again.
+	</label>
+	</p>
+	<button class="button cancel" ng-click="closePopup();">Close</button>
+</div>
