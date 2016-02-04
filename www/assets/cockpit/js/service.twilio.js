@@ -1,4 +1,3 @@
-
 NGApp.factory('TwilioService', function($resource, $rootScope, AccountService) {
 
 	var service = { connection: null };
@@ -7,12 +6,27 @@ NGApp.factory('TwilioService', function($resource, $rootScope, AccountService) {
 	service.isReady = false;
 
 	service.init = function() {
+		console.log('Twilio starting...');
 		resource.get([], function(res) {
 			service.token = res.token;
-			Twilio.Device.setup(service.token, {debug: true});
+			Twilio.Device.setup(service.token, {debug: true, warnings: true});
 		});
-
 	};
+
+	var checkStatus = function(){
+		console.log('Twilio status: ', Twilio.Device.status() );
+		if( Twilio.Device.status() == 'offline' ){
+			service.init();
+		}
+		setTimeout(function() {
+			checkStatus();
+		}, 1000 * 180 );
+	}
+
+	setTimeout( function(){
+		checkStatus();
+	}, 1000 * 30 );
+
 
 	service.call = function(phone) {
 		if( !service.isReady ){
@@ -47,6 +61,10 @@ NGApp.factory('TwilioService', function($resource, $rootScope, AccountService) {
 
 	Twilio.Device.error(function (error) {
 		console.debug('Twilio error: ' + error.message);
+		// try to re-start twilio
+		if( error.code == 31204 ){
+			service.init();
+		}
 	});
 
 	Twilio.Device.connect(function (conn) {
