@@ -82,11 +82,6 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 			$start = (new DateTime($filters['start']))->format('Y-m-d') . ' 00:00:00' ;
 			$end = (new DateTime($filters['end']))->format('Y-m-d') . ' 23:59:59' ;
 			$orders = Order::q($q, [$this->id_restaurant, $start, $end]);
-// @remove -- remove it before commit
-$query = 'select * from `order` o
-inner join payment_schedule_order pso on pso.id_order = o.id_order and pso.id_payment_schedule = 53483';
-$orders = Order::q($query);
-// @remove -- remove it before commit
 			$this->_payableOrders = $orders;
 		}
 		return $this->_payableOrders;
