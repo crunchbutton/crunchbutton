@@ -168,7 +168,7 @@
 						<div class="payment-form-group form-group">
 							<i class="fa fa-clock-o payment-form-icon form-icon form-field"></i>
 
-							<div class="form-input-select"><select ng-model="order.form.deliveryHour" ng-options="hour.value as hour.label for hour in order._preOrderHours" tabindex="11" class="payment-form-select payment-form-input form-input form-field" id="preOrderDeliveryHour"></select></div>
+							<div class="form-input-select"><select ng-model="order.form.deliveryHour" ng-options="hour.value as hour.label for hour in order._preOrderHours" tabindex="11" class="payment-form-select payment-form-input form-input form-field" id="preOrderDeliveryHour"><option value="" ng-if="false"></option></select></div>
 
 						</div>
 

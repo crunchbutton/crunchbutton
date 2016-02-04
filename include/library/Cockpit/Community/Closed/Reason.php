@@ -4,6 +4,7 @@ class Cockpit_Community_Closed_Reason extends Cana_Table {
 
 	const TYPE_ALL_RESTAURANTS = 'all_restaurants';
 	const TYPE_3RD_PARTY_DELIVERY_RESTAURANTS = 'close_3rd_party_delivery_restaurants';
+	const TYPE_AUTO_CLOSED = 'auto_closed';
 
 	public function __construct($id = null) {
 		parent::__construct();

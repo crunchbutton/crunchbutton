@@ -7,6 +7,23 @@ App.isMobile = function(){
 	return App.isAndroid() || $.browser.mobile;
 }
 
+App.hideKeyboard = function(){
+	var field = document.createElement( 'input' );
+	field.setAttribute( 'type', 'text' );
+	field.setAttribute( 'style', 'position:absolute; top: 0px; opacity: 0; -webkit-user-modify: read-write-plaintext-only; left:0px;' );
+	document.body.appendChild( field );
+	field.onfocus = function(){
+		setTimeout(function() {
+			field.setAttribute( 'style', 'display:none;' );
+			setTimeout( function() {
+				document.body.removeChild( field );
+				document.body.focus();
+			} );
+		} );
+	};
+	field.focus();
+}
+
 App.isNarrowScreen = function(){
 	return $( window ).width() <= 769;
 }

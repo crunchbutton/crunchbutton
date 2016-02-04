@@ -27,7 +27,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	const STATUS_REFUNDED_TOTAL = 'Refunded';
 	const STATUS_REFUNDED_PARTIALLY = 'Partially Refunded';
 
-	const PRE_ORDER_INTERVAL = '+ 1 hour';
+	const PRE_ORDER_INTERVAL = '+ 60 minutes';
 	const PRE_ORDER_DELIVERY_WINDOW = '+ 15 minutes';
 
 	/**
@@ -106,6 +106,23 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		if ( $params['processor'] && $params['pay_type'] == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && Crunchbutton_User_Payment_Type::processor() != $params['processor']) {
 			$errors['processor'] = 'We recently upgraded our credit card processing security. Please press "Place Order" again to automagicly use our fancy new system.';
 			$errors['set-processor'] = Crunchbutton_User_Payment_Type::processor();
+		}
+
+
+
+		if( $this->preordered ){
+			if( !$params['deliveryDay'] ){
+				$errors['preorder_day'] = 'Please select the desired delivery day.';
+			}
+			if( !$params['deliveryHour'] ){
+				$errors['preorder_hour'] = 'Please select the desired delivery hour.';
+			}
+			if( $this->date_delivery ){
+				$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+				if( $now < $this->date_delivery ){
+					$errors['preorder_prev_date'] = 'The desired delivery hour should not be in the past.';
+				}
+			}
 		}
 
 		if( $processType == static::PROCESS_TYPE_WEB ){
@@ -940,6 +957,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		Crunchbutton_Order_Data::register( $this );
 
+		$this->createTicketForNotGeomatchedOrder();
+
 		return true;
 	}
 
@@ -1326,9 +1345,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$interval3Min = $now->format( 'Y-m-d H:i:s' );
 			$now->modify( '+ 3 minutes' );
 
-			$now->modify( '+ 6 hours' );
-			$preorder_date = $now->format( 'Y-m-d H:i:s' );
+			$now->modify( '- 2 hour' );
+			$preorder_date_start = $now->format( 'Y-m-d H:i:s' );
 
+			$now->modify( '+ 8 hours' );
+			$preorder_date_end = $now->format( 'Y-m-d H:i:s' );
 
 			if (!$admin) {
 				$admin = c::admin();
@@ -1347,13 +1368,13 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				'(op.id_order is null and ((c.delivery_logistics is null) or (o.date < ? and ' .
 				'c.delivery_logistics is not null) or (o.preordered=1)))  or (op.id_order is not null and op.priority_expiration < ?) ' .
 				'or (op.id_order is not null and op.priority_expiration >= ? and op.id_admin = ? '.
-				'and op.priority_given != ?)) and o.delivery_service=true and o.delivery_type = "delivery" and ( o.date > ? OR ( o.preordered = 1 and o.date_delivery < ? ) )'.
+				'and op.priority_given != ?)) and o.delivery_service=true and o.delivery_type = "delivery" and ( o.date > ? OR ( o.preordered = 1 and o.date_delivery < ? and o.date_delivery > ? ) )'.
 				'and ' . $where . ' ORDER BY o.id_order';
 //			$op = Crunchbutton_Order_Priority::PRIORITY_LOW;
 //			print "The query params: $nowString, $nowString, $admin->id_admin, $op, $interval\n";
 
 			return Order::q($query, [$interval3Min, $nowString, $nowString, $admin->id_admin,
-				Crunchbutton_Order_Priority::PRIORITY_LOW, $interval, $preorder_date]);
+				Crunchbutton_Order_Priority::PRIORITY_LOW, $interval, $preorder_date_end, $preorder_date_start ]);
 
 			//
 		}
@@ -1781,7 +1802,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$log->save();
 
 
-		$twilio = new Services_Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+		$twilio = c::twilio();
 
 		$call = $twilio->account->calls->create(
 			c::config()->twilio->{$env}->outgoingRestaurant,
@@ -1946,7 +1967,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed sending sms', 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
 
-		$twilio = new Services_Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+		$twilio = c::twilio();
 
 		if( $env == 'live' ){
 
@@ -2455,7 +2476,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$out['_restaurant_name'] = $out['restaurant_name'];
 			$out['_restaurant_permalink'] = $out['restaurant_permalink'];
 			$timezone = new DateTimeZone( $out['timezone'] );
-			unset( $out['type'] );
 			unset( $out['uuid'] );
 			unset( $out['restaurant_name'] );
 			unset( $out['restaurant_permalink'] );
@@ -2502,10 +2522,19 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 
 		if( $this->date ){
-			$date = new DateTime($this->date);
+			$date = new DateTime( $this->date, new DateTimeZone( c::config()->timezone ) );
+			if( $this->compressed ){
+				$date->setTimezone( new DateTimeZone( $this->restaurant()->timezone ) );
+				$out[ 'date' ] = $date->format( 'Y-m-d H:i:s' );
+			}
 		} else if( $this->preordered && $this->preordered_date ){
-			$date = new DateTime( $this->preordered_date );
+			$date = new DateTime( $this->preordered_date, new DateTimeZone( c::config()->timezone ) );
 			$out['date'] = $this->preordered_date;
+
+			if( $this->compressed ){
+				$date->setTimezone( new DateTimeZone( $this->restaurant()->timezone ) );
+				$out[ 'date' ] = $date->format( 'Y-m-d H:i:s' );
+			}
 
 			$date_delivery = new DateTime( $this->date_delivery, new DateTimeZone( c::config()->timezone ) );
 			$date_delivery->setTimezone(  new DateTimeZone( $this->restaurant()->timezone )  );
@@ -2517,6 +2546,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		$out['_date_tz'] = $date->format('Y-m-d H:i:s');
 		$out['_tz'] = $date->format('T');
+		$out['id'] = $this->id_order;
 
 		$out['summary'] = $this->orderMessage('summary');
 		$out['user_has_auth'] = User_Auth::userHasAuth( $this->id_user );
@@ -2537,6 +2567,36 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$out['reward'] = array( 'points' => Crunchbutton_Credit::formatPoints( $points ) );
 		}
 
+		if( $this->compressed ){
+			unset( $out[ 'compressed' ] );
+			unset( $out[ 'type' ] );
+			unset( $out[ 'id_agent' ] );
+			unset( $out[ 'id_restaurant' ] );
+			unset( $out[ 'confirmed' ] );
+			unset( $out[ 'id_community' ] );
+			unset( $out[ 'pay_if_refunded' ] );
+			unset( $out[ 'paid_with_cb_card' ] );
+			unset( $out[ 'preordered' ] );
+			unset( $out[ 'refunded' ] );
+			unset( $out[ 'confirmed' ] );
+			unset( $out[ 'preordered_date' ] );
+			unset( $out[ 'asked_to_call' ] );
+			unset( $out[ 'reimburse_cash_order' ] );
+			unset( $out[ 'do_not_pay_restaurant' ] );
+			unset( $out[ 'do_not_pay_driver' ] );
+			unset( $out[ 'likely_test' ] );
+			unset( $out[ 'geomatched' ] );
+			unset( $out[ 'id_phone' ] );
+			unset( $out[ 'campus_cash' ] );
+			unset( $out[ 'preorder_processed' ] );
+			unset( $out[ 'card_ending' ] );
+			unset( $out[ 'do_not_reimburse_driver' ] );
+			unset( $out[ 'id_user_payment_type' ] );
+			unset( $out[ 'reward_delivery_free' ] );
+			unset( $out[ 'delivery_status' ] );
+			unset( $out[ 'id_address' ] );
+			unset( $out[ 'delivery_service' ] );
+		}
 		return $out;
 	}
 
@@ -2585,9 +2645,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function tellDriverTheOrderWasCanceled(){
-		$driver = $this->getDeliveryDriver();
 
-		if( $driver->id_admin && $driver->phone ){
+		$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND ( type = ? OR type = ? OR type = ? ) ORDER BY id_order_action DESC LIMIT 1 ', [ $this->id_order, Crunchbutton_Order_Action::DELIVERY_ACCEPTED, Crunchbutton_Order_Action::DELIVERY_PICKEDUP, Crunchbutton_Order_Action::DELIVERY_TRANSFERED ] )->get( 0 );
+
+		if( $action->id_admin ){
+
+			$driver = Admin::o( $action->id_admin );
 
 			$sendMessageToDriver = true;
 
@@ -2818,7 +2881,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function community() {
-		return Community::o($this->id_community);
+		if( !$this->_community ){
+			$this->_community = Community::o($this->id_community);;
+		}
+		return $this->_community;
 	}
 
 	public function hasGiftCard(){
@@ -3545,7 +3611,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 					if( $order->calcDistance() === false ){
 						$pattern = "%s just placed an order, the system could not calculate delivery radius! Order details: Order %d in the %s community to this address %s. Please double check that this address is close enough to be delivered (if it's just slightly out of range it may be fine), and cancel the order if necessary. Thanks!";
-						$message = sprintf( $pattern, $order->name, $distance, $order->id_order, $order->community()->name, $order->address );
+						$message = sprintf( $pattern, $order->name, $order->id_order, $order->community()->name, $order->address );
 					} else {
 						$distance = number_format( $order->calcDistance(), 2 ) . ' miles';
 						$pattern = "%s just placed an order out of delivery radius! Distance %s. Order details: Order %d in the %s community to this address %s. Please double check that this address is close enough to be delivered (if it's just slightly out of range it may be fine), and cancel the order if necessary. Thanks!";
@@ -3570,28 +3636,33 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 	}
 
-
 	public function ticketsForNotGeomatchedOrders(){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->modify( '- 5 min' );
 		$orders = Order::q( 'SELECT * FROM `order` WHERE date > ? AND ( geomatched IS NULL OR geomatched = 0 )', [ $now->format( 'Y-m-d H:i:s' ) ] );
-		$pattern = "%s just did Place Order Anyway! Order details: Order %d in the %s community to this address %s. Please double check that this address is close enough to be delivered (if it's just slightly out of range it may be fine), and cancel the order if necessary. Thanks!";
 		foreach( $orders as $order ){
 			if( !$order->orderHasGeomatchedTicket() ){
-				$message = sprintf( $pattern, $order->name, $order->id_order, $order->community()->name, $order->address );
-				echo $message . "\n";
-				Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
-				$action = new Crunchbutton_Order_Action;
-				$action->id_order = $order->id_order;
-				$action->timestamp = date( 'Y-m-d H:i:s' );
-				$action->type = Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED;
-				$action->save();
+				$order->createTicketForNotGeomatchedOrder();
+			}
+		}
+	}
 
-				if( !$order->id_address ){
-					$address = Address::byAddress( $order->address );
-					$order->id_address = $address->id_address;
-					$order->save();
-				}
+	public function createTicketForNotGeomatchedOrder(){
+		$order = $this;
+		if( !$order->geomatched && !$order->orderHasGeomatchedTicket() ){
+			$pattern = "%s just did Place Order Anyway! Order details: Order %d in the %s community to this address %s. Please double check that this address is close enough to be delivered (if it's just slightly out of range it may be fine), and cancel the order if necessary. Thanks!";
+			$message = sprintf( $pattern, $order->name, $order->id_order, $order->community()->name, $order->address );
+			Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
+			$action = new Crunchbutton_Order_Action;
+			$action->id_order = $order->id_order;
+			$action->timestamp = date( 'Y-m-d H:i:s' );
+			$action->type = Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED;
+			$action->save();
+
+			if( !$order->id_address ){
+				$address = Address::byAddress( $order->address );
+				$order->id_address = $address->id_address;
+				$order->save();
 			}
 		}
 	}

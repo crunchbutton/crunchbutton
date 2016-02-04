@@ -54,7 +54,7 @@ body {
 	letter-spacing: .03em;
 }
 body, input, textarea, button {
-	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
+	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 i {
 	font-style: italic;
@@ -73,6 +73,9 @@ i {
 	}
 	body {
 		background: $navColor;
+	}
+	.shift-schedule-rating-botton{
+		font-size: .8em;
 	}
 }
 
@@ -943,6 +946,19 @@ input {
 	font-size: 1.4em;
 }
 
+.login-forgot {
+	margin-top: 1.5em;
+	font-size: 1.5em;
+	color: #FFF;
+	display: block;
+	cursor: pointer;
+}
+	.login-forgot-message{
+		margin-top: 1.5em;
+		font-size: 1.2em;
+		color: #FFF;
+	}
+
 .login-option {
 	display: inline-block;
 	margin: 0 1em 0 1em;
@@ -1455,6 +1471,10 @@ td.documents-check {
 .tb-grid .schedule-buttons .button:active{
 	opacity:.5;
 }
+.schedule-buttons-help .button{
+	width:3em;
+	margin:.5em;
+}
 .schedule-action-lock{
 	background: #b8babc;
 	cursor: no-drop;
@@ -1694,6 +1714,11 @@ td.documents-check {
 		line-height:1.1em;
 		margin:.8em 0;
 	}
+	.box-content.pre-order-text{
+		font-size:.7em;
+		display: block !important;
+	}
+
 
 h1.title {
 	font-family: Source Sans Pro;
@@ -3515,17 +3540,17 @@ h1.driver-title {
 }
 
 .support-chat-contents-message {
+	font-size: 1.1em;
 	margin-bottom: 1.1em;
 	line-height: 1.6em;
 	border: 1px solid black;
 	border-radius: 3px;
 	padding: .5em .7em .5em .9em;
-	width: 220px;
 	overflow: auto;
 }
 
 .support-chat-contents-message-customer {
-	color: #2c596d;
+	color: #0C374A;
 	background: #fafeff;
 	border-color: #b5cdd7;
 
@@ -3537,7 +3562,7 @@ h1.driver-title {
 }
 
 .support-chat-contents-message-support {
-	color: #993b00;
+	color: #441B02;
 	background: #fffbfa;
 	border-color: #f4ba97;
 }
@@ -3545,7 +3570,7 @@ h1.driver-title {
 	font-style: italic;
 }
 .support-chat-contents-message-system, .support-chat-contents-message-note {
-	color: #454545;
+	color: #000;
 	font-style: italic;
 	border-color: #b5b5b5;
 	background-color: #f9f9f9;
@@ -4834,6 +4859,14 @@ a.button {
     vertical-align: top;
 }
 
+.shift-schedule-rating-botton{
+	text-align: left !important;
+	background: #FFF;
+}
+.shift-schedule-rating-botton-space{
+	height: 80px;
+}
+
 #username{
 	-webkit-user-select: text !important;
 	-khtml-user-select: text !important;
@@ -4867,5 +4900,66 @@ a.button {
 .quadruple-cols .switch-wrap {
 	float:left;
 }
-.left{ float:left; }
+.left{ float:left !important; }
 
+
+.restaurant-preview{
+	margin: 1em 0;
+}
+	.restaurant-preview .restaurants-item .restaurants-open {
+		border: 1px solid #c1c1c1;
+		background: #fff;
+		width: 29.7em;
+		height: 12em;
+		border-radius: 4px;
+		padding: 2px 2px .2em 2px;
+		display: inline-block;
+		margin-bottom: 2px;
+		margin-top: 0;
+		box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.15);
+	}
+	.restaurant-preview .restaurants-open .restaurants-name {
+		padding: .6em 0 0 .4em;
+		font-size: 1.4em;
+		color: #424242;
+		font-weight: 700;
+	}
+	.restaurant-preview .restaurants-open .restaurants-description {
+		padding: .2em 0 0 .5em;
+		font-size: 1.1em;
+		color: #535353;
+	}
+	.restaurant-preview .restaurants-pic {
+		height: 8em;
+		border-top-left-radius:.2em;
+		border-top-right-radius:.2em;
+		overflow:hidden;
+		background-size:cover !important;
+		background-position: center center !important;
+		box-shadow: inset rgba(0,0,0,0.3) 0 0 40px;
+	}
+
+.space-left-bar{
+	height: 4px;
+}
+	.space-left-bar.ok{
+		background: $buttonGreen
+	}
+	.space-left-bar.warning{
+		background: #999900;
+	}
+	.space-left-bar.no{
+		background: $buttonRed;
+	}
+.space-left-dish-name{
+	font-family: 'Open Sans', 'Droid Sans', Helvetica;
+	font-size: 14.112px;
+	letter-spacing: 0.36px;
+	font-weight: bold;
+}
+.space-left-community-message{
+	font-family: 'Open Sans', 'Droid Sans', Helvetica;
+	font-size: 10.8px;
+	font-weight: 600;
+	letter-spacing: 0.36px;
+}

@@ -136,7 +136,8 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 						if ( $support->permissionToEdit() ) {
 							$support->status = Crunchbutton_Support::STATUS_CLOSED;
 							$support->save();
-							$support->addSystemMessage( c::admin()->name . ' closed this ticket ');
+							$support->emit ;
+							$support->addSystemMessage( c::admin()->name . ' closed this ticket.', false, true );
 							exit;
 						}
 						break;

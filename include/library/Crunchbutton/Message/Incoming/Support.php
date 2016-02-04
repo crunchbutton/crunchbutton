@@ -106,8 +106,6 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 	}
 
 	public static function notifyReps($message, $support = null, $media = null) {
-		$to = [];
-
 		Crunchbutton_Message_Sms::send([
 			'to' => Crunchbutton_Support::getUsers(),
 			'message' => $message,

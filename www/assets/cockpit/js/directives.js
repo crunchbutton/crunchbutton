@@ -40,6 +40,13 @@ NGApp.directive('supportChatContents', function( $window, $rootScope ) {
 					setTimeout( function(){ fixHeight() }, 500 );
 				}
 			});
+			// define the style for future elements
+			var width = $( '.support-chat-contents' ).width();
+			if( $( '#support-chat-contents-message-style' ) ){
+				$( '#support-chat-contents-message-style' ).remove();
+			}
+			var style = $('<style id="support-chat-contents-message-style">.support-chat-contents-message { width: ' + ( width - 20 ) + 'px !important; }</style>');
+			$('html > head').append(style);
 
 			var fixHeight = function(){
 				var height = $window.innerHeight + 8;
@@ -263,6 +270,14 @@ NGApp.factory('ResourceFactory', ['$q', '$resource',
 		};
 	}
 ]);
+
+NGApp.directive( 'ngFormatPhone', function( $filter ) {
+	return function( scope, element, attrs ) {
+		element.bind( 'keyup', function( event ) {
+			element.val( $filter( 'formatPhone' )( element.val() ) );
+		} );
+	};
+} );
 
 NGApp.filter('formatTimezone', function() {
 	return function(timezone) {
@@ -774,6 +789,13 @@ NGApp.directive( 'stickyBottom', function ( $document ) {
 			restrict: 'A',
 			link: function ( scope, elem, attrs, ctrl ) {
 
+				if( App.isMobile() ){
+					setTimeout( function() {
+						angular.element( '.stick-botton-spacer' ).hide();
+					}, 1000 );
+					return;
+				}
+
 				$document.bind('scroll', function () {
 					setHeight();
         });
@@ -908,6 +930,57 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 				scope.$on( '$destroy', function() {
 					angular.element( window ).off( 'resize', justDoIt );
 				});
+			}
+	};
+});
+
+NGApp.directive( 'spaceLeft', function () {
+	return {
+			require: 'ngModel',
+			link: function( scope, elem, attr, ngModel ) {
+
+				scope.$watch( attr.ngModel, function() { calculate(); } );
+				var id = Math.floor((Math.random()*1000)+1);
+				var css = attr.spaceLeftClass;
+				var limit = attr.spaceLeftWidth;
+
+				var block = document.createElement( 'div' );
+				block.setAttribute( 'id', 'space-left-block-' + id );
+				block.setAttribute( 'class', css );
+				block.setAttribute( 'style', 'position:absolute; top: 0px; opacity: 0; -webkit-user-modify: read-write-plaintext-only; left:0px;' );
+				document.body.appendChild( block );
+				var block = $( '#space-left-block-' + id );
+
+				var parent = elem.parent();
+				var spaceLeftBarContainer = '<div class="space-left-bar-container" id="space-left-bar-container-' + id + '" >' +
+																			'<div class="space-left-bar"></div>' +
+																			'<div class="space-left-text"></div>' +
+													 					'</div>';
+				parent.append( spaceLeftBarContainer );
+				var container = $( '#space-left-bar-container-' + id );
+
+				var calculate = function() {
+					var val = elem.val();
+					block.html( val );
+					var actual_size = block.width();
+					var space_left = ( ( actual_size * 100 ) / limit );
+					space_left = ( 100 - space_left ).toFixed( 2 );
+					var text = container.find( '.space-left-text' );
+					text.text( 'Space left: ' + space_left + '%' );
+					var bar = container.find( '.space-left-bar' );
+					bar.removeClass( 'ok no warning' );
+					switch( true ){
+						case ( space_left <= 0 ):
+							bar.addClass( 'no' );
+							break;
+						case ( space_left <= 15 ):
+							bar.addClass( 'warning' );
+							break;
+						default:
+							bar.addClass( 'ok' );
+							break;
+					}
+				};
 			}
 	};
 });

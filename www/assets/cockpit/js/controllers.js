@@ -95,12 +95,72 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 
 	$scope.loggingIn = false;
 
-	var l;
+	$scope.showing = 'login';
+
+	$scope.toggle = function( option ){
+		if( l ){ l.stop();}
+		if( lr ){ lr.stop();}
+		$scope.showing = option;
+		resetRemind();
+	}
+
 	setTimeout( function(){ l = Ladda.create( $( '.button-login .ladda-button' ).get( 0 ) ); }, 700 );
+
+	setTimeout( function(){ lr = Ladda.create( $( '.button-remind .ladda-button' ).get( 0 ) ); }, 700 );
 
 	$scope.newuser = !$.totalStorage('hasLoggedIn');
 
+	var resetRemind = function(){
+		$scope.phone = '';
+		$scope.message = '';
+		if( lr ){ lr.stop(); }
+	}
+
+	$scope.remind = function() {
+
+		document.activeElement.blur();
+
+		if( !$scope.phone ){
+			App.alert('Please enter your phone number', '', false, function() {
+				if (!App.isCordova) {
+					$rootScope.focus('[name="phone"]');
+				}
+			});
+			return;
+		}
+
+		$scope.reminding = true;
+		if( lr ){
+			lr.start();
+		}
+
+		AccountService.remind( $scope.phone, function( json ) {
+
+			if( json ){
+				if( json.success ){
+					$scope.message = json.success;
+				} else {
+					$scope.message = json.error;
+				}
+			} else {
+				$scope.error = true;
+				if (!App.isCordova) {
+					$rootScope.focus('[name="phone"]');
+				}
+			}
+			$scope.reminding = false;
+			if( lr ){
+				lr.stop();
+			}
+		} );
+	}
+
 	$scope.login = function() {
+
+		document.activeElement.blur();
+
+		App.hideKeyboard();
+
 		if( !$scope.username ){
 			App.alert('Please enter your username', '', false, function() {
 				if (!App.isCordova) {
@@ -146,7 +206,17 @@ NGApp.controller('LoginCtrl', function($rootScope, $scope, AccountService, MainN
 	$scope.welcome = Math.floor( ( Math.random() * 8 ) + 1 );
 });
 
-NGApp.controller( 'ProfileCtrl', function ($scope) {});
+NGApp.controller( 'ProfileCtrl', function ($scope, NotificationService, MainNavigationService) {
+
+	$scope.notification = function(){
+		NotificationService.notify('Incoming call', 'Something', null, function() {
+			MainNavigationService.link('/profile/');
+			$rootScope.$safeApply();
+	});
+	}
+
+
+});
 
 NGApp.controller( 'ProfilePasswordCtrl', function ($scope, ProfileService) {
 

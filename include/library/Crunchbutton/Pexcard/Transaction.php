@@ -243,12 +243,12 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 
 		$start = explode( '/' , $start );
 		$start = new DateTime( $start[ 2 ] . '-' . $start[ 0 ] . '-' . $start[ 1 ] . ' 00:00:01', new DateTimeZone( c::config()->timezone ) );
-		$start->modify( '+4 hours' );
+
 		$start = $start->format( 'Y-m-d H:i:s' );
 
 		$end = explode( '/' , $end );
 		$end = new DateTime( $end[ 2 ] . '-' . $end[ 0 ] . '-' . $end[ 1 ] . ' 23:59:59', new DateTimeZone( c::config()->timezone ) );
-		$end->modify( '+4 hours' );
+
 		$end = $end->format( 'Y-m-d H:i:s' );
 
 
@@ -289,13 +289,13 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 				$amount = floatval( $transaction->amount );
 				$_driver[ 'pexcard_amount' ] += $amount;
 				$description = str_replace( 'Pending...', '', $transaction->description );
-				$_driver[ 'transactions' ][] = [ 'date' => $transaction->date_formatted, 'description' => $description, 'amount' => $amount ];
+				$_driver[ 'transactions' ][] = [ 'date' => $transaction->date, 'description' => $description, 'amount' => $amount ];
 			}
 			$query = "SELECT orders.*,
 											 oa.type AS status
 								FROM
 									(SELECT pro.id_order,
-													pro.date_formatted,
+													pro.date,
 													pro.amount,
 													pro.should_use,
 													o.pay_type,
@@ -329,7 +329,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 				$_driver[ 'orders' ]++;
 				$amount = floatval( $order->amount );
 				$_driver[ 'delivered_orders' ][] = [ 	'id_order' => $order->id_order,
-																							'date' => $order->date_formatted,
+																							'date' => $order->date,
 																							'restaurant' => $order->restaurant,
 																							'pay_type' => $order->pay_type,
 																							'status' => $order->status,
@@ -370,8 +370,9 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 	public function reportPreProcessedDates(){
 		$query = 'SELECT max( date_pst ) AS max, min( date_pst ) AS min FROM pexcard_report_transaction';
 		$dates = c::db()->get( $query )->get( 0 );
-		$max = new DateTime( $dates->max, new DateTimeZone( c::config()->timezone ) );
-		$min = new DateTime( $dates->min, new DateTimeZone( c::config()->timezone ) );
+
+		$max = new DateTime( $dates->max, new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
+		$min = new DateTime( $dates->min, new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
 
 		return [ 'min' => $min->format( 'M jS Y g:i:s A T' ), 'max' => $max->format( 'M jS Y g:i:s A T' ) ];
 	}

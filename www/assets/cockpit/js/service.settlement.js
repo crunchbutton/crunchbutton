@@ -57,6 +57,7 @@ NGApp.factory( 'SettlementService', function(ResourceFactory, $resource, $http, 
 		'deleted' : { 'method': 'POST', params : { action: 'deleted' } },
 		'scheduled_payment' : { 'method': 'POST', params : { action: 'scheduled' } },
 		'do_payment' : { 'method': 'POST', params : { action: 'do-payment' } },
+		'force_payment' : { 'method': 'POST', params : { action: 'force-payment' } },
 		'old_payments' : { 'method': 'POST', params : { action: 'old-payments' } },
 		'do_err_payments' : { 'method': 'POST', params : { action: 'do-err-payments' } },
 		'send_summary' : { 'method': 'POST', params : { action: 'send-summary' } },
@@ -236,6 +237,13 @@ NGApp.factory( 'SettlementService', function(ResourceFactory, $resource, $http, 
 			callback( json );
 		} );
 	}
+
+	service.drivers.force_payment = function( id_payment_schedule, callback ){
+		settlement.drivers.force_payment( { 'id_payment_schedule' : id_payment_schedule }, function( json ){
+			callback( json );
+		} );
+	}
+
 
 	service.drivers.do_err_payments = function( callback ){
 		settlement.drivers.do_err_payments( {}, function( json ){

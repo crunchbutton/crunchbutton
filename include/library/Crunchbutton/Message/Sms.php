@@ -174,7 +174,8 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 						'to' => $t,
 						'from' => $tfrom,
 						'msg' => $msg,
-						'type' => 'sms'
+						'type' => 'sms',
+						'message' => $e->getMessage()
 					]);
 				}
 			}

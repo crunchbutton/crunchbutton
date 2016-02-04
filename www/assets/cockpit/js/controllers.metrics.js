@@ -47,6 +47,8 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		{'kind': 'line', 'description': 'Line Chart'},
 		{'kind': 'bar', 'description': 'Bar Chart'}
 	];
+
+	var queryCommunities = ( $location.search().communities ? $location.search().communities : null );
 	function defaultSettings () {
 		return {
 			communities: [],
@@ -62,6 +64,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		};
 	}
 	$scope.settings = defaultSettings();
+
 	$scope.resetSettings = function () {
 		sessionStorage.removeItem(dataKey);
 		$scope.settings = defaultSettings();
@@ -340,6 +343,19 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		if ($scope.availableCharts) {
 			// $scope.refreshData('allowed communities');
 		}
+
+		// select communities from $location.query
+		if( queryCommunities ){
+			queryCommunities = queryCommunities.split( ',' );
+			for( x in $scope.communities ){
+				if( queryCommunities.indexOf( ( $scope.communities[ x ].id_community ).toString() ) >= 0 ){
+					$scope.communities[ x ].selected = true;
+					$scope.settings.communities.push( $scope.communities[ x ] );
+				}
+			}
+			$scope.communityChanged();
+		}
+
 		// // console.debug('allowedCommunities: ', $scope.allowedCommunities);
 	}).error(function (err) {
 		$scope.allowedCommunities = {};
@@ -565,4 +581,5 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	// ng-change does not work for some reason...
 	$scope.$watch('setting.start', function () { refreshOnTimer('start date')});
 	$scope.$watch('settings.end', function () { refreshOnTimer('end date') });
+
 });

@@ -13,6 +13,8 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 
 	public function __construct($params) {
 
+		$params['body'] = trim( $params['body'] );
+
 		$parsed = $this->parseBody($params['body'], $params[ 'from' ]);
 
 		$action = $parsed['verb'];

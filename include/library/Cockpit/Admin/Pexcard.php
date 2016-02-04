@@ -111,19 +111,6 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 		return false;
 	}
 
-	// Remove funds from all cards - #5144
-	public function _pexCardRemoveCardFundsDaily(){
-		$cards = Crunchbutton_Pexcard_Card::card_list();
-		foreach( $cards->body as $card ){
-			if( $card->availableBalance > 0 ){
-				$pexcard = Cockpit_Admin_Pexcard::getByPexcard( $card->id );
-				if( $pexcard->id_admin ){
-					$pexcard->pexCardRemoveLeftFunds( $card->availableBalance );
-				}
-			}
-		}
-	}
-
 	public static function pexCardRemoveCardFundsDaily(){
 		$cards = self::q( 'SELECT * FROM admin_pexcard' );
 		foreach( $cards as $card ){
@@ -145,7 +132,6 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 	public function runQueRemoveFunds(){
 		echo "running remove funds que # $this->id_admin_pexcard \n";
 		$info = $this->load_card_info();
-		echo '<pre>';var_dump( $info );exit();
 		if( $info->availableBalance > 0 ){
 			echo "funds to remove $info->availableBalance \n\n";
 			$this->pexCardRemoveLeftFunds( $info->availableBalance );
@@ -160,13 +146,13 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 		}
 		if( $amount ){
 			$amount = $amount * -1;
-			return $this->addFunds( [ 'action' => Crunchbutton_Pexcard_Action::ACTION_REMOVE_FUNDS, 'amount' => $amount ] );
+			return $this->addFunds( [ 'action' => Crunchbutton_Pexcard_Action::ACTION_REMOVE_FUNDS, 'amount' => $amount, 'run' => true ] );
 		} else {
 			$card = $this->load_card_info();
 			if( $card && $card->availableBalance && floatval( $card->availableBalance ) > 0 ){
 				$amount = $card->availableBalance;
 				$amount = $amount * -1;
-				return $this->addFunds( [ 'action' => Crunchbutton_Pexcard_Action::ACTION_REMOVE_FUNDS, 'amount' => $amount ] );
+				return $this->addFunds( [ 'action' => Crunchbutton_Pexcard_Action::ACTION_REMOVE_FUNDS, 'amount' => $amount, 'run' => true ] );
 			}
 		}
 	}
@@ -257,7 +243,11 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 				$pexcard_action->status = Crunchbutton_Pexcard_Action::STATUS_SCHEDULED;
 				$pexcard_action->save();
 
-				$pexcard_action->que();
+				if( $params[ 'run' ] ){
+					$pexcard_action->run();
+				} else {
+					$pexcard_action->que();
+				}
 
 				return $pexcard_action;
 			}

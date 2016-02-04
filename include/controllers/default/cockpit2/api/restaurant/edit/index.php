@@ -214,6 +214,7 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 		$out[ 'fee_on_subtotal' ] = $this->restaurant->fee_on_subtotal;
 		$out[ 'fee_restaurant' ] = $this->restaurant->fee_restaurant;
 		$out[ 'fee_customer' ] = $this->restaurant->fee_customer;
+		$out[ 'image' ] = $this->restaurant->getImages( 'name' );
 		$out[ 'id_community_chain' ] = null;
 		$out[ 'tax' ] = intval( $this->restaurant->tax );
 

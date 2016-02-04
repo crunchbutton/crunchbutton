@@ -635,6 +635,15 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			errors['delivery_min'] = 'Please meet the delivery minimum of $' + service.restaurant.delivery_min + '.';
 		}
 
+		if( service.form.delivery_time_type == 'pre-order' ){
+			if( !service.form.deliveryDay ){
+				errors['preorder_day'] = 'Please select the desired delivery day.';
+			}
+			if( !service.form.deliveryHour ){
+				errors['preorder_hour'] = 'Please select the desired delivery hour.';
+			}
+		}
+
 		var er = displayErrors(errors);
 		if (er) {
 			return;

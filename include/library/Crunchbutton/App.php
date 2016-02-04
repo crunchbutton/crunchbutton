@@ -675,7 +675,15 @@ class Crunchbutton_App extends Cana_App {
 	public function twilio() {
 		if (!isset($this->_twilio)) {
 			$env = c::getEnv();
-			$this->_twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+			$http = new Services_Twilio_TinyHttp(
+				'https://api.twilio.com',
+				['curlopts' => [
+					CURLOPT_SSL_VERIFYPEER => true,
+					CURLOPT_SSL_VERIFYHOST => 2,
+				]]
+			);
+
+			$this->_twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token, '2010-04-01', $http);
 		}
 		return $this->_twilio;
 	}

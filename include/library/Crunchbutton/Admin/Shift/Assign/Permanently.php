@@ -41,7 +41,7 @@ class Crunchbutton_Admin_Shift_Assign_Permanently extends Cana_Table {
 		}
 		foreach( $perms as $perm ){
 			// Get the first assigned for this shift
-			$shift = Crunchbutton_Community_Shift::sq( 'SELECT cs.* FROM admin_shift_assign asa
+			$shift = Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM admin_shift_assign asa
 																									INNER JOIN community_shift cs ON asa.id_community_shift = cs.id_community_shift
 																									AND cs.id_community_shift_father = ? AND asa.id_admin = ?
 																									ORDER by date_start ASC LIMIT 1', [ $perm->id_community_shift, $perm->id_admin ] )->get( 0 );
