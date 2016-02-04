@@ -621,9 +621,31 @@ NGApp.controller( 'DriversShiftsScheduleRatingCtrl', function ( $scope, $rootSco
 		} );
 	}
 
+	if( !$.totalStorage( 'hide_shift_preferences_help' ) ){
+		setTimeout( function(){
+			App.dialog.show('.driver-shift-preferences-help');
+		}, 2000 );
+	}
+
 	list();
 
 } );
+
+NGApp.controller( 'DriversShiftsScheduleRatingHelpCtrl', function ( $scope, $rootScope ) {
+
+	$scope.hide_shift_preferences_help = ( $.totalStorage( 'hide_shift_preferences_help' ) ? true : false );
+console.log('$scope.hide_shift_preferences_help',$scope.hide_shift_preferences_help);
+	$scope.$watch( 'hide_shift_preferences_help', function( newValue, oldValue, scope ) {
+
+		if( newValue ){
+			$.totalStorage( 'hide_shift_preferences_help', 1 );
+		} else {
+			$.totalStorage( 'hide_shift_preferences_help', 0 );
+		}
+
+
+	});
+});
 
 NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftScheduleService ) {
 
