@@ -40,7 +40,6 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, $locatio
 			update();
 		}
 	});
-
 	$scope.beta = false;
 
 	if( $location.path() == '/tickets/beta' ){
