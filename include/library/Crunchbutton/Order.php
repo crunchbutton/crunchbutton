@@ -2476,7 +2476,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$out['_restaurant_name'] = $out['restaurant_name'];
 			$out['_restaurant_permalink'] = $out['restaurant_permalink'];
 			$timezone = new DateTimeZone( $out['timezone'] );
-			unset( $out['type'] );
 			unset( $out['uuid'] );
 			unset( $out['restaurant_name'] );
 			unset( $out['restaurant_permalink'] );
@@ -2523,10 +2522,19 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 
 		if( $this->date ){
-			$date = new DateTime($this->date);
+			$date = new DateTime( $this->date, new DateTimeZone( c::config()->timezone ) );
+			if( $this->compressed ){
+				$date->setTimezone( new DateTimeZone( $this->restaurant()->timezone ) );
+				$out[ 'date' ] = $date->format( 'Y-m-d H:i:s' );
+			}
 		} else if( $this->preordered && $this->preordered_date ){
-			$date = new DateTime( $this->preordered_date );
+			$date = new DateTime( $this->preordered_date, new DateTimeZone( c::config()->timezone ) );
 			$out['date'] = $this->preordered_date;
+
+			if( $this->compressed ){
+				$date->setTimezone( new DateTimeZone( $this->restaurant()->timezone ) );
+				$out[ 'date' ] = $date->format( 'Y-m-d H:i:s' );
+			}
 
 			$date_delivery = new DateTime( $this->date_delivery, new DateTimeZone( c::config()->timezone ) );
 			$date_delivery->setTimezone(  new DateTimeZone( $this->restaurant()->timezone )  );
@@ -2538,6 +2546,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		$out['_date_tz'] = $date->format('Y-m-d H:i:s');
 		$out['_tz'] = $date->format('T');
+		$out['id'] = $this->id_order;
 
 		$out['summary'] = $this->orderMessage('summary');
 		$out['user_has_auth'] = User_Auth::userHasAuth( $this->id_user );
@@ -2558,6 +2567,36 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$out['reward'] = array( 'points' => Crunchbutton_Credit::formatPoints( $points ) );
 		}
 
+		if( $this->compressed ){
+			unset( $out[ 'compressed' ] );
+			unset( $out[ 'type' ] );
+			unset( $out[ 'id_agent' ] );
+			unset( $out[ 'id_restaurant' ] );
+			unset( $out[ 'confirmed' ] );
+			unset( $out[ 'id_community' ] );
+			unset( $out[ 'pay_if_refunded' ] );
+			unset( $out[ 'paid_with_cb_card' ] );
+			unset( $out[ 'preordered' ] );
+			unset( $out[ 'refunded' ] );
+			unset( $out[ 'confirmed' ] );
+			unset( $out[ 'preordered_date' ] );
+			unset( $out[ 'asked_to_call' ] );
+			unset( $out[ 'reimburse_cash_order' ] );
+			unset( $out[ 'do_not_pay_restaurant' ] );
+			unset( $out[ 'do_not_pay_driver' ] );
+			unset( $out[ 'likely_test' ] );
+			unset( $out[ 'geomatched' ] );
+			unset( $out[ 'id_phone' ] );
+			unset( $out[ 'campus_cash' ] );
+			unset( $out[ 'preorder_processed' ] );
+			unset( $out[ 'card_ending' ] );
+			unset( $out[ 'do_not_reimburse_driver' ] );
+			unset( $out[ 'id_user_payment_type' ] );
+			unset( $out[ 'reward_delivery_free' ] );
+			unset( $out[ 'delivery_status' ] );
+			unset( $out[ 'id_address' ] );
+			unset( $out[ 'delivery_service' ] );
+		}
 		return $out;
 	}
 

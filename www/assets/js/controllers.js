@@ -1764,8 +1764,6 @@ NGApp.controller('OrdersCtrl', function ($timeout, $scope, $http, $location, Acc
 		var text = App.AB.get('share-text-twitter').replace('%c', AccountService.user.invite_code);
 		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=' + text ,'_system');
 	}
-	$scope.hello = 50; //??
-
 
 	CreditService.getCredit( '' );
 	$scope.$on( 'creditChanged', function(e, data) {
