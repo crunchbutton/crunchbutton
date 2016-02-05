@@ -17,7 +17,7 @@ class Crunchbutton_Session {
 
 	public function generateAndSaveToken() {
 		if ($this->adapter()->generateAndSaveToken()) {
-			$this->token = $this->adapter->token;
+			$this->token = $this->adapter()->token;
 			return true;
 		}
 
