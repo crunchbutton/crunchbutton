@@ -6,6 +6,11 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 	public function exports( $params = [] ){
 
+		$time_start = microtime( true );
+		$out[ '_time' ] = [ 'start' => $time_start ];
+
+
+
 		// presets for performance reasons
 		if( isset( $params[ 'profile' ] ) ){
 			$_profile = $params[ 'profile' ];
@@ -20,7 +25,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 			 }
 		}
 
-		$out = $this->properties();
+		$out = array_merge( $out, $this->properties() );
 
 		$out['id'] = $this->uuid;
 
@@ -35,16 +40,19 @@ class Cockpit_Order extends Crunchbutton_Order {
 			$out['time_formated' ] = $date->format( 'g:i' );
 		}
 
-		$out['_restaurant_name'] = $this->restaurant()->name;
-		$out['_restaurant_permalink'] = $this->restaurant()->permalink;
-		$out['_restaurant_phone'] = $this->restaurant()->phone;
-		$out['_restaurant_lat'] = $this->restaurant()->loc_lat;
-		$out['_restaurant_lon'] = $this->restaurant()->loc_long;
-		$out['_restaurant_address'] = $this->restaurant()->address;
-		$out['_restaurant_delivery_estimated_time'] = $this->restaurant()->delivery_estimated_time;
-		$out['_restaurant_pickup_estimated_time'] = $this->restaurant()->pickup_estimated_time;
-		$out['_restaurant_delivery_estimated_time_formated'] = $this->restaurant()->calc_delivery_estimated_time( $this->date );
-		$out['_restaurant_pickup_estimated_time_formated'] = $this->restaurant()->calc_pickup_estimated_time( $this->date );
+		$restaurant = $this->restaurant();
+
+		$out['_restaurant_name'] = $restaurant->name;
+		$out['_restaurant_permalink'] = $restaurant->permalink;
+		$out['_restaurant_phone'] = $restaurant->phone;
+		$out['_restaurant_lat'] = $restaurant->loc_lat;
+		$out['_restaurant_lon'] = $restaurant->loc_long;
+		$out['_restaurant_address'] = $restaurant->address;
+		$out['_restaurant_delivery_estimated_time'] = $restaurant->delivery_estimated_time;
+		$out['_restaurant_pickup_estimated_time'] = $restaurant->pickup_estimated_time;
+		$out['_restaurant_delivery_estimated_time_formated'] = $restaurant->calc_delivery_estimated_time( $this->date );
+		$out['_restaurant_pickup_estimated_time_formated'] = $restaurant->calc_pickup_estimated_time( $this->date );
+
 		$out['user'] = $this->user()->uuid;
 
 		//$out['timestamp'] = Crunchbutton_Util::dateToUnixTimestamp( $date );
@@ -351,6 +359,206 @@ class Cockpit_Order extends Crunchbutton_Order {
 				$out = $this->_driverExports( $out );
 				break;
 		}
+
+		$out = array_merge( $out, $this->dishData() );
+
+		$out[ '_time' ][ 'end'] = microtime( true );
+		$out[ '_time' ][ 'exec'] = ( $out[ '_time' ][ 'end'] - $out[ '_time' ][ 'start'] );
+
+		return $out;
+	}
+
+	public function exportsPage( $page = null ){
+		switch ( $page ) {
+			case 'order':
+				return $this->exportsOrderPage();
+				break;
+
+			default:
+				return $this->exports();
+				break;
+		}
+	}
+
+	// aqui
+	private function exportsOrderPage(){
+		$out = [];
+		$time_start = microtime( true );
+		$out[ '_time' ] = [ 'start' => $time_start ];
+
+		$out = array_merge( $out, $this->properties() );
+
+		$out['id'] = $this->uuid;
+
+		$user = $this->user();
+		if( $user->id_user ){
+			$out['user'] = [	'id_user' => $user->id_user,
+												'name' => $user->name,
+												'phone' => $user->phone,
+												'address' => $user->address ];
+		}
+
+		$restaurant = $this->restaurant();
+		if( $restaurant->id_restaurant ){
+			$out['restaurant'] = [ 'id_restaurant' => $restaurant->id_restaurant,
+															'name' => $restaurant->name,
+															'phone' => $restaurant->phone,
+															'permalink' => $restaurant->permalink,
+															'address' => $restaurant->address,
+															'timezone' => $restaurant->timezone,
+															'formal_relationship' => $restaurant->formal_relationship ];
+		}
+
+		$out[ 'do_not_reimburse_driver' ] = ( intval( $out[ 'do_not_reimburse_driver' ] ) > 0 ) ? true : false;
+		$out[ 'do_not_pay_driver' ] = ( intval( $out[ 'do_not_pay_driver' ] ) > 0 ) ? true : false;
+		$out[ 'do_not_pay_restaurant' ] = ( intval( $out[ 'do_not_pay_restaurant' ] ) > 0 ) ? true : false;
+		$out[ 'delivery_service' ] = ( intval( $out[ 'delivery_service' ] ) > 0 ) ? true : false;
+
+		$campus_card_charged = $this->campus_cash_charged();
+
+		if( $campus_card_charged ){
+			$out[ 'campus_cash_charged' ] = true;
+			$out[ 'campus_cash_charged_info' ] = $campus_card_charged;
+		} else {
+			$out[ 'campus_cash_charged' ] = false;
+			$paymentType = $this->paymentType();
+			$out[ 'campus_cash_sha1' ] = $paymentType->stripe_id;
+		}
+
+		$out[ 'informed_eta' ] = Crunchbutton_Order_Eta::informedEtaByOrder( $this->id_order );
+		$out['_driver_name'] = $this->status()->last()['driver']['name'];
+		$out['_driver_phone'] = $this->status()->last()['driver']['phone'];
+		$out['_driver_id'] = $this->status()->last()['driver']['id_admin'];
+
+		$date = $this->date();
+		$out['date'] = $date->format( 'c' );
+
+		$date_delivery = $this->date_delivery();
+		if( $date_delivery ){
+			$out['date_delivery'] = $date_delivery->format('c');
+		}
+
+		$agent = $this->agent();
+		$out['agent'] = $agent->os.' '.$agent->browser;
+
+		$credit = $this->chargedByCredit();
+		if( $credit > 0 ){
+			$out['credit'] = $credit;
+		} else {
+			$out['credit'] = 0;
+		}
+
+		$out[ 'refunded' ] = intval( $out[ 'refunded' ] );
+
+		if( $out[ 'refunded' ] ){
+			 $transaction = $this->refundedReason();
+			 if( $transaction ){
+				$out[ 'refunded_reason' ] = $transaction->note;
+			 }
+		}
+
+		$status = $this->lastStatus();
+
+		$status_date = new DateTime( $status[ 'date' ], new DateTimeZone( $this->restaurant()->timezone ) );
+		$now = new DateTime( 'now', new DateTimeZone( $this->restaurant()->timezone ) );
+		$status[ 'date_timestamp' ] = Crunchbutton_Util::dateToUnixTimestamp( $status_date );
+		$status[ '_outside_of_24h' ] = Crunchbutton_Util::intervalMoreThan24Hours( $now->diff( $date ) );
+		$status[ '_date_formatted' ] = $status_date->format( 'M jS Y g:i:s A' );
+
+		$out['status'] = $status;
+		$out['eta'] = $this->eta()->exports();
+
+		if( $status[ 'driver' ] ){
+			$driver = Admin::o( $status[ 'driver' ][ 'id_admin' ] );
+			$out['driver'] = [ 'id_admin' => $driver->id_admin,
+												 'name' => $driver->name,
+												 'login' => $driver->login,
+												 'phone' => $driver->phone ];
+			$out['driver'] = array_merge( $out[ 'driver' ], $driver->lastCheckins() );
+		}
+
+		$actions = $this->actions();
+
+		$out[ 'actions' ] = [];
+
+		foreach ( $actions as $action ) {
+			$_action = [];
+			$_admin = $action->admin();
+			$_action[ 'id_order_action' ] = $action->id_order_action;
+			$_action[ 'type' ] = $action->type;
+			$_action[ 'note' ] = $action->note;
+			$_action[ 'date' ] = Crunchbutton_Util::dateToUnixTimestamp( $action->date() );
+			$_action[ 'admin' ] = [ 'id_admin' => $_admin->id_admin, 'login' => $_admin->login, 'name' => $_admin->name, 'phone' => $_admin->phone ];
+			$out[ 'actions' ][] = $_action;
+		}
+
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+
+		if( $status_date ){
+			$out[ 'actions_today' ] = $status_date->format( 'Ymd' ) == $now->format( 'Ymd' );
+		}
+
+		if( $out[ 'refunded' ] ){
+			$out[ 'refunded_status' ] = $this->refundedStatus();
+			if( $out[ 'refunded_status' ] == self::STATUS_REFUNDED_PARTIALLY ){
+				$out[ 'refunded_partial' ] = true;
+			}
+			$out[ 'refunded_amount' ] = $this->refundedTotal();
+		}
+
+		$out = array_merge( $out, $this->dishData() );
+
+		$out[ '_time' ][ 'end'] = microtime( true );
+		$out[ '_time' ][ 'exec'] = ( $out[ '_time' ][ 'end'] - $out[ '_time' ][ 'start'] );
+
+		return $out;
+	}
+
+	private function dishData(){
+		$out = [];
+		$dishes_data = [];
+		$quantity = [];
+		$_dishes = Crunchbutton_Order_Data::dishes( $this->id_order );
+		foreach( $_dishes as $dish ){
+			$with_option = $dish->options->with_option;
+			$without_default_options = $dish->options->without_default_options;
+			if( $with_option && count( $with_option ) ){
+				$commas = '';
+				$dish->with_option = '';
+				foreach( $with_option as $option ){
+					$dish->with_option .= $commas . $option->name;
+					$commas = ', ';
+				}
+			}
+			if( $without_default_options && count( $without_default_options ) ){
+				$commas = '';
+				$dish->without_default_options = '';
+				foreach( $without_default_options as $option ){
+					$dish->without_default_options .= $commas . 'No ' . $option->name;
+					$commas = ', ';
+				}
+			}
+			$hash = md5( json_encode( $dish ) );
+			if( !$quantity[ $hash ] ){
+				$quantity[ $hash ] = 0;
+			}
+			$quantity[ $hash ]++;
+			$dish->quantity = $quantity[ $hash ];
+			$dish->price->regular_unity = $dish->price->regular;
+			$dish->price->regular = ( $dish->quantity * $dish->price->regular );
+			$dish->price->final_price = ( $dish->quantity * $dish->price->final_price );
+			$dishes_data[ $hash ] = $dish;
+		}
+		$out[ 'dishes_data' ] = [];
+		foreach( $dishes_data as $key => $dish ){
+			$out[ 'dishes_data' ][] = $dish;
+		}
+
+		usort( $out[ 'dishes_data' ], function( $a, $b ){
+			$a_price = $a->price->regular_unity;
+			$b_price = $b->price->regular_unity;;
+			return floatval( $a_price ) < floatval( $b_price );
+		} );
 		return $out;
 	}
 
