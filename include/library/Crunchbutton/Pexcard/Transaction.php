@@ -242,15 +242,16 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 	public static function processedReport( $start, $end ){
 
 		$start = explode( '/' , $start );
-		$start = new DateTime( $start[ 2 ] . '-' . $start[ 0 ] . '-' . $start[ 1 ] . ' 00:00:01', new DateTimeZone( c::config()->timezone ) );
+		$start = new DateTime( $start[ 2 ] . '-' . $start[ 0 ] . '-' . $start[ 1 ] . ' 00:00:01', new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
+		$start->setTimezone( new DateTimeZone( c::config()->timezone ) );
 
 		$start = $start->format( 'Y-m-d H:i:s' );
 
 		$end = explode( '/' , $end );
-		$end = new DateTime( $end[ 2 ] . '-' . $end[ 0 ] . '-' . $end[ 1 ] . ' 23:59:59', new DateTimeZone( c::config()->timezone ) );
+		$end = new DateTime( $end[ 2 ] . '-' . $end[ 0 ] . '-' . $end[ 1 ] . ' 23:59:59', new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
+		$end->setTimezone( new DateTimeZone( c::config()->timezone ) );
 
 		$end = $end->format( 'Y-m-d H:i:s' );
-
 
 		$query = "SELECT a.id_admin,
 										 a.name AS driver,
@@ -289,7 +290,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 				$amount = floatval( $transaction->amount );
 				$_driver[ 'pexcard_amount' ] += $amount;
 				$description = str_replace( 'Pending...', '', $transaction->description );
-				$_driver[ 'transactions' ][] = [ 'date' => $transaction->date, 'description' => $description, 'amount' => $amount ];
+				$_driver[ 'transactions' ][] = [ 'id_pexcard_report_transaction' => $transaction->id_pexcard_report_transaction,  'date' => $transaction->date, 'description' => $description, 'amount' => $amount ];
 			}
 			$query = "SELECT orders.*,
 											 oa.type AS status
