@@ -311,9 +311,9 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 	$scope.do_not_pay_driver = function(){
 		OrderService.do_not_pay_driver( $scope.order.id_order, function( result ){
 			if( result.success ){
-				$scope.flash.setMessage( 'Saved!' );
+				App.alert( 'Saved!' );
 			} else {
-				$scope.flash.setMessage( 'Error!' );
+				App.alert( 'Error!' );
 			}
 		} );
 	}
@@ -354,9 +354,9 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 	$scope.do_not_pay_restaurant = function(){
 		OrderService.do_not_pay_restaurant( $scope.order.id_order, function( result ){
 			if( result.success ){
-				$scope.flash.setMessage( 'Saved!' );
+				App.alert( 'Saved!' );
 			} else {
-				$scope.flash.setMessage( 'Error!' );
+				App.alert( 'Error!' );
 			}
 		} );
 	}
@@ -364,9 +364,9 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 	$scope.do_not_reimburse_driver = function(){
 		OrderService.do_not_reimburse_driver( $scope.order.id_order, function( result ){
 			if( result.success ){
-				$scope.flash.setMessage( 'Saved!' );
+				App.alert( 'Saved!' );
 			} else {
-				$scope.flash.setMessage( 'Error!' );
+				App.alert( 'Error!' );
 			}
 		} );
 	}
