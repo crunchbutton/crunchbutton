@@ -754,6 +754,15 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 		$out = array_merge( $out, $this->dishData() );
 
+		$out['_tip'] = $this->tip();
+		$out['_tax'] = $this->tax();
+		$credit = $this->chargedByCredit();
+		if( $credit > 0 ){
+			$out['credit'] = $credit;
+		} else {
+			$out['credit'] = 0;
+		}$out['charged'] = floatval( $this->charged() );
+
 		$out[ '_time' ][ 'end'] = microtime( true );
 		$out[ '_time' ][ 'exec'] = ( $out[ '_time' ][ 'end'] - $out[ '_time' ][ 'start'] );
 
