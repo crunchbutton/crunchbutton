@@ -124,7 +124,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 					$notifications = ' / RN: ' . join('/', $types);
 				}
 
-				$date = '%DATETIMETZ:'.$this->order->date()->format('Y-m-d H:i:s').'%';
+				$date = $this->order->date()->format('m/d/Y h:i A');
 
 				$community = $this->order->restaurant()->communityNames();
 				if ($community) {
