@@ -42,7 +42,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 
 				default:
 
-					$order = Order::o(c::getPagePiece( 3 ) );
+					$order = Order::o( c::getPagePiece( 3 ) );
 					// Test order #2969 - step 3
 					if( $order->id_order == Cockpit_Driver_Notify::ORDER_TEST ){
 						$last = Crunchbutton_Order_Action::byOrder( $order->id_order );
@@ -166,7 +166,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 
 							default:
 								if( $order->id_order ) {
-									echo json_encode( $order->exports( [ 'profile' => 'driver' ] ) );
+									echo json_encode( $order->exportsPage( 'driver' ) );
 								} else {
 									echo json_encode(['error' => 'invalid object']);
 								}

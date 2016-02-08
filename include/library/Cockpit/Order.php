@@ -373,6 +373,9 @@ class Cockpit_Order extends Crunchbutton_Order {
 			case 'order':
 				return $this->exportsOrderPage();
 				break;
+			case 'driver':
+				return $this->exportsDriverPage();
+				break;
 
 			default:
 				return $this->exports();
@@ -380,7 +383,249 @@ class Cockpit_Order extends Crunchbutton_Order {
 		}
 	}
 
-	// aqui
+	private function exportsDriverPage(){
+
+		$params = [];
+
+		$time_start = microtime( true );
+		$out[ '_time' ] = [ 'start' => $time_start ];
+		$out = array_merge( $out, $this->properties() );
+
+		$date = $this->date();
+
+		$restaurant = $this->restaurant();
+
+		$out['_restaurant_name'] = $restaurant->name;
+		$out['_restaurant_permalink'] = $restaurant->permalink;
+		$out['_restaurant_phone'] = $restaurant->phone;
+		$out['_restaurant_lat'] = $restaurant->loc_lat;
+		$out['_restaurant_lon'] = $restaurant->loc_long;
+		$out['_restaurant_address'] = $restaurant->address;
+		$out['_restaurant_delivery_estimated_time'] = $restaurant->delivery_estimated_time;
+		$out['_restaurant_pickup_estimated_time'] = $restaurant->pickup_estimated_time;
+		$out['_restaurant_delivery_estimated_time_formated'] = $restaurant->calc_delivery_estimated_time( $this->date );
+		$out['_restaurant_pickup_estimated_time_formated'] = $restaurant->calc_pickup_estimated_time( $this->date );
+
+		$out['notes_to_driver'] = $this->restaurant()->notes_to_driver;
+
+		$resources = Crunchbutton_Resource::byCommunity( $this->id_community, 'order_page' );
+		if( $resources ){
+			$out['resources'] = [];
+			foreach( $resources as $resource ){
+				$out['resources'][] = [ 'name' => $resource->name, 'path' => $resource->download_url() ];
+			}
+		}
+
+		$out['orders_by_phone'] = self::totalOrdersByPhone( $this->phone );
+
+		$date = new DateTime($this->date);
+		$date->setTimeZone( new DateTimeZone($this->restaurant()->timezone) );
+
+		$out['_tip'] = $this->tip();
+		$out['_tax'] = $this->tax();
+
+		// price without delivery service nor delivery fee #6838
+		$out[ '_final_price' ] = $out[ 'price' ] + $this->tax();
+		// $out[ '_final_price' ] = $out[ 'final_price' ] - ( $out[ 'delivery_fee' ] );
+		$out[ '_tip_with_cash' ] = ( $order->pay_type == 'card' && $order->tip == 0 );
+
+		if( $this->restaurant()->delivery_estimated_time ){
+			$estimate = $this->date()->modify('+'.$this->restaurant()->delivery_estimated_time.' minutes');
+			$out[ '_delivery_estimated_time' ] = $estimate->format('h:i A');
+			$out[ '_delivery_estimated_time_timestamp' ] = Crunchbutton_Util::dateToUnixTimestamp( $estimate );
+		} else {
+			$out[ '_delivery_estimated_time' ] = false;
+			$out[ '_delivery_estimated_time_timestamp' ] = false;
+		}
+
+		$out[ '_instructions_payment' ] = $this->driverInstructionsPaymentStatus();
+		$out[ '_instructions_payment_bgcolor' ] = $this->driverInstructionsPaymentBGColor();
+		$out[ '_instructions_food' ] = $this->driverInstructionsFoodStatus();
+		$out[ '_stealth_notification' ] = $this->restaurant()->hasNotification( 'stealth' );
+
+		// Add a line to bottom of Driver Order view #6358 - old #3879
+		$out[ '_instructions_fax' ] = 'Remember: do NOT give the receipt to the customer';
+
+		$out[ '_dishes' ] = [];
+
+		$delivery_service_markup = ( $this->delivery_service_markup ) ? $this->delivery_service_markup : 0;
+
+		// Dishes
+		foreach( $this->dishes() as $dish ){
+
+			$food = $dish->dish()->name;
+			$price = $dish->dish()->price;
+			$regular_price = $dish->dish()->price;
+
+			// add the delivery markup
+			if( $delivery_service_markup > 0 && $price > 0 ){
+				$price = $price + number_format( ( $dish->dish()->price * $delivery_service_markup / 100 ), 2 );
+				$price = Crunchbutton_Restaurant::roundDeliveryMarkupPrice( $price);
+			}
+			$regular_price = number_format( $regular_price, 2 );
+
+			$options = $dish->options();
+
+			if (gettype($options) == 'array') {
+				$options = i::o($options);
+			}
+
+			$withOptions = '';
+			$selectOptions = '';
+
+			if ($options->count()) {
+
+				foreach ($dish->options() as $option) {
+
+					if ($option->option()->type == 'select') {
+						continue;
+					}
+
+					$regular_price += $option->option()->price;
+
+					// add the delivery markup
+					if( $delivery_service_markup > 0 && $price > 0 ){
+						$option_price = Crunchbutton_Restaurant::roundDeliveryMarkupPrice( $option->option()->price + ( $option->option()->price * $delivery_service_markup / 100 ));
+						$price = $price + $option_price;
+					}
+
+					if($option->option()->id_option_parent) {
+						$optionGroup = Crunchbutton_Option::o($option->option()->id_option_parent);
+						if( $selectOptions == '' ){
+							$selectOptions .= ' ';
+						}
+						$selectOptions .= $optionGroup->name . ': ';
+						$selectOptions .= $option->option()->name.', ';
+					} else {
+						$withOptions .= $option->option()->name.', ';
+					}
+					$regular_price = number_format( $regular_price, 2 );
+				}
+				if( $withOptions != '' ){
+					$withOptions = substr($withOptions, 0, -2);
+				}
+				if( $selectOptions != '' ){
+					$selectOptions = substr($selectOptions, 0, -2);
+				}
+			}
+
+			$withoutDefaultOptions = '';
+			if( $dish->id_order_dish && $dish->id_dish ){
+				$optionsNotChoosen = $dish->optionsDefaultNotChoosen();
+				$commas = '';
+				if( $optionsNotChoosen->count() ){
+					foreach( $optionsNotChoosen as $dish_option ){
+						$withoutDefaultOptions .= $commas . 'No ' . $dish_option->option()->name;
+						$commas = ', ';
+					}
+				}
+			}
+
+			if ( $withOptions == '' && $withoutDefaultOptions == '' && $selectOptions == '' ) {
+				$food .= '.';
+			} else {
+				$food .= ': ';
+			}
+
+			if( $withOptions != '' ){
+				$withOptions .= '.';
+			}
+
+			if( $withoutDefaultOptions != '' ){
+				$withoutDefaultOptions .= '.';
+			}
+
+			if( $selectOptions != '' ){
+				$selectOptions .= '.';
+			}
+
+			$regular_price = number_format( $regular_price, 2 );
+			$price = number_format( $price, 2 );
+
+			$out[ '_dishes' ][] = [ 'name' => $food, 'price' => [ 'regular' => $regular_price, 'marked_up' => $price ], 'options' => [ 'without_default_options' => $withoutDefaultOptions, 'with_option' => $withOptions, 'select_options' => $selectOptions ] ];
+		}
+
+		$duplicated_items = false;
+
+		// driver suggestion: quantity column to make ordering easier #4779
+		$_dishes = [];
+		foreach( $out[ '_dishes' ] as $_dish ){
+			$token = trim( str_replace( ' ' , '', strtolower( $_dish[ 'name' ] ) ) ) . md5( serialize( $_dish ) );
+			if( !$_dishes[ $token ] ){
+				$_dishes[ $token ] = [ 'dish' => $_dish, 'quantity' => 0 ];
+			}
+			$_dishes[ $token ][ 'quantity' ]++;
+			if( $_dishes[ $token ][ 'quantity' ] > 1 ){
+				$duplicated_items = true;
+			}
+		}
+
+		// sort
+		ksort( $_dishes );
+
+		// kept the _dishes for legacy reasons (native app and other places where it is used)
+		$_dishes_qty = [];
+		foreach( $_dishes as $_dish ){
+			$dish = array_merge( $_dish[ 'dish' ], [ 'quantity' => $_dish[ 'quantity' ] ] );
+			$dish[ 'price' ][ 'regular_unity' ] = floatval( $dish[ 'price' ][ 'regular' ] );
+			$dish[ 'price' ][ 'marked_up_unity' ] = floatval( $dish[ 'price' ][ 'marked_up' ] );
+			$dish[ 'price' ][ 'regular' ] = ( $dish[ 'price' ][ 'regular_unity' ] * $dish[ 'quantity' ] );
+			$dish[ 'price' ][ 'marked_up' ] = ( $dish[ 'price' ][ 'marked_up_unity' ] * $dish[ 'quantity' ] );
+			$_dishes_qty[] = $dish;
+		}
+
+		usort( $_dishes_qty, function( $a, $b ){
+			$a_price = $a[ 'price' ][ 'regular_unity' ];
+			$b_price = $b[ 'price' ][ 'regular_unity' ];
+			return floatval( $a_price ) < floatval( $b_price );
+		} );
+
+
+		$out[ '_dishes_qty' ] = $_dishes_qty;
+		$out[ 'duplicated_items' ] = $duplicated_items;
+
+		$status = $this->lastStatus();
+
+		$out['status'] = $status;
+
+		if( $status[ 'driver' ] ){
+			$driver = Admin::o( $status[ 'driver' ][ 'id_admin' ] );
+			$out['driver'] = [ 'id_admin' => $driver->id_admin,
+												 'name' => $driver->name,
+												 'login' => $driver->login,
+												 'phone' => $driver->phone ];
+		}
+
+
+		$out['hasCustomerBeenTexted5Minutes'] = $this->hasCustomerBeenTexted5Minutes();
+
+		// remove
+		$out[ '_restaurant_address' ] = Crunchbutton_Util::removeNewLine( $out[ '_restaurant_address' ] );
+		$out[ 'address' ] = Crunchbutton_Util::removeNewLine( $out[ 'address' ] );
+
+		// informed eta
+		$out[ 'informed_eta' ] = Crunchbutton_Order_Eta::informedEtaByOrder( $this->id_order );
+
+		if( $out[ 'campus_cash' ] ){
+			$out[ 'campus_cash_name' ] = $this->campusCashName();
+			$out[ 'require_signature' ] = $this->requireSignature();
+
+			if( $this->signature_data ){
+				$out[ 'last_digits' ] = $this->campusCashLastDigits();
+				$out[ 'has_signature' ] = ( $this->signature() ? true : false );
+				$out[ 'receipt_info' ] = nl2br( $this->campusCashReceiptInfo() );
+				if( $this->signature() ){
+					$out[ 'signature' ] = $this->signature();
+				}
+			}
+		}
+
+		$out[ '_time' ][ 'end'] = microtime( true );
+		$out[ '_time' ][ 'exec'] = ( $out[ '_time' ][ 'end'] - $out[ '_time' ][ 'start'] );
+
+		return $out;
+	}
+
 	private function exportsOrderPage(){
 		$out = [];
 		$time_start = microtime( true );
@@ -425,10 +670,12 @@ class Cockpit_Order extends Crunchbutton_Order {
 			$out[ 'campus_cash_sha1' ] = $paymentType->stripe_id;
 		}
 
+		$status = $this->status()->last();
+
 		$out[ 'informed_eta' ] = Crunchbutton_Order_Eta::informedEtaByOrder( $this->id_order );
-		$out['_driver_name'] = $this->status()->last()['driver']['name'];
-		$out['_driver_phone'] = $this->status()->last()['driver']['phone'];
-		$out['_driver_id'] = $this->status()->last()['driver']['id_admin'];
+		$out['_driver_name'] = $status['driver']['name'];
+		$out['_driver_phone'] = $status['driver']['phone'];
+		$out['_driver_id'] = $status['driver']['id_admin'];
 
 		$date = $this->date();
 		$out['date'] = $date->format( 'c' );
@@ -467,7 +714,6 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 		$out['status'] = $status;
 		$out['eta'] = $this->eta()->exports();
-
 		if( $status[ 'driver' ] ){
 			$driver = Admin::o( $status[ 'driver' ][ 'id_admin' ] );
 			$out['driver'] = [ 'id_admin' => $driver->id_admin,
