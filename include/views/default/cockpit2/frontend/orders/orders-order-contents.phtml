@@ -12,13 +12,16 @@
 				<td class="topitem itemname"></td>
 				<td class="topitem itemprice">Store Price</td>
 			</tr>
-			<tr ng-repeat="dish in order._dishes_qty">
+			<tr ng-repeat="dish in order.dishes_data">
 				<td class="fooditem order-contents-item-qty" ng-class="{'order-contents-item-qty-highlight': dish.quantity > 1 }">{{dish.quantity}}</td>
 				<td class="fooditem dish-name">
 					<b>{{dish.name}}</b>
-					<div>{{dish.options.select_options}}</div>
-					<div>{{dish.options.with_option}}</div>
-					<div>{{dish.options.without_default_options}}</div>
+					<div ng-show="dish.with_option">
+						{{dish.with_option}}
+					</div>
+					<div ng-show="dish.without_default_options">
+						{{dish.without_default_options}}
+					</div>
 				</td>
 				<td class="fooditem dish-price-unity">
 					<span ng-if="dish.quantity > 1">

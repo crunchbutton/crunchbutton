@@ -373,6 +373,49 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 					$paymentType = $order->paymentType();
 					$out[ 'campus_cash_sha1' ] = $paymentType->stripe_id;
 				}
+				$dishes_data = [];
+				$quantity = [];
+				$_dishes = Crunchbutton_Order_Data::dishes( $order->id_order );
+				foreach( $_dishes as $dish ){
+					$with_option = $dish->options->with_option;
+					$without_default_options = $dish->options->without_default_options;
+					if( $with_option && count( $with_option ) ){
+						$commas = '';
+						$dish->with_option = '';
+						foreach( $with_option as $option ){
+							$dish->with_option .= $commas . $option->name;
+							$commas = ', ';
+						}
+					}
+					if( $without_default_options && count( $without_default_options ) ){
+						$commas = '';
+						$dish->without_default_options = '';
+						foreach( $without_default_options as $option ){
+							$dish->without_default_options .= $commas . 'No ' . $option->name;
+							$commas = ', ';
+						}
+					}
+					$hash = md5( json_encode( $dish ) );
+					if( !$quantity[ $hash ] ){
+						$quantity[ $hash ] = 0;
+					}
+					$quantity[ $hash ]++;
+					$dish->quantity = $quantity[ $hash ];
+					$dish->price->regular_unity = $dish->price->regular;
+					$dish->price->regular = ( $dish->quantity * $dish->price->regular );
+					$dish->price->final_price = ( $dish->quantity * $dish->price->final_price );
+					$dishes_data[ $hash ] = $dish;
+				}
+				$out[ 'dishes_data' ] = [];
+				foreach( $dishes_data as $key => $dish ){
+					$out[ 'dishes_data' ][] = $dish;
+				}
+
+				usort( $out[ 'dishes_data' ], function( $a, $b ){
+					$a_price = $a->price->regular_unity;
+					$b_price = $b->price->regular_unity;;
+					return floatval( $a_price ) < floatval( $b_price );
+				} );
 
 				echo json_encode($out);
 				break;
