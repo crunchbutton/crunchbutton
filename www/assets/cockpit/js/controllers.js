@@ -1,7 +1,6 @@
 
 NGApp.controller('DefaultCtrl', function ($rootScope, $scope, $http, $location, $routeParams, MainNavigationService, AccountService) {
 
-
 	var redirect = function() {
 		// redirect to login if there is no user
 		if (!AccountService.user || !AccountService.user.id_admin) {
@@ -13,7 +12,7 @@ NGApp.controller('DefaultCtrl', function ($rootScope, $scope, $http, $location, 
 		if( !isNaN( parseInt( id_order ) ) ){
 			MainNavigationService.link('/drivers/order/' + id_order, 'instant');
 		} else {
-			if (App.isCordova && !$.totalStorage('isDriverWelcomeSetup')) {
+			if (App.isCordova && !App.hasFinishedSetup() ) {
 				setTimeout(function(){
 					MainNavigationService.link('/drivers/welcome', 'instant');
 					$rootScope.$apply();
