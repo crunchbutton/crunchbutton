@@ -30,6 +30,10 @@ if (App.isCordova) {
 	App.service = 'https://cockpit.la/api/';
 }
 
+App.hasFinishedSetup = function(){
+	return ( $.totalStorage('isDriverWelcomeSetup') ? true : false );
+}
+
 if ( navigator.appVersion.indexOf( 'Win' ) !=-1 ){
 	App.isWindows = true;
 };

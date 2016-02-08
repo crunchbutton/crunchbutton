@@ -26,48 +26,57 @@ NGApp.factory('HeartbeatService', function($rootScope, $resource, $interval, Loc
 	}
 
 	service.check = function() {
-		// Just run if the user is loggedin
-		if (AccountService.isLoggedIn()) {
-			// Register push service -Android
-			if( App.isCordova && AccountService && AccountService.user ){
-				if ( AccountService.user.android_push && window.parent && window.parent.device && window.parent.device.platform && ( window.parent.device.platform == 'android' || window.parent.device.platform == 'Android' || window.parent.device.platform == 'amazon-fireos')) {
-					if( !PushService.registered ){
-						PushService.register( function(){ console.log("push registered"); });
-						service.registered = true;
+		var run = true;
+
+		if( App.isCordova && !App.hasFinishedSetup() ){
+			run = false;
+		}
+
+		// if the user is using native app, just start runing it after they finished the setup
+		if( run ){
+			// Just run if the user is loggedin
+			if (AccountService.isLoggedIn()) {
+				// Register push service -Android
+				if( App.isCordova && AccountService && AccountService.user ){
+					if ( AccountService.user.android_push && window.parent && window.parent.device && window.parent.device.platform && ( window.parent.device.platform == 'android' || window.parent.device.platform == 'Android' || window.parent.device.platform == 'amazon-fireos')) {
+						if( !PushService.registered ){
+							PushService.register( function(){ console.log("push registered"); });
+							service.registered = true;
+						}
+					}
+					if ( AccountService.user.ios_push && window.parent && window.parent.device.platform && window.parent.device.model && window.parent.device.platform == 'iOS') {
+						if( !PushService.registered ){
+							PushService.register( function(){ console.log("push registered"); });
+							service.registered = true;
+						}
 					}
 				}
-				if ( AccountService.user.ios_push && window.parent && window.parent.device.platform && window.parent.device.model && window.parent.device.platform == 'iOS') {
-					if( !PushService.registered ){
-						PushService.register( function(){ console.log("push registered"); });
-						service.registered = true;
+
+				// reboot the interval
+				$interval.cancel(service.repeat);
+				service.repeat = $interval(service.check, service.every);
+
+				service.load(function(data) {
+					service.date = new Date;
+
+					if (App.isCordova && parent.plugins && parent.plugins.pushNotification) {
+						var complete = function(){};
+						PushService.badges = parseInt(data.tickets) + parseInt(data.orders['new']);
+						parent.plugins.pushNotification.setApplicationIconBadgeNumber(complete, complete, PushService.badges);
 					}
-				}
+
+					$rootScope.$broadcast('tickets', { 'tickets': data.tickets, 'timestamp': data.timestamp } );
+					if( data.orders ){
+						$rootScope.$broadcast('totalOrders', data.orders['total']);
+						$rootScope.$broadcast('newOrders', data.orders['new']);
+						$rootScope.$broadcast('acceptedOrders', data.orders['accepted']);
+						$rootScope.$broadcast('pickedupOrders', data.orders['pickedup']);
+					}
+					$rootScope.$broadcast('adminWorking', data.working);
+
+					favicoService.badge((parseInt(data.tickets) + parseInt(data.orders['new'])) || 0);
+				});
 			}
-
-			// reboot the interval
-			$interval.cancel(service.repeat);
-			service.repeat = $interval(service.check, service.every);
-
-			service.load(function(data) {
-				service.date = new Date;
-
-				if (App.isCordova && parent.plugins && parent.plugins.pushNotification) {
-					var complete = function(){};
-					PushService.badges = parseInt(data.tickets) + parseInt(data.orders['new']);
-					parent.plugins.pushNotification.setApplicationIconBadgeNumber(complete, complete, PushService.badges);
-				}
-
-				$rootScope.$broadcast('tickets', { 'tickets': data.tickets, 'timestamp': data.timestamp } );
-				if( data.orders ){
-					$rootScope.$broadcast('totalOrders', data.orders['total']);
-					$rootScope.$broadcast('newOrders', data.orders['new']);
-					$rootScope.$broadcast('acceptedOrders', data.orders['accepted']);
-					$rootScope.$broadcast('pickedupOrders', data.orders['pickedup']);
-				}
-				$rootScope.$broadcast('adminWorking', data.working);
-
-				favicoService.badge((parseInt(data.tickets) + parseInt(data.orders['new'])) || 0);
-			});
 		}
 	}
 
