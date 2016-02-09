@@ -166,7 +166,7 @@ class Crunchbutton_Phone extends Cana_Table {
 		if (!$phone) {
 			return null;
 		}
-		$obj = self::q('select * from phone where phone=?', [$phone])->get(0);
+		$obj = self::q('select * from phone where phone=?', [$phone], c::dbWrite() )->get(0);
 		if (!$obj->id_phone) {
 			$obj = new Phone([
 				'phone' => $phone
