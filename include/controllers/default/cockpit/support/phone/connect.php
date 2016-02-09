@@ -18,7 +18,7 @@ class Controller_Support_Phone_Connect extends Crunchbutton_Controller_Account {
 		}
 
 		$num = c::admin()->phone;
-		$host = 'live.ci.crunchbutton.crunchr.co';
+		$host = 'live.staging.crunchbutton.crunchr.co';
 		//c::config()->host_callback
 
 		$twilio = c::twilio();
