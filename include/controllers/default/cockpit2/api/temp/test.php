@@ -11,8 +11,8 @@ class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
 
 		// 112966
 		// 612
-
-		Cockpit_Admin_Pexcard::pexCardRemoveCardFundsDaily();
+Crunchbutton_Pexcard_Token::createToken();
+		// Cockpit_Admin_Pexcard::pexCardRemoveCardFundsDaily();
 
 		// echo json_encode(  Crunchbutton_Pexcard_Details::account()  );exit;
 
