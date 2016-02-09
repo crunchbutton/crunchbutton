@@ -50,6 +50,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$out[ 'orders' ] = intval( $this->totalOrdersDeliveredPeriod( $days ) );
 		$out[ 'hours' ] = intval( $this->totalHoursWorkedPeriod( $days ) );
 		$totalDeliveryTimePeriod = intval( $this->totalDeliveryTimePeriod( $days ) );
+
 		if( $out[ 'orders' ] && $out[ 'hours' ] ){
 			$out[ 'avg_orders_hours' ] = number_format( $out[ 'orders' ] / $out[ 'hours' ], 2 );
 		} else {
@@ -57,11 +58,10 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		}
 
 		if( $totalDeliveryTimePeriod && $out[ 'orders'] ){
-			$out[ 'avg_delivery_time' ] = number_format( $totalDeliveryTimePeriod / $out[ 'orders' ], 2 );
+			$out[ 'avg_delivery_time' ] = ceil( $totalDeliveryTimePeriod / $out[ 'orders' ] );
 		} else {
 			$out[ 'avg_delivery_time' ] = 0;
 		}
-
 		return $out;
 	}
 
@@ -71,7 +71,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 								INNER JOIN `order` o ON o.id_order = oa.id_order
 								WHERE oa.id_admin = ? AND oa.type = ? AND oa.timestamp BETWEEN DATE_SUB( NOW(), INTERVAL ? DAY) AND NOW()';
 		$result = c::db()->get( $query, [ $this->id_admin, Crunchbutton_Order_Action::DELIVERY_DELIVERED, $days ] );
-		return number_format( ( $result->_items[0]->minutes / 60 ), 2 );
+		return ( $result->_items[0]->minutes / 60 );
 	}
 
 	public function totalHoursWorkedPeriod( $days ){
