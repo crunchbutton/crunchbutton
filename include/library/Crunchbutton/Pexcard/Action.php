@@ -129,11 +129,18 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 		 	 			} else {
 		 	 				$message = $card->Message;
 		 	 			}
+
+						$this->status = Crunchbutton_Pexcard_Action::STATUS_ERROR;
+						$this->response = json_encode( $card->body );
+						$this->status_date = date( 'Y-m-d H:i:s' );
+						$this->save();
+
 		 	 			echo '### $card->Message ' . $message . "\n";
 		 	 			$this->error( $message );
 		 	 		}
 				} catch ( Exception $e ) {
 					echo '### $e ' . $e . "\n";
+
 					$this->que();
 				} finally {
 					echo '### status ' . $this->status . "\n";
@@ -155,7 +162,7 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 		$message .= 'Action: ' . $this->action . "\n";
 		$message .= 'Card Serial: ' . $pexcard->card_serial . "\n";
 		$message .= 'Last four: ' . $pexcard->last_four;
-		Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+		// Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
 	}
 
 	public function pexcard(){
