@@ -107,6 +107,10 @@ class Crunchbutton_Pexcard_Card extends Crunchbutton_Pexcard_Resource {
 		return Crunchbutton_Pexcard_Resource::request( 'fund', [ 'id' => $id, 'amount' => $amount ] );
 	}
 
+	public function zero( $id ){
+		return Crunchbutton_Pexcard_Resource::request( 'zero', [ 'id' => $id ] );
+	}
+
 	public function change_status( $id, $status ){
 		switch ( Crunchbutton_Pexcard_Resource::api_version() ) {
 			case 'v4':

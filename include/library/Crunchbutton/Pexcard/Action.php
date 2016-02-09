@@ -9,6 +9,7 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 	const ACTION_ORDER_REJECTED = 'order-rejected';
 	const ACTION_ARBRITARY = 'arbritary';
 	const ACTION_REMOVE_FUNDS = 'remove-funds';
+	const ACTION_ZERO = 'zero';
 
 	const STATUS_SCHEDULED = 'scheduled';
 	const STATUS_PROCESSING = 'processing';
@@ -103,14 +104,18 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 			$this->tries = ( !$this->tries ) ? 0 : $this->tries;
 			if( $this->tries < Crunchbutton_Pexcard_Action::MAX_TRIES ){
 				$this->status = Crunchbutton_Pexcard_Action::STATUS_PROCESSING;
-				$this->status_date = date( 'Y-m-d H:i:s' );
 				$this->tries = ( $this->tries + 1 );
+				$this->status_date = date( 'Y-m-d H:i:s' );
 				$this->save();
 				$id_pexcard_action = $this->id_pexcard_action;
 				echo '### status ' . $this->status . "\n";
 				$pexcard = Cockpit_Admin_Pexcard::o( $this->id_admin_pexcard );
 				try {
-					$card = Crunchbutton_Pexcard_Card::fund( $pexcard->id_pexcard, $this->amount );
+					if( $this->action == Crunchbutton_Pexcard_Action::ACTION_ZERO ){
+						$card = Crunchbutton_Pexcard_Card::zero( $pexcard->id_pexcard );
+					} else {
+						$card = Crunchbutton_Pexcard_Card::fund( $pexcard->id_pexcard, $this->amount );
+					}
 					echo '### $card->body->id ' . $card->body->id . "\n";
 					echo '### $card->body->AccountId ' . $card->body->AccountId . "\n";
 					if( $card->body && ( $card->body->id || $card->body->AccountId ) ){
@@ -119,8 +124,13 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 						$this->status_date = date( 'Y-m-d H:i:s' );
 						$this->save();
 		 	 		} else {
-		 	 			echo '### $card->Message ' . $card->Message . "\n";
-		 	 			$this->error( $card->Message );
+		 	 			if( $card->body && $card->body->Message ){
+		 	 				$message = $card->body->Message;
+		 	 			} else {
+		 	 				$message = $card->Message;
+		 	 			}
+		 	 			echo '### $card->Message ' . $message . "\n";
+		 	 			$this->error( $message );
 		 	 		}
 				} catch ( Exception $e ) {
 					echo '### $e ' . $e . "\n";
@@ -131,6 +141,7 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 						$this->que();
 					}
 				}
+
 			} else {
 				$this->error( 'Exceeded the maximum (' . $action->MAX_TRIES . ') tries to add funds.' );
 			}

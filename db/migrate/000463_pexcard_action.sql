@@ -1,0 +1,1 @@
+ALTER TABLE pexcard_action MODIFY COLUMN action ENUM(  'shift-started','shift-finished','order-accepted','order-cancelled','arbritary','remove-funds','order-rejected', 'zero' );

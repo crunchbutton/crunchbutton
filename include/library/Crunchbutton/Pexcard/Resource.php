@@ -13,19 +13,19 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 	}
 
 	public function cache( $AccountId = false ){
-		$fileName = Crunchbutton_Pexcard_Resource::CACHE_FILE_NAME . date( 'Y-m-d' ) . ( $AccountId ? $AccountId : '' );
-		$cache = new Cana_Cache( array( 'dir' => c::config()->dirs->cache.'data/' ) );
-		if( $cache->cached( $fileName ) ){
-			return $cache->read( $fileName );
+		$cache = Crunchbutton_Pexcard_Cache::byDate( date( 'Y-m-d' ), $AccountId );
+		if( $cache->data ){
+			$data = json_decode( $cache->data );
+			return $data;
 		}
 		return false;
 	}
 
-	public function saveCache( $content, $AccountId = false ){
-		$fileName = Crunchbutton_Pexcard_Resource::CACHE_FILE_NAME . date( 'Y-m-d' ) . ( $AccountId ? $AccountId : '' );
-		$cache = new Cana_Cache( array( 'dir' => c::config()->dirs->cache.'data/' ) );
-		$cache->write( $fileName, $content );
-		return $content;
+	public function saveCache( $data, $AccountId = false ){
+		$data = ( object ) [ 'body' => $data->body ];
+		$data = json_encode( $data );
+		Crunchbutton_Pexcard_Cache::create( $data, $AccountId );
+		return $data;
 	}
 
 	public static function uri(){
@@ -77,6 +77,7 @@ class Crunchbutton_Pexcard_Resource extends Cana_Table {
 					'createcard' => [ 'point' => 'Card/Create', 'method' => 'POST', 'auth' => 'token'  ],
 					'detailsaccount' => [ 'point' => 'Details/AccountDetails/:id', 'method' => 'GET', 'auth' => 'token'  ],
 					'activatecard' => [ 'point' => 'Card/Activate/:id', 'method' => 'POST', 'auth' => 'token'  ],
+					'zero' => [ 'point' => 'Card/Zero/:id', 'method' => 'POST', 'auth' => 'token'  ],
 					'fund' => [ 'point' => 'Card/Fund/:id', 'method' => 'POST', 'auth' => 'token'  ],
 					'changecardstatus' => [ 'point' => 'Card/Status/:id', 'method' => 'PUT', 'auth' => 'token' ],
 					'spendbytransactionreport' => [ 'point' => 'Details/TransactionDetails?StartDate=:StartDate&EndDate=:EndDate&IncludePendings=:IncludePendings', 'method' => 'GET', 'auth' => 'token' ],
