@@ -112,7 +112,20 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 	}
 
 	public static function pexCardRemoveCardFundsDaily(){
-		$cards = self::q( 'SELECT * FROM admin_pexcard' );
+		$cards = Crunchbutton_Pexcard_Details::cards();
+		$removeFrom = [];
+		foreach( $cards as $card ){
+			if( $card->LedgerBalance || $card->AvailableBalance ){
+				$removeFrom[ $card->id ] = true;
+			}
+		}
+		$cards = Cockpit_Admin_Pexcard::q( 'SELECT DISTINCT( ap.id_pexcard ) AS id_pexcard FROM pexcard_action pa INNER JOIN admin_pexcard ap ON ap.id_admin_pexcard = pa.id_admin_pexcard WHERE DATE( pa.date ) >= DATE( NOW() - INTERVAL 10 DAY ) ORDER BY id_pexcard_action DESC' );
+		foreach( $cards as $card ){
+			$removeFrom[ $card->id_pexcard ] = true;
+		}
+		$cards = array_keys( $removeFrom );
+		$cards = join( $cards, ',' );
+		$cards = self::q( 'SELECT * FROM admin_pexcard WHERE id_pexcard IN ( ' . $cards . ' )' );
 		foreach( $cards as $card ){
 			if( !$card->isBusinessCard() ){
 				$card->createQueRemoveFunds();
