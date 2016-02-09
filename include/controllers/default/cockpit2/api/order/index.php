@@ -311,7 +311,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 							break;
 
 						case 'rejected':
-							$res = $order->setStatus( Crunchbutton_Order_Action::DELIVERY_REJECTED, $notify_customer, $admin, $note, true );
+							$res = $order->setStatus( Crunchbutton_Order_Action::DELIVERY_REJECTED, $notify_customer, $admin, $note, true, false );
 							break;
 
 						case 'canceled':
