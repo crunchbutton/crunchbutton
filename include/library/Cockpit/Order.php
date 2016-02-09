@@ -373,6 +373,9 @@ class Cockpit_Order extends Crunchbutton_Order {
 			case 'order':
 				return $this->exportsOrderPage();
 				break;
+			case 'ticket':
+				return $this->exportsTicketPage();
+				break;
 			case 'driver':
 				return $this->exportsDriverPage();
 				break;
@@ -387,9 +390,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 
 		$params = [];
 
-		$time_start = microtime( true );
-		$out[ '_time' ] = [ 'start' => $time_start ];
-		$out = array_merge( $out, $this->properties() );
+		$out = $this->properties();
 
 		$date = $this->date();
 
@@ -620,18 +621,115 @@ class Cockpit_Order extends Crunchbutton_Order {
 			}
 		}
 
-		$out[ '_time' ][ 'end'] = microtime( true );
-		$out[ '_time' ][ 'exec'] = ( $out[ '_time' ][ 'end'] - $out[ '_time' ][ 'start'] );
+		return $out;
+	}
+
+	private function exportsTicketPage(){
+
+		$out = $this->properties();
+
+		$restaurant = $this->restaurant();
+		if( $restaurant->id_restaurant ){
+			$out['restaurant'] = [ 'id_restaurant' => $restaurant->id_restaurant,
+															'name' => $restaurant->name,
+															'phone' => $restaurant->phone,
+															'permalink' => $restaurant->permalink,
+															'address' => $restaurant->address,
+															'timezone' => $restaurant->timezone,
+															'formal_relationship' => $restaurant->formal_relationship ];
+		}
+
+		$out[ 'do_not_reimburse_driver' ] = ( intval( $out[ 'do_not_reimburse_driver' ] ) > 0 ) ? true : false;
+		$out[ 'do_not_pay_driver' ] = ( intval( $out[ 'do_not_pay_driver' ] ) > 0 ) ? true : false;
+		$out[ 'do_not_pay_restaurant' ] = ( intval( $out[ 'do_not_pay_restaurant' ] ) > 0 ) ? true : false;
+		$out[ 'delivery_service' ] = ( intval( $out[ 'delivery_service' ] ) > 0 ) ? true : false;
+
+		$campus_card_charged = $this->campus_cash_charged();
+
+		if( $campus_card_charged ){
+			$out[ 'campus_cash_charged' ] = true;
+			$out[ 'campus_cash_charged_info' ] = $campus_card_charged;
+		} else {
+			$out[ 'campus_cash_charged' ] = false;
+			$paymentType = $this->paymentType();
+			$out[ 'campus_cash_sha1' ] = $paymentType->stripe_id;
+		}
+
+		$status = $this->status()->last();
+
+		$date = $this->date();
+		$out['date'] = $date->format( 'c' );
+
+		$date_delivery = $this->date_delivery();
+		if( $date_delivery ){
+			$out['date_delivery'] = $date_delivery->format('c');
+		}
+
+		$credit = $this->chargedByCredit();
+		if( $credit > 0 ){
+			$out['credit'] = $credit;
+		} else {
+			$out['credit'] = 0;
+		}
+
+		$out[ 'refunded' ] = intval( $out[ 'refunded' ] );
+
+		if( $out[ 'refunded' ] ){
+			 $transaction = $this->refundedReason();
+			 if( $transaction ){
+				$out[ 'refunded_reason' ] = $transaction->note;
+			 }
+		}
+
+		$status = $this->lastStatus();
+
+		$status_date = new DateTime( $status[ 'date' ], new DateTimeZone( $this->restaurant()->timezone ) );
+		$now = new DateTime( 'now', new DateTimeZone( $this->restaurant()->timezone ) );
+		$status[ 'date_timestamp' ] = Crunchbutton_Util::dateToUnixTimestamp( $status_date );
+		$status[ '_outside_of_24h' ] = Crunchbutton_Util::intervalMoreThan24Hours( $now->diff( $date ) );
+		$status[ '_date_formatted' ] = $status_date->format( 'M jS Y g:i:s A' );
+
+		$out['status'] = $status;
+		$out['eta'] = $this->eta()->exports();
+		if( $status[ 'driver' ] ){
+			$driver = Admin::o( $status[ 'driver' ][ 'id_admin' ] );
+			$out['driver'] = [ 'id_admin' => $driver->id_admin,
+												 'name' => $driver->name,
+												 'login' => $driver->login,
+												 'phone' => $driver->phone ];
+			$note = $driver->lastNote();
+			if( $note->id_admin_note ){
+				$out['driver'][ 'note' ] = $note->exports();
+			}
+			$out['driver'] = array_merge( $out[ 'driver' ], $driver->lastCheckins() );
+		}
+
+		if( $out[ 'refunded' ] ){
+			$out[ 'refunded_status' ] = $this->refundedStatus();
+			if( $out[ 'refunded_status' ] == self::STATUS_REFUNDED_PARTIALLY ){
+				$out[ 'refunded_partial' ] = true;
+			}
+			$out[ 'refunded_amount' ] = $this->refundedTotal();
+		}
+
+		$out = array_merge( $out, $this->dishData() );
+
+		$out['_tip'] = $this->tip();
+		$out['_tax'] = $this->tax();
+		$credit = $this->chargedByCredit();
+		if( $credit > 0 ){
+			$out['credit'] = $credit;
+		} else {
+			$out['credit'] = 0;
+		}
+		$out['charged'] = floatval( $this->charged() );
 
 		return $out;
 	}
 
 	private function exportsOrderPage(){
-		$out = [];
-		$time_start = microtime( true );
-		$out[ '_time' ] = [ 'start' => $time_start ];
 
-		$out = array_merge( $out, $this->properties() );
+		$out = $this->properties();
 
 		$out['id'] = $this->uuid;
 
@@ -763,9 +861,6 @@ class Cockpit_Order extends Crunchbutton_Order {
 			$out['credit'] = 0;
 		}$out['charged'] = floatval( $this->charged() );
 
-		$out[ '_time' ][ 'end'] = microtime( true );
-		$out[ '_time' ][ 'exec'] = ( $out[ '_time' ][ 'end'] - $out[ '_time' ][ 'start'] );
-
 		return $out;
 	}
 
@@ -774,36 +869,39 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$dishes_data = [];
 		$quantity = [];
 		$_dishes = Crunchbutton_Order_Data::dishes( $this->id_order );
-		foreach( $_dishes as $dish ){
-			$with_option = $dish->options->with_option;
-			$without_default_options = $dish->options->without_default_options;
-			if( $with_option && count( $with_option ) ){
-				$commas = '';
-				$dish->with_option = '';
-				foreach( $with_option as $option ){
-					$dish->with_option .= $commas . $option->name;
-					$commas = ', ';
+		if( $_dishes ){
+			foreach( $_dishes as $dish ){
+				$with_option = $dish->options->with_option;
+				$without_default_options = $dish->options->without_default_options;
+				if( $with_option && count( $with_option ) ){
+					$commas = '';
+					$dish->with_option = '';
+					foreach( $with_option as $option ){
+						$dish->with_option .= $commas . $option->name;
+						$commas = ', ';
+					}
 				}
-			}
-			if( $without_default_options && count( $without_default_options ) ){
-				$commas = '';
-				$dish->without_default_options = '';
-				foreach( $without_default_options as $option ){
-					$dish->without_default_options .= $commas . 'No ' . $option->name;
-					$commas = ', ';
+				if( $without_default_options && count( $without_default_options ) ){
+					$commas = '';
+					$dish->without_default_options = '';
+					foreach( $without_default_options as $option ){
+						$dish->without_default_options .= $commas . 'No ' . $option->name;
+						$commas = ', ';
+					}
 				}
+				$hash = md5( json_encode( $dish ) );
+				if( !$quantity[ $hash ] ){
+					$quantity[ $hash ] = 0;
+				}
+				$quantity[ $hash ]++;
+				$dish->quantity = $quantity[ $hash ];
+				$dish->price->regular_unity = $dish->price->regular;
+				$dish->price->regular = ( $dish->quantity * $dish->price->regular );
+				$dish->price->final_price = ( $dish->quantity * $dish->price->final_price );
+				$dishes_data[ $hash ] = $dish;
 			}
-			$hash = md5( json_encode( $dish ) );
-			if( !$quantity[ $hash ] ){
-				$quantity[ $hash ] = 0;
-			}
-			$quantity[ $hash ]++;
-			$dish->quantity = $quantity[ $hash ];
-			$dish->price->regular_unity = $dish->price->regular;
-			$dish->price->regular = ( $dish->quantity * $dish->price->regular );
-			$dish->price->final_price = ( $dish->quantity * $dish->price->final_price );
-			$dishes_data[ $hash ] = $dish;
 		}
+
 		$out[ 'dishes_data' ] = [];
 		foreach( $dishes_data as $key => $dish ){
 			$out[ 'dishes_data' ][] = $dish;
