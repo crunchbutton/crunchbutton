@@ -429,6 +429,8 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 	public function valide_code( $code, $phone = false, $id_restaurant = false ){
 
 		$code = trim( $code );
+		$code = str_replace( '"', '', $code );
+		$code = str_replace( "'", '', $code );
 
 		// At first check if it is an user's invite code - rewards: two way gift cards #2561
 		$reward = new Crunchbutton_Reward;

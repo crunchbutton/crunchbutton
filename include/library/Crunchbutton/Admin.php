@@ -56,7 +56,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public static function byInviteCode( $code ){
-		return Crunchbutton_Admin::q( 'SELECT * FROM admin WHERE UPPER( invite_code ) = UPPER("' . $code . '")' );
+		return Crunchbutton_Admin::q( 'SELECT * FROM admin WHERE UPPER( invite_code ) = UPPER(?)', [ $code ] );
 	}
 
 	public function stopHelpOutNotification(){
