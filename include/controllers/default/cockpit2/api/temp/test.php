@@ -12,9 +12,9 @@ class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
 		// 112966
 		// 612
 // Crunchbutton_Pexcard_Token::createToken();
-		// Cockpit_Admin_Pexcard::pexCardRemoveCardFundsDaily();
+		Cockpit_Admin_Pexcard::pexCardRemoveCardFundsDaily();
 
-		echo json_encode(  Crunchbutton_Pexcard_Details::account()  );exit;
+		// echo json_encode(  Crunchbutton_Pexcard_Details::account()  );exit;
 
 		// $pex = Cockpit_Admin_Pexcard::o( 1390 );
 		// $pex->addArbitraryFunds( 5, 'test' );
