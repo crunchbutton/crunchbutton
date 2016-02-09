@@ -26,6 +26,7 @@ class Crunchbutton_Pexcard_Token extends Crunchbutton_Pexcard_Resource {
 		self::desactiveToken();
 
 		$request = Crunchbutton_Pexcard_Resource::request( 'token', [ 'Username' => Crunchbutton_Pexcard_Resource::username(), 'Password' => Crunchbutton_Pexcard_Resource::password() ] );
+		echo '<pre>';var_dump( $request );exit();
 		if( $request->body && $request->body->Token ){
 			$token = new Crunchbutton_Pexcard_Token;
 			$token->token = $request->body->Token;
