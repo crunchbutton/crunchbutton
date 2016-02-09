@@ -12,7 +12,7 @@ class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
 		// 112966
 		// 612
 // Crunchbutton_Pexcard_Token::createToken();
-		// Cockpit_Admin_Pexcard::pexCardRemoveCardFundsDaily();
+		Cockpit_Admin_Pexcard::pexCardRemoveCardFundsDaily();
 
 		// echo json_encode(  Crunchbutton_Pexcard_Details::account()  );exit;
 
@@ -21,10 +21,10 @@ class Controller_api_temp_test extends Crunchbutton_Controller_RestAccount {
 		// $pex->runQueRemoveFunds();
 
 // echo '<pre>';var_dump( Crunchbutton_Pexcard_Token::getToken() );exit();
-		if( $_GET[ 'id_action' ] ){
-			$action = Crunchbutton_Pexcard_Action::o( $_GET[ 'id_action' ] );
-			$action->run();
-		}
+		// if( $_GET[ 'id_action' ] ){
+			// $action = Crunchbutton_Pexcard_Action::o( $_GET[ 'id_action' ] );
+			// $action->run();
+		// }
 
 		// Crunchbutton_Cron_Job_CreatePexCardToken::run();
 
