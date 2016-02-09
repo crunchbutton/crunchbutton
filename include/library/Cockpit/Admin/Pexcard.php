@@ -130,16 +130,21 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 	}
 
 	public function runQueRemoveFunds(){
-		echo "running remove funds que # $this->id_admin_pexcard \n";
-		$info = $this->load_card_info();
-		if( $info->availableBalance > 0 ){
-			echo "funds to remove $info->availableBalance \n\n";
-			$this->pexCardRemoveLeftFunds( $info->availableBalance );
-		} else {
-			echo "no funds to remove \n\n";
+		if( $this->isBusinessCard() ){
+			return;
 		}
+		echo "running remove funds que # $this->id_admin_pexcard \n";
+		$pexcard_action = new Crunchbutton_Pexcard_Action();
+		$pexcard_action->id_admin_pexcard = $this->id_admin_pexcard;
+		$pexcard_action->date = date( 'Y-m-d H:i:s' );
+		$pexcard_action->tries = 0;
+		$pexcard_action->action = Crunchbutton_Pexcard_Action::ACTION_ZERO;
+		$pexcard_action->status = Crunchbutton_Pexcard_Action::STATUS_SCHEDULED;
+		$pexcard_action->save();
+		$pexcard_action->run();
 	}
 
+	// deprecated
 	public function pexCardRemoveLeftFunds( $amount ){
 		if( $this->isBusinessCard() ){
 			return;
