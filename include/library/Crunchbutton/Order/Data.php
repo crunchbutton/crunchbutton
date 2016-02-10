@@ -100,6 +100,12 @@ class Crunchbutton_Order_Data extends Cana_Table {
 			$out[ 'dishes' ][] = [ 'id_dish' => $dish->id_dish, 'name' => $food, 'price' => [ 'regular' => floatval( $regular_price ), 'final_price' => floatval( $price ) ], 'options' => [ 'without_default_options' => $withoutDefaultOptions, 'with_option' => $withOptions ] ];
 		}
 
+		$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder( 246139 );
+		$out[ 'drivers' ] = [];
+		foreach( $drivers as $driver ){
+			$out[ 'drivers' ][] = $driver->exports();
+		}
+
 		$data = new Crunchbutton_Order_Data;
 		$data->id_order = $order->id_order;
 		$data->timestamp = date('Y-m-d H:i:s');
