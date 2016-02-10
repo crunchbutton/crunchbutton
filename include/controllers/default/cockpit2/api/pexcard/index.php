@@ -193,11 +193,12 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 							if( $card->cards ){
 								$_cards = $card->cards;
 							} else {
-								$_cards = Crunchbutton_Pexcard_Details::cards( $card->id );
+								$account = Crunchbutton_Pexcard_Details::account( $card->id );
+								$_cards = $account->body->CardList;
 							}
 
 							foreach( $_cards as $_card ){
-								$card_number = str_replace( 'X', '', $_card->cardNumber );
+								$card_number = str_replace( 'X', '', $_card->Last4CardNumber );
 								if( intval( $card_number ) == intval( $last_four_digits ) ){
 									$card->cards = $_cards;
 									echo json_encode( $card );exit;
@@ -368,7 +369,8 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 								if( $card->cards ){
 									$_cards = $card->cards;
 								} else {
-									$_cards = Crunchbutton_Pexcard_Details::cards( $card->id );
+									$account = Crunchbutton_Pexcard_Details::account( $card->id );
+									$_cards = $account->body->CardList;
 								}
 
 								foreach( $_cards as $_card ){

@@ -441,7 +441,7 @@ NGApp.controller( 'DriversPexCardCtrl', function ( $scope, PexCardService ) {
 					$scope.crunchbutton_card_id = null;
 					$scope.last_four_digits = null;
 					$scope.card = null;
-					App.alert( 'Your PEX Card is Active! :D! Activate another PEX card', 'success' );
+					App.alert( 'Your PEX Card is Active!', 'success' );
 				} else {
 					App.alert( 'Error activating card!', 'error' );
 					$scope.isActivating = false;
@@ -479,8 +479,6 @@ NGApp.controller( 'DriversPexCardCtrl', function ( $scope, PexCardService ) {
 					$scope.card = json;
 				} else {
 					App.alert( json.error, 'error' );
-					$scope.crunchbutton_card_id = '';
-					$scope.last_four_digits = '';
 				}
 			}
 		);

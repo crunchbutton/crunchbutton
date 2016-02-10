@@ -131,8 +131,6 @@ NGApp.controller( 'PexCardIdCtrl', function ( $scope, $routeParams, $route, PexC
 					if( $scope._id_admin ){
 						$scope.card.id_admin = $scope._id_admin;
 					}
-					console.log('$scope._id_admin',$scope._id_admin);
-					console.log('$scope.card',$scope.card);
 				} else {
 					$scope.flash.setMessage( json.error, 'error' );
 					$scope.crunchbutton_card_id = '';
