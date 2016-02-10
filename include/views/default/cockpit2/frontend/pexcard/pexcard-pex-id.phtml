@@ -67,19 +67,19 @@
 			<ul class="ul-info box-content2" ng-repeat="_card in card.cards">
 				<li class="li-info">
 					<div class="label">Card Id:</div>
-					<div class="data">{{_card.id}}</div>
+					<div class="data">{{_card.CardId}}</div>
 				</li>
 				<li class="li-info">
 					<div class="label">Card Number:</div>
-					<div class="data">{{_card.cardNumber}}</div>
+					<div class="data">{{_card.Last4CardNumber}}</div>
 				</li>
 				<li class="li-info">
 					<div class="label">Status:</div>
 					<div class="data">
-						{{_card.status}}
+						{{_card.CardStatus}}
 						&nbsp;&nbsp;&nbsp;
-						<span ng-if="_card.status == status.OPEN" class="orange link" ng-click="block_card( _card.id )">Block card</span>
-						<span ng-if="_card.status == status.BLOCKED" class="orange link" ng-click="open_card( _card.id )">Open card</span>
+						<span ng-if="_card.CardStatus == status.OPEN" class="orange link" ng-click="block_card( _card.id )">Block card</span>
+						<span ng-if="_card.CardStatus == status.BLOCKED" class="orange link" ng-click="open_card( _card.id )">Open card</span>
 					</div>
 				</li>
 			</ul>
