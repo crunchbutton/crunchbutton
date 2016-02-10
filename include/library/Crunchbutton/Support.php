@@ -850,6 +850,90 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		return $hasCreatePermission;
 	}
 
+	public function exportsPage( $page ){
+		switch ( $page ) {
+			case 'ticket':
+				return $this->exportsPageTicket();
+				break;
+
+			default:
+				return $this->exports();
+				break;
+		}
+	}
+
+	private function exportsPageTicket(){
+
+		$out = $this->properties();
+
+		if ($this->id_user) {
+			$user = $this->user();
+		} elseif ($this->id_phone) {
+			$user = User::q( 'SELECT * FROM user WHERE id_phone = ? ORDER BY id_user DESC LIMIT 1', [ $this->id_phone ] )->get( 0 );
+		}
+		if ($user->id_user) {
+			$out['user'] = [ 	'id_user' => $user->id_user,
+												'name' => $user->name,
+												'phone' => $user->phone,
+												'email' => $user->email,
+												'address' => $user->address ];
+		}
+
+		if ( $this->id_order ) {
+			$order = $this->order();
+		} elseif( $user ) {
+			$order = Order::q( 'SELECT * FROM `order` WHERE id_user = ? ORDER BY id_order DESC LIMIT 1', [ $out['user'][ 'id_user' ] ] )->get( 0 );
+		}
+
+		if ( $order->id_order ) {
+			$out['order'] = $order->exportsPage( 'ticket' );
+			$out['restaurant'] = $out[ 'order' ][ 'restaurant' ];
+			unset( $out[ 'order' ][ 'restaurant' ] );
+		}
+
+		// Export the comments
+		$out[ 'comments' ] = [];
+		$comments = $this->comments();
+		foreach( $comments as $comment ){
+			$out[ 'comments' ][] = $comment->exportsNote();
+		}
+
+		// Check if the ticket belongs to a driver with pexcard #3990
+		$admin = Admin::getByPhone( $this->clearPhone( $this->phone ) );
+		if( $admin->id_admin && $admin->isDriver() ){
+			$pexcard = $admin->pexcard();
+			if( $pexcard->id_admin_pexcard ){
+				$out[ 'pexcard' ] = $pexcard->exports();
+				$out[ 'pexcard' ][ 'name' ] = $admin->name;
+			}
+		}
+
+		if( $admin->id_admin ){
+			$out[ 'staff' ] = $admin->exportsPage( 'ticket' );
+		}
+
+		if ($out['restaurant'] || $out['order'] || $out['staff']) {
+			if ($out['order']) {
+				$community = Community::o($out['order']['id_community']);
+			} elseif( $out['restaurant'] ){
+				$community = Community::q('select c.* from community c left join restaurant_community rc where rc.id_restaurant=? limit 1', [$out['restaurant']->id_restaurant])->get(0);
+			} elseif( $out[ 'staff' ] ){
+				$community = Community::o( $id_community );
+			}
+			if ($community->id_community) {
+				$out[ 'community' ] = [];
+				$out[ 'community' ][ 'id_community' ] = $community->id_community;
+				$out[ 'community' ][ 'name' ] = $community->name;
+				$out[ 'community' ][ 'permalink' ] = $community->permalink;
+				$note = $community->lastNote();
+				if ($note) {
+					$out[ 'community' ][ 'note' ] = $note->exports();
+				}
+			}
+		}
+		return $out;
+	}
+
 	public function exports($params = []) {
 
 		$out = $this->properties();
@@ -933,6 +1017,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			$out[ 'staff' ][ 'is_campus_manager' ] = $admin->isCampusManager();
 			$out[ 'staff' ][ 'is_support' ] = $admin->isSupport();
 			$out[ 'staff' ][ 'is_working' ] = $admin->isWorking();
+
 			// Check if the driver is delivering any order
 			if( $admin->isDriver() ){
 				$out[ 'staff' ][ 'delivering' ] = $admin->publicExports();

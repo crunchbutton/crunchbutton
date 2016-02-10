@@ -159,7 +159,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 										AND o.name NOT LIKE "%test%"
 										AND r.name NOT LIKE "%test%"
 									ORDER BY o.date ASC';
-		return Order::sq( $query );
+		return Order::q( $query );
 	}
 
 	// shifts we have to pay hourly

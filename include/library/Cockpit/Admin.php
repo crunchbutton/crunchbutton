@@ -407,6 +407,67 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		return floatval( $this->referral_admin_credit );
 	}
 
+	public function exportsPage( $page ){
+		switch ( $page ) {
+			case 'ticket':
+				return $this->exportsPageTicket();
+				break;
+
+			default:
+				return $this->exports();
+				break;
+		}
+	}
+
+	private function exportsPageTicket(){
+
+		$out = $this->properties();
+
+		$out['pexcard'] = [
+			'card_serial' => $this->pex()->card_serial,
+			'last_four' => $this->pex()->last_four,
+			'active' => $this->pex()->card_serial && $this->pex()->card_serial ? true : false
+		];
+
+		if ($this->location()) {
+			$out['location'] = $this->location()->exports();
+		}
+
+		$out = array_merge( $out, $this->lastCheckins() );
+
+		foreach ($this->deliveries() as $order) {
+			$out['deliveries'][] = [
+				'id_order' => $order->id_order,
+				'status' => $order->stati[count($order->stati)-1]['status'],
+				'update' => $order->stati[count($order->stati)-1]['timestamp']
+			];
+		}
+
+		$out[ 'is_driver' ] = $this->isDriver();
+		$out[ 'is_marketing_rep' ] = $this->isMarketingRep();
+		$out[ 'is_campus_manager' ] = $this->isCampusManager();
+		$out[ 'is_support' ] = $this->isSupport();
+		$out[ 'is_working' ] = $this->isWorking();
+
+		// Check if the driver is delivering any order
+		if( $this->isDriver() ){
+			$out[ 'delivering' ] = $this->publicExports();
+		}
+		$note = $this->lastNote();
+		if( $note ){
+			$out[ 'note' ] = $note->exports();
+		}
+		$communities = $this->communitiesHeDeliveriesFor();
+		if( $communities ){
+			$out[ 'communities' ] = [];
+			foreach( $communities as $community ){
+				$id_community = $community->id_community;
+				$out[ 'communities' ][] = $community->name;
+			}
+		}
+		return $out;
+	}
+
 	public function exports( $params = [] ) {
 
 		if( $params[ 'ignore' ] ){
