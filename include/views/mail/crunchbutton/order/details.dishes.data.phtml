@@ -1,12 +1,11 @@
 <?php
-
 foreach ($dishes as $dish) { ?>
 	<tr>
 		<td class="fooditem">1</td>
 		<td class="fooditem"><?php
 			$food = $dish->name;
-			$restaurant_price = $dish->price->final_price;
-			$customer_price = $dish->price->regular;
+			$restaurant_price = $dish->price->regular;;
+			$customer_price = $dish->price->final_price;
 
 			$withoutDefaultOptions = '';
 			$selectOptions = '';

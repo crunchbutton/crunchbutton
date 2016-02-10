@@ -1,5 +1,6 @@
 <?php
 $delivery_service_markup = ( $order->delivery_service_markup ) ? $order->delivery_service_markup : 0;
+
 $isRestaurant = !$user;
 if( $isDriverCockpit ){
 	$isRestaurant = false;
@@ -35,7 +36,8 @@ if( $version == 'customer' ){
 	<?php
 
 	$dishes = Crunchbutton_Order_Data::dishes( $order->id_order );
-	if( $dishes && !$isRestaurant && !$isDriverCockpit ){
+	if( $dishes ){
+
 		echo $this->display('order/details.dishes.data',['set' => ['dishes' => $dishes, 'isRestaurant' => $isRestaurant, 'isDriverCockpit' => $isDriverCockpit ]]);
 	} else {
 		// LEGACY: old orders doesn't have data
