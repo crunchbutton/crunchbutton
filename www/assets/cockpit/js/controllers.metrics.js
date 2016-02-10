@@ -112,6 +112,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 		Object.keys($scope.allowedCommunities).forEach(function (k) { if ($scope.allowedCommunities[k]) { $scope.allowedCommunities[k].selected = false; }});
 		$scope.orderSelectedCommunities();
 	};
+
 	// TODO: Figure out how to avoid the multiple refreshes here!
 	resetData();
 	$scope.refreshData = function (reason) {
@@ -425,6 +426,17 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 	$scope.selectAllCommunities = function(){
 		var communities = [];
 		for( x in $scope.communities ){
+			communities.push( $scope.communities[ x ] );
+		}
+		$scope.settings.communities = communities;
+		$scope.communityChanged();
+	}
+
+	$scope.selectTop5Communities = function(){
+		$scope.selectNoneCommunity();
+		var communities = [];
+		for( x in $scope.communities ){
+			if( $scope.communities[ x ].top )
 			communities.push( $scope.communities[ x ] );
 		}
 		$scope.settings.communities = communities;
