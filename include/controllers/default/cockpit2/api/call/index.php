@@ -77,7 +77,7 @@ class Controller_api_call extends Crunchbutton_Controller_RestAccount {
 
 					$_message = Crunchbutton_Message_Sms::greeting( $name ) . $message;
 
-					Crunchbutton_Support::createNewWarning(  [ 'dont_open_ticket' => true, 'body' => $_message, 'phone' => $phone ] );
+					Crunchbutton_Support::createNewWarning(  [ 'dont_open_ticket' => true, 'body' => $_message, 'phone' => $number ] );
 
 					Crunchbutton_Message_Sms::send([
 							'from' => 'driver',
