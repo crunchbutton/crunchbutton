@@ -1,6 +1,6 @@
 <span ng-if="order.delivery_service">
 	<span class="tag tag-black" ng-if="order.status.status == 'canceled'">Canceled</span>
-	<span class="tag tag-red" ng-if="order.status.status == 'new'">New</span>
+	<span class="tag tag-red" ng-if="order.status.status == 'new'">Not&nbsp;yet&nbsp;accepted</span>
 	<span class="tag tag-green" ng-if="order.status.status == 'accepted'">Accepted</span>
 	<span class="tag tag-blue" ng-if="order.status.status == 'pickedup'">Pickedup</span>
 	<span class="tag tag-purple" ng-if="order.status.status == 'delivered'">Delivered</span>
