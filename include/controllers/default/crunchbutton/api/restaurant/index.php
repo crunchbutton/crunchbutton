@@ -142,6 +142,12 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 				$restaurant->restaurant_page = true;
 			}
 			$json = $restaurant->exports( $ignore, $where);
+			foreach( $json[ '_categories' ] as $key => $category ){
+				if( !count( $category[ '_dishes' ] ) ){
+					unset( $json[ '_categories' ][ $key ] );
+				}
+			}
+
 		} else {
 			$json = ['error' => 'invalid object'];
 		}
