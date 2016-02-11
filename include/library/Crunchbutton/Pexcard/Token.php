@@ -23,9 +23,15 @@ class Crunchbutton_Pexcard_Token extends Crunchbutton_Pexcard_Resource {
 	public function createToken(){
 
 		// desactive old tokens
+		echo "deactivating old token...\n";
 		self::desactiveToken();
+		echo "old token desactived\n";
 
+
+		echo "creating new token...\n";
 		$request = Crunchbutton_Pexcard_Resource::request( 'token', [ 'Username' => Crunchbutton_Pexcard_Resource::username(), 'Password' => Crunchbutton_Pexcard_Resource::password() ] );
+		var_dump( $request->body );
+		echo "\n\n\n\n";
 		if( $request->body && $request->body->Token ){
 			$token = new Crunchbutton_Pexcard_Token;
 			$token->token = $request->body->Token;
@@ -33,7 +39,10 @@ class Crunchbutton_Pexcard_Token extends Crunchbutton_Pexcard_Resource {
 			$token->env = Crunchbutton_Pexcard_Resource::env();
 			$token->active = 1;
 			$token->save();
+			echo "new tocket created!\n";
 			return $token->token;
+		} else {
+			var_dump( $request );
 		}
 		$message = 'Error creating a pex card token' . "\n";
 		$message .= 'It is important, please contact Daniel or Devin';
