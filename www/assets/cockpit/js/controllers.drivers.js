@@ -567,15 +567,16 @@ NGApp.controller( 'DriversShiftsScheduleRatingCtrl', function ( $scope, $rootSco
 	}
 	$scope.shiftsToWorkTo.push( { value: 100, label: 'As many as possible!' } );
 
-	$scope.options = { 'shifts_from': 1, 'shifts_to': 1 };
+	$scope.options = { shifts_from: 1, shifts_to: 1 };
 
 	var process = function( data ){
 		$scope.available = 0;
 		$scope.period = data.info.period;
 		$scope.shifts = data.results;
 		setTimeout( function(){
-			$scope.options.shifts_from = data.options.shifts_from;
-			$scope.options.shifts_to = data.options.shifts_to;
+			$rootScope.$apply(function() {
+				$scope.options = data.options;
+			});
 		}, 200 );
 
 	}
