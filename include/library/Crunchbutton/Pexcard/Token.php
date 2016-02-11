@@ -26,7 +26,6 @@ class Crunchbutton_Pexcard_Token extends Crunchbutton_Pexcard_Resource {
 		self::desactiveToken();
 
 		$request = Crunchbutton_Pexcard_Resource::request( 'token', [ 'Username' => Crunchbutton_Pexcard_Resource::username(), 'Password' => Crunchbutton_Pexcard_Resource::password() ] );
-		echo '<pre>';var_dump( $request );exit();
 		if( $request->body && $request->body->Token ){
 			$token = new Crunchbutton_Pexcard_Token;
 			$token->token = $request->body->Token;
@@ -38,7 +37,8 @@ class Crunchbutton_Pexcard_Token extends Crunchbutton_Pexcard_Resource {
 		}
 		$message = 'Error creating a pex card token' . "\n";
 		$message .= 'It is important, please contact Daniel or Devin';
-		Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+		echo $message;
+		// Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
 	}
 
 	public function __construct($id = null) {
