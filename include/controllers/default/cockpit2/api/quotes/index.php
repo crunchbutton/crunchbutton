@@ -59,6 +59,7 @@ class Controller_api_quotes extends Crunchbutton_Controller_Rest {
 		$quote->facebook_id = $this->request()[ 'facebook_id' ];
 		$quote->quote = $this->request()[ 'quote' ];
 		$quote->all = ( $this->request()[ 'all' ] ? 1 : 0 );
+		$quote->all_restaurants = ( $this->request()[ 'all_restaurants' ] ? 1 : 0 );
 		$quote->active = ( $this->request()[ 'active' ] ? 1 : 0 );
 		$quote->pages = ( $this->request()[ 'pages' ] ? 1 : 0 );
 		$quote->date = date( 'Y-m-d H:i:s' );
@@ -73,6 +74,18 @@ class Controller_api_quotes extends Crunchbutton_Controller_Rest {
 				$community->id_quote = $quote->id_quote;
 				$community->id_community = $id_community;
 				$community->save();
+			}
+		}
+
+		Crunchbutton_Quote_Restaurant::removeByQuote( $quote->id_quote );
+
+		if( !$quote->all_restaurants ){
+			$restaurants = $this->request()[ 'restaurants' ];
+			foreach( $restaurants as $id_restaurant ){
+				$restaurant = new Crunchbutton_Quote_Restaurant();
+				$restaurant->id_quote = $quote->id_quote;
+				$restaurant->id_restaurant = $id_restaurant;
+				$restaurant->save();
 			}
 		}
 

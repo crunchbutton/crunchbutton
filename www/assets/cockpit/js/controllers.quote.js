@@ -32,6 +32,7 @@ NGApp.controller('CommunityQuotesCtrl', function ($rootScope, $scope, ViewListSe
 				}, $scope.communities );
 			} );
 		}
+
 	}
 
 	angular.extend($scope, ViewListService);
@@ -51,7 +52,7 @@ NGApp.controller('CommunityQuotesCtrl', function ($rootScope, $scope, ViewListSe
 	});
 } );
 
-NGApp.controller( 'CommunityQuoteCtrl', function ($scope, $routeParams, $rootScope, $location, QuoteService, CommunityService ) {
+NGApp.controller( 'CommunityQuoteCtrl', function ($scope, $routeParams, $rootScope, $location, QuoteService, CommunityService, RestaurantService ) {
 
 	$scope.quote = { communities: [] };
 
@@ -85,6 +86,29 @@ NGApp.controller( 'CommunityQuoteCtrl', function ($scope, $routeParams, $rootSco
 		} );
 	}
 
+	$scope.$watch( 'quote.communities', function( newValue, oldValue, scope ) {
+		if( newValue && newValue.length == 1 ){
+			restaurants();
+		} else {
+			$scope.restaurants = [];
+			$scope.quote.restaurants = [];
+		}
+	});
+
+	var restaurants = function(){
+		$scope.restaurants = [];
+		var id_community = $scope.quote.communities[ 0 ];
+		if( id_community ){
+			RestaurantService.shortlistByCommunity( id_community, function( json ){
+				angular.forEach( json, function( restaurant, key ) {
+					var ticked = ( $scope.quote.restaurants.indexOf( restaurant.id_restaurant ) >= 0 );
+					this.push( { 'name': restaurant.name, 'id_restaurant': restaurant.id_restaurant, 'ticked': ticked} );
+				}, $scope.restaurants );
+				$scope.ready = true;
+			} );
+		}
+	}
+
 	var communities = function(){
 		if( $scope.communities ){
 			return;
@@ -99,18 +123,21 @@ NGApp.controller( 'CommunityQuoteCtrl', function ($scope, $routeParams, $rootSco
 		} );
 	}
 
+	$scope.quote = { 'all': true, 'active': true, 'communities': [], 'all_restaurants': true, restaurants: [] };
+
 	var load = function(){
 		QuoteService.get( $routeParams.id, function( json ){
 			$scope.quote = json;
 			communities();
+			restaurants();
 		} );
 	}
 
 	if( $routeParams.id ){
 		load();
 	} else {
-		$scope.quote = { 'all': false, 'active': true, 'communities': [] };
 		communities();
+		restaurants();
 	}
 
 } );
