@@ -217,6 +217,7 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 		$out[ 'image' ] = $this->restaurant->getImages( 'name' );
 		$out[ 'id_community_chain' ] = null;
 		$out[ 'tax' ] = intval( $this->restaurant->tax );
+		$out[ 'service_fee' ] = floatval( $this->restaurant->service_fee );
 
 		$chain = $this->restaurant->chain();
 		if( $chain->id_community_chain ){

@@ -287,11 +287,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$tax = $baseToCalcTax * ( $this->tax / 100 );
 		$tax = number_format( round( $tax, 2 ), 2 );
 
+		$cb_service_fee = $baseToCalcTax * ( $this->restaurant()->service_fee / 100 );
+		$this->cb_service_fee = number_format( $cb_service_fee, 2 );
+
 		if($this->restaurant()->delivery_service){
-			$this->final_price = Util::ceil( $totalWithFees  + $tax, 2 ); // price
+			$this->final_price = Util::ceil( $totalWithFees + $tax + $this->cb_service_fee, 2 ); // price
 			$this->final_price_plus_delivery_markup = Util::ceil( $this->final_price + $this->delivery_service_markup_value + $tip, 2 );
 		} else {
-			$this->final_price = Util::ceil( $totalWithFees + $tip + $tax, 2 ); // price
+			$this->final_price = Util::ceil( $totalWithFees + $tip + $tax + $this->cb_service_fee, 2 ); // price
 			$this->final_price_plus_delivery_markup = Util::ceil( $this->final_price + $this->delivery_service_markup_value, 2 );
 		}
 
@@ -1639,6 +1642,23 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$this->notifyRestaurants();
 		if($this->restaurant()->delivery_service){
 			$this->notifyDrivers();
+		}
+	}
+
+	// #2236
+	public function restaurantPrice(){
+
+		$delivery_service_markup = ( $this->delivery_service_markup ) ? $this->delivery_service_markup : 0;
+
+		if( intval( $delivery_service_markup ) > 0 && !$this->final_price_plus_delivery_markup ){
+			return number_format( $this->final_price - $this->delivery_service_markup_value , 2);
+		} else {
+			if( intval( $delivery_service_markup ) > 0 ){
+				return number_format( $this->final_price - $this->cb_service_fee, 2 );
+			} else {
+				return number_format( $this->final_price_plus_delivery_markup - $this->cb_service_fee, 2 );
+			}
+
 		}
 	}
 
