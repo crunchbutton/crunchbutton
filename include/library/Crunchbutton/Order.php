@@ -3794,6 +3794,15 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 	}
 
+	public function campus_cash_charged(){
+		$transaction = Crunchbutton_Order_Transaction::q( 'SELECT * FROM order_transaction WHERE id_order = ? AND type = ? ORDER BY id_order_transaction DESC LIMIT 1', [ $this->id_order, Crunchbutton_Order_Transaction::TYPE_CAMPUS_CASH_CHARGED ] )->get( 0 );
+		if( $transaction->id_order_transaction ){
+			return [ 'name' => $transaction->admin()->name, 'date' => $transaction->date()->format( 'M dS g:i a' ) ];
+		}
+		return false;
+	}
+
+
 	public function save($new = false) {
 
 		$new = $this->id_order ? false : true;
