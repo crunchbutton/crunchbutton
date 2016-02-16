@@ -737,15 +737,19 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			}
 
 			foreach ($nums as $supportName => $supportPhone ) {
+
 				$num = $supportPhone;
-				$name = $supportName;
-				$urlWithName = $url . '/' . $name;
-				$call = $twilio->account->calls->create(
-						c::config()->twilio->{$env}->outgoingRestaurant,
-						'+1'.$num,
-						$urlWithName
-				);
-				Log::debug( [ 'action' => 'Calling', 'num' => $num, 'url' => $urlWithName, 'type' => 'sms' ] );
+				if( $supportPhone ){
+					$name = $supportName;
+					$urlWithName = $url . '/' . $name;
+					$call = $twilio->account->calls->create(
+							c::config()->twilio->{$env}->outgoingRestaurant,
+							'+1'.$num,
+							$urlWithName
+					);
+					Log::debug( [ 'action' => 'Calling', 'num' => $num, 'url' => $urlWithName, 'type' => 'sms' ] );
+				}
+
 			}
 		}
 

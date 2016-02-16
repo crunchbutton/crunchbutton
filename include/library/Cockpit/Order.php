@@ -1022,14 +1022,6 @@ class Cockpit_Order extends Crunchbutton_Order {
 		return Cockpit_Campus_Cash_Log::timesViewed( $id_user_payment_type );
 	}
 
-	public function campus_cash_charged(){
-		$transaction = Crunchbutton_Order_Transaction::q( 'SELECT * FROM order_transaction WHERE id_order = ? AND type = ? ORDER BY id_order_transaction DESC LIMIT 1', [ $this->id_order, Crunchbutton_Order_Transaction::TYPE_CAMPUS_CASH_CHARGED ] )->get( 0 );
-		if( $transaction->id_order_transaction ){
-			return [ 'name' => $transaction->admin()->name, 'date' => $transaction->date()->format( 'M dS g:i a' ) ];
-		}
-		return false;
-	}
-
 	public function mark_cash_card_charged(){
 		$transaction = new Crunchbutton_Order_Transaction;
 		$transaction->id_order = $this->id_order;

@@ -1325,7 +1325,6 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 					}
 					if( !$scope.order.form.deliveryHour ){
 						$scope.order.form.deliveryHour = $scope.order._preOrderHours[ 0 ].value;
-						console.log('$scope.order.form.deliveryHour',$scope.order.form.deliveryHour);
 					}
 				}
 			}
