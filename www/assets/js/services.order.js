@@ -1114,7 +1114,6 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		service.info.fee = breakdown.fee.toFixed(2);
 		service.info.delivery = breakdown.delivery.toFixed(2);
 		// #5597
-		// aqui
 		service.info.delivery_service_fee = ( breakdown.delivery + breakdown.fee ).toFixed(2);
 		service.info.total = total;
 
