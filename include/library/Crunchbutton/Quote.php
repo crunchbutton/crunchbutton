@@ -35,6 +35,25 @@ class Crunchbutton_Quote extends Cana_Table {
 		}
 	}
 
+	public function restaurants( $name = false ){
+		if( $name ){
+			return Crunchbutton_Restaurant::q( 'SELECT restaurant.name, restaurant.id_restaurant FROM quote_restaurant INNER JOIN restaurant ON restaurant.id_restaurant = quote_restaurant.id_restaurant WHERE id_quote = ?', [$this->id_quote]);
+		} else {
+			return Crunchbutton_Quote_Restaurant::q( 'SELECT * FROM quote_restaurant WHERE id_quote = ?', [$this->id_quote]);
+		}
+	}
+
+	public static function byRestaurant( $id_restaurant, $type = false ){
+
+		$type = ( $type ) ? ' AND ' . $type . ' = true' : '';
+
+		if( $id_restaurant == 'all' ){
+			return Crunchbutton_Quote::q( 'SELECT cr.* FROM quote cr WHERE cr.all = true AND active = true ' . $type );
+		} else {
+			return Crunchbutton_Quote::q( 'SELECT cr.* FROM quote cr INNER JOIN quote_restaurant crc ON cr.id_quote = crc.id_quote AND crc.id_restaurant = ?  AND active = true ' . $type, [$id_restaurant]);
+		}
+	}
+
 	public function exports(){
 		$out = $this->properties();
 		$communities = $this->communities();
@@ -44,7 +63,15 @@ class Crunchbutton_Quote extends Cana_Table {
 				$out[ 'communities' ][] = $community->id_community;
 			}
 		}
+		$restaurants = $this->restaurants();
+		if( $restaurants ){
+			$out[ 'restaurants' ] = [];
+			foreach( $restaurants as $restaurant ){
+				$out[ 'restaurants' ][] = $restaurant->id_restaurant;
+			}
+		}
 		$out[ 'all' ] = intval( count( $out[ 'communities' ] ) ) == 0 ? true : false;
+		$out[ 'all_restaurants' ] = intval( count( $out[ 'restaurants' ] ) ) == 0 ? true : false;
 		$out[ 'active' ] = intval( $out[ 'active' ] ) == 0 ? false: true;
 		$out[ 'pages' ] = intval( $out[ 'pages' ] ) == 0 ? false: true;
 		if( $out[ 'facebook_id' ] ){
@@ -65,6 +92,9 @@ class Crunchbutton_Quote extends Cana_Table {
 			unset( $q[ 'id_admin' ] );
 			if( $q[ 'all' ] ){
 				unset( $q[ 'communities' ] );
+			}
+			if( $q[ 'all_restaurants' ] ){
+				unset( $q[ 'restaurants' ] );
 			}
 			$out[] = $q;
 		}

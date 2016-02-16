@@ -76,6 +76,26 @@
 									{{community.name}}
 								</ui-select-choices>
 							</ui-select>
+						</div>
+					</li>
+
+					<li class="li-input divider-line" ng-if="quote.communities && quote.communities.length == 1">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="quote.all_restaurants"/><div></div>
+						</label>
+						<div class="label">Show it to all restaurants of the selected commmunity:</div>
+					</li>
+
+					<li class="li-input" ng-show="quote.communities && quote.communities.length == 1 && !quote.all_restaurants">
+						<div class="label">Restaurants:</div>
+						<div class="input">
+
+							<ui-select multiple ng-model="quote.restaurants" theme="select2" close-on-select="true" title="Select a restaurant">
+								<ui-select-match placeholder="Select a restaurant...">{{$item.name}}</ui-select-match>
+								<ui-select-choices repeat="restaurant.id_restaurant as restaurant in restaurants | propsFilter: {name: $select.search}">
+									{{restaurant.name}}
+								</ui-select-choices>
+							</ui-select>
 
 						</div>
 					</li>

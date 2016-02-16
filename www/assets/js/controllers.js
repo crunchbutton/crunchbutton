@@ -1344,6 +1344,8 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	// Event will be called after the restaurant load
 	$scope.$on( 'restaurantLoaded', function(e, data) {
 
+		$rootScope.$broadcast( 'updateQuoteRestaurant', data.restaurant.id_restaurant );
+
 		$scope.restaurantLoaded = RestaurantService.alreadyLoaded();
 
 		var community = data.community;
@@ -1351,8 +1353,6 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		$scope.restaurant = data.restaurant;
 
 		loadPreOrderInfo( data.restaurant );
-
-		$rootScope.$broadcast( 'updateQuote', $scope.restaurant.id_community );
 
 		order.restaurant = $scope.restaurant;
 
@@ -2088,9 +2088,9 @@ NGApp.controller( 'NoInternetCtrl', function ( $scope ) {
 	$location.path( '/' );
 });
 
-NGApp.controller( 'QuoteCtrl', function ( $scope ) {
+NGApp.controller( 'QuoteCtrl', function ( $scope, OrderService ) {
 
-	var quotes = { pages: [], communities: { all: [] } };
+	var quotes = { pages: [], communities: { all: [] }, restaurants: { all: [] } };
 	var processed = false;
 
 	var defaultQuote = function(){
@@ -2102,13 +2102,19 @@ NGApp.controller( 'QuoteCtrl', function ( $scope ) {
 			}
 	}
 
-	var pickAQuote = function( where ){
+	var pickAQuote = function( where, id ){
 		var avaiable = [];
 		switch( where ){
 			case 'pages':
 				avaiable = quotes.pages;
 				break;
-			// default is community
+			case 'restaurant':
+				if( id ){
+					avaiable = ( quotes.restaurants[ id ] ) ? quotes.restaurants[ id ] : quotes.restaurants[ 'all' ];
+				} else {
+					avaiable = quotes.restaurants[ 'all' ];
+				}
+				break;
 			default:
 				if( where ){
 					avaiable = ( quotes.communities[ where ] ) ? quotes.communities[ where ] : quotes.communities[ 'all' ];
@@ -2127,6 +2133,7 @@ NGApp.controller( 'QuoteCtrl', function ( $scope ) {
 			switch( action ){
 				case 'restaurants':
 				case 'restaurant':
+					pickAQuote( 'restaurant' );
 					return;
 					break;
 				default:
@@ -2149,13 +2156,25 @@ NGApp.controller( 'QuoteCtrl', function ( $scope ) {
 				if( quote.all ){
 					quotes.communities.all.push( quote );
 				}
-				if( quote.communities ){
+				if( quote.all_restaurants ){
+					quotes.restaurants.all.push( quote );
+				}
+				if( quote.communities && quote.all_restaurants ){
 					for( y in quote.communities ){
 						var community = quote.communities[ y ];
 						if( !quotes.communities[ community ] ){
 							quotes.communities[ community ] = [];
 						}
 						quotes.communities[ community ].push( quote );
+					}
+				}
+				if( quote.restaurants ){
+					for( y in quote.restaurants ){
+						var restaurant = quote.restaurants[ y ];
+						if( !quotes.restaurants[ restaurant ] ){
+							quotes.restaurants[ restaurant ] = [];
+						}
+						quotes.restaurants[ restaurant ].push( quote );
 					}
 				}
 			}
@@ -2165,6 +2184,10 @@ NGApp.controller( 'QuoteCtrl', function ( $scope ) {
 
 	$scope.$on( 'updateQuote', function(e, id_community) {
 		pickAQuote( id_community );
+	});
+
+	$scope.$on( 'updateQuoteRestaurant', function(e, id_restaurant) {
+		pickAQuote( 'restaurant', id_restaurant );
 	});
 
 	$scope.$on( '$routeChangeSuccess', function ( event, next, current ) {
