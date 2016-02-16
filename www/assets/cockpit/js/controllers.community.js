@@ -521,7 +521,7 @@ NGApp.controller('CommunityCtrl', function ($scope, $routeParams, $rootScope, Ma
 	// method to load restaurants - called at ui-tab directive
 	$scope.loadRestaurants = function(){
 		$scope.loadingRestaurants = true;
-		RestaurantService.list( { community: $scope.community.id_community, limit: 50 }, function(d) {
+		RestaurantService.list( { community: $scope.community.id_community, limit: 200 }, function(d) {
 			$scope.restaurants = d.results;
 			$scope.loadingRestaurants = false;
 			$rootScope.$broadcast('tab-loaded');
