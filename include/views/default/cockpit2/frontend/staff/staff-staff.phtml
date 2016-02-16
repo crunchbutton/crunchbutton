@@ -158,6 +158,13 @@
 						</div>
 					</div>
 					<div class="field-row">
+						<div class="field-key">Pay for new customers?</div>
+						<div class="field-value">
+							<span class="tag tag-green" ng-if="staff.pay_for_new_customer">Yes</span>
+							<span class="tag tag-red" ng-if="!staff.pay_for_new_customer">No</span>
+						</div>
+					</div>
+					<div class="field-row">
 						<div class="field-key">How much per referral</div>
 						<div class="field-value">
 							${{staff.referral_admin_credit | formatPrice}}
