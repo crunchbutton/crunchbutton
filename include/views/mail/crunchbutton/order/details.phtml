@@ -142,14 +142,16 @@ if( $version == 'customer' ){
 
 	<tr>
 		<td></td>
-		<td style="text-align:right">Tax</td>
+		<td style="text-align:right">
+			Tax<?php if( !$isRestaurant && $order->restaurant()->delivery_service ) {  echo '/Service'; }?>
+		</td>
 		<td>
 		$<?php
 		$tax = $order->tax();
 		if( $isRestaurant ){
 			echo number_format( $tax, 2 );
 		} else {
-			echo number_format( $tax, 2 );
+			echo number_format( ( $tax + $order->cb_service_fee ), 2 );
 		}
 		?>
 		</td>
@@ -166,17 +168,7 @@ if( $version == 'customer' ){
 		<td>
 		$<?php
 		if( $isRestaurant ){
-			// legacy
-			if( intval( $delivery_service_markup ) > 0 && !$order->final_price_plus_delivery_markup ){
-				echo number_format( $order->final_price - $order->delivery_service_markup_value, 2);
-			} else {
-				if( intval( $delivery_service_markup ) > 0 ){
-					echo number_format( $order->final_price, 2 );
-				} else {
-					echo number_format( $order->final_price_plus_delivery_markup, 2 );
-				}
-
-			}
+			echo $order->restaurantPrice();
 		} else {
 			if( $order->final_price_plus_delivery_markup ){
 				echo number_format( $order->final_price_plus_delivery_markup, 2 );

@@ -416,6 +416,10 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		// taxes = App.ceil(taxes);
 		return taxes;
 	}
+	service._breakdownCBServiceFee = function (feeTotal) {
+		var service_fee = (feeTotal * (service.restaurant.service_fee / 100));
+		return service_fee;
+	}
 	service._breakdownTip = function (total) {
 		var tip = 0;
 		if (service.form.pay_type == 'card' || service.form.pay_type == 'campus_cash') {
@@ -441,6 +445,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		feeTotal += breakdown.delivery;
 		feeTotal += breakdown.fee;
 		finalAmount = feeTotal + breakdown.taxes;
+		finalAmount += breakdown.service_fee;
 		finalAmount += this._breakdownTip(total);
 		return App.ceil(finalAmount).toFixed(2);
 	}
@@ -478,11 +483,13 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 				- see #2236 and #2248 */
 
 		// Check if the restaurant uses 3rd party delivery if it not, add the delivery fee
-		if(service.restaurant.delivery_service){
+		if(!service.restaurant.delivery_service){
 			totalWithoutMarkup += elements[ 'delivery' ];
 		}
-		// Caculate the tax using the total without the marked up prices
+
 		elements['taxes'] = this._breackDownTaxes( totalWithoutMarkup );
+		elements['service_fee'] = this._breakdownCBServiceFee( totalWithoutMarkup );
+		elements['service_fee_taxes'] = elements['taxes'] + elements['service_fee'];
 		// The tip will use as base the total price (with the markup)
 		elements['tip'] = this._breakdownTip(total);
 
@@ -1100,11 +1107,14 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		service.info.breakdownDescription = service.info.dollarSign + this.subtotal().toFixed(2);
 		service.info.cartSummary = service.cart.summary();
 		service.info.taxes = breakdown.taxes.toFixed(2);
+		service.info.service_fee = breakdown.service_fee.toFixed(2);
+		service.info.service_fee_taxes = breakdown.service_fee_taxes.toFixed(2);
 		service.info.tip = breakdown.tip.toFixed(2);
 		service.info.subtotal = breakdown.subtotal.toFixed(2);
 		service.info.fee = breakdown.fee.toFixed(2);
 		service.info.delivery = breakdown.delivery.toFixed(2);
 		// #5597
+		// aqui
 		service.info.delivery_service_fee = ( breakdown.delivery + breakdown.fee ).toFixed(2);
 		service.info.total = total;
 

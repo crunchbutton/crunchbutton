@@ -42,6 +42,7 @@
 			<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Service Fee:</td><td nowrap class="dish-price">${{order.price * (order.service_fee/100) | number:2}} ({{order.service_fee || 0}}%)</td></tr>
 			<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Delivery Fee:</td><td nowrap class="dish-price">${{order.delivery_fee || 0 | number:2}}</td></tr>
 			<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Tax:</td><td nowrap class="dish-price">${{order.price * (order.tax/100) | number:2}} ({{order.tax}}%)</td></tr>
+			<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Service Fee:</td><td nowrap class="dish-price">${{order.cb_service_fee | number:2}}</td></tr>
 			<tr class="listview-smaller"><td></td><td colspan="2" style="text-align: right">Tip:</td><td nowrap class="dish-price">${{order._tip || 0 | number:2}}
 					<span ng-if="order.tip_type == 'percent'">({{order.tip}}%)</span>
 					<span ng-if="order.tip_type != 'percent'">({{ order._tip/order.price*100  | number:2 }}%)</span>
@@ -51,7 +52,6 @@
 
 			<tr class="listview-smaller"><td></td><td colspan="2" class="listview-bold" style="text-align: right">Total:</td><td class="listview-bold " nowrap>${{order.final_price_plus_delivery_markup | number:2}}</td></tr>
 		</table>
-
 
 		<div class="no-box-content-color">
 			<div class="field-container">

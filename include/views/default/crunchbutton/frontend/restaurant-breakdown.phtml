@@ -22,8 +22,9 @@
 				</span>
 
 				<span class="restaurant-payment-item">
-					<span class="restaurant-payment-item-label">Tax: </span>
-					<span class="restaurant-payment-item-value">{{AB.dollar}}{{order.info.taxes}}</span>
+					<span class="restaurant-payment-item-label">
+						Tax<span ng-if="restaurant.delivery_service">/Service</span>: </span>
+					<span class="restaurant-payment-item-value">{{AB.dollar}}{{order.info.service_fee_taxes}}</span>
 				 </span>
 
 				<span class="restaurant-payment-item" ng-if="order.form.pay_type!='cash' && order.info.tip!='0.00'">

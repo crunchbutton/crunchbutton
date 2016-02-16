@@ -1,0 +1,1 @@
+ALTER TABLE `order` ADD `cb_service_fee` float DEFAULT NULL;
