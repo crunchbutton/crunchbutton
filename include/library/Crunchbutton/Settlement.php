@@ -237,6 +237,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ 'tip' ] += $this->orderTipPayment( $order );
 				$pay[ 'customer_fee' ] += $this->orderCustomerFeePayment( $order );
 				$pay[ 'markup' ] += $this->orderMarkupPayment( $order );
+				$pay[ 'cb_service_fee' ] += $this->orderCBServiceFee( $order );
 				$pay[ 'credit_charge' ] += $this->orderCreditChargePayment( $order );
 				$pay[ 'restaurant_fee' ] += $this->orderRestaurantFeePayment( $order );
 				$pay[ 'promo_gift_card' ] += $this->orderPromoGiftCardPayment( $order );
@@ -307,6 +308,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$order[ 'pay_info' ][ 'delivery_fee_collected' ] = $this->orderDeliveryFeeDriverCollected( $order );
 				$order[ 'pay_info' ][ 'tip' ] = $this->orderTipDriverPay( $order );
 				$order[ 'pay_info' ][ 'customer_fee' ] = $order[ 'service_fee' ];
+				$order[ 'pay_info' ][ 'cb_service_fee' ] = $order[ 'cb_service_fee' ];
 				$order[ 'pay_info' ][ 'customer_fee_collected' ] = $this->orderCustomerFeeDriverPay( $order );
 				$order[ 'pay_info' ][ 'markup' ] = $this->orderMarkupDriverPay( $order );
 				$order[ 'pay_info' ][ 'credit_charge' ] = $this->orderCreditChargeDriverPay( $order );
@@ -561,6 +563,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 									$pay[ 'customer_fee' ] +
 									// added the delivery fee - We're paying 1st party restaurants incorrectly #7430
 									$pay[ 'delivery_fee' ] +
+									// Remove our service Fee - #2236
+									$pay[ 'cb_service_fee' ] +
 									$pay[ 'markup' ] +
 									$pay[ 'credit_charge' ] +
 									$pay[ 'restaurant_fee' ] +
@@ -629,6 +633,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 		return - ( $this->orderBaseCreditCharge( $arr ) * $arr[ 'pay_credit_charge' ] );
 	}
 
+	public function orderCBServiceFee( $arr ){
+		return - ( $arr[ 'cb_service_fee' ] );
+	}
+
 	// We charge the restaurant our contracted fee in all cases.
 	public function orderRestaurantFeePayment( $arr ){
 		return - ( $this->orderBaseRestaurantFee( $arr ) );
@@ -671,7 +679,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	// We need to make this change: add the $3 delivery fee to the amount being subtracted for cash orders from payment for hourly drivers.
 	public function orderDeliveryFeeDriverCollected( $arr ){
-		return - ( $arr[ 'delivery_fee' ] * $arr[ 'cash' ] ) * ( 1 - $arr[ 'refunded' ] );
+		return - ( ( $arr[ 'delivery_fee' ] + $arr[ 'cb_service_fee' ] ) * $arr[ 'cash' ] ) * ( 1 - $arr[ 'refunded' ] );
 	}
 
 	// Drivers must pay us back our markup they collected in cash.
@@ -757,6 +765,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'delivery_service_markup' ] = $order->delivery_service_markup;
 		$values[ 'delivery_service_markup_value' ] = $order->delivery_service_markup_value;
 		$values[ 'force_to_be_commissioned' ] = $order->isForcedToBeCommissioned();
+		$values[ 'cb_service_fee' ] = $order->cb_service_fee;
+
 
 		$admin = Admin::o( $order->getDeliveryDriver()->id_admin );
 

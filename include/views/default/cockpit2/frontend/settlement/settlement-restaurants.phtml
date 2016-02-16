@@ -142,6 +142,10 @@
 						<td>Crunchbutton Fees</td>
 						<td>$ {{sum.restaurant_fee | formatPrice}}</td>
 					</tr>
+					<tr positive-or-negative-color="{{sum.cb_service_fee}}">
+						<td>CB Service Fee</td>
+						<td>$ {{sum.cb_service_fee | formatPrice}}</td>
+					</tr>
 					<tr positive-or-negative-color="{{sum.adjustment}}">
 						<td>Adjustments</td>
 						<td>$ {{sum.adjustment | formatPrice}}</td>
@@ -374,6 +378,10 @@
 							<tr positive-or-negative-color="{{restaurant.restaurant_fee}}">
 								<td>Crunchbutton Fees</td>
 								<td>$ {{restaurant.restaurant_fee | formatPrice}}</td>
+							</tr>
+							<tr positive-or-negative-color="{{restaurant.cb_service_fee}}">
+								<td>CB Service Fee</td>
+								<td>$ {{restaurant.cb_service_fee | formatPrice}}</td>
 							</tr>
 							<tr positive-or-negative-color="{{restaurant.adjustment}}">
 								<td>Adjustment</td>

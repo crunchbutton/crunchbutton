@@ -352,7 +352,7 @@ NGApp.controller( 'SettlementRestaurantsCtrl', function ( $scope, $filter, Settl
 
 	$scope.summary = function(){
 
-		var sum = { 'card_subtotal': 0, 'tax': 0, 'delivery_fee': 0, 'tip': 0, 'customer_fee': 0, 'markup': 0, 'credit_charge': 0, 'restaurant_fee': 0, 'promo_gift_card': 0, 'apology_gift_card': 0, 'order_payment': 0, 'cash_reimburse': 0, 'cash_subtotal': 0, 'total_due': 0, 'adjustment' : 0 };
+		var sum = { 'card_subtotal': 0, 'tax': 0, 'delivery_fee': 0, cb_service_fee: 0, 'tip': 0, 'customer_fee': 0, 'markup': 0, 'credit_charge': 0, 'restaurant_fee': 0, 'promo_gift_card': 0, 'apology_gift_card': 0, 'order_payment': 0, 'cash_reimburse': 0, 'cash_subtotal': 0, 'total_due': 0, 'adjustment' : 0 };
 
 		var total_restaurants = 0;
 		var total_payments = 0;
