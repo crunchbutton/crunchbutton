@@ -47,3 +47,4 @@ vendor/*
 npm-debug.log
 
 composer.phar
+composer.lock
