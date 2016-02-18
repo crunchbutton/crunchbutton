@@ -174,7 +174,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	public function statementName() {
 		if (!isset($this->_statementName)) {
 			$name = $this->short_name ? $this->short_name : $this->name;
-			$name = preg_replace('/[^a-z ]/i','',$name);
+			$name = 'Crunchbutton-'.preg_replace('/[^a-z ]/i','',$name);
 			if (strlen($name) > 22) {
 				$name = str_replace(' ', '', $name);
 			}
