@@ -987,7 +987,7 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 					  INNER JOIN admin a ON a.id_admin = p.id_driver
 					  WHERE YEAR( p.date ) = ?
 					  AND p.pay_type = 'payment'
-					  AND p.stripe_id IS NOT NULL
+					  AND ( p.stripe_id IS NOT NULL OR p.balanced_id IS NOT NULL )
 					  AND p.env = 'live' AND p.payment_status = 'succeeded'
 					GROUP BY id_driver
 					ORDER BY a.name ASC
