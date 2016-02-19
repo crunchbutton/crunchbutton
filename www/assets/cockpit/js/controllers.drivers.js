@@ -10,6 +10,16 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 
 NGApp.config(['$routeProvider', function($routeProvider) {
 	$routeProvider
+		.when('/resources', {
+			action: 'community-resources',
+			controller: 'CommunityResourcesDriverCtrl',
+			templateUrl: '/assets/view/drivers-resources.html'
+
+		})
+}]);
+
+NGApp.config(['$routeProvider', function($routeProvider) {
+	$routeProvider
 		.when('/drivers/community', {
 			action: 'drivers-community',
 			controller: 'DriversCommunityCtrl',
@@ -368,6 +378,12 @@ NGApp.controller( 'DriversSummaryCtrl', function ( $scope, DriverService, $route
 			$scope.id_admin = parseInt( $routeParams.id );
 		}
 	}
+
+	DriverService.payRollInfo( function( json ){
+		$scope.payRollInfo = json.payment;
+	} );
+
+
 	$scope.view( {
 		scope: $scope,
 		watch: { type: 'all' },

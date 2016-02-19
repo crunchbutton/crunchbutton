@@ -11,10 +11,30 @@ class Controller_api_driver_payments extends Crunchbutton_Controller_RestAccount
 			case 'payment':
 				$this->_payment();
 				break;
+			case 'pay-roll-info':
+				$this->_payRollInfo();
+				break;
 			default:
 				$this->_error();
 				break;
 		}
+	}
+
+	private function _payRollInfo(){
+
+		$year = 2015;
+
+		$query = "SELECT
+					  SUM( amount ) AS payment
+					  FROM payment p
+					  WHERE YEAR( p.date ) = ?
+					  AND p.pay_type = 'payment'
+					  AND ( p.stripe_id IS NOT NULL OR p.balanced_id IS NOT NULL )
+					  AND p.env = 'live' AND p.payment_status = 'succeeded'
+						AND id_driver = ?";
+
+		$payment = c::db()->get( $query, [ $year, c::user()->id_admin ] )->get( 0 );
+		echo json_encode( [ 'payment' => number_format( $payment->payment, 2 ) ] );exit;
 	}
 
 	private function _payment(){
