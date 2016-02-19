@@ -26,7 +26,8 @@ NGApp.factory( 'DriverService', function( $rootScope, $resource, $routeParams ) 
 
 	var payments = $resource( App.service + 'driver/payments/:action/:id_admin/:id_payment', { action: '@action', id_admin: '@id_admin', id_payment: '@id_payment' }, {
 				'all' : { 'method': 'GET', params : { 'action' : 'all' } },
-				'payment' : { 'method': 'GET', params : { 'action' : 'payment' } }
+				'payment' : { 'method': 'GET', params : { 'action' : 'payment' } },
+				'payRollInfo' : { 'method': 'GET', params : { 'action' : 'pay-roll-info' } },
 			}
 		);
 
@@ -41,6 +42,14 @@ NGApp.factory( 'DriverService', function( $rootScope, $resource, $routeParams ) 
 			callback( data );
 		} );
 	}
+
+	service.payRollInfo = function( callback ){
+		payments.payRollInfo( {}, function( data ){
+			callback( data );
+		} );
+	}
+
+
 
 	service.payments = function( id_admin, callback ){
 		payments.all( { id_admin: id_admin }, function( data ){
