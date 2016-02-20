@@ -16,7 +16,8 @@
 			</td>
 			<td nowrap="">
 				<?php /* Date */ ?>
-				{{order.date | timestamp | date:'MM/dd @ h:mm a'}}
+				<span class="listview-smaller"><strong>{{order.date | localtime:'MM/DD'}}</strong><br>
+					{{order.date | localtime:'h:mm a'}}</span>
 				<?php /* Date */ ?>
 			</td>
 			<td ng-if="!restaurant">
