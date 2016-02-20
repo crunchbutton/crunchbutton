@@ -112,9 +112,11 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		}
 
 		if ($datestart) {
-			$datestart = new DateTime( date('Y-m-d', strtotime( $datestart ) ) . ' 00:00:01', new DateTimeZone( c::config()->timezone ) );
-			$datestart->setTimezone( new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
+
+			$datestart = new DateTime( date('Y-m-d', strtotime( $datestart ) ) . ' 00:00:01', new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
+			$datestart->setTimezone( new DateTimeZone( c::config()->timezone ) );
 			$datestart = $datestart->format( 'Y-m-d H:i:s' );
+
 			$q .= '
 				AND `order`.date >= ?
 			';
@@ -122,11 +124,9 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		}
 
 		if ($dateend) {
-			$dateend = new DateTime( date('Y-m-d', strtotime( $dateend ) ) . ' 23:59:59', new DateTimeZone( c::config()->timezone ) );
-			$dateend->setTimezone( new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
+			$dateend = new DateTime( date('Y-m-d', strtotime( $dateend ) ) . ' 23:59:59', new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
+			$dateend->setTimezone( new DateTimeZone( c::config()->timezone ) );
 			$dateend = $dateend->format( 'Y-m-d H:i:s' );
-
-			$dateend = date('Y-m-d H:i:s', strtotime($dateend));
 			$q .= '
 				AND `order`.date <= ?
 			';
