@@ -58,6 +58,7 @@ NGApp.factory('ShiftScheduleService', function(ResourceFactory, $routeParams, $r
 		'saveDriverNote' : { method: 'POST', params : { action: 'save-driver-note' } },
 		'removeShift' : { method: 'POST', params : { action: 'remove-shift' } },
 		'removeRecurringShift' : { method: 'POST', params : { action: 'remove-recurring-shift' } },
+		'removeRecurringFutureShift' : { method: 'POST', params : { action: 'remove-recurring-future-shift' } },
 		'saveDriverNote' : { method: 'POST', params : { action: 'save-driver-note' } },
 		'communitiesWithShift' : { method: 'POST', params : { action: 'communities-shift' }, isArray: true },
 	});
@@ -70,6 +71,12 @@ NGApp.factory('ShiftScheduleService', function(ResourceFactory, $routeParams, $r
 
 	service.removeRecurringShift = function( params, callback) {
 		shift.removeRecurringShift( params, function(data) {
+			callback(data);
+		});
+	}
+
+	service.removeRecurringFutureShift = function( params, callback) {
+		shift.removeRecurringFutureShift( params, function(data) {
 			callback(data);
 		});
 	}

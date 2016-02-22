@@ -48,6 +48,9 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			case 'remove-recurring-shift':
 				$this->_removeRecurringShift();
 				break;
+			case 'remove-recurring-future-shift':
+				$this->_removeRecurringFutureShift();
+				break;
 			case 'remove-shift':
 				$this->_removeShift();
 				break;
@@ -74,6 +77,17 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			$id_community_shift = $this->request()[ 'id_community_shift' ];
 			if( $id_community_shift ){
 				Crunchbutton_Community_Shift::remove( $id_community_shift );
+			}
+			echo json_encode( [ 'success' => true ] );exit;
+		}
+		$this->error( 404 );
+	}
+
+	private function _removeRecurringFutureShift(){
+		if( $this->method() == 'post' ){
+			$id_community_shift = $this->request()[ 'id_community_shift' ];
+			if( $id_community_shift ){
+				Crunchbutton_Community_Shift::removeRecurringFuture( $id_community_shift );
 			}
 			echo json_encode( [ 'success' => true ] );exit;
 		}

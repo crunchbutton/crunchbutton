@@ -588,6 +588,44 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 		return $this->_community;
 	}
 
+	public function removeRecurringFuture( $id_community_shift ){
+
+		$shift = Crunchbutton_Community_Shift::o( $id_community_shift );
+		$now =  new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		if( $shift->id_community_shift_father ){
+
+			$father = Crunchbutton_Community_Shift::o( $shift->id_community_shift_father );
+			if( $father->id_community_shift ){
+				$father->recurring = 0;
+				$father->save();
+			}
+
+			$shifts = Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift WHERE date_start >= ? AND id_community_shift_father = ?', [ $shift->dateStart()->format( 'Y-m-d' ), $shift->id_community_shift_father ] );
+			if( $shifts->count() ){
+				foreach( $shifts as $_shift ){
+					$_shift->active = 0;
+					$_shift->save();
+				}
+			}
+			c::dbWrite()->query( 'DELETE FROM admin_shift_assign_permanently WHERE id_community_shift = ' . $shift->id_community_shift_father  );
+		}
+		if( $shift->recurring ){
+
+			$shift->recurring = 0;
+			$shift->save();
+
+			$shifts = Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift WHERE date_start >= ? AND id_community_shift_father = ?', [ $shift->dateStart()->format( 'Y-m-d' ), $shift->id_community_shift ] );
+			if( $shifts->count() ){
+				foreach( $shifts as $_shift ){
+					$_shift->active = 0;
+					$_shift->save();
+				}
+			}
+
+			c::dbWrite()->query( 'DELETE FROM admin_shift_assign_permanently WHERE id_community_shift = ' . $shift->id_community_shift  );
+		}
+	}
+
 	public function removeRecurring( $id_community_shift ){
 
 		$shift = Crunchbutton_Community_Shift::o( $id_community_shift );
