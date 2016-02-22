@@ -363,6 +363,23 @@ NGApp.controller('ShiftScheduleEditShiftCtrl', function ( $scope, $rootScope, Sh
 		}
 	}
 
+	$scope.removeRecurringFutureShift = function(){
+		if( $scope.shift.id_community_shift ){
+			var success = function(){
+				var params = { id_community_shift: $scope.shift.id_community_shift }
+				ShiftScheduleService.removeRecurringFutureShift( params, function( json ){
+					if( json.error ){
+						App.alert( 'Error deleting: ' + json.error );
+					} else {
+						$rootScope.$broadcast( 'shiftsChanged', json.id_community );
+						setTimeout( function(){ $rootScope.closePopup(); }, 200 );
+					}
+				} );
+			}
+			App.confirm( 'Confirm delete this shift and all future recurrences?', 'Confirm', success, confirmFail, 'Yes,No', true );
+		}
+	}
+
 	$scope.removeRecurringShift = function(){
 		if( $scope.shift.id_community_shift ){
 			var success = function(){

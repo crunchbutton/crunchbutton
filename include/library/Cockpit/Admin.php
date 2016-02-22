@@ -58,7 +58,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		}
 
 		if( $totalDeliveryTimePeriod && $out[ 'orders'] ){
-			$out[ 'avg_delivery_time' ] = ceil( $totalDeliveryTimePeriod / $out[ 'orders' ] );
+			$out[ 'avg_delivery_time' ] = intval( $totalDeliveryTimePeriod / $out[ 'orders' ] );
 		} else {
 			$out[ 'avg_delivery_time' ] = 0;
 		}
@@ -70,11 +70,12 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$start = $now->format( 'Y-m-d' );
 		$now->modify( '- ' . $days . ' days' );
 		$end = $now->format( 'Y-m-d' );
-		$query = 'SELECT SUM( TIMESTAMPDIFF( MINUTE, o.date, oa.timestamp ) ) AS minutes
+		$query = 'SELECT TIMESTAMPDIFF( MINUTE, o.date, oa.timestamp ) as Min, o.date, oa.timestamp
 								FROM order_action oa
 								INNER JOIN `order` o ON o.id_order = oa.id_order
 								WHERE oa.id_admin = ? AND oa.type = ? AND DATE( o.date ) < ? AND DATE( o.date ) > ?';
-		$result = c::db()->get( $query, [ $this->id_admin, Crunchbutton_Order_Action::DELIVERY_DELIVERED, $start, $end ] );
+		$results = c::db()->get( $query, [ $this->id_admin, Crunchbutton_Order_Action::DELIVERY_DELIVERED, $start, $end ] );
+		$min = 0;
 		return $result->_items[0]->minutes;
 	}
 
