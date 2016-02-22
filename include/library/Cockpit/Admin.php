@@ -49,7 +49,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$out = [];
 		$out[ 'orders' ] = intval( $this->totalOrdersDeliveredPeriod( $days ) );
 		$out[ 'hours' ] = intval( $this->totalHoursWorkedPeriod( $days ) );
-		$totalDeliveryTimePeriod = intval( $this->totalDeliveryTimePeriod( $days ) );
+		$totalDeliveryTimePeriod = $this->totalDeliveryTimePeriod( $days );
 
 		if( $out[ 'orders' ] && $out[ 'hours' ] ){
 			$out[ 'avg_orders_hours' ] = number_format( $out[ 'orders' ] / $out[ 'hours' ], 2 );
@@ -66,12 +66,16 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 	}
 
 	public function totalDeliveryTimePeriod( $days ){
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$start = $now->format( 'Y-m-d' );
+		$now->modify( '- ' . $days . ' days' );
+		$end = $now->format( 'Y-m-d' );
 		$query = 'SELECT SUM( TIMESTAMPDIFF( MINUTE, o.date, oa.timestamp ) ) AS minutes
 								FROM order_action oa
 								INNER JOIN `order` o ON o.id_order = oa.id_order
-								WHERE oa.id_admin = ? AND oa.type = ? AND oa.timestamp BETWEEN DATE_SUB( NOW(), INTERVAL ? DAY) AND NOW()';
-		$result = c::db()->get( $query, [ $this->id_admin, Crunchbutton_Order_Action::DELIVERY_DELIVERED, $days ] );
-		return ( $result->_items[0]->minutes / 60 );
+								WHERE oa.id_admin = ? AND oa.type = ? AND DATE( o.date ) < ? AND DATE( o.date ) > ?';
+		$result = c::db()->get( $query, [ $this->id_admin, Crunchbutton_Order_Action::DELIVERY_DELIVERED, $start, $end ] );
+		return $result->_items[0]->minutes;
 	}
 
 	public function totalHoursWorkedPeriod( $days ){
