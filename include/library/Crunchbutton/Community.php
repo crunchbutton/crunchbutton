@@ -813,12 +813,13 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public static function removeForceClose(){
+
 		$communities = Community::q( 'SELECT * FROM community WHERE close_all_restaurants = 1 OR close_3rd_party_delivery_restaurants = 1 AND reopen_at IS NOT NULL' );
 		if( $communities->count() ){
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 			foreach( $communities as $community ){
 				$reopen_at = $community->reopenAt();
-				if( $reopen_at && $now->format( 'YmdHis' ) >= $reopen_at->format( 'YmdHis' ) ){
+				if( $reopen_at && intval( $now->format( 'YmdHis' ) ) >= intval( $reopen_at->format( 'YmdHis' ) ) ){
 					$community->close_all_restaurants = 0;
 					$community->close_3rd_party_delivery_restaurants = 0;
 					$community->reopen_at = null;

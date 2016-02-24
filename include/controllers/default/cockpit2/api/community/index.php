@@ -278,7 +278,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 
 						$reopen_at = $this->request()[ 'reopen_at_fmt' ];
 						if( $reopen_at && ( $community->close_all_restaurants || $community->close_3rd_party_delivery_restaurants ) ){
-							$reopen_at = new DateTime( $reopen_at, new DateTimeZone( $community->timezone ) );
+							$reopen_at = new DateTime( $reopen_at, new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
 							$reopen_at->setTimezone( new DateTimeZone( c::config()->timezone ) );
 							$community->reopen_at = $reopen_at->format( 'Y-m-d H:i:s' );
 						} else {
