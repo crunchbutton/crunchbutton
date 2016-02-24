@@ -76,7 +76,10 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 								WHERE oa.id_admin = ? AND oa.type = ? AND DATE( o.date ) < ? AND DATE( o.date ) > ?';
 		$results = c::db()->get( $query, [ $this->id_admin, Crunchbutton_Order_Action::DELIVERY_DELIVERED, $start, $end ] );
 		$min = 0;
-		return $result->_items[0]->minutes;
+		foreach( $results as $result ){
+			$min += $result->Min;
+		}
+		return $min;
 	}
 
 	public function totalHoursWorkedPeriod( $days ){
