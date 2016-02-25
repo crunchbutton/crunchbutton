@@ -1223,6 +1223,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$hours = $this->preOrderProcessHours( $hours );
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->setTimezone( new DateTimeZone( $this->timezone ) );
+
+		$imutable = $now->format( 'Ymd' );
+
 		$days = [];
 
 		$today = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
@@ -1266,10 +1269,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 				if( !$timeToTime ){
 
-					$timeToTime = $now->format( 'D ' );;
+					if( $imutable != $now->format( 'Ymd' ) ){
+						$timeToTime = $now->format( 'D ' );;
+						$timeToTime .= trim( $day[ 'hours' ][ 0 ][ 'value' ] );
+					}
 
-					$timeToTime .= trim( $day[ 'hours' ][ 0 ][ 'value' ] );
-					$timeToTime .= ' - ';
+
+					$timeToTime .= ' ';
 					$timeToTimeEnd = $day[ 'hours' ][ count( $day[ 'hours' ] ) - 1 ][ 'label' ];
 					$timeToTimeEnd = explode( '-' , $timeToTimeEnd );
 					$timeToTimeEnd = strtolower( trim( $timeToTimeEnd[ 1 ] ) );
