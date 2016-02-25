@@ -163,7 +163,6 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 								FROM pexcard_transaction
 									WHERE
 										transactionTime_pst BETWEEN "' . $start . '" AND "' . $end . '"
-										AND transactionType != "Transfer"
 								GROUP BY acctId
 								ORDER BY amount DESC';
 		$expenses = c::db()->get( $query );
