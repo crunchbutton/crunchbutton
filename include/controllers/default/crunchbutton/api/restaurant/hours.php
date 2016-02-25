@@ -87,7 +87,7 @@ class Controller_api_restaurant_hours extends Crunchbutton_Controller_Rest {
 					$hours[ 'allow_preorder' ] = true;
 					$hours[ '_preOrderDays' ] = $r->preOrderHours();
 					if( $r->preOrderTimeToTime ){
-						$hours[ 'preOrderTimeToTime' ] = 'Pre-order for delivery ' . $r->preOrderTimeToTime;
+						$hours[ 'preOrderTimeToTime' ] = 'Pre-order for ' . $r->preOrderTimeToTime;
 					}
 					if( !$hours[ '_preOrderDays' ] ){
 						$hours[ 'allow_preorder' ] = false;
