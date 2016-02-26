@@ -296,6 +296,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 					INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
 					WHERE
 						cs.date_start >= ?
+						AND active = true
 						AND cs.date_start <= ?
 						AND cs.id_community = ?
 				', [$_now, $_interval, $community->id_community]);
