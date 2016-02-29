@@ -83,6 +83,11 @@
 						<td><div class="summary-calc-values">+ ${{result.invites_amount | formatPrice}}</div></td>
 					</tr>
 
+					<tr ng-if="result.adjustment">
+						<td>Adjustments*</td>
+						<td><div class="summary-calc-values">- ${{result.adjustment | formatPrice}}</div></td>
+					</tr>
+
 					<tr ng-if="result.driver_payment_type == 'making_whole' && result.calcs.delivery_fee_plus_tips">
 						<td></td>
 						<td><div class="summary-calc-values calcs-dash">&nbsp;&nbsp;${{result.calcs.delivery_fee_plus_tips | formatPrice}}</div></td>
@@ -102,7 +107,6 @@
 						<td><div class="summary-calc-values">+ ${{result.calcs.total_commissioned_tip | formatPrice}}</div></td>
 					</tr>
 
-
 					<tr ng-show="result.show_money_make_week">
 						<td>Total Money Made This Week</td>
 						<td><div class="summary-calc-values calcs-dash">&nbsp;&nbsp;${{result.calcs.earnings | formatPrice}}</div></td>
@@ -121,11 +125,6 @@
 					<tr ng-if="result.calcs.customer_fee_collected && pay_type_payment">
 						<td>Customer Fee Already Collected In Cash</td>
 						<td><div class="summary-calc-values">- ${{result.calcs.customer_fee_collected | formatPrice}}</div></td>
-					</tr>
-
-					<tr ng-if="result.adjustment">
-						<td>Adjustments*</td>
-						<td><div class="summary-calc-values">- ${{result.adjustment | formatPrice}}</div></td>
 					</tr>
 
 					<tr ng-if="result.total_payment && pay_type_payment">
