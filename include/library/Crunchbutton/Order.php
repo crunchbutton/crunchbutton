@@ -3086,7 +3086,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			]);
 		}
 
-
 		// Add/Remove pex card funds
 		$q = Queue::create([
 			'type' => Crunchbutton_Queue::TYPE_ORDER_PEXCARD_FUNDS,
