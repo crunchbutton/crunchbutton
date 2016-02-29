@@ -335,7 +335,6 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 																							'status' => $order->status,
 																							'refunded' => ( $order->refunded > 0 ? true : false ),
 																							'should_use' => ( $order->should_use > 0 ? true : false ),
-																							'should_use' => ( $order->should_use > 0 ? true : false ),
 																							'amount' => $amount ];
 				switch ( $order->pay_type ) {
 					case 'card':
