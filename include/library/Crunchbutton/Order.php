@@ -3099,6 +3099,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 
 		if( $status == Crunchbutton_Order_Action::DELIVERY_REJECTED ){
+			Crunchbutton_Pexcard_Report_Order::removeByOrder( $this->id_order );
 			$this->delivery_status = null;
 		} else {
 			$this->delivery_status = $action->id_order_action;
@@ -3111,8 +3112,22 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 
 		if( $status == Crunchbutton_Order_Action::DELIVERY_CANCELED ){
+			Crunchbutton_Pexcard_Report_Order::removeByOrder( $this->id_order );
 			$this->tellDriverTheOrderWasCanceled();
 		}
+
+		if( $status == Crunchbutton_Order_Action::DELIVERY_DELIVERED ){
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$params = [ 'id_order' => $this->id_order,
+									'id_admin' => $admin->id_admin,
+									'date' => $now->format( 'Y-m-d H:i:s' ),
+									'date_formatted' => $now->format( 'M jS Y g:i:s A T' ),
+									'type' => $this->pay_type,
+									'should_use' => $this->shouldUsePexCard(),
+									'amount' => floatval( $this->final_price - $this->delivery_fee ) ];
+			Crunchbutton_Pexcard_Report_Order::byOrder( $params );
+		}
+
 
 		return true;
 	}
