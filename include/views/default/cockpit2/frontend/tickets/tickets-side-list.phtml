@@ -2,7 +2,7 @@
 	<div ng-controller="SideTicketsCtrl">
 		<div ng-if="account.user.permissions.GLOBAL">
 			<h1>Tickets</h1>
-			<a class="support-side-header-closed-tickets" href="/tickets">View all tickets</a>
+			<a class="support-side-header-closed-tickets" href="/tickets/beta">View all tickets</a>
 			<div class="divider"></div>
 			<div class="tickets-side-tickets">
 				<div ng-repeat="ticket in tickets" ng-if="ticket.status == 'open'" class="tickets-side-item" ng-class="{'tickets-side-item-unread': ( ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply' || ticket.last_reply_type == 'warning' ), 'tickets-side-item-read': ( ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply' )}">
