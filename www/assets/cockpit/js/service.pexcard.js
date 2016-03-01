@@ -5,6 +5,7 @@ NGApp.factory( 'PexCardService', function( $resource, $http, $routeParams ) {
 	var pexcard = $resource( App.service + 'pexcard/:action/', { action: '@action' }, {
 		'pex_id' : { 'method': 'POST', params : { action: 'pex-id' } },
 		'id_pexcard' : { 'method': 'POST', params : { action: 'id-pexcard' } },
+		'cache' : { 'method': 'POST', params : { action: 'clear-cache' } },
 		'admin_pexcard' : { 'method': 'POST', params : { action: 'admin-pexcard' } },
 		'driver_search' : { 'method': 'POST', params : { action: 'driver-search' } },
 		'driver_active' : { 'method': 'POST', params : { action: 'driver-active' } },
@@ -83,6 +84,12 @@ NGApp.factory( 'PexCardService', function( $resource, $http, $routeParams ) {
 
 	service.id_pexcard = function( id, callback ){
 		pexcard.id_pexcard( { 'id': id }, function( data ){
+			callback( data );
+		} );
+	}
+
+	service.cache = function( id, callback ){
+		pexcard.cache( { 'id': id }, function( data ){
 			callback( data );
 		} );
 	}
