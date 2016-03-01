@@ -3680,6 +3680,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function createTicketForNotGeomatchedOrder(){
+		// get rid of Place Order Anyway cockpit.la tickets #7904
+		return;
 		$order = $this;
 		if( !$order->geomatched && !$order->orderHasGeomatchedTicket() ){
 			$pattern = "%s just did Place Order Anyway! Order details: Order %d in the %s community to this address %s. Please double check that this address is close enough to be delivered (if it's just slightly out of range it may be fine), and cancel the order if necessary. Thanks!";
