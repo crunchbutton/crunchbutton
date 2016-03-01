@@ -210,6 +210,10 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 					$preordered = false;
 				}
 
+				if( $status[ 'status' ] == 'canceled' ){
+					continue;
+				}
+
 				$exports[] = Cana_Model::toModel( [
 					'id_order' => $order->id_order,
 					'status' => $status,
