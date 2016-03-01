@@ -3103,6 +3103,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		} else {
 			$this->delivery_status = $action->id_order_action;
 		}
+
 		$this->save();
 
 		// mark the order to be paid by commission structure
@@ -3112,6 +3113,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		if( $status == Crunchbutton_Order_Action::DELIVERY_CANCELED ){
 			Crunchbutton_Pexcard_Report_Order::removeByOrder( $this->id_order );
+			$this->do_not_reimburse_driver = true;
+			$this->do_not_pay_restaurant = true;
+			$this->do_not_pay_driver = true;
+			$this->save();
 			$this->tellDriverTheOrderWasCanceled();
 		}
 
