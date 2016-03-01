@@ -8,11 +8,11 @@ class Controller_api_twilio_outgoing extends Crunchbutton_Controller_Rest {
 		    exit;
 	    }
 
-		if (preg_match('/^[\d\+\-\(\) ]+$/', $_REQUEST['PhoneNumber'])) {
-			$num = '<Number>'.$_REQUEST['PhoneNumber'].'</Number>';
-		} else {
-			$num = '<Client>'.$_REQUEST['PhoneNumber'].'</Client>';
-		}
+		$phone =  preg_replace('/[^0-9]/','', str_replace('+1', '', $_REQUEST['PhoneNumber']));
+
+		$phone = substr($phone, 0, 10);
+
+		$num = '<Client>'.$phone.'</Client>';
 
 		switch (c::getPagePiece(3)) {
 			case 'restaurant':

@@ -88,6 +88,7 @@ class Crunchbutton_Phone extends Cana_Table {
 	}
 
 	public static function clean($phone) {
+
 		$phone =  preg_replace('/[^0-9]/','', str_replace('+1', '', $phone));
 
 		if ($phone{0} === '1' && strlen($phone) == 11) {
