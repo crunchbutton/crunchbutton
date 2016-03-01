@@ -36,7 +36,6 @@ class Crunchbutton_Pexcard_Card extends Crunchbutton_Pexcard_Resource {
 	}
 
 	public function details( $id ){
-
 		switch ( Crunchbutton_Pexcard_Resource::api_version() ) {
 			case 'v4':
 				$card = Crunchbutton_Pexcard_Details::account( $id );

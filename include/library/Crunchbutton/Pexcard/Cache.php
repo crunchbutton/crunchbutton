@@ -12,6 +12,13 @@ class Crunchbutton_Pexcard_Cache extends Cana_Table {
 		return $cache;
 	}
 
+	public static function removeCache( $date, $acctId ){
+		$cache = self::byDay( $date, $acctId );
+		if( $cache && $cache->id_pexcard_cache ){
+			$cache->delete();
+		}
+	}
+
 	public static function byDate( $date, $acctId = 0 ){
 		return self::byDay( $date, $acctId );
 	}

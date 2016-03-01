@@ -14,6 +14,10 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 				$this->_id_pexcard();
 				break;
 
+			case 'clear-cache':
+				$this->_clear_cache();
+				break;
+
 			case 'driver-search':
 				$this->_driver_search();
 				break;
@@ -274,11 +278,9 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _admin_pexcard_remove(){
-
 		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
 			$this->_error();
 		}
-
 		$id_pexcard = $this->request()[ 'id_pexcard' ];
 		$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $id_pexcard );
 		if( $admin_pexcard->id_admin_pexcard ){
@@ -288,14 +290,23 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 		echo json_encode( [ 'success' => $admin_pexcard->id_admin_pexcard ] );
 	}
 
-	private function _id_pexcard(){
-
+	private function _clear_cache(){
 		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud' ] ) ){
 			$this->_error();
 		}
-
 		$id_pexcard = $this->request()[ 'id' ];
+		if( $id_pexcard ){
+			Crunchbutton_Pexcard_Cache::removeCache( date( 'Y-m-d' ), $id_pexcard );
+			Crunchbutton_Pexcard_Card::details( $id_pexcard );
+			echo json_encode( [ 'success' => true ] );exit;
+		}
+	}
 
+	private function _id_pexcard(){
+		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud' ] ) ){
+			$this->_error();
+		}
+		$id_pexcard = $this->request()[ 'id' ];
 		if( $id_pexcard ){
 			$card = Cockpit_Admin_Pexcard::getByPexCardId( $id_pexcard );
 			$this->_funds( $card );
@@ -309,6 +320,7 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 			$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $card->id_pexcard );
 			$card = Crunchbutton_Pexcard_Card::details( $card->id_pexcard );
 			$card = $card->body;
+			// echo '<pre>';var_dump( $card );exit();
 			if( $admin_pexcard->id_admin ){
 				$card->id_admin = intval( $admin_pexcard->id_admin );
 				$card->admin_name = $admin_pexcard->admin()->name;

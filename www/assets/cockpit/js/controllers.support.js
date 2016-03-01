@@ -252,16 +252,21 @@ NGApp.controller('SideSupportPexCardCtrl', function( $scope, StaffPayInfoService
 
 			$scope.isLoadingBalance = true;
 
-			PexCardService.id_pexcard( $scope.ticket.pexcard.id_pexcard,
+			PexCardService.cache( $scope.ticket.pexcard.id_pexcard,
 				function( json ){
-					$scope.isLoadingBalance = false;
-					if( json.id ){
-						$scope.card = json;
-					} else {
-						$scope.flash.setMessage( json.error, 'error' );
+				PexCardService.id_pexcard( $scope.ticket.pexcard.id_pexcard,
+					function( json ){
+						$scope.isLoadingBalance = false;
+						if( json.id ){
+							$scope.card = json;
+						} else {
+							$scope.flash.setMessage( json.error, 'error' );
+						}
 					}
+				);
 				}
 			);
+
 		} else {
 			App.alert( 'Oops, it seems the driver doesn\'t have a PexCard!' );
 		}
