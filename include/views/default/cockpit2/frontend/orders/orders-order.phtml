@@ -120,7 +120,7 @@
 						</div>
 					</div>
 
-					<div ng-if="order.delivery_service && order.refunded" class="field-row link no-underline">
+					<div ng-if="order.delivery_service && ( order.refunded || ( order.status && order.status.status == 'canceled' ) )" class="field-row link no-underline">
 						<div class="field-key">
 							Do Not Pay Driver Anything
 						</div>
@@ -130,7 +130,7 @@
 							</label>
 						</div>
 					</div>
-					<div class="field-row link no-underline" ng-if="order.refunded">
+					<div class="field-row link no-underline" ng-if="order.refunded || ( order.status && order.status.status == 'canceled' )">
 						<div class="field-key">
 							Pay restaurant despite refund <br>(e.g. this refund was our fault)
 						</div>
