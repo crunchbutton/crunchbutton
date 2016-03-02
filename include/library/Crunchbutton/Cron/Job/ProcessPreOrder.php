@@ -12,7 +12,13 @@ class Crunchbutton_Cron_Job_ProcessPreOrder extends Crunchbutton_Cron_Log {
 			if( $community->allThirdPartyDeliveryRestaurantsClosed() || $community->allRestaurantsClosed() ){
 				Crunchbutton_Admin_Notification::warningAboutNoRepsWorking( $order );
 			} else {
-				$this->process( $order );
+				$hasDrivers = ( $community->activeDrivers() > 0 );
+				$minutesToBeDelivered = $order->minutesToBeDelivered();
+				// if the community has no drivers and we have just 30 minutes to delivery the order
+				// it will process the order and warn cs - "reps failed to pickup order" message comes through for preorders #7906
+				if( ( $minutesToBeDelivered && $minutesToBeDelivered < 30 ) || $hasDrivers ){
+					$this->process( $order );
+				}
 			}
 		}
 		// it always must call finished method at the end

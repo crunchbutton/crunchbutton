@@ -965,6 +965,21 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return true;
 	}
 
+	public function minutesToBeDelivered(){
+		if( $this->date_delivery ){
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$date_delivery = new DateTime( $this->date_delivery, new DateTimeZone( c::config()->timezone ) );
+			if( $now < $date_delivery ){
+				$seconds = Util::intervalToSeconds( $now->diff( $date_delivery ) );
+				if( $seconds > 0 ){
+					$minutes = ( $seconds / 60 );
+					return $minutes;
+				}
+			}
+		}
+		return null;
+	}
+
 	public function removeCouponCodesInTheNotes(){
 		// fix for #4256
 		$_order = Crunchbutton_Order::o( $this->id_order );
