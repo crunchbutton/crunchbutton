@@ -72,7 +72,7 @@
 						<label class="switch-wrap">
 							<input type="checkbox" class="switch" ng-model="community.dont_warn_till_enabled"/><div></div>
 						</label>
-						<div class="label">Remind me/CS to reopen it at this time (Pacific):</div>
+						<div class="label">Remind me/CS to reopen it at this time (<strong>Pacific, not Local time</strong>):</div>
 					</li>
 
 					<li class="li-input  divider-line" ng-class="{'error': formOpenClose.dontWarnTill.$invalid}" ng-if="community.dont_warn_till_enabled">
@@ -90,7 +90,7 @@
 						<label class="switch-wrap">
 							<input type="checkbox" class="switch" ng-model="community.reopen_at_enabled"/><div></div>
 						</label>
-						<div class="label">Reopen the community at this time (Pacific):</div>
+						<div class="label">Reopen the community at this time (<strong>Pacific, not Local time</strong>):</div>
 					</li>
 
 					<li class="li-input  divider-line" ng-class="{'error': formOpenClose.dontWarnTill.$invalid}" ng-if="community.reopen_at_enabled">
@@ -98,7 +98,7 @@
 							<input type="datetime-local" ng-disabled="!community.reopen_at_enabled" ng-required="community.reopen_at_enabled" name="dontWarnTill" ng-model="community.reopen_at" placeholder="">
 						</div>
 						<div class="note">
-							It will remove the force-close at the defined time.
+							The Force-Close will be removed at the time you set.
 						</div>
 					</li>
 
