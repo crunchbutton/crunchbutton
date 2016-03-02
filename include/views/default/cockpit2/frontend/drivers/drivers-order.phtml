@@ -258,7 +258,8 @@
 							<tr class="order-total-row">
 								<td></td>
 								<td></td>
-								<td class="order-total-text">Total</td>
+								<td class="order-total-text" ng-if="oc.order.pay_type=='card'">Total</td>
+								<td class="order-total-text" nowrap="" ng-if="oc.order.pay_type=='cash'">Store Total</td>
 								<td class="dish-price order-total-text">
 									${{oc.order._final_price | formatPrice}}
 								</td>
