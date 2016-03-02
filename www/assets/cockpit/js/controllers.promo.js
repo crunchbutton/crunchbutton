@@ -9,8 +9,8 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/promo/discount-codes/', {
 			action: 'promo',
 			controller: 'PromoDiscountCodesCtrl',
-			templateUrl: '/assets/view/promo-discount-codes.html'
-
+			templateUrl: '/assets/view/promo-discount-codes.html',
+			reloadOnSearch: false
 		})
 		.when('/promo/discount-code/:id?', {
 			action: 'promo',
