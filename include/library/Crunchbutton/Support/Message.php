@@ -127,7 +127,6 @@ class Crunchbutton_Support_Message extends Cana_Table {
  																							WHERE s.email = ? ORDER BY sm.id_support_message ASC ' . $_limit, [ $email ] );
 	}
 
-
 	public function exports($guid = null) {
 		// @todo: #5734
 		$out = $this->properties();
@@ -201,7 +200,15 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		if( $out[ 'from' ] == 'rep' && $out[ 'is_driver' ] ){
 			$out[ 'is_support' ] = true;
 		}
+
+		$out[ 'body' ] = $this->cleanBody();
+
 		return $out;
+	}
+
+	// numbers should not show up in messages when CS people text from phones #7855
+	public function cleanBody(){
+		return trim( preg_replace( '/^@([1-9]*)/', '', $this->body) );
 	}
 
 	public function status(){
