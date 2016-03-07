@@ -11,6 +11,7 @@
 </span>
 <span ng-if="!order.delivery_service && !order._restaurant_confirmation">
 	<span class="tag tag-grey">Placed</span>
+	<span class="tag tag-black" ng-if="order.status.status == 'canceled'">Canceled</span>
 </span>
 <br>
 <span ng-if="order.status && !order.minutes_to_delivery" class="listview-smallest"><span am-time-ago="order.status.date_timestamp | timestamp"></span></span>
