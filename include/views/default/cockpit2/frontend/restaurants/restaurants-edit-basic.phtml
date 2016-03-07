@@ -35,6 +35,17 @@
 								</div>
 							</li>
 
+							<li class="li-input" ng-class="{'error':form.restaurantMessage.$invalid}">
+								<div class="label">Text under Restaurant Name on Restaurant Checkout Page:</div>
+								<div class="input"><input type="text" name="restaurantMessage" ng-model="restaurant.message" maxlength="250"></div>
+								<div class="box-error">
+									<small ng-show="form.restaurantMessage.$error.required">Required.</small>
+								</div>
+								<div class="notes">
+									Write something that’s different from the text on Choose Restaurant page AND that works well with the restaurant’s menu.
+								</div>
+							</li>
+
 							<li class="li-input" ng-class="{'error':form.restaurantPermalink.$invalid}">
 								<div class="label">Permalink:</div>
 								<div class="input"><input type="text" permalink-validation ng-model="restaurant._permalink" name="restaurantPermalink" ng-model="restaurant._permalink" required placeholder="Permalink"></div>
