@@ -934,6 +934,24 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 	};
 });
 
+NGApp.directive('removeOnFocus', function () {
+	return {
+		restrict: 'A',
+		link: function (scope, elem, attr) {
+			angular.element(elem).bind('focus', function (evt) {
+				if(parseInt(elem.val()) == 0){
+					elem.val('');
+				}
+			});
+			angular.element(elem).bind('blur', function (evt) {
+				if(elem.val() == ''){
+					elem.val(0);
+				}
+			});
+		}
+	};
+});
+
 NGApp.directive( 'spaceLeft', function () {
 	return {
 			require: 'ngModel',
