@@ -47,7 +47,7 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 		if (!$id_admin) {
 			return false;
 		}
-		return Cockpit_Admin_Pexcard::q( 'SELECT * FROM admin_pexcard WHERE id_admin = ?', [$id_admin]);
+		return Cockpit_Admin_Pexcard::q( 'SELECT * FROM admin_pexcard WHERE id_admin = ? ORDER BY id_admin_pexcard DESC', [$id_admin]);
 	}
 
 	public function removeFundsOrderCancelled( $id_order ){
@@ -331,6 +331,15 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 
 	public function isPexCardFundsActive(){
 		return Crunchbutton_Config::getVal(self::CONFIG_KEY_PEX_ACTIVE) ? true : false;
+	}
+
+	public function removeOldAssignments( $id_admin ){
+		$pexcards = self::q( 'SELECT * FROM admin_pexcard WHERE id_admin = ?', [$id_admin] );
+		foreach($pexcards as $pexcard){
+			$pexcard->id_admin = null;
+			$pexcard->save();
+		}
+		return true;
 	}
 
 	public function loadSettings(){
