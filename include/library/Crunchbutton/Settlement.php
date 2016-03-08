@@ -13,6 +13,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 	const TEST_SUMMARY_FAX = '_PHONE_';
 	const TEST_SUMMARY_EMAIL = 'daniel@_DOMAIN_';
 
+	const CRUNCHBUTTON_LOB_ADDRESS = '_KEY_';
+
 	// id_orders equals or lower than that will be ignored
 	const CONFIG_KEY_ID_ORDER_START = 'settlement-id_order-start';
 
@@ -1460,7 +1462,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 								$env = ( ( c::getEnv() == 'live' || c::getEnv() == 'crondb' ) ? 'live' : 'dev' );
 
 								$c = c::lob( false )->checks()->create([
-									// 'name' => $check_name,
 									'to' => [
 										'name' => $contact_name,
 										'address_line1' => $check_address,
@@ -1469,6 +1470,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 										'address_zip' => $check_address_zip,
 										'address_country' => $check_address_country
 									],
+									'from' => self::CRUNCHBUTTON_LOB_ADDRESS,
 									'bank_account' => c::config()->lob->{$env}->account,
 									'amount' => $amount,
 									'memo' => $schedule->note,
