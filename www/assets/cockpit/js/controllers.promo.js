@@ -1,35 +1,35 @@
 NGApp.config(['$routeProvider', function($routeProvider) {
 	$routeProvider
 		.when('/promo/', {
-			action: 'promo',
+			action: 'giftcard',
 			controller: 'PromoCtrl',
 			templateUrl: '/assets/view/promo.html'
 
 		})
 		.when('/promo/discount-codes/', {
-			action: 'promo',
+			action: 'giftcard',
 			controller: 'PromoDiscountCodesCtrl',
 			templateUrl: '/assets/view/promo-discount-codes.html',
 			reloadOnSearch: false
 		})
 		.when('/promo/discount-code/:id?', {
-			action: 'promo',
+			action: 'giftcard',
 			controller: 'PromoDiscountCodeCtrl',
 			templateUrl: '/assets/view/promo-discount-code-form.html'
 		})
 		.when('/promo/gift-cards/', {
-			action: 'promo',
+			action: 'giftcard',
 			controller: 'GiftCardsCtrl',
 			templateUrl: '/assets/view/promo-gift-cards.html'
 
 		})
 		.when('/promo/gift-card/generate', {
-			action: 'promo',
+			action: 'giftcard',
 			controller: 'GiftCardGenerateCtrl',
 			templateUrl: '/assets/view/promo-gift-card-generate.html'
 		})
 		.when('/promo/gift-card/create', {
-			action: 'promo',
+			action: 'giftcard',
 			controller: 'GiftCardCreateCtrl',
 			templateUrl: '/assets/view/promo-gift-card-create.html'
 		});
