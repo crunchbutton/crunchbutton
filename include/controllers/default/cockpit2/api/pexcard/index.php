@@ -90,6 +90,8 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 
 			$id_admin = c::user()->id_admin;
 
+			Cockpit_Admin_Pexcard::removeOldAssignments($id_admin);
+
 			$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $id_pexcard );
 			if( !$admin_pexcard->id_admin ){
 				$opened = false;
@@ -234,6 +236,8 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 		if ( Crunchbutton_Pexcard_Resource::api_version() == 'v4' ) {
 			Crunchbutton_Pexcard_Card::activate_card( $id_pexcard );
 		}
+
+		Cockpit_Admin_Pexcard::removeOldAssignments($id_admin);
 
 		$admin_pexcard = Cockpit_Admin_Pexcard::getByPexcard( $id_pexcard );
 		$admin_pexcard->id_admin = $id_admin;
