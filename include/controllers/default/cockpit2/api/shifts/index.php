@@ -587,7 +587,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 		$start = $this->request()['start'];
 		$communities = $this->request()['communities'];
 
-		$today = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$today = new DateTime( 'now', new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
 
 		if( $start && $communities ){
 

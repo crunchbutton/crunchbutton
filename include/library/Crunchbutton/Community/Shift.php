@@ -868,7 +868,6 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 
 		return Community::q( 'SELECT DISTINCT( c.id_community ), c.* FROM community c
 														INNER JOIN community_shift cs ON cs.id_community = c.id_community
-														INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
 														WHERE cs.date_start >= ?  AND cs.date_end <= ?', [ $date_start, $date_end ] );
 
 
