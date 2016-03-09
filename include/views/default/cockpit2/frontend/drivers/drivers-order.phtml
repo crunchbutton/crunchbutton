@@ -43,10 +43,10 @@
 				<div class="info-phone"><a href="tel:+1{{oc.order._restaurant_phone}}" target="_system">{{oc.order._restaurant_phone | formatPhone}}</a></div>
 				<div class="divider"></div>
 				<div class="info-address"><p class="order-info-address">
-					<div ng-click="openMap( 'query', oc.order._restaurant_address );" ng-if="iOS">
+					<div class="info-address-link" ng-click="openMap( 'query', oc.order._restaurant_address );" ng-if="iOS">
 						<span>{{oc.order._restaurant_address}}</span>
 					</div>
-					<a href="http://maps.google.com/maps?q={{oc.order._restaurant_address}}" ng-if="!iOS" target="_system">
+					<a class="info-address-link" href="http://maps.google.com/maps?q={{oc.order._restaurant_address}}" ng-if="!iOS" target="_system">
 						<span>{{oc.order._restaurant_address}}</span>
 					</a>
 				</div>
@@ -59,10 +59,10 @@
 				<div class="info-phone"><a href ng-click="callText(oc.order.phone)">{{oc.order.phone | formatPhone}}</a></div>
 				<div class="divider"></div>
 				<div class="info-address"><p class="order-info-address">
-					<div ng-click="openMap( 'query', oc.order.address );" ng-if="iOS">
+					<div class="info-address-link" ng-click="openMap( 'query', oc.order.address );" ng-if="iOS">
 						{{oc.order.address}}
 					</div>
-					<a href="http://maps.google.com/maps?q={{oc.order.address}}" ng-if="!iOS" target="_system">
+					<a class="info-address-link" href="http://maps.google.com/maps?q={{oc.order.address}}" ng-if="!iOS" target="_system">
 						{{oc.order.address}}
 					</a>
 				</div>
