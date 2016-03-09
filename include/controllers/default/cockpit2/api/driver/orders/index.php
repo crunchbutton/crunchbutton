@@ -195,7 +195,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 				if( $preordered ){
 					$could_be_accepted = false;
 					$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-					$now->modify( Crunchbutton_Order::PRE_ORDER_INTERVAL );
+					$now->modify( '+ 2 hours' );
 					$date_delivery = new DateTime( $order->date_delivery, new DateTimeZone( c::config()->timezone ) );
 					if( $now >= $date_delivery ){
 						$could_be_accepted = true;
