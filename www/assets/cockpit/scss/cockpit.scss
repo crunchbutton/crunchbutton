@@ -2313,6 +2313,9 @@ td.order-notes{
 	text-decoration: none;
 	font-size: 1.2em;
 }
+.info-address-link{
+	text-decoration: underline !important;
+}
 
 .order-item-block, .order-item-block-big, .order-item-block-bigger {
 	margin: .5em 0 .5em 0;
@@ -4969,3 +4972,4 @@ a.button {
 	font-weight: bold;
 	letter-spacing: 0.36px;
 }
+
