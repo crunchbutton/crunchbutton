@@ -457,7 +457,11 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	private function _phones(){
 		$out = [];
-		$staffs = Admin::q( 'SELECT * FROM admin WHERE active = true AND phone IS NOT NULL AND name IS NOT NULL AND name != "" AND active = 1 ORDER BY name ASC' );
+		$staffs = Admin::q( 'SELECT admin.name, admin.phone FROM admin
+INNER JOIN admin_payment_type ON admin.id_admin = admin_payment_type.id_admin
+WHERE (balanced_bank IS NOT NULL OR stripe_account_id IS NOT NULL) AND active = true
+AND name IS NOT NULL AND name != "" AND login IS NOT NULL AND pass IS NOT NULL
+GROUP BY admin.id_admin ORDER BY name ASC' );
 		foreach( $staffs as $staff ){
 			$out[] = [ 'phone' => $staff->phone, 'name' => $staff->name ];
 		}

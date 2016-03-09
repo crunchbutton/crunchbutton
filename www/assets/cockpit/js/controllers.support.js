@@ -279,6 +279,8 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 	$scope.call = { staff : '', to : 'customer', _to: CallService.call_to() };
 	$scope.sms = { staff : '', to : 'customer', _to: CallService.call_to(), open_ticket: true };
 
+	$scope.sms.staffList = [];
+
 	$scope.yesNo = StaffService.yesNo();
 
 	$scope.$watch( 'call.staff', function( newValue, oldValue, scope ) {
@@ -290,6 +292,15 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 		$scope.sms.name = newValue.name;
 	}	);
 
+	$scope.$watch( 'sms.staffList', function( newValue, oldValue, scope ) {
+		$scope.sms.phones = '';
+		var commas = '';
+		for(x in $scope.sms.staffList){
+			$scope.sms.phones += commas + $scope.sms.staffList[x].phone;
+			commas = ', ';
+		}
+	}	);
+
 	$scope.formCallSending = false;
 	$scope.formSMSSending = false;
 
@@ -299,6 +310,8 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 		$scope.sms.phone = '';
 		$scope.sms.message = '';
 		$scope.sms.open_ticket = true;
+		$scope.sms.phones = '';
+		$scope.sms.staffList = [];
 
 		StaffService.phones( function( response ){
 			$scope.staff = response;
@@ -306,10 +319,20 @@ NGApp.controller('SupportPhoneCtrl', function( $scope, $rootScope, StaffService,
 	}
 
 	$scope.sms.send = function(){
+
 		if( $scope.formSMS.$invalid ){
 			$scope.formSMSSubmitted = true;
 			return;
 		}
+
+		if($scope.sms.phones && $scope.sms.phones != ''){
+			$scope.sms.phone = [];
+			$scope.sms.phone = $scope.sms.phones.split(',');
+			for(x in $scope.sms.phone){
+				$scope.sms.phone[x] = $scope.sms.phone[x].trim();
+			}
+		}
+
 		if( $scope.sms.phone && angular.isArray( $scope.sms.phone ) ){
 			$scope.formSMSSending = true;
 			CallService.send_sms_list( $scope.sms, function( json ){
