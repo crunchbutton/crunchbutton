@@ -82,26 +82,18 @@
 					<li class="li-input" ng-if="!isModal">
 						<div class="label">Choose an admin/driver:</div>
 						<div class="input">
-							<ui-select ng-model="sms.staff" theme="select2" ng-disabled="disabled" style="width: 90%;" title="Choose an admin/driver:">
-								<ui-select-match placeholder="Choose an admin/driver:">{{$select.selected.name}}</ui-select-match>
+							<ui-select multiple ng-model="sms.staffList" theme="select2" ng-disabled="disabled" style="width: 90%;" title="Choose an admin/driver:">
+								<ui-select-match placeholder="Choose an admin/driver:">{{$item.name}} &lt;{{$item.phone}}&gt;</ui-select-match>
 								<ui-select-choices repeat="opt in staff | propsFilter: {name: $select.search}">
-									{{opt.name}}: {{opt.phone}}
+									{{opt.name}} &lt;{{opt.phone}}&gt;
 								</ui-select-choices>
 							</ui-select>
 						</div>
 					</li>
 
-					<li class="li-input" ng-class="{'error':formSMS.name.$invalid}" ng-show="!isModal">
-						<div class="label">Name:</div>
-						<div class="input"><input type="text" name="name" ng-required="!isModal" placeholder="Name" ng-model="sms.name"></div>
-						<div class="box-error">
-							<small ng-show="formSMS.name.$error.required">Required.</small>
-						</div>
-					</li>
-
 					<li class="li-input" ng-class="{'error':formSMS.phone.$invalid}" ng-show="!isModal">
 						<div class="label">Phone:</div>
-						<div class="input"><input type="text" name="phone" required  placeholder="Phone" ng-model="sms.phone"></div>
+						<div class="input"><input type="text" name="phone" ng-required="!isModal"  placeholder="Phone" ng-model="sms.phones"></div>
 						<div class="box-error">
 							<small ng-show="formSMS.phone.$error.required">Required.</small>
 						</div>
