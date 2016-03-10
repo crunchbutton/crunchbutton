@@ -34,7 +34,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 				$timeout( function(){
 					container.stop( true, false ).animate( { scrollTop: container[0].scrollHeight }, 0 );
 					service.sideInfo.release();
-				}, 300 );
+				}, 500 );
 				break;
 			case 'current':
 				service._private.current_scroll = container[0].scrollHeight;
@@ -60,7 +60,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		service.sideInfo.data.total++;
 		service.sideInfo.data.loaded++;
 		service.sideInfo.update_controller();
-		service.sideInfo.scroll( 'begin' );
+		setTimeout(function(){service.sideInfo.scroll( 'begin' );},500);
 	}
 
 	service.sideInfo.load_ticket_page = function(){
@@ -110,7 +110,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 				service.sideInfo.data.has_more = ( service.sideInfo.data.loaded >= service.sideInfo.data.total ) ? false : true;
 				service.sideInfo.update_controller();
 				if( service._private.first_load ){
-					service.sideInfo.scroll( 'begin' );
+					setTimeout(function(){service.sideInfo.scroll( 'begin' );},500);
 					service._private.first_load = false;
 					service.sideInfo.load_ticket_page();
 					$rootScope.$broadcast( 'triggerSideViewTicket', {} );
