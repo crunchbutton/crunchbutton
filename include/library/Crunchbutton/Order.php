@@ -2249,16 +2249,26 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				if( !$this->delivery_service ){
 					$msg .= "Restaurant Phone: ".$this->restaurant()->phone().".\n";
 				}
+
 				// #3925
 				if( !$this->restaurant()->formal_relationship ) {
 					$msg .= "DO NOT call the restaurant. If you have any questions about your order, text or call us back directly!\n";
 					$msg .= "\n";
 				} else {
 					// Removed the delivery estimate #3925
-					if ( $this->delivery_type == 'delivery' && $this->restaurant()->delivery_estimated_time ) {
-						$msg .= "Your order will arrive around ";
-						$msg .= $this->restaurant()->calc_delivery_estimated_time();
-						$msg .= "!\n\n";
+					if( $this->preordered && $this->date_delivery ){
+
+							$date_delivery = new DateTime( $this->date_delivery, new DateTimeZone( c::config()->timezone ) );
+							$date_delivery->setTimezone(  new DateTimeZone( $this->restaurant()->timezone )  );
+							$msg .= "Your order will arrive around ";
+							$msg .= $date_delivery->format('h:i a');
+							$msg .= "!\n\n";
+					} else{
+						if ( $this->delivery_type == 'delivery' && $this->restaurant()->delivery_estimated_time ) {
+							$msg .= "Your order will arrive around ";
+							$msg .= $this->restaurant()->calc_delivery_estimated_time();
+							$msg .= "!\n\n";
+						}
 					}
 				}
 
