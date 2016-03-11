@@ -5,11 +5,13 @@ NGApp.directive('chatSend', function(TicketViewService, $rootScope) {
 		link: function(scope, element, attrs) {
 			element.bind('keydown keypress', function (e) {
 				if (e.which == 13) {
-					if( element.val() != '' ){
+					if( element.val().trim() != '' ){
 						$rootScope.$broadcast( 'replyStarted' );
 						TicketViewService.send(element.val());
 						e.preventDefault();
 						element.val('');
+					} else {
+						return false;
 					}
 				} else {
 					//TicketViewService.typing(element.val());
