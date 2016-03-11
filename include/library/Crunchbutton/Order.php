@@ -25,6 +25,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	const PROCESS_TYPE_ADMIN			= 'admin';
 
 	const STATUS_REFUNDED_TOTAL = 'Refunded';
+	const STATUS_REFUNDED_PROCESSING = 'Processing Refunds';
 	const STATUS_REFUNDED_PARTIALLY = 'Partially Refunded';
 
 	const PRE_ORDER_INTERVAL = '+ 60 minutes';
@@ -2804,6 +2805,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	public function refundedStatus(){
 		if( $this->refunded ){
 			$transaction = $this->refundedReason();
+			if(!$transaction){
+				return self::STATUS_REFUNDED_PROCESSING;
+			}
 			if( $transaction->amt === $this->charged() ){
 				return self::STATUS_REFUNDED_TOTAL;
 			} else {
