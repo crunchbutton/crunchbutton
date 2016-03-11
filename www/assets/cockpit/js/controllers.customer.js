@@ -141,6 +141,7 @@ NGApp.controller('CustomerCtrl', function ($scope, $routeParams, $interval, Cust
 		if ($scope.customer && $scope.customer.address && $scope.customer.address.indexOf(',') > -1) {
 			var address = $scope.customer.address.split(',');
 			$scope.customer.address = address.shift() + "\n" + address.join(',');
+			$scope.loadOrders();
 		}
 
 		$scope.loading = false;
@@ -165,13 +166,15 @@ NGApp.controller('CustomerCtrl', function ($scope, $routeParams, $interval, Cust
 		} );
 	}
 
-	$scope.orders = function(){
-		OrderService.list({user: $routeParams.id}, function(d) {
-			$scope.orders = d.results;
-			$scope.count = d.count;
-			$scope.pages = d.pages;
-			$scope.loading = false;
-		});
+	$scope.loadOrders = function(){
+		if($scope.customer && $scope.customer.phone){
+			OrderService.list({phone: $scope.customer.phone}, function(d) {
+				$scope.orders = d.results;
+				$scope.count = d.count;
+				$scope.pages = d.pages;
+				$scope.loading = false;
+			});
+		}
 	}
 
 	credits();
