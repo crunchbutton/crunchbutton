@@ -59,7 +59,7 @@ NGApp.controller('MetricsCtrl', function ($rootScope, $scope, $timeout, $locatio
 				{'type': 'orders', 'orderMethod': 'last', 'orderDirection': 'asc', 'format': 'line'},
 			],
 			start: moment().subtract(14, 'days').toDate(),
-			end: new Date(),
+			end: moment().subtract(1, 'days').toDate(),
 			period: 'd',
 		};
 	}
