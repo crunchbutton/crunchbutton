@@ -114,6 +114,9 @@ class Cockpit_Metrics
             }
             return _MetricsDateHelper::modifyDateByPeriod($startDate, $n, $period, $atStart);
         } else {
+            // convert tz FROM PST to UTC
+            $now = new DateTime( $timeString, new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
+            $now->setTimeZone( new DateTimeZone( c::config()->timezone ) );
             // TODO: Try to figure out how to catch invalid dates here!
             return date_create($timeString);
         }
