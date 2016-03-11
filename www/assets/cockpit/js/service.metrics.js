@@ -342,6 +342,7 @@ NGApp.factory('MetricsService', function ($resource, $http, $q) {
 		return d1.diff(d2) / msInDay;
 	}
 	var datePrecision = 0.00000001;
+	// added hours
 	service.DATE_FORMAT = 'YYYY-MM-DD HH:mm';
 	service.RESPONSE_DATE_FORMAT = 'YYYY-MM-DD HH-II-SS';
 	service.serializeDate = function (dt, useDelta) {
