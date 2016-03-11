@@ -208,7 +208,7 @@ NGApp.controller( 'DriversOrderSignatureCtrl', function ( $scope, $rootScope, $r
 
 });
 
-NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $routeParams, DriverOrdersService, DriverOrdersViewService, AccountService) {
+NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $routeParams, DriverOrdersService, DriverOrdersViewService, AccountService, MainNavigationService) {
 
 	$rootScope.navTitle = '#' + $routeParams.id;
 	$scope.ready = false;
@@ -220,9 +220,20 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $
 	};
 
 	$scope.iOS = App.iOS();
-
+var serv = angular.element( 'html' ).injector().get( 'AccountService' );
 	var load = function() {
-		DriverOrdersViewService.load();
+		DriverOrdersViewService.load(function(){
+			if(	DriverOrdersViewService.order &&
+					DriverOrdersViewService.order.driver &&
+					DriverOrdersViewService.order.driver.id_admin &&
+					DriverOrdersViewService.order.driver.id_admin != AccountService.user.id_admin){
+				setTimeout(function(){
+					App.alert('This order has already been accepted by ' + DriverOrdersViewService.order.driver.name, 'Order has already been accepted.', false, function(){
+						MainNavigationService.link('/drivers/orders');
+					});
+				}, 1500);
+			}
+		});
 		watching = null;
 	};
 
