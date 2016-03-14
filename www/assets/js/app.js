@@ -979,7 +979,7 @@ App.busy = {
 		return $('.app-busy').length ? true : false;
 		return App.busy._busy;
 	},
-	makeBusy: function( gid ) {
+	makeBusy: function( gid, phrase ) {
 		if (App.busy._timer) {
 			clearTimeout(App.busy._timer);
 		}
@@ -997,7 +997,13 @@ App.busy = {
 					}, function(){ errorMessage(); } );
 			}
 		}, App.busy._maxExec );
-		return $('body').append($('<div class="app-busy"></div>').append($('<div class="app-busy-loader"><div class="app-busy-loader-icon"></div></div>')));
+
+		if(phrase){
+			phrase = '<div class="app-busy-loader-text">'+phrase+'</div>';
+		} else {
+			phrase = '';
+		}
+		return $('body').append($('<div class="app-busy"></div>').append($('<div class="app-busy-loader"><div class="app-busy-loader-icon"></div></div>' + phrase)));
 		App.busy._busy = true;
 		$('.order-sky-loader').addClass('play');
 		App.busy.stage().play(0);

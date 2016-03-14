@@ -20,6 +20,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	const TIP_PERCENT 				 = 'percent';
 	const TIP_NUMBER				 	 = 'number';
 
+	const ORDER_LOADING_PHRASE_KEY = 'order-loading-phrase';
+
 	const PROCESS_TYPE_RESTAURANT = 'restaurant';
 	const PROCESS_TYPE_WEB				= 'web';
 	const PROCESS_TYPE_ADMIN			= 'admin';
@@ -3872,6 +3874,21 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return false;
 	}
 
+	public static function orderLoadingPhrases(){
+		$out = [];
+		$phrases = Config::q('SELECT * FROM config WHERE `key` = ?', [self::ORDER_LOADING_PHRASE_KEY]);
+		foreach($phrases as $phrase){
+			$out[] = $phrase->value;
+		}
+		return $out;
+	}
+
+	public static function pickOrderLoadingPhrase(){
+		$phrases = self::orderLoadingPhrases();
+		if(count($phrases)){
+			return $phrases[ array_rand( $phrases ) ];
+		}
+	}
 
 	public function save($new = false) {
 

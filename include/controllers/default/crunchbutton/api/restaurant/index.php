@@ -187,6 +187,8 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 			$json[ 'force_pre_order' ] = true;
 		}
 
+		$json['order_loading_phrase'] = Order::pickOrderLoadingPhrase();
+
 		echo json_encode( $json );exit;
 	}
 

@@ -3738,6 +3738,20 @@ select {
 	margin-top:20px;
 	background-size:100%;
 }
+.app-busy-loader-text {
+	text-align:center;
+	font-size: 2em;
+	color: #FFF;
+	top:300px;
+	left:50%;
+	top:300px;
+	padding-top:30px;
+	margin-left:-150px;
+	width: 300px;
+	line-height: 1.5em;
+	position:absolute;
+	text-shadow: 2px 2px 1px rgba(4, 4, 4, 1);
+}
 
 @media(max-width:768px) {
 	.app-busy-loader {
