@@ -1264,22 +1264,22 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			}
 
 			if( sizeof( $day[ 'hours' ] ) > 1 ){
-
 				$days[] = $day;
-
 				if( !$timeToTime ){
-
 					if( $imutable != $now->format( 'Ymd' ) ){
 						$timeToTime = $now->format( 'D ' );;
-						$timeToTime .= trim( $day[ 'hours' ][ 0 ][ 'value' ] );
+						if($day[ 'hours' ][ 0 ][ 'value' ] !== false){
+							$timeToTime .= trim( $day[ 'hours' ][ 0 ][ 'value' ] );
+						} else {
+							$timeToTime .= trim( $day[ 'hours' ][ 1 ][ 'value' ] );
+						}
+					} else {
+						if($day[ 'hours' ][ 0 ][ 'value' ] !== false){
+							$timeToTime .= trim( $day[ 'hours' ][ 0 ][ 'value' ] );
+						} else {
+							$timeToTime .= trim( $day[ 'hours' ][ 1 ][ 'value' ] );
+						}
 					}
-
-
-					$timeToTime .= ' ';
-					$timeToTimeEnd = $day[ 'hours' ][ count( $day[ 'hours' ] ) - 1 ][ 'label' ];
-					$timeToTimeEnd = explode( '-' , $timeToTimeEnd );
-					$timeToTimeEnd = strtolower( trim( $timeToTimeEnd[ 1 ] ) );
-					$timeToTime .= $timeToTimeEnd;
 				}
 			}
 			$now->modify( '+ 1 day' );
