@@ -238,6 +238,25 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		return $data;
 	}
 
+	public static function mergeNameByTransaction($id_pexcard_transaction){
+		$query = 'SELECT pt.authTransactionId,
+							(SELECT description FROM pexcard_transaction WHERE authTransactionId = pt.authTransactionId AND isPending IS NOT NULL) AS pendingDescription,
+							(SELECT description FROM pexcard_transaction WHERE authTransactionId = pt.authTransactionId AND isPending IS NULL) AS regularDescription
+							 FROM pexcard_transaction pt WHERE pt.id_pexcard_transaction = ?';
+		$transaction = c::db()->get( $query, [ $id_pexcard_transaction ] )->get(0);
+		$pendingDescription = trim(str_replace( 'Pending...', '', $transaction->pendingDescription ));
+		$regularDescription = trim(str_replace( 'Pending...', '', $transaction->regularDescription ));
+		if($pendingDescription != $regularDescription){
+			return $pendingDescription . ' / ' . $regularDescription;
+		}
+		if($pendingDescription){
+			return $pendingDescription;
+		}
+		if($regularDescription){
+			return $regularDescription;
+		}
+	}
+
 	public static function processedReport( $start, $end ){
 
 		$start = explode( '/' , $start );
@@ -278,7 +297,8 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		$drivers = c::db()->get( $query, [ $start, $end, $start, $end ] );
 		foreach( $drivers as $driver ){
 			$_driver = [ 'id_admin' => floatval( $driver->id_admin ), 'driver' => $driver->driver, 'login' => $driver->login, 'email' => $driver->email ];
-			$query = "SELECT * FROM pexcard_report_transaction prt
+			$query = "SELECT prt.*, pt.authTransactionId
+									FROM pexcard_report_transaction prt
 									INNER JOIN pexcard_transaction pt ON pt.id_pexcard_transaction = prt.id_pexcard_transaction
 									WHERE prt.id_admin = ? AND prt.date_pst BETWEEN ? AND ?
 									GROUP BY pt.authTransactionId ORDER BY prt.date_pst ASC";
@@ -287,8 +307,8 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 			$_driver[ 'pexcard_amount' ] = 0;
 			foreach( $transactions as $transaction ){
 				$amount = floatval( $transaction->amount );
+				$description = trim(str_replace( 'Pending...', '', $transaction->description ));
 				$_driver[ 'pexcard_amount' ] += $amount;
-				$description = str_replace( 'Pending...', '', $transaction->description );
 				$_driver[ 'transactions' ][] = [ 'id_pexcard_report_transaction' => $transaction->id_pexcard_report_transaction,  'date' => $transaction->date, 'description' => $description, 'amount' => $amount ];
 			}
 			$query = "SELECT orders.*,

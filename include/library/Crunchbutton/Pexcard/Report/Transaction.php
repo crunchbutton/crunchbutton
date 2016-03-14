@@ -11,6 +11,12 @@ class Crunchbutton_Pexcard_Report_Transaction extends Cana_Table {
 		if ( !$transaction->id_pexcard_report_transaction ) {
 			$transaction = new Pexcard_Report_Transaction( $params );
 			$transaction->save();
+		} else {
+			$description = Crunchbutton_Pexcard_Transaction::mergeNameByTransaction( $params['id_pexcard_transaction'] );
+			if($description){
+				$transaction->description = $description;
+				$transaction->save();
+			}
 		}
 		return $transaction;
 	}
