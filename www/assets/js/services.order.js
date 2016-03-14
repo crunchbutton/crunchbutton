@@ -542,6 +542,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	 *
 	 * @returns void
 	 */
+
 	service.processOrder = function () {
 		if (App.busy.isBusy()) {
 			return;
@@ -549,8 +550,8 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 		// see #3086
 		service.local_gid = App.guid();
-
-		App.busy.makeBusy( service.local_gid );
+		var order_loading_phrase = service.restaurant.order_loading_phrase;
+		App.busy.makeBusy( service.local_gid, order_loading_phrase );
 
 		if( service.form.address && service.form.address != '' ){
 			service.form.address = service.location.ordinalReplace( service.form.address );
