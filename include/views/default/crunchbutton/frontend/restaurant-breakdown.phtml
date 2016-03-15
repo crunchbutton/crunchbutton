@@ -44,7 +44,7 @@
 
 				<span class="restaurant-payment-item" ng-if="credit.hasValue && order.form.pay_type == 'card'">
 					<span class="restaurant-payment-item-label">Credit: </span>
-					<span class="restaurant-payment-item-value">-$
+					<span class="restaurant-payment-item-value">-
 						<span ng-if="order.total() <= credit.number">{{order.info.total}}</span>
 						<span ng-if="order.total() > credit.number">{{credit.value}}</span>
 					</span>
