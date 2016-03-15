@@ -3117,6 +3117,20 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			]);
 		}
 
+		if($status == Crunchbutton_Order_Action::DELIVERY_ACCEPTED){
+			// When an order is accepted before it was processed the system most to mark the order as processed. #7978
+			if( $this->preordered && !$this->preorder_processed && !$this->refunded ){
+				$status = $this->status()->last();
+				if( $status[ 'status' ] == 'new' ){
+					$this->que();
+					$this->date = date( 'Y-m-d H:i:s' );
+					$this->preorder_processed = 1;
+					$this->save();
+				}
+			}
+		}
+
+
 		// Add/Remove pex card funds
 		$q = Queue::create([
 			'type' => Crunchbutton_Queue::TYPE_ORDER_PEXCARD_FUNDS,
