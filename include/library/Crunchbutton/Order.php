@@ -3883,6 +3883,17 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return $out;
 	}
 
+	public function hasDriverToDeliveryPreOrder(){
+		if($this->preordered && $this->date_delivery){
+			$community = $this->restaurant()->community();
+			if(Community_Shift::hasAssignedShiftAtDate($community->id_community, $this->date_delivery)){
+				return true;
+			}
+			return false;
+		}
+		return null;
+	}
+
 	public static function pickOrderLoadingPhrase(){
 		$phrases = self::orderLoadingPhrases();
 		if(count($phrases)){

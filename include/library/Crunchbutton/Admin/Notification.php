@@ -597,8 +597,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			$community = '';
 		}
 
-
-		if( $order->preordered ){
+		if( $order->preordered && !$order->hasDriverToDeliveryPreOrder() ){
 			$message = "No drivers to delivery the pre-order O#{$order->id_order} \nR: {$order->restaurant()->name} {$community}/ {$order->restaurant()->phone()} \nC: {$order->name} / {$order->phone()} \nDesired Delivery Time: {$order->preOrderDeliveryWindow()}";
 		} else {
 			$message = "No drivers for O#{$order->id_order} \nR: {$order->restaurant()->name} {$community}/ {$order->restaurant()->phone()} \nC: {$order->name} / {$order->phone()}";

@@ -230,6 +230,33 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 			return false;
 	}
 
+	public static function hasAssignedShiftAtDate( $id_community, $date, $isUTC = true ){
+		$community = Crunchbutton_Community::o( $id_community );
+		if($isUTC){
+			$date = new DateTime( $date, new DateTimeZone( c::config()->timezone  ) );
+			$date->setTimezone( new DateTimeZone( $community->timezone ) );
+		} else {
+			$date = new DateTime( $date, new DateTimeZone( $community->timezone ) );
+		}
+		$date = $date->format( 'Y-m-d H:i:s' );
+		$query = '
+			SELECT cs.* FROM community_shift cs
+				INNER JOIN admin_shift_assign asa ON cs.id_community_shift = asa.id_community_shift
+				INNER JOIN admin a ON asa.id_admin = a.id_admin AND a.active = true
+			WHERE
+				cs.id_community = ?
+				AND cs.date_start <= ?
+				AND cs.date_end >= ?
+				AND cs.active = true
+			ORDER BY cs.date_start ASC
+			LIMIT 1';
+			$shift = Crunchbutton_Community_Shift::q( $query, [$id_community, $date, $date])->get(0);
+			if ($shift->id_community){
+				return true;
+			}
+			return false;
+	}
+
 	public static function currentAssignedShiftByCommunity( $id_community ){
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 			$community = Crunchbutton_Community::o( $id_community );
