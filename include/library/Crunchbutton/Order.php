@@ -1713,6 +1713,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$needDrivers = true;
 		}
 
+		// When the pre-order is processed because a driver has accepted we dont send driver's notification #7978
+		if($this->preordered){
+			$status = $this->status()->last();
+			if( $status[ 'status' ] != 'new' ){
+				return;
+			}
+		}
+
 		$drivers = $this->getDriversToNotify();
 		if( $drivers ){
 			foreach( $drivers as $driver ){
