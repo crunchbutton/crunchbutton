@@ -12,7 +12,7 @@ class Controller_api_twilio_outgoing extends Crunchbutton_Controller_Rest {
 
 		$phone = substr($phone, 0, 10);
 
-		$num = '<Client>+1'.$phone.'</Client>';
+		$num = '<Client>'.$phone.'</Client>';
 
 		switch (c::getPagePiece(3)) {
 			case 'restaurant':
