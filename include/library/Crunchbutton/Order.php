@@ -2283,6 +2283,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					}
 				}
 
+				if(!Order::hasPlacedPreOrderByPhone($this->phone)){
+					$msg .= "Next time, try scheduling a pre-order for delivery whatever time you want!\n\n";
+				}
+
+
 				$msg .= "To contact Crunchbutton, text us back.\n\n";
 				if ($this->pay_type == self::PAY_TYPE_CASH) {
 					$msg .= "Remember to tip!\n\n";
@@ -2998,6 +3003,20 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			return intval( $row->total );
 		}
 		return 0;
+	}
+
+	public static function hasPlacedPreOrderByPhone( $phone ){
+		$phone = Phone::clean( $phone );
+		// referral phone test
+		if( $phone == '_PHONE_' ){
+			return 0;
+		}
+		$query = 'SELECT COUNT(*) AS total FROM `order` INNER JOIN phone using(id_phone) WHERE phone.phone = ? AND `order`.preordered = 1';
+		$row = Cana::db()->get( $query, [$phone])->get(0);
+		if( intval( $row->total ) ){
+			return true;
+		}
+		return false;
 	}
 
 	public static function totalOrdersByCustomer( $id_user ){
