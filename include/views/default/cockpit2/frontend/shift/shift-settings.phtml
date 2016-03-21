@@ -13,7 +13,7 @@
 			<p><strong>Shifts</strong><br><br></p>
 			<ul ng-class="{'submitted':submitted}" class="box-content2">
 				<li class="li-input" ng-class="{'error':form.minutesToWaitBeforeCreateNewShift.$invalid}">
-					<div class="label">How many minutes the system should created the 1 hour shift for driver whose shifts just ended?</div>
+					<div class="label">We create new 1 hour shifts when off-shift drivers accept orders. For drivers whose shifts just ended, how many minutes should we wait till we ask them if they want to create a new 1 hour shift, rather than just letting them accept the order without asking this question?</div>
 					<div class="input">
 						<input type="number" ignore-mouse-wheel name="minutesToWaitBeforeCreateNewShift" ng-model="config.create_driver_shift_buffer" required>
 					</div>
