@@ -18,7 +18,7 @@
 
 					<li class="li-input divider-line">
 						<label class="switch-wrap">
-							<input type="checkbox" class="switch" ng-disabled="!community.is_auto_closed" ng-model="community.is_auto_closed"/><div></div>
+							<input type="checkbox" ng-disabled="!community.is_auto_closed" ng-model="community.is_auto_closed"/><div></div>
 						</label>
 						<div class="label">Is current Auto Closed:</div>
 					</li>
@@ -35,7 +35,7 @@
 
 					<li class="li-input divider-line">
 						<label class="switch-wrap">
-							<input type="checkbox" class="switch" ng-model="community.close_all_restaurants"/><div></div>
+							<input type="checkbox" ng-model="community.close_all_restaurants"/><div></div>
 						</label>
 						<div class="label">Close All Restaurants <br>(you probably never want to do this):</div>
 					</li>
@@ -53,7 +53,7 @@
 
 					<li class="li-input divider-line">
 						<label class="switch-wrap">
-							<input type="checkbox" class="switch" ng-model="community.close_3rd_party_delivery_restaurants"/><div></div>
+							<input type="checkbox" ng-model="community.close_3rd_party_delivery_restaurants"/><div></div>
 						</label>
 						<div class="label">Close 3rd Party Delivery Restaurants:</div>
 					</li>
@@ -70,7 +70,7 @@
 
 					<li class="li-input divider-line" ng-show="community.close_all_restaurants || community.close_3rd_party_delivery_restaurants" >
 						<label class="switch-wrap">
-							<input type="checkbox" class="switch" ng-model="community.dont_warn_till_enabled"/><div></div>
+							<input type="checkbox" ng-model="community.dont_warn_till_enabled"/><div></div>
 						</label>
 						<div class="label">Remind me/CS to reopen it at this time (<strong>Pacific, not Local time</strong>):</div>
 					</li>
@@ -88,7 +88,7 @@
 
 					<li class="li-input divider-line" ng-show="community.close_all_restaurants || community.close_3rd_party_delivery_restaurants" >
 						<label class="switch-wrap">
-							<input type="checkbox" class="switch" ng-model="community.reopen_at_enabled"/><div></div>
+							<input type="checkbox" ng-model="community.reopen_at_enabled"/><div></div>
 						</label>
 						<div class="label">Reopen the community at this time (<strong>Pacific, not Local time</strong>):</div>
 					</li>
@@ -169,7 +169,7 @@
 
 					<li class="li-input divider-line" ng-show="community.close_all_restaurants || community.close_3rd_party_delivery_restaurants">
 						<label class="switch-wrap">
-							<input type="checkbox" class="switch" ng-model="reallyWantToClose"/><div></div>
+							<input type="checkbox" ng-model="reallyWantToClose"/><div></div>
 						</label>
 						<div class="label">I really want to close!</div>
 					</li>
