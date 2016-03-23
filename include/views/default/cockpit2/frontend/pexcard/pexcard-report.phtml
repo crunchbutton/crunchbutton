@@ -28,6 +28,16 @@
 				</div>
 			</li>
 
+			<li class="li-input">
+				<div class="label">Driver:</div>
+				<ui-select ng-model="driver.id_admin" theme="select2" close-on-select="true" style="width: 200px;" title="Select a driver">
+					<ui-select-match placeholder="Select a driver">{{$select.selected.name}}</ui-select-match>
+					<ui-select-choices repeat="driver.id_admin as driver in drivers | propsFilter: {name: $select.search}">
+						{{driver.name}}
+					</ui-select-choices>
+				</ui-select>
+			</li>
+
 			<li class="li-input" ng-show="dates">
 				<div class="notes">
 					Pre processed period from <strong>{{dates.min}}</strong> to <strong>{{dates.max}}</strong>.
