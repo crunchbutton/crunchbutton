@@ -30,6 +30,10 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 				$this->_add_funds();
 				break;
 
+			case 'admin-list':
+				$this->_adminList();
+				break;
+
 			case 'report':
 				$this->_report();
 				break;
@@ -59,6 +63,21 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 				break;
 		}
 
+	}
+
+	private function _adminList(){
+		// return admins with pexcard
+		$cards = Cockpit_Admin_Pexcard::q('SELECT a.id_admin, a.name, ap.card_serial
+																				FROM admin_pexcard ap
+																				INNER JOIN admin a ON ap.id_admin = a.id_admin
+																				INNER JOIN pexcard_report_transaction prt ON prt.id_admin_pexcard = ap.id_admin_pexcard
+																				GROUP BY a.id_admin
+																				ORDER BY a.name');
+		$out = [];
+		foreach($cards as $card){
+			$out[] = ['id_admin' => $card->id_admin, 'name' => $card->name ];
+		}
+		echo json_encode( $out );exit;
 	}
 
 	private function _add_funds(){
@@ -168,13 +187,19 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 		}
 		$start = $this->request()['start'];
 		$end = $this->request()['end'];
+		$id_admin = $this->request()['id_admin'];
+		$import = $this->request()['import'];
+
+		if($id_admin <= 0){
+			$id_admin = null;
+		}
 		$import = $this->request()['import'];
 
 		if( !$start || !$end ){
 			$this->_error();
 		}
 
-		$report = Crunchbutton_Pexcard_Transaction::processedReport( $start, $end );
+		$report = Crunchbutton_Pexcard_Transaction::processedReport( $start, $end, $id_admin );
 		echo json_encode( $report );exit;
 	}
 

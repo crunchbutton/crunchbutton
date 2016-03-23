@@ -20,14 +20,22 @@ NGApp.controller( 'PexCardReportCtrl', function ( $scope, $filter, PexCardServic
 		report( false );
 	}
 
-
 	$scope.isProcessing = true;
 
-	PexCardService.report_dates( function( json ){
-		$scope.isProcessing = false;
-		$scope.dates = json;
-		console.log('$scope.dates',$scope.dates);
-	} );
+	PexCardService.admin_list(function(json){
+		$scope.drivers = [];
+		$scope.drivers.push({id_admin:-1, name:'All drivers'});
+		for (var i=0; i<json.length; i++){
+			var driver = json[i];
+    	$scope.drivers.push({id_admin:driver.id_admin, name:driver.name});
+		}
+		PexCardService.report_dates( function( json ){
+			$scope.isProcessing = false;
+			$scope.dates = json;
+		} );
+	});
+
+	$scope.driver = {id_admin:-1};
 
 	var report = function(){
 
@@ -42,7 +50,9 @@ NGApp.controller( 'PexCardReportCtrl', function ( $scope, $filter, PexCardServic
 
 		var params = {  'start': $filter( 'date' )( $scope.range.start, 'MM/dd/yyyy'),
 										'end': $filter( 'date' )( $scope.range.end, 'MM/dd/yyyy') };
-
+		if($scope.driver.id_admin != -1){
+			params.id_admin = $scope.driver.id_admin;
+		}
 		PexCardService.report( params, function( json ){
 			$scope.isProcessing = false;
 			$scope.result = json;

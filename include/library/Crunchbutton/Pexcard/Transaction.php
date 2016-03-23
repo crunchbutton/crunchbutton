@@ -257,7 +257,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		}
 	}
 
-	public static function processedReport( $start, $end ){
+	public static function processedReport( $start, $end, $id_admin = null ){
 
 		$start = explode( '/' , $start );
 		$start = new DateTime( $start[ 2 ] . '-' . $start[ 0 ] . '-' . $start[ 1 ] . ' 00:00:01', new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
@@ -271,7 +271,22 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 
 		$end = $end->format( 'Y-m-d H:i:s' );
 
-		$query = "SELECT a.id_admin,
+		$out = [ 'drivers_expenses' => [] ];
+		$out[ 'pexcard_amount' ] = 0;
+		$out[ 'card_cash_amount' ] = 0;
+		$out[ 'should_have_spend' ] = 0;
+		$out[ 'card_amount' ] = 0;
+		$out[ 'orders' ] = 0;
+		$out[ 'diff' ] = 0;
+
+		if($id_admin){
+			$query = 'SELECT a.id_admin,
+										 a.name AS driver,
+										 login,
+										 a.email FROM admin a WHERE a.id_admin = ?';
+			$drivers = c::db()->get( $query, [ $id_admin ] );
+		} else {
+			$query = "SELECT a.id_admin,
 										 a.name AS driver,
 										 login,
 										 a.email
@@ -286,15 +301,9 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 										WHERE date BETWEEN ? AND ?) drivers) drivers
 							INNER JOIN admin a ON a.id_admin = drivers.id_admin
 							ORDER BY a.name ASC";
-		$out = [ 'drivers_expenses' => [] ];
-		$out[ 'pexcard_amount' ] = 0;
-		$out[ 'card_cash_amount' ] = 0;
-		$out[ 'should_have_spend' ] = 0;
-		$out[ 'card_amount' ] = 0;
-		$out[ 'orders' ] = 0;
-		$out[ 'diff' ] = 0;
+			$drivers = c::db()->get( $query, [ $start, $end, $start, $end ] );
+		}
 
-		$drivers = c::db()->get( $query, [ $start, $end, $start, $end ] );
 		foreach( $drivers as $driver ){
 			$_driver = [ 'id_admin' => floatval( $driver->id_admin ), 'driver' => $driver->driver, 'login' => $driver->login, 'email' => $driver->email ];
 			$query = "SELECT prt.*, pt.authTransactionId

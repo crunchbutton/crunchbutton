@@ -24,6 +24,9 @@ class Controller_api_config_pexcard extends Crunchbutton_Controller_RestAccount 
 			case 'add-test':
 				$this->_addTest();
 				break;
+			case 'cards':
+				$this->_cards();
+				break;
 			case 'remove-test':
 				$this->_removeTest();
 				break;
