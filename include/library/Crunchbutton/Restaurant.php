@@ -1231,7 +1231,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$today = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$today->setTimezone( new DateTimeZone( $this->timezone ) );
 
-		for( $i = 1; $i <= 4; $i++ ){
+		for( $i = 1; $i <= 6; $i++ ){
 
 			$label = $now->format( 'D M d' );
 			if( $i == 1 ){
@@ -1691,7 +1691,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$out['_tzabbr'] = $date->format('T');
 
 			if( $isCockpit ){
-
 				$payment_type = $this->payment_type();
 				$out[ 'payment_method' ] = $payment_type->payment_method;
 
