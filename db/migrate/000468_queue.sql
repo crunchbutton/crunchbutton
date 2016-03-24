@@ -1,0 +1,1 @@
+ALTER TABLE `queue` ADD `tries` int(11) DEFAULT 0;

@@ -2,50 +2,49 @@
 
 class Crunchbutton_Queue extends Cana_Table {
 
-	const TYPE_CLASS_ORDER							= 'Crunchbutton_Queue_Order';
-	const TYPE_CLASS_CRON							= 'Crunchbutton_Queue_Cron';
-	const TYPE_CLASS_ORDER_RECEIPT					= 'Crunchbutton_Queue_Order_Receipt';
-	const TYPE_CLASS_ORDER_REFUND					= 'Crunchbutton_Queue_Order_Refund';
-	const TYPE_CLASS_ORDER_RECEIPT_SIGNATURE					= 'Crunchbutton_Queue_Order_ReceiptSignature';
-	const TYPE_CLASS_ORDER_CONFIRM					= 'Crunchbutton_Queue_Order_Confirm';
-	const TYPE_CLASS_ORDER_PEXCARD_FUNDS			= 'Crunchbutton_Queue_Order_PexCard_Funds';
-	const TYPE_CLASS_NOTIFICATION_DRIVER			= 'Crunchbutton_Queue_Notification_Driver';
-	const TYPE_CLASS_NOTIFICATION_DRIVER_PRIORITY	= 'Crunchbutton_Queue_Notification_Driver_Priority';
-	const TYPE_CLASS_NOTIFICATION_DRIVER_HELPOUT	= 'Crunchbutton_Queue_Notification_Driver_HelpOut';
-	const TYPE_CLASS_NOTIFICATION_YOUR_DRIVER		= 'Crunchbutton_Queue_Notification_Your_Driver';
-	const TYPE_CLASS_NOTIFICATION_MINUTES_WAY		= 'Crunchbutton_Queue_Notification_Minutes_Way';
-	const TYPE_CLASS_SETTLEMENT_DRIVER		= 'Crunchbutton_Queue_Settlement_Driver';
-	const TYPE_CLASS_SETTLEMENT_RESTAURANT		= 'Crunchbutton_Queue_Settlement_Restaurant';
-	const TYPE_CLASS_RESTAURANT_TIME		= 'Crunchbutton_Queue_Restaurant_Time';
-	const TYPE_CLASS_EVENT_EMIT		= 'Crunchbutton_Queue_Event_Emit';
-	const TYPE_CLASS_PEXCARD_ACTION		= 'Crunchbutton_Queue_Pexcard_Action';
-	const TYPE_CLASS_PEXCARD_REMOVE_FUNDS		= 'Crunchbutton_Queue_Pexcard_Remove_Funds';
+	const TYPE_CLASS_ORDER = 'Crunchbutton_Queue_Order';
+	const TYPE_CLASS_CRON = 'Crunchbutton_Queue_Cron';
+	const TYPE_CLASS_ORDER_RECEIPT = 'Crunchbutton_Queue_Order_Receipt';
+	const TYPE_CLASS_ORDER_REFUND = 'Crunchbutton_Queue_Order_Refund';
+	const TYPE_CLASS_ORDER_RECEIPT_SIGNATURE = 'Crunchbutton_Queue_Order_ReceiptSignature';
+	const TYPE_CLASS_ORDER_CONFIRM = 'Crunchbutton_Queue_Order_Confirm';
+	const TYPE_CLASS_ORDER_PEXCARD_FUNDS = 'Crunchbutton_Queue_Order_PexCard_Funds';
+	const TYPE_CLASS_NOTIFICATION_DRIVER = 'Crunchbutton_Queue_Notification_Driver';
+	const TYPE_CLASS_NOTIFICATION_DRIVER_PRIORITY = 'Crunchbutton_Queue_Notification_Driver_Priority';
+	const TYPE_CLASS_NOTIFICATION_DRIVER_HELPOUT = 'Crunchbutton_Queue_Notification_Driver_HelpOut';
+	const TYPE_CLASS_NOTIFICATION_YOUR_DRIVER = 'Crunchbutton_Queue_Notification_Your_Driver';
+	const TYPE_CLASS_NOTIFICATION_MINUTES_WAY = 'Crunchbutton_Queue_Notification_Minutes_Way';
+	const TYPE_CLASS_SETTLEMENT_DRIVER = 'Crunchbutton_Queue_Settlement_Driver';
+	const TYPE_CLASS_SETTLEMENT_RESTAURANT = 'Crunchbutton_Queue_Settlement_Restaurant';
+	const TYPE_CLASS_RESTAURANT_TIME = 'Crunchbutton_Queue_Restaurant_Time';
+	const TYPE_CLASS_EVENT_EMIT = 'Crunchbutton_Queue_Event_Emit';
+	const TYPE_CLASS_PEXCARD_ACTION	= 'Crunchbutton_Queue_Pexcard_Action';
+	const TYPE_CLASS_PEXCARD_REMOVE_FUNDS = 'Crunchbutton_Queue_Pexcard_Remove_Funds';
 
-	const TYPE_ORDER						= 'order';
-	const TYPE_CRON						= 'cron';
-	const TYPE_ORDER_RECEIPT				= 'order-receipt';
-	const TYPE_ORDER_REFUND				= 'order-refund';
-	const TYPE_ORDER_RECEIPT_SIGNATURE				= 'order-receipt-signature';
-	const TYPE_ORDER_CONFIRM				= 'order-confirm';
-	const TYPE_ORDER_PEXCARD_FUNDS			= 'order-pexcard-funds';
-	const TYPE_NOTIFICATION_DRIVER			= 'notification-driver';
+	const TYPE_ORDER = 'order';
+	const TYPE_CRON = 'cron';
+	const TYPE_ORDER_RECEIPT = 'order-receipt';
+	const TYPE_ORDER_REFUND = 'order-refund';
+	const TYPE_ORDER_RECEIPT_SIGNATURE = 'order-receipt-signature';
+	const TYPE_ORDER_CONFIRM = 'order-confirm';
+	const TYPE_ORDER_PEXCARD_FUNDS = 'order-pexcard-funds';
+	const TYPE_NOTIFICATION_DRIVER = 'notification-driver';
 	const TYPE_NOTIFICATION_DRIVER_PRIORITY = 'notification-driver-priority';
 	const TYPE_NOTIFICATION_DRIVER_HELPOUT = 'notification-driver-helpout';
-	const TYPE_NOTIFICATION_YOUR_DRIVER		= 'notification-your-driver';
-	const TYPE_NOTIFICATION_MINUTES_WAY		= 'notification-minutes-way';
-	const TYPE_SETTLEMENT_DRIVER		= 'settlement-driver';
-	const TYPE_SETTLEMENT_RESTAURANT		= 'settlement-restaurant';
-	const TYPE_RESTAURANT_TIME		= 'restaurant-time';
-	const TYPE_EVENT_EMIT		= 'event-emit';
-	const TYPE_PEXCARD_ACTION		= 'pexcard-action';
-	const TYPE_PEXCARD_REMOVE_FUNDS		= 'pexcard-remove-funds';
+	const TYPE_NOTIFICATION_YOUR_DRIVER = 'notification-your-driver';
+	const TYPE_NOTIFICATION_MINUTES_WAY = 'notification-minutes-way';
+	const TYPE_SETTLEMENT_DRIVER = 'settlement-driver';
+	const TYPE_SETTLEMENT_RESTAURANT = 'settlement-restaurant';
+	const TYPE_RESTAURANT_TIME = 'restaurant-time';
+	const TYPE_EVENT_EMIT = 'event-emit';
+	const TYPE_PEXCARD_ACTION = 'pexcard-action';
+	const TYPE_PEXCARD_REMOVE_FUNDS = 'pexcard-remove-funds';
 
-	const STATUS_NEW		= 'new';
-	const STATUS_SUCCESS	= 'success';
-	const STATUS_FAILED		= 'failed';
-	const STATUS_RUNNING	= 'running';
-	const STATUS_STOPPED	= 'stopped';
-
+	const STATUS_NEW = 'new';
+	const STATUS_SUCCESS = 'success';
+	const STATUS_FAILED = 'failed';
+	const STATUS_RUNNING = 'running';
+	const STATUS_STOPPED = 'stopped';
 
 	public static function process($all = false) {
 
@@ -56,7 +55,7 @@ class Crunchbutton_Queue extends Cana_Table {
 		// use dbwrite so there is no lag
 		$qq = new Crunchbutton_Queue;
 		$qq->dbWrite(c::dbWrite());
-		$queue = $qq->q('select * from queue where status=?'.$allQuery.' order by date_run asc', [self::STATUS_NEW]);
+		$queue = $qq->q('select * from queue where (status=?'.$allQuery.') or (status=? and (date_start > subdate( now(), interval 1 hour) or date_run > subdate( now(), interval 1 hour)) and tries < 3)  order by date_run asc', [self::STATUS_NEW, self::STATUS_FAILED]);
 		$count = $queue->count();
 		//$processid = uniqid();
 
@@ -66,9 +65,11 @@ class Crunchbutton_Queue extends Cana_Table {
 			$q->status = self::STATUS_RUNNING;
 			$q->date_start = date('Y-m-d H:i:s');
 
+			$q->tries = $q->tries ? ($q->tries+1) : 1;
+
 			$res = c::dbWrite()->query(
-				'update queue set status=?, date_start=? where id_queue=? and status=?',
-				[$q->status, $q->date_start, $q->id_queue, self::STATUS_NEW]
+				'update queue set status=?, date_start=?, tries=? where id_queue=? and (status=? or status=?)',
+				[$q->status, $q->date_start, $q->tries, $q->id_queue, self::STATUS_NEW, self::STATUS_FAILED]
 			);
 
 			if (!$res->rowCount()) {
@@ -76,7 +77,6 @@ class Crunchbutton_Queue extends Cana_Table {
 				$count--;
 				continue;
 			}
-
 			register_shutdown_function(function() use ($q) {
 				$error = error_get_last();
 				if ($error['type'] == E_ERROR) {
@@ -104,6 +104,7 @@ class Crunchbutton_Queue extends Cana_Table {
 				$q->status = self::STATUS_FAILED;
 				$q->date_end = date('Y-m-d H:i:s');
 				$q->data = 'Invalid class type of: '.$queue_type;
+				$q->save();
 				continue;
 			}
 
