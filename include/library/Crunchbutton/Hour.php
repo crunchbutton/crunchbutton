@@ -57,11 +57,14 @@ class Crunchbutton_Hour extends Cana_Table_Trackchange {
 
 		if( $restaurant->allowPreorder() ){
 			$restaurant->preOrderHours();
-			if( $restaurant->preOrderTimeToTime ){
-				$message = 'Pre-order for ' . $restaurant->preOrderTimeToTime . '!';
-			} else {
-				$message .= '. Pre-order now!';
+			if(count($restaurant->preOrderHours())){
+				if( $restaurant->preOrderTimeToTime ){
+					$message = 'Pre-order for ' . $restaurant->preOrderTimeToTime . '!';
+				} else {
+					$message .= '. Pre-order now!';
+				}
 			}
+
 
 		} else {
 			$message .= '!';
