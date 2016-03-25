@@ -2183,7 +2183,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function save($new = false) {
 		if (!$this->timezone) {
-			$this->timezone = c::config()->timezone;
+			$this->timezone = Crunchbutton_Community_Shift::CB_TIMEZONE;
+		}
+		if(!$this->delivery_estimated_time){
+			$this->delivery_estimated_time = 45;
 		}
 		$this->phone = Phone::clean($this->phone);
 		return parent::save();
