@@ -1,0 +1,159 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="left title"><i class="fa fa-car"></i>Dashboard (working in progress)</h1>
+
+	<div class="divider"></div>
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<div class="support-box-wrap box-content2">
+
+		<div class="no-box-content-color">
+
+			<ul class="ul-inputs">
+				<li class="li-input" ng-if="communities.length">
+					<div class="label">Communities:</div>
+					<div class="input">
+						<ui-select multiple ng-model="options.communities" theme="select2" close-on-select="true" title="Select a community">
+							<ui-select-match placeholder="Select a community...">{{$item.name}}</ui-select-match>
+							<ui-select-choices repeat="community.permalink as community in communities | propsFilter: {name: $select.search}">
+								{{community.name}}
+							</ui-select-choices>
+						</ui-select>
+					</div>
+				</li>
+				<li class="li-input">
+					<button ng-click="selectNoneCommunity();" class="button button-small button-empty button-border light-gray"><i class="fa fa-minus-circle"></i>&nbsp;&nbsp;Select None</button>
+					<button ng-click="selectAllCommunities();" class="button button-small button-empty button-border button-blue"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Select All</button>
+					<button ng-click="selectCommunitiesWithShift();" class="button button-small button-empty button-border button-orange"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Communities with shifts</button>
+					<button name='refresh' ng-if="options.communities.length" ng-click='loadCommunities()' class="button button-small button-empty button-border button-green"><i class="fa fa-refresh"></i>&nbsp;&nbsp;Load</button>
+					<input type="checkbox" name="autoreload" ng-model="options.autoreaload"> Auto reload every 20 seconds
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="">
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Status</h1>
+				<div class="divider"></div>
+			</div>
+			<div class="no-box-content-color">
+				<table class="basic-table tb-zebra table-dashboard">
+					<tr>
+						<th>Community</th>
+						<th>Timezone</th>
+						<th>Current time</th>
+						<th>Unaccepted Orders</th>
+						<th>Undelivered Orders</th>
+						<th>Orders in Transit</th>
+						<th>Drivers working</th>
+						<th>Shifts today</th>
+					</tr>
+					<tr ng-repeat="community in dashboard">
+						<td>{{community.community.name}}</td>
+						<td>{{community.community.timezone}}:</td>
+						<td>{{clock | convertimeformat:community.community.timezone:'h:mm a'}}</td>
+						<td ng-click="modalOrders(community.orders.unaccepted, community.community.name  + ': Unaccepted Orders')" class="dashboard-light" ng-class="{'dashboard-warning':community.total_unaccepted_orders}">{{community.total_unaccepted_orders}}</td>
+						<td ng-click="modalOrders(community.orders.undelivered, community.community.name  + ': Undelivered Orders', true)" class="dashboard-light" ng-class="{'dashboard-warning':community.total_undelivered_orders}">{{community.total_undelivered_orders}}</td>
+						<td ng-click="modalOrders(community.orders.in_transit, community.community.name  + ': Orders in Transit', true)" class="dashboard-light" ng-class="{'dashboard-ok':community.total_in_transit_orders}">{{community.total_in_transit_orders}}</td>
+						<td ng-click="modalDrivers(community.current_drivers, community.community.name  + ': Drivers working')" class="dashboard-light" ng-class="{'dashboard-ok':community.total_current_drivers}">{{community.total_current_drivers}}</td>
+						<td ng-click="modalDrivers(community.shifts_today, community.community.name  + ': Shifts today')"class="dashboard-light" ng-class="{'dashboard-ok':community.total_shifts_today}">{{community.total_shifts_today}}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="dashboard-drivers-dialog-container dashboard-dialog-container zoom-anim-dialog mfp-hide dialog">
+	<div class="support-box-wrap box-content2">
+		<div class="support-box-wrap-header">
+			<h1>{{modal.title}}</h1>
+			<div class="divider"></div>
+		</div>
+		<div class="no-box-content-color">
+			<div class="field-container">
+				<table class="dashboard-modal-table tb-zebra">
+					<tr>
+						<th>Driver</th>
+						<th>Shift</th>
+						<th></th>
+						<th>Last Action</th>
+					</tr>
+					<tr ng-repeat="driver in modal.drivers">
+						<td>
+							<a href="/staff/{{driver_login}}">{{driver.name}}</a>
+							<br>
+							{{driver.phone | formatPhone}}
+						</td>
+						<td>
+							<span ng-bind="formatDate(driver.date_start) |  date:'MM/d h:mm a'"></span> - <span ng-bind="formatDate(driver.date_end) |  date:'MM/d h:mm a'"></span>
+						</td>
+						<td>
+							<span class="tag tag-green" ng-if="driver.confirmed">Confirmed</span>
+							<span class="tag tag-blue" ng-if="driver.current">Working</span>
+						</td>
+						<td>
+							<span ng-if="driver.last_action">
+								<span class="tag tag-green" ng-if="driver.last_action.type == 'delivery-accepted'">Accepted</span>
+								<span class="tag tag-blue" ng-if="driver.last_action.type == 'delivery-pickedup'">Pickedup</span>
+								<span class="tag tag-purple" ng-if="driver.last_action.type == 'delivery-delivered'">Delivered</span>
+								#<a href="/order/{{driver.last_action.id_order}}">{{driver.last_action.id_order}}</a>
+							</span>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="dashboard-orders-dialog-container dashboard-dialog-container zoom-anim-dialog mfp-hide dialog">
+	<div class="support-box-wrap box-content2">
+		<div class="support-box-wrap-header">
+			<h1>{{modal.title}}</h1>
+			<div class="divider"></div>
+		</div>
+		<div class="no-box-content-color">
+			<div class="field-container">
+				<table class="dashboard-modal-table tb-zebra">
+					<tr>
+						<th>#</th>
+						<th>Customer</th>
+						<th>Restaurant</th>
+						<th ng-if="modal.driver">Driver</th>
+						<th>Status</th>
+						<th>Date</th>
+					</tr>
+					<tr ng-repeat="order in modal.orders">
+						<td><a href="/order/{{order.id_order}}">{{order.id_order}}</a></td>
+						<td>{{order.customer}} <br> {{order.customer_phone | formatPhone}}</td>
+						<td>
+							<a href="/restaurant/{{order.restaurant_permalink}}">{{order.restaurant}}</a>
+						</td>
+						<td ng-if="modal.driver">
+							<span ng-if="!order.driver">-</span>
+							<a href="/staff/{{order.driver_login}}">{{order.driver}}</a>
+							<br>
+							{{order.driver_phone | formatPhone}}
+						</td>
+						<td>
+								<span class="tag tag-black" ng-if="order.order_status == 'delivery-canceled'">Canceled</span>
+								<span class="tag tag-red" ng-if="order.order_status == 'delivery-new' || !order.order_status">Not&nbsp;yet&nbsp;accepted</span>
+								<span class="tag tag-green" ng-if="order.order_status == 'delivery-accepted'">Accepted</span>
+								<span class="tag tag-blue" ng-if="order.order_status == 'delivery-pickedup'">Pickedup</span>
+								<span class="tag tag-purple" ng-if="order.order_status == 'delivery-delivered'">Delivered</span>
+						</td>
+						<td>
+							<span ng-if="order.order_date">{{order.order_date | localtime:'h:mm a'}}</span>
+							<span ng-if="order.preordered_date">{{order.preordered_date | localtime:'h:mm a'}}</span>
+							<span class="tag tag-green" ng-if="order.date_delivery">Pre order</span>
+							<span ng-if="order.date_delivery">{{order.date_delivery | localtime:'h:mm a'}}</span>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

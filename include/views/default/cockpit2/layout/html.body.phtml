@@ -36,6 +36,17 @@
 					</table>
 				</a>
 
+				<a href="/dashboard/beta" ng-click="instant()" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'dashboard-beta' )}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-dashboard"></i></td>
+							<td class="side-menu-label">Dashboard (beta) <i class="fa fa-flask"></i></a></td>
+						</tr>
+					</table>
+				</a>
+
+
+
 			<div ng-if="menu.toggle=='marketing-rep'">
 				<a href="/profile" ng-click="instant()" class="menu-link" ng-class="{'nav-active': (navigation.page == 'profile'|| navigation.page == 'drivers-notification')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
@@ -435,7 +446,7 @@
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-comments-o"></i></td>
-							<td class="side-menu-label">Tickets (beta) <i class="fa fa-flask"></i></a></td>
+							<td class="side-menu-label">Tickets</a></td>
 						</tr>
 					</table>
 				</a>

@@ -1176,7 +1176,7 @@ input {
 	.li-input .code.tag{
 		color:#FFF;
 	}
-.li-input input,
+.li-input input:not([type="checkbox"]),
 .li-input select,
 .li-input textarea{
 	border: 1px solid $green;
@@ -4972,4 +4972,42 @@ a.button {
 	font-weight: bold;
 	letter-spacing: 0.36px;
 }
-
+.dashboard-dialog-container{
+		width: 700px !important;
+	}
+	.dashboard-dialog-container .box-content2{
+		border:none!important;
+	}
+	.dashboard-modal-table{
+		width: 100%;
+	}
+		.dashboard-modal-table th{
+			font-weight: bold;
+			font-size: 1.1em;
+		}
+		.dashboard-modal-table td{
+			font-size: 1.1em;
+			padding: .3em;
+		}
+	.table-dashboard{
+		width: 100%;
+	}
+	.table-dashboard td, .table-dashboard th{
+		padding: .5m;
+	}
+	.dashboard-warning{
+		color:red !important;
+		font-weight: bold;
+	}
+	.dashboard-ok{
+		color: green !important;
+		font-weight: bold;
+	}
+	.dashboard-light{
+		color: #CCC;
+		text-align: center !important;
+		cursor: pointer;
+	}
+	.dashboard-current-time{
+		font-weight: bold;
+	}
