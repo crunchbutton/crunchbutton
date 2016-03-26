@@ -800,7 +800,7 @@ NGApp.directive( 'stickyBottom', function ( $document ) {
 
 				$document.bind('scroll', function () {
 					setHeight();
-        });
+				});
 
 				angular.element(elem).css( 'position', 'fixed' );
 				var el_height = attrs.stickyBottom;
@@ -975,7 +975,7 @@ NGApp.directive( 'spaceLeft', function () {
 				var spaceLeftBarContainer = '<div class="space-left-bar-container" id="space-left-bar-container-' + id + '" >' +
 																			'<div class="space-left-bar"></div>' +
 																			'<div class="space-left-text"></div>' +
-													 					'</div>';
+																		'</div>';
 				parent.append( spaceLeftBarContainer );
 				var container = $( '#space-left-bar-container-' + id );
 
@@ -1004,3 +1004,10 @@ NGApp.directive( 'spaceLeft', function () {
 			}
 	};
 });
+NGApp.directive('dateNow', ['$filter', function($filter) {
+	return {
+		link: function( $scope, $element, $attrs) {
+			$element.text($filter('date')(new Date(), $attrs.dateNow));
+		}
+	};
+}])

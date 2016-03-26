@@ -1,6 +1,6 @@
 <?php
 
-class Controller_api_dashboard extends Crunchbutton_Controller_RestAccount {
+class Controller_api_dashboard_report extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
 			$this->error(401, true);
