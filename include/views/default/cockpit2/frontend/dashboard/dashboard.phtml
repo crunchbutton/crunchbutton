@@ -2,7 +2,7 @@
 
 <div class="content-padding">
 
-	<h1 class="left title"><i class="fa fa-car"></i>Dashboard</h1>
+	<h1 class="left title"><i class="fa fa-dashboard"></i>Dashboard</h1>
 
 	<div class="divider"></div>
 	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
@@ -25,7 +25,7 @@
 						<td ng-repeat="data in row">{{data}}</td>
 					</tr>
 				</table>
-				
+
 				<br>
 				<button class="button button-empty button-border button-orange" ng-if="order.user.id_user" ng-class="{'button-disabled': isRefunding || order.refunded}" ng-click="refund()">Refund</button>
 
