@@ -168,16 +168,8 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		$phone = Crunchbutton_Support::clearPhone( $params[ 'From' ] );
 
 		if( !$twilio_session->id_session_twilio ){
-
-			// Create new session
-			$session = new Crunchbutton_Session_Adapter_Sql();
-			$fakeSessionId = substr( str_replace( '.' , '', uniqid( rand(), true ) ), 0, 32 );
-			$session->write( $fakeSessionId );
-			$session->save();
-
 			// Create a new session twilio
 			$twilio_session = new Crunchbutton_Session_Twilio;
-			$twilio_session->id_session = $session->id_session;
 			$twilio_session->data = json_encode( $params );
 			$twilio_session->phone = $phone;
 			$twilio_session->save();
@@ -239,6 +231,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		$support = new Crunchbutton_Support();
 		$support->type = Crunchbutton_Support::TYPE_SMS;
 		$support->phone = $params[ 'phone' ];
+		$support->id_phone = $params[ 'phone' ];
 		$support->status = Crunchbutton_Support::STATUS_OPEN;
 		$support->ip = c::getIp();
 		$support->id_session_twilio = $params[ 'id_session_twilio' ];
@@ -701,16 +694,10 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 				$this->status = 'open';
 			}
 		}
-
 		$this->phone = Phone::clean($this->phone);
-
 		$phone = Phone::byPhone( $this->phone );
 		$this->id_phone = $phone->id_phone;
-
 		parent::save();
-		if($initial_save) {
-			// Crunchbutton_Hipchat_Notification::NewSupport($this);
-		}
 	}
 
 	public function makeACall(){

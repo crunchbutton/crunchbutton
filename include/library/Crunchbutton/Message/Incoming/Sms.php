@@ -41,8 +41,7 @@ class Crunchbutton_Message_Incoming_Sms extends Cana_Model {
 			'media' => $media,
 			'from' => $from,
 			'to' => $to,
-			'sid' => $request['SmsMessageSid']
-		];
+			'sid' => $request['SmsMessageSid']];
 
 		Phone_Log::log($to, $from, 'message', 'incoming');
 

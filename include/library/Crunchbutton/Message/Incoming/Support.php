@@ -20,12 +20,6 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 		$this->media = $params['media'];
 		$response = [];
 
-		/*
-		$session = Session_Twilio::o($action['session']);
-		$session->twilio_id = $params['sid'];
-		$session->phone = $params['from'];
-		*/
-
 		if ($this->support->id_support) {
 
 			switch ($action) {
