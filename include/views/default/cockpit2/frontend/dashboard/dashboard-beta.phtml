@@ -54,7 +54,7 @@
 					</tr>
 					<tr ng-repeat="community in dashboard">
 						<td>{{community.community.name}}</td>
-						<td>{{community.community.timezone}}:</td>
+						<td>{{community.community.timezone}}</td>
 						<td>{{clock | convertimeformat:community.community.timezone:'h:mm a'}}</td>
 						<td ng-click="modalOrders(community.orders.unaccepted, community.community.name  + ': Unaccepted Orders')" class="dashboard-light" ng-class="{'dashboard-warning':community.total_unaccepted_orders}">{{community.total_unaccepted_orders}}</td>
 						<td ng-click="modalOrders(community.orders.undelivered, community.community.name  + ': Undelivered Orders', true)" class="dashboard-light" ng-class="{'dashboard-warning':community.total_undelivered_orders}">{{community.total_undelivered_orders}}</td>
