@@ -13,7 +13,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 
 		$phone = Phone::byPhone( $params['from'] );
 
-		$this->order = Order::q('select * from `order` where phone=? order by id_order desc limit 1',[$params['from']])->get(0);
+		$this->order = Order::q('select * from `order` where id_phone=? AND TIMESTAMPDIFF( hour, date, NOW() ) < 24 order by id_order desc limit 1',[$phone->id_phone])->get(0);
 		$this->support = Support::q('SELECT * FROM support_message sm
 																		INNER JOIN support s ON s.id_support = sm.id_support
 																		AND s.id_phone = ?
@@ -24,7 +24,6 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 		$response = [];
 
 		switch ($action) {
-
 			case self::ACTION_REPLY:
 				$response = ['msg' => $this->reply($params), 'stop' => true];
 				break;
@@ -75,7 +74,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 		}
 
 		// when it find a ticket but it bellongs to another order
-		if( $this->order &&  $this->support && $this->support->id_support && $this->order->id_order
+		if( $this->order && $this->support && $this->support->id_support && $this->order->id_order
 				&& $this->support->id_order != $this->order->id_order ){
 			$created = true;
 		}
