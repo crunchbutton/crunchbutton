@@ -85,21 +85,20 @@ NGApp.factory('TwilioService', function($resource, $rootScope, AccountService) {
 		console.debug('Twilio incoming connection from ' + conn.parameters.From);
 		//conn.accept();
 	});
-
+/*
 	Twilio.Device.presence(function (pres) {
 		if (pres.available) {
 			console.debug('Twilio user has connected.', pres);
-			/*
-			$("<li>", {id: pres.from, text: pres.from}).click(function () {
-				$("#number").val(pres.from);
-				call();
-			}).prependTo("#people");
-			*/
+			// $("<li>", {id: pres.from, text: pres.from}).click(function () {
+			// 	$("#number").val(pres.from);
+			// 	call();
+			// }).prependTo("#people");
+
 		} else {
 			console.debug('Twilio user has been disconnected.', pres);
 		}
 	});
-
+*/
 	$rootScope.$on('twilio-client-call-connect', function() {
 		$rootScope.callStatus = 'connected';
 	});
