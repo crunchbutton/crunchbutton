@@ -24,8 +24,9 @@ class Controller_api_dashboard_beta extends Crunchbutton_Controller_RestAccount 
 				}
 				echo json_encode( $out );exit;
 				break;
-			default:
-				# code...
+			case 'chart-last-orders':
+				$out = Dashboard::lastOrdersByHour();
+				echo json_encode( $out );exit;
 				break;
 		}
 	}

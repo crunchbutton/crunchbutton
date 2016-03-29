@@ -18,13 +18,12 @@
 						<span ng-if="ticket.type == 'WARNING'">
 							<i>System</i>
 						</span>
-						<!-- arrumar -->
 						<span ng-if="ticket.type != 'WARNING'">
 							<span ng-if="ticket.order_id_user">
 								<a href="/customer/{{ticket.order_id_user}}">{{ticket.order_name}}</a>
 							</span>
 							<span ng-if="!ticket.order_id_user && ticket.client_id_admin">
-								<a href="/staff/{{ticket.order_id_user}}">{{ticket.client_admin_name}}</a>
+								<a href="/staff/{{ticket.client_id_admin}}">{{ticket.client_admin_name}}</a>
 							</span>
 							<span ng-if="!ticket.order_id_user && !ticket.client_id_admin">
 								Unknow

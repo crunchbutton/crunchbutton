@@ -74,6 +74,7 @@ NGApp.factory('TicketService', function($rootScope, ResourceFactory, $routeParam
 	service.shortlist = function(params, callback) {
 		ticketshort.tickets_query(params).$promise.then(function success(data, responseHeaders) {
 			callback(data);
+			$rootScope.$broadcast( 'ticketsLoaded', data );
 		});
 	}
 

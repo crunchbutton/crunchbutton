@@ -34,39 +34,127 @@
 		</div>
 	</div>
 
-	<div class="">
+	<div class="support-box-wrap box-content2">
+		<div class="support-box-wrap-header">
+			<h1>Status</h1>
+			<div class="divider"></div>
+		</div>
+		<div class="no-box-content-color">
+			<table class="basic-table tb-zebra table-dashboard">
+				<tr>
+					<th>Community</th>
+					<th>Timezone</th>
+					<th>Current time</th>
+					<th>Unaccepted Orders</th>
+					<th>Undelivered Orders</th>
+					<th>Orders in Transit</th>
+					<th>Drivers working</th>
+					<th>Shifts today</th>
+				</tr>
+				<tr ng-repeat="community in dashboard">
+					<td>{{community.community.name}}</td>
+					<td>{{community.community.timezone}}</td>
+					<td>{{clock | convertimeformat:community.community.timezone:'h:mm a'}}</td>
+					<td ng-click="modalOrders(community.orders.unaccepted, community.community.name  + ': Unaccepted Orders')" class="dashboard-light" ng-class="{'dashboard-warning':community.total_unaccepted_orders}">{{community.total_unaccepted_orders}}</td>
+					<td ng-click="modalOrders(community.orders.undelivered, community.community.name  + ': Undelivered Orders', true)" class="dashboard-light" ng-class="{'dashboard-warning':community.total_undelivered_orders}">{{community.total_undelivered_orders}}</td>
+					<td ng-click="modalOrders(community.orders.in_transit, community.community.name  + ': Orders in Transit', true)" class="dashboard-light" ng-class="{'dashboard-ok':community.total_in_transit_orders}">{{community.total_in_transit_orders}}</td>
+					<td ng-click="modalDrivers(community.current_drivers, community.community.name  + ': Drivers working')" class="dashboard-light" ng-class="{'dashboard-ok':community.total_current_drivers}">{{community.total_current_drivers}}</td>
+					<td ng-click="modalDrivers(community.shifts_today, community.community.name  + ': Shifts today')"class="dashboard-light" ng-class="{'dashboard-ok':community.total_shifts_today}">{{community.total_shifts_today}}</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div class="support-boxes">
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
-				<h1>Status</h1>
+				<h1>Opened Tickets</h1>
 				<div class="divider"></div>
 			</div>
 			<div class="no-box-content-color">
 				<table class="basic-table tb-zebra table-dashboard">
 					<tr>
-						<th>Community</th>
-						<th>Timezone</th>
-						<th>Current time</th>
-						<th>Unaccepted Orders</th>
-						<th>Undelivered Orders</th>
-						<th>Orders in Transit</th>
-						<th>Drivers working</th>
-						<th>Shifts today</th>
+						<th>Contact</th>
+						<th>Last Messages</th>
+						<th class="tb-small"></th>
 					</tr>
-					<tr ng-repeat="community in dashboard">
-						<td>{{community.community.name}}</td>
-						<td>{{community.community.timezone}}</td>
-						<td>{{clock | convertimeformat:community.community.timezone:'h:mm a'}}</td>
-						<td ng-click="modalOrders(community.orders.unaccepted, community.community.name  + ': Unaccepted Orders')" class="dashboard-light" ng-class="{'dashboard-warning':community.total_unaccepted_orders}">{{community.total_unaccepted_orders}}</td>
-						<td ng-click="modalOrders(community.orders.undelivered, community.community.name  + ': Undelivered Orders', true)" class="dashboard-light" ng-class="{'dashboard-warning':community.total_undelivered_orders}">{{community.total_undelivered_orders}}</td>
-						<td ng-click="modalOrders(community.orders.in_transit, community.community.name  + ': Orders in Transit', true)" class="dashboard-light" ng-class="{'dashboard-ok':community.total_in_transit_orders}">{{community.total_in_transit_orders}}</td>
-						<td ng-click="modalDrivers(community.current_drivers, community.community.name  + ': Drivers working')" class="dashboard-light" ng-class="{'dashboard-ok':community.total_current_drivers}">{{community.total_current_drivers}}</td>
-						<td ng-click="modalDrivers(community.shifts_today, community.community.name  + ': Shifts today')"class="dashboard-light" ng-class="{'dashboard-ok':community.total_shifts_today}">{{community.total_shifts_today}}</td>
+					<tr ng-repeat="ticket in tickets">
+						<td nowrap>
+							<span ng-if="ticket.type == 'WARNING'">
+								<i>System</i>
+							</span>
+							<span ng-if="ticket.type != 'WARNING'">
+								<span ng-if="ticket.order_id_user">
+									<a href="/customer/{{ticket.order_id_user}}">{{ticket.order_name}}</a>
+								</span>
+								<span ng-if="!ticket.order_id_user && ticket.client_id_admin">
+									<a href="/staff/{{ticket.client_id_admin}}">{{ticket.client_admin_name}}</a>
+								</span>
+								<span ng-if="!ticket.order_id_user && !ticket.client_id_admin">
+									Unknow
+								</span>
+								<br><a href ng-click="callText(ticket.support_phone)" class="listview-smaller">{{ticket.support_phone | formatPhone}}</a>
+								<div ng-if="ticket.id_order">
+									<a href="/order/{{ticket.id_order}}">Order #{{ticket.id_order}}</a>
+								</div>
+							</span>
+						</td>
+						<!-- message -->
+						<td>
+							<span class="listview-smaller">
+								<!-- client -->
+								<div ng-if="ticket.client_last_message">
+									<span class="tag tag-empty tag-red">Client</span>
+										<span ng-class="{ 'text-danger': ticket.recent_from == 'client' || ticket.recent_type == 'auto-reply', 'text-muted': ticket.recent_from != 'client' && ticket.recent_type != 'auto-reply' }" >
+										<span ng-bind-html="ticket.client_last_message"></span>
+									</span>
+									<i class="listview-smaller" ng-if="ticket.client_message_timestamp">{{ticket.client_message_timestamp * 1000| date:'EEE MM/dd @ h:mm a'}}</i>
+								</div>
+								<!-- rep -->
+								<div ng-if="ticket.rep_last_message">
+									<span class="tag tag-empty tag-green">CS: {{ticket.rep_name}}</span>
+									<span class="text-muted" ng-bind-html="ticket.rep_last_message"></span>
+									<i class="listview-smaller" ng-if="ticket.rep_timestamp">{{ticket.rep_timestamp * 1000| date:'EEE MM/dd @ h:mm a'}}</i>
+								</div>
+								<!-- system -->
+								<div ng-if="ticket.system_last_message">
+									<span class="tag tag-empty tag-blue">System</span>
+									<span class="text-muted" ng-bind-html="ticket.system_last_message"></span>
+									<i class="listview-smaller" ng-if="ticket.system_timestamp">{{ticket.system_timestamp * 1000| date:'EEE MM/dd @ h:mm a'}}</i>
+								</div>
+							</span>
+						</td>
+						<td nowrap class="tb-v-center tb-right">
+							<button ng-if="ticket.status == 'open'" ng-click="closeTicket(ticket.id_support);" class="button button-small button-empty button-green"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;Close</button>
+							<a href="/ticket/{{ticket.id_support}}"><button class="button button-small button-empty button-green">
+							<i class="fa fa-eye"></i>
+							&nbsp;&nbsp;View</button></a>
+						</td>
 					</tr>
 				</table>
 			</div>
 		</div>
+
+
+	<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Last Orders 24 Hours</h1>
+				<div class="divider"></div>
+			</div>
+			<div class="no-box-content-color">
+			<canvas
+				class="chart chart-line"
+				data="chart_last_orders.data"
+				labels="chart_last_orders.labels"
+				series="chart_last_orders.series"
+				legend="true"></canvas>
+			</div>
+		</div>
 	</div>
 </div>
+
+
+
+
 <div class="dashboard-drivers-dialog-container dashboard-dialog-container zoom-anim-dialog mfp-hide dialog">
 	<div class="support-box-wrap box-content2">
 		<div class="support-box-wrap-header">
@@ -109,6 +197,7 @@
 		</div>
 	</div>
 </div>
+
 <div class="dashboard-orders-dialog-container dashboard-dialog-container zoom-anim-dialog mfp-hide dialog">
 	<div class="support-box-wrap box-content2">
 		<div class="support-box-wrap-header">
