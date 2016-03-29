@@ -22,13 +22,13 @@ NGApp.controller('DashboardCtrl', function ($rootScope, $scope, DashboardService
 	});
 });
 
-NGApp.controller('DashboardBetaCtrl', function ($rootScope, $scope, $timeout, DashboardService, CommunityService) {
+NGApp.controller('DashboardBetaCtrl', function ($rootScope, $scope, $timeout, DashboardService, CommunityService, TicketService) {
 
 	$scope.loading = true;
 
 	var communitiesWithShift = [];
 
-	// fist load
+	// first load
 	$scope.selectCommunitiesWithShift = function(){
 		$scope.selectNoneCommunity();
 		for( x in communitiesWithShift ){
@@ -47,17 +47,6 @@ NGApp.controller('DashboardBetaCtrl', function ($rootScope, $scope, $timeout, Da
 		}
 	});
 
-	var startTimer = function(){
-		var timer = $timeout( function(){
-			if($scope.options.autoreaload){
-				$scope.loadCommunities();
-			}
-			startTimer()
-		}, 20000);
-	}
-	$scope.$on( "$destroy", function( event ) { $timeout.cancel( timer ); } );
-	startTimer();
-
 	$scope.selectNoneCommunity = function(){
 		$scope.options.communities = [];
 	}
@@ -74,13 +63,10 @@ NGApp.controller('DashboardBetaCtrl', function ($rootScope, $scope, $timeout, Da
 	$scope.options = { communities: [], autoreaload: true };
 
 	$scope.loadCommunities = function(){
-		console.log('2223333',2223333);
 		DashboardService.communities($scope.options.communities, function(data){
 			$scope.dashboard = data;
 		});
 	}
-
-
 
 	CommunityService.listPermalink( function( json ){
 		$scope.communities = json;
@@ -105,9 +91,45 @@ NGApp.controller('DashboardBetaCtrl', function ($rootScope, $scope, $timeout, Da
 		$scope.modal.drivers = drivers;
 	}
 
+	var getTickets = function() {
+		TicketService.list_beta( { status: 'open' }, function(tickets) {
+			$scope.tickets = tickets.results;
+		});
+	};
+
+	$scope.closeTicket = function( id_support ){
+		TicketService.openClose( id_support, function() { getTickets(); } );
+	}
+
+	var getLastOrders = function(){
+		DashboardService.chart_last_orders(function(data){
+			$scope.chart_last_orders = data;
+		})
+	}
+
+	getLastOrders();
+	getTickets();
+
+	var startTimer = function(){
+		var timer = $timeout( function(){
+			if($scope.options.autoreaload){
+				$scope.loadCommunities();
+				getTickets();
+				getLastOrders();
+			}
+			startTimer()
+		}, 20000);
+	}
+	startTimer();
+
 	var tick = function() {
 		$scope.clock = Date.now();
 		$timeout(tick, 1000);
 	}
+
 	$timeout(tick, 1000);
+		$scope.$on( "$destroy", function( event ) {
+			$timeout.cancel( timer );
+			$timeout.cancel( tick );
+	} );
 });

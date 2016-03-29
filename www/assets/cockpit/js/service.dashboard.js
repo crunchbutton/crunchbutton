@@ -15,7 +15,11 @@ NGApp.factory('DashboardService', function(ResourceFactory, $routeParams, $resou
 			params : {},
 			isArray: true
 		},
-
+		'chart_last_orders' : {
+			url: App.service + 'dashboard/beta/chart-last-orders',
+			method: 'GET',
+			params : {}
+		},
 		'load' : {
 			method: 'GET',
 			params : {}
@@ -34,6 +38,11 @@ NGApp.factory('DashboardService', function(ResourceFactory, $routeParams, $resou
 		});
 	}
 
+	service.chart_last_orders = function(callback){
+		dashboard.chart_last_orders({}, function(data) {
+			callback(data);
+		});
+	}
 
 	service.get = function(id_page, callback) {
 		dashboard.load({}, function(data) {

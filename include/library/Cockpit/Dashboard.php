@@ -2,9 +2,12 @@
 
 class Cockpit_Dashboard extends Cana_Table {
 
-	public function __construct($id_community){
-		$this->community($id_community);
+	public function __construct($id_community=null){
+		if($id_community){
+			$this->community($id_community);
+		}
 	}
+
 	public static function communitiesWithShits(){
 		$query = 'SELECT DISTINCT(community.id_community) FROM community_shift
 								INNER JOIN community ON community.id_community = community_shift.id_community
@@ -14,6 +17,20 @@ class Cockpit_Dashboard extends Cana_Table {
 		if(count($communities)){
 			foreach($communities as $community){
 				$out[] = $community->id_community;
+			}
+		}
+		return $out;
+	}
+
+	public static function lastOrdersByHour(){
+		$query = 'SELECT count(*) AS orders, CONCAT(SUBSTRING(date,1,13),":00") hour FROM `order` WHERE date > NOW() - INTERVAL 24 HOUR GROUP BY CONCAT(SUBSTRING(date,12,2),"%") ORDER BY SUBSTRING(date,1,13) DESC';
+		$orders = c::db()->get( $query );
+		$out = ['labels' => [], 'series' => ['Orders'], 'data' => [[]]];
+		if(count($orders)){
+			foreach($orders as $order){
+				$label = explode(' ', $order->hour);
+				$out['labels'][] = $label[1];
+				$out['data'][0][] = intval($order->orders);
 			}
 		}
 		return $out;
