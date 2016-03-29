@@ -23,13 +23,19 @@ class Cockpit_Dashboard extends Cana_Table {
 	}
 
 	public static function lastOrdersByHour(){
-		$query = 'SELECT count(*) AS orders, CONCAT(SUBSTRING(date,1,13),":00") hour FROM `order` WHERE date > NOW() - INTERVAL 24 HOUR GROUP BY CONCAT(SUBSTRING(date,12,2),"%") ORDER BY SUBSTRING(date,1,13) DESC';
+		$query = 'SELECT SUM(1) as "orders", HOUR(date) hour FROM `order` WHERE date > NOW() - INTERVAL 24 HOUR GROUP BY hour ORDER BY hour DESC';
 		$orders = c::db()->get( $query );
 		$out = ['labels' => [], 'series' => ['Orders'], 'data' => [[]]];
 		if(count($orders)){
 			foreach($orders as $order){
-				$label = explode(' ', $order->hour);
-				$out['labels'][] = $label[1];
+				if($order->hour > 12){
+					$label = $order->hour - 12 . 'pm';
+				} else if($order->hour == 0){
+					$label = '12am';
+				} else {
+					$label = $order->hour. 'am';
+				}
+				$out['labels'][] = $label;
 				$out['data'][0][] = intval($order->orders);
 			}
 		}
