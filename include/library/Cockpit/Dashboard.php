@@ -22,19 +22,30 @@ class Cockpit_Dashboard extends Cana_Table {
 		return $out;
 	}
 
+	public static function driverStatus(){
+		$out = [];
+		$drivers = Community_Shift::driversWorking();
+
+		foreach($drivers as $driver){
+			$lastAction = self::lastActionByDriver($driver->id_admin);
+			$out[] = [ 	'name' =>	$driver->name,
+									'login' => $driver->login,
+									'phone' => $driver->phone,
+									'community' => $driver->community,
+									'last_action' => $lastAction ];
+		}
+		return $out;
+	}
+
 	public static function lastOrdersByHour(){
-		$query = 'SELECT SUM(1) as "orders", HOUR(date) hour FROM `order` WHERE date > NOW() - INTERVAL 24 HOUR GROUP BY hour ORDER BY hour DESC';
+		$query = 'SELECT SUM(1) as "orders", HOUR(date) hour FROM `order` WHERE date > NOW() - INTERVAL 24 HOUR GROUP BY hour ORDER BY hour ASC';
 		$orders = c::db()->get( $query );
 		$out = ['labels' => [], 'series' => ['Orders'], 'data' => [[]]];
 		if(count($orders)){
 			foreach($orders as $order){
-				if($order->hour > 12){
-					$label = $order->hour - 12 . 'pm';
-				} else if($order->hour == 0){
-					$label = '12am';
-				} else {
-					$label = $order->hour. 'am';
-				}
+				$now = new DateTime( date('Y-m-d ' ) . $order->hour . ':00'  , new DateTimeZone( c::config()->timezone ) );
+				$now->setTimezone( new DateTimeZone(Crunchbutton_Community_Shift::CB_TIMEZONE) );
+				$label = $now->format('h a');
 				$out['labels'][] = $label;
 				$out['data'][0][] = intval($order->orders);
 			}
@@ -145,7 +156,7 @@ class Cockpit_Dashboard extends Cana_Table {
 		return $out;
 	}
 
-	private function lastActionByDriver($id_admin){
+	public static function lastActionByDriver($id_admin){
 		$query = 'SELECT timestamp as date, type, id_order FROM order_action
 							WHERE
 								id_admin = ?
@@ -183,7 +194,7 @@ class Cockpit_Dashboard extends Cana_Table {
 				if($now >= $start && $now <= $end){
 					$current = true;
 				}
-				$last_action = $this->lastActionByDriver($driver->id_admin, $now_formated);
+				$last_action = self::lastActionByDriver($driver->id_admin, $now_formated);
 				$out[] = ['login' => $driver->login,
 									'name' => $driver->name,
 									'phone' => $driver->phone,

@@ -36,7 +36,7 @@
 
 	<div class="support-box-wrap box-content2">
 		<div class="support-box-wrap-header">
-			<h1>Status</h1>
+			<h1>Communities overview</h1>
 			<div class="divider"></div>
 		</div>
 		<div class="no-box-content-color">
@@ -65,6 +65,64 @@
 		</div>
 	</div>
 	<div class="support-boxes">
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Drivers working</h1>
+				<div class="divider"></div>
+			</div>
+			<div class="no-box-content-color">
+				<table class="basic-table tb-zebra table-dashboard">
+					<tr>
+						<th>Community</th>
+						<th>Driver</th>
+						<th>Action</th>
+						<th class="tb-small"></th>
+					</tr>
+
+					<tr ng-repeat="driver in current_driver_status">
+						<td>
+							{{driver.community}}
+						</td>
+						<td>
+							<a href="/staff/{{driver.login}}">{{driver.name}}</a>
+							<br>
+							{{driver.phone | formatPhone}}
+						</td>
+						<td>
+							<span class="tag tag-black" ng-if="driver.last_action.type == 'delivery-canceled'">Canceled</span>
+							<span class="tag tag-green" ng-if="driver.last_action.type == 'delivery-accepted'">Accepted</span>
+							<span class="tag tag-blue" ng-if="driver.last_action.type == 'delivery-pickedup'">Pickedup</span>
+							<span class="tag tag-purple" ng-if="driver.last_action.type == 'delivery-delivered'">Delivered</span>
+						</td>
+						<td>
+							<span ng-if="driver.last_action.date">{{driver.last_action.date | localtime:'h:mm a'}}</span>
+							<a ng-if="driver.last_action.id_order" href="/order/{{driver.last_action.id_order}}">#{{driver.last_action.id_order}}</a>
+						</td>
+
+					</tr>
+				</table>
+			</div>
+		</div>
+				<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Last Orders 24 Hours</h1>
+				<div class="divider"></div>
+			</div>
+			<div class="no-box-content-color">
+			<canvas
+				class="chart chart-line"
+				data="chart_last_orders.data"
+				labels="chart_last_orders.labels"
+				series="chart_last_orders.series"
+				legend="true"></canvas>
+			</div>
+		</div>
+</div>
+
+<div class="support-boxes">
+
+
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
 				<h1>Opened Tickets</h1>
@@ -134,24 +192,8 @@
 			</div>
 		</div>
 
-
-	<div class="support-box-wrap box-content2">
-			<div class="support-box-wrap-header">
-				<h1>Last Orders 24 Hours</h1>
-				<div class="divider"></div>
-			</div>
-			<div class="no-box-content-color">
-			<canvas
-				class="chart chart-line"
-				data="chart_last_orders.data"
-				labels="chart_last_orders.labels"
-				series="chart_last_orders.series"
-				legend="true"></canvas>
-			</div>
-		</div>
 	</div>
 </div>
-
 
 
 
