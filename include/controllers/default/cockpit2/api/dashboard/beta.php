@@ -10,7 +10,7 @@ class Controller_api_dashboard_beta extends Crunchbutton_Controller_RestAccount 
 				$out = [];
 				$communities = Dashboard::communitiesWithShits();
 				foreach($communities as $community){
-					$dashboard = new Cockpit_Dashboard($community);
+					$dashboard = new Dashboard($community);
 					$out[] = $dashboard->statusByCommunity($community);
 				}
 				echo json_encode( $out );exit;
@@ -19,16 +19,17 @@ class Controller_api_dashboard_beta extends Crunchbutton_Controller_RestAccount 
 				$out = [];
 				$communities = $this->request()[ 'communities' ];
 				foreach($communities as $community){
-					$dashboard = new Cockpit_Dashboard($community);
+					$dashboard = new Dashboard($community);
 					$out[] = $dashboard->statusByCommunity($community);
 				}
 				echo json_encode( $out );exit;
 				break;
+			case 'current-driver-status':
+				echo json_encode(Dashboard::driverStatus());exit;
+				break;
 			case 'chart-last-orders':
-				$out = Dashboard::lastOrdersByHour();
-				echo json_encode( $out );exit;
+				echo json_encode(Dashboard::lastOrdersByHour());exit;
 				break;
 		}
 	}
-
 }

@@ -1563,6 +1563,31 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 		return $shift;
 	}
 
+	public static function driversWorking(){
+		$communities = Crunchbutton_Community::q( 'SELECT c.id_community, timezone FROM community c WHERE c.active = true ORDER BY c.name' );
+		$out = [];
+		foreach( $communities as $community ){
+			if( $community->timezone ){
+				$now = new DateTime( 'now', new DateTimeZone( $community->timezone ) );
+				$now = $now->format( 'Y-m-d H:i' );
+				$drivers = Admin::q('
+					SELECT a.*, c.name AS community FROM admin_shift_assign asa
+					INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
+					INNER JOIN admin a ON a.id_admin = asa.id_admin
+					INNER JOIN community c ON c.id_community = cs.id_community
+					WHERE
+						cs.date_start <= ? AND cs.date_end >= ?
+						AND cs.id_community = ?
+						ORDER BY c.name, a.name
+				', [$now, $now, $community->id_community]);
+				foreach($drivers as $driver){
+					$out[] = $driver;
+				}
+			}
+		}
+		return $out;
+	}
+
 	public function warningDriversBeforeTheirShift(){
 
 		$env = c::getEnv();

@@ -104,9 +104,16 @@ NGApp.controller('DashboardBetaCtrl', function ($rootScope, $scope, $timeout, Da
 	var getLastOrders = function(){
 		DashboardService.chart_last_orders(function(data){
 			$scope.chart_last_orders = data;
-		})
+		});
 	}
 
+	var getCurrentDriverStatus = function(){
+		DashboardService.current_driver_status(function(data){
+			$scope.current_driver_status = data;
+		});
+	}
+
+	getCurrentDriverStatus();
 	getLastOrders();
 	getTickets();
 
@@ -116,6 +123,7 @@ NGApp.controller('DashboardBetaCtrl', function ($rootScope, $scope, $timeout, Da
 				$scope.loadCommunities();
 				getTickets();
 				getLastOrders();
+				getCurrentDriverStatus();
 			}
 			startTimer()
 		}, 20000);
