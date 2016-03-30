@@ -199,7 +199,7 @@ html {
 }
 
 .menu {
-	background: url(../images/menu-location.svg) center center no-repeat;
+	background: url(https://cockpit.la/assets/cockpit/images/menu-location.svg) center center no-repeat;
 	background-size: 100%;
 	width: 44px;
 	height: 28px;
@@ -217,7 +217,7 @@ html {
 	z-index : 0;
 	cursor: pointer;
 	margin: 8px 0 0 6px;
-	background: url(../images/back-location.svg) center center no-repeat;
+	background: url(https://cockpit.la/assets/cockpit/images/back-location.svg) center center no-repeat;
 	background-size: 100%;
 	width: 50px;
 	height: 28px;
@@ -2576,7 +2576,7 @@ td.order-notes{
 }
 .loader {
 	opacity: 1;
-	background: url(../images/ajax_loader_orange_512.gif);
+	background: url(https://cockpit.la/assets/cockpit/images/ajax_loader_orange_512.gif);
 	height: 8em;
 	width: 8em;
 	background-size: cover;
@@ -3921,12 +3921,12 @@ input[type="checkbox"].switch + div:before {
 }
 
 .customer-image-null {
-	background: url(../images/cockpit-user.png);
+	background: url(https://cockpit.la/assets/cockpit/images/cockpit-user.png);
 	background-size: contain;
 }
 
 .restaurant-image-null {
-	background: url(../images/cockpit-restaurant.png);
+	background: url(https://cockpit.la/assets/cockpit/images/cockpit-restaurant.png);
 	background-size: contain;
 }
 
@@ -4040,7 +4040,7 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 
 
 .drivers-welcome-logo {
-	background: url(../images/logo.png) no-repeat;
+	background: url(https://cockpit.la/assets/cockpit/images/logo.png) no-repeat;
 	height: 12em;
 	width: 12em;
 	background-size: 100%;
@@ -4212,7 +4212,7 @@ body[class*=" page-drivers-welcome-"] .nav-top .nav-back {
 .driver-routing-number{
 	width: 438px;
 	height: 230px;
-	background: url(../images/driver-payment-check.gif);
+	background: url(https://cockpit.la/assets/cockpit/images/driver-payment-check.gif);
 	background-size: contain;
 }
 
