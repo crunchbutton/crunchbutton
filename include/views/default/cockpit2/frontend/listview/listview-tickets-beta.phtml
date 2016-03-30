@@ -26,7 +26,7 @@
 								<a href="/staff/{{ticket.client_id_admin}}">{{ticket.client_admin_name}}</a>
 							</span>
 							<span ng-if="!ticket.order_id_user && !ticket.client_id_admin">
-								Unknow
+								Unknown
 							</span>
 							<br><a href ng-click="callText(ticket.support_phone)" class="listview-smaller">{{ticket.support_phone | formatPhone}}</a>
 							<div ng-if="ticket.id_order">
