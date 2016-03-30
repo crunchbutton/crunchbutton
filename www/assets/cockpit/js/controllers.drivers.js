@@ -928,7 +928,7 @@ NGApp.controller('DriversOnboardingCtrl', function ($scope, $timeout, $location,
 
 	$scope.moreOptions = function(){
 		$scope.show_more_options = !$scope.show_more_options;
-
+		$rootScope.$broadcast('search-toggle');
 		if( $scope.show_more_options) {
 
 			if( !$scope.communities ){

@@ -1,7 +1,7 @@
 NGApp.config(['$routeProvider', function($routeProvider) {
 	$routeProvider
 		.when('/staff', {
-			action: 'staffs',
+			action: 'staff',
 			controller: 'StaffCtrl',
 			templateUrl: '/assets/view/staff.html',
 			reloadOnSearch: false

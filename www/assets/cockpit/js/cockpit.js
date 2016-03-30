@@ -151,7 +151,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			templateUrl: '/assets/view/settlement.html'
 		})
 		.when('/settlement/list', {
-			action: 'settlement-list',
+			action: 'settlement',
 			controller: 'SettlementListCtrl',
 			templateUrl: '/assets/view/settlement-list.html',
 			reloadOnSearch: false

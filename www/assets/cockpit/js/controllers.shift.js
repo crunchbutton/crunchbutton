@@ -1,7 +1,7 @@
 NGApp.config(['$routeProvider', function($routeProvider) {
 	$routeProvider
 		.when('/shifts/checkin', {
-			action: 'shift-checkin',
+			action: 'shift',
 			controller: 'ShiftChekinCtrl',
 			templateUrl: '/assets/view/shift-checkin.html',
 			reloadOnSearch: false
@@ -19,7 +19,7 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			reloadOnSearch: false
 		})
 		.when('/shifts/schedule/:permalink?', {
-			action: 'shift-schedule',
+			action: 'shift',
 			controller: 'ShiftScheduleCtrl',
 			templateUrl: '/assets/view/shift-schedule.html',
 			reloadOnSearch: false
