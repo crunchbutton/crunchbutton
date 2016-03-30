@@ -3183,6 +3183,12 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$this->markToBeCommissioned( $admin->id_admin );
 		}
 
+		if($status == Crunchbutton_Order_Action::DELIVERY_ACCEPTED && $this->orderHasRepsHasFailedTicket()){
+
+			$message = 'Order #' . $this->id_order . ' already accepted by ' . $admin->name;
+			Crunchbutton_Support::createNewWarning( [  'body' => $message, 'id_order' => $this->id_order ] );
+		}
+
 		if( $status == Crunchbutton_Order_Action::DELIVERY_CANCELED ){
 			Crunchbutton_Pexcard_Report_Order::removeByOrder( $this->id_order );
 			$this->do_not_reimburse_driver = true;
@@ -3847,6 +3853,14 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function orderHasCampusCashTicketReminder(){
 		$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND type = ? ORDER BY id_order_action DESC LIMIT 1', [ $this->id_order, Crunchbutton_Order_Action::TICKET_CAMPUS_CASH_REMINDER ] );
+		if( $action->id_order_action ){
+			return true;
+		}
+		return false;
+	}
+
+	public function orderHasRepsHasFailedTicket(){
+		$action = Crunchbutton_Order_Action::q( 'SELECT * FROM order_action WHERE id_order = ? AND type = ? ORDER BY id_order_action DESC LIMIT 1', [ $this->id_order, Crunchbutton_Order_Action::TICKET_REPS_FAILED_PICKUP ] );
 		if( $action->id_order_action ){
 			return true;
 		}
