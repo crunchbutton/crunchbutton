@@ -345,6 +345,13 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			$sms_message .= "\nD: " . $drivers_list;
 		}
 
+		(new Order_Action([
+			'id_order' => $order->id_order,
+			'timestamp' => date('Y-m-d H:i:s'),
+			'type' => Crunchbutton_Order_Action::TICKET_REPS_FAILED_PICKUP
+		]))->save();
+
+
 		if( count( $driversToNotify ) == 1 ){
 			$phone = $_driver->phone();
 			Crunchbutton_Support::createNewWarningStaffTicket( [ 'body' => $sms_message, 'phone' => $phone, 'bubble' => true ] );
@@ -352,8 +359,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			// Reps failed to pickup order texts changes #2802
 			Crunchbutton_Support::createNewWarning( [  'body' => $sms_message, 'id_order' => $order->id_order, 'bubble' => true ] );
 		}
-
-
 
 		Crunchbutton_Message_Sms::send([
 			'to' => Crunchbutton_Support::getUsers(),

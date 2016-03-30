@@ -17,6 +17,7 @@ class Crunchbutton_Order_Action extends Cana_Table {
 	const TICKET_NOT_GEOMATCHED = 'ticket-not-geomatched';
 	const TICKET_CAMPUS_CASH = 'ticket-campus-cash';
 	const TICKET_CAMPUS_CASH_REMINDER = 'ticket-campus-cash-reminder';
+	const TICKET_REPS_FAILED_PICKUP = 'ticket-reps-failed-pickup';
 
 	public function __construct($id = null) {
 		parent::__construct();
@@ -34,8 +35,9 @@ class Crunchbutton_Order_Action extends Cana_Table {
 			and oa.type!=?
 			and oa.type!=?
 			and oa.type!=?
+			and oa.type!=?
 			ORDER BY oa.id_order_action DESC
-		', [$id_order, self::TICKET_NOT_GEOMATCHED, self::TICKET_CAMPUS_CASH, self::TICKET_CAMPUS_CASH_REMINDER]);
+		', [$id_order, self::TICKET_NOT_GEOMATCHED, self::TICKET_CAMPUS_CASH, self::TICKET_CAMPUS_CASH_REMINDER, self::TICKET_REPS_FAILED_PICKUP]);
 	}
 
 	public function restaurant(){

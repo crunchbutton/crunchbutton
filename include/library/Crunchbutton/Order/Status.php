@@ -12,8 +12,9 @@ class Crunchbutton_Order_Status extends Cana_Table {
 			and type!=?
 			and type!=?
 			and type!=?
+			and type!=?
 			order by id_order_action desc
-		', [$order->id_order, Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED, Crunchbutton_Order_Action::FORCE_COMMISSION_PAYMENT, Crunchbutton_Order_Action::TICKET_CAMPUS_CASH, Crunchbutton_Order_Action::TICKET_CAMPUS_CASH_REMINDER ]);
+		', [$order->id_order, Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED, Crunchbutton_Order_Action::FORCE_COMMISSION_PAYMENT, Crunchbutton_Order_Action::TICKET_CAMPUS_CASH, Crunchbutton_Order_Action::TICKET_CAMPUS_CASH_REMINDER, Crunchbutton_Order_Action::TICKET_REPS_FAILED_PICKUP ]);
 		$this->_order = $order;
 
 		$this->_actions = [];
