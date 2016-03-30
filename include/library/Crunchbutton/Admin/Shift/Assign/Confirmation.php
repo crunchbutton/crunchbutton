@@ -148,10 +148,16 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 				break;
 
 			case self::TYPE_TICKET:
-				$messagePattern = 'IMMEDIATE ACTION NEEDED: Independent Contractor %s ( community %s ) has not indicated he is ready to pick up deliveries today. ' .
-													'Please call him immediately at %s and prepare to find a replacement NOW and the community will be AUTO-CLOSED at %s if he doesn\'t check in or if no replacement is found. Closing the community is the worst thing we can do for our customers. Please hustle and don\'t let the community auto-close!!';
-				// return sprintf( $messagePattern, $admin->name, $assignment->community()->name, Crunchbutton_Phone::formatted( $admin->phone ), $admin->name );
-				return sprintf( $messagePattern, $admin->name, $assignment->community()->name, Crunchbutton_Phone::formatted( $admin->phone ), $shift->dateStart()->format( 'g:ia' ) );
+				$shift = $assignment->shift();
+				if( !$shift->isConfirmed() ){
+						$messagePattern = 'IMMEDIATE ACTION NEEDED: Independent Contractor %s ( community %s ) has not indicated he is ready to pick up deliveries today. ' .
+															'Please call him immediately at %s and prepare to find a replacement NOW and the community will be AUTO-CLOSED at %s if he doesn\'t check in or if no replacement is found. Closing the community is the worst thing we can do for our customers. Please hustle and don\'t let the community auto-close!!';
+						return sprintf( $messagePattern, $admin->name, $assignment->community()->name, Crunchbutton_Phone::formatted( $admin->phone ), $shift->dateStart()->format( 'g:ia' ) );
+				} else {
+					$messagePattern = 'IMMEDIATE ACTION NEEDED: Independent Contractor %s ( community %s ) has not indicated he is ready to pick up deliveries today. ' .
+													'Please call him immediately at %s and prepare to find a replacement.';
+					return sprintf( $messagePattern, $admin->name, $assignment->community()->name, Crunchbutton_Phone::formatted( $admin->phone ), $shift->dateStart()->format( 'g:ia' ) );
+				}
 				break;
 		}
 	}
