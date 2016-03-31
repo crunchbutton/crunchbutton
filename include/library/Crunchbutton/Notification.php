@@ -227,6 +227,8 @@ class Crunchbutton_Notification extends Cana_Table
 		$date = $order->date();
 		$date = $date->format( 'M jS Y' ) . ' - ' . $date->format( 'g:i:s A' );
 
+		$env = c::getEnv();
+
 		if( $env != 'live' ){
 			return;
 		}
