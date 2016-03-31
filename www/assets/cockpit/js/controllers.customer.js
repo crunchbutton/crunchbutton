@@ -10,7 +10,8 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 		.when('/customer/credit/:id', {
 			action: 'customer',
 			controller: 'CustomerCreditCtrl',
-			templateUrl: '/assets/view/customers-credit.html'
+			templateUrl: '/assets/view/customers-credit.html',
+			reloadOnSearch: false
 		})
 		.when('/customer/edit/:id', {
 			action: 'customer',
