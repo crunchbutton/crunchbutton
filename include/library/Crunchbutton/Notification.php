@@ -227,12 +227,6 @@ class Crunchbutton_Notification extends Cana_Table
 		$date = $order->date();
 		$date = $date->format( 'M jS Y' ) . ' - ' . $date->format( 'g:i:s A' );
 
-		$env = c::getEnv();
-
-		if( $env != 'live' ){
-			return;
-		}
-
 		$message = Crunchbutton_Message_Sms::greeting() . 'FAX Error: O# ' . $order->id_order . ' for ' . $order->restaurant()->name . ' (' . $date . ').';
 		$message .= "\n";
 		$message .= 'R# ' . $order->restaurant()->phone();
@@ -243,12 +237,6 @@ class Crunchbutton_Notification extends Cana_Table
 
 		// Make these notifications pop up on support on cockpit #3008
 		Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
-
-		Crunchbutton_Message_Sms::send([
-			'to' => Crunchbutton_Support::getUsers(),
-			'message' => $message,
-			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT_WARNING
-		]);
 	}
 
 
