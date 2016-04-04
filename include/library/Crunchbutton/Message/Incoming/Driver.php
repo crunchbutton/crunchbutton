@@ -128,7 +128,7 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 			self::ACTION_PICKEDUP => [ 'picked up', 'picked', 'pick', 'got', 'up', 'p' ],
 			self::ACTION_DELIVERED => [ 'delivered', 'd' ],
 			self::ACTION_DETAILS => [ 'details' ],
-			self::ACTION_SHIFT_CONFIRMATION => [ '"yes"!','"yes!','yes"!','yes','yes!','"yes!"' ],
+			self::ACTION_SHIFT_CONFIRMATION => [ '"yes"!','"yes!','yes"!','yes','yes!','"yes!"', 'yes!!', 'yes!!!' ],
 			self::ACTION_DRIVER_HELP_OUT_STOP_NOTIFICATION => [ '"no"!', '"no"','"no!','no"!','no','no!','"no!"' ],
 			self::ACTION_HELP => [ 'help', 'h', 'info', 'commands', '\?', 'support']
 		];
