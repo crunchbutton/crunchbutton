@@ -415,6 +415,11 @@
 						<div class="field-value">{{ticket.restaurant.order_notifications_sent ? 'Yes' : 'No'}}</div>
 					</div>
 				</div>
+
+				<br>
+
+				<button ng-show="ticket.restaurant && !ticket.restaurant.closed_for_today" class="button button-empty button-border button-orange" ng-click="closeForToday();"><i class="fa fa-times"></i>&nbsp;&nbsp;Close This Restaurant For Rest of Today</button>
+				<button ng-show="ticket.restaurant && ticket.restaurant.closed_for_today" class="button button-border button-empty button-green" ng-click="forceReopenForToday();"><i class="fa fa-times"></i>&nbsp;&nbsp;Remove "Close for Today"</button>
 			</div>
 		</div>
 

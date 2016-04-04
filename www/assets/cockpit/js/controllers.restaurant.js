@@ -469,11 +469,23 @@ NGApp.controller('RestaurantEditCtrl', function ( $scope, $rootScope, $routePara
 
 	RestaurantEditService.permalink = $routeParams.id;
 
-	RestaurantEditService.load.cover( RestaurantEditService.permalink, function( json ) {
-		$scope.id_restaurant = json.id_restaurant;
-		$scope.restaurant = json;
-		$scope.loading = false;
-	} );
+	var load = function(){
+		RestaurantEditService.load.cover( RestaurantEditService.permalink, function( json ) {
+			$scope.id_restaurant = json.id_restaurant;
+			$scope.restaurant = json;
+			$scope.loading = false;
+		} );
+	}
+
+	load();
+
+	$scope.closeForToday = function(){
+		RestaurantEditService.closeRestaurantForToday($scope.id_restaurant, load);
+	}
+
+	$scope.forceReopenForToday = function(){
+		RestaurantEditService.forceReopenReopenForToday($scope.id_restaurant, load);
+	}
 
 	$scope.duplicateRestaurant = function(){
 		var success = function(){

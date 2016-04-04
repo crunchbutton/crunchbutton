@@ -92,9 +92,17 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, $locatio
 
 });
 
-NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routeParams, OrderService, TicketService, TicketViewService, MapService, SocketService, CommunityService) {
+NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routeParams, OrderService, TicketService, TicketViewService, MapService, SocketService, CommunityService, RestaurantEditService) {
 
 	var id_support = $routeParams.id;
+
+	$scope.closeForToday = function(){
+		RestaurantEditService.closeRestaurantForToday($scope.ticket.restaurant.id_restaurant, update);
+	}
+
+	$scope.forceReopenForToday = function(){
+		RestaurantEditService.forceReopenReopenForToday($scope.ticket.restaurant.id_restaurant, update);
+	}
 
 	$scope.refund = function(){
 		OrderService.askRefund( $scope.ticket.order.id_order, $scope.ticket.order.delivery_service, $scope.ticket.restaurant.formal_relationship, function(){
