@@ -108,7 +108,7 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 	}
 
 	public static function reopenRestaurantsForBusiness(){
-		$query = 'SELECT * FROM restaurant WHERE open_for_business = false AND reopen_for_business_at IS NOT NULL AND reopen_for_business_at > ?';
+		$query = 'SELECT * FROM restaurant WHERE open_for_business = false AND reopen_for_business_at IS NOT NULL AND reopen_for_business_at < ?';
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$restaurants = Restaurant::q( $query, [ $now->format( 'Y-m-d H:i:s' ) ] );
 		if( count( $restaurants ) ){
@@ -140,6 +140,7 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 			if( $now->format( 'YmdHis' ) >= $reopen_for_business_at->format( 'YmdHis' ) ){
 				$this->open_for_business = true;
 				$this->reopen_for_business_at = null;
+				echo 'Reopened for business ' . $this->name . "\n";
 				$this->save();
 			}
 		}
