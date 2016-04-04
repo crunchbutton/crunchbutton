@@ -533,7 +533,7 @@ NGApp.controller('ShiftScheduleScheduleShiftCtrl', function ( $scope, $rootScope
 			return;
 		}
 		if( driver.reason != 'Our decision' && !driver.find_replacement ){
-			alert( 'Please select one option for "Did they find a replacement"!' );
+			alert( 'Please select one option for "Did they find one replacement"!' );
 			return;
 		}
 		driver.assigned = false;
