@@ -137,7 +137,7 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 		if(!$this->open_for_business && $this->reopen_for_business_at){
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 			$reopen_for_business_at = new DateTime( $this->reopen_for_business_at, new DateTimeZone( c::config()->timezone ) );
-			if($now >= $this->reopen_for_business_at){
+			if( $now->format( 'YmdHis' ) >= $reopen_for_business_at->format( 'YmdHis' ) ){
 				$this->open_for_business = true;
 				$this->reopen_for_business_at = null;
 				$this->save();
