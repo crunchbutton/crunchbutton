@@ -637,6 +637,9 @@ class Cockpit_Order extends Crunchbutton_Order {
 															'address' => $restaurant->address,
 															'timezone' => $restaurant->timezone,
 															'formal_relationship' => $restaurant->formal_relationship ];
+			if(!$restaurant->open_for_business && $restaurant->reopen_for_business_at){
+				$out['restaurant']['closed_for_today'] = true;
+			}
 		}
 
 		$out[ 'do_not_reimburse_driver' ] = ( intval( $out[ 'do_not_reimburse_driver' ] ) > 0 ) ? true : false;

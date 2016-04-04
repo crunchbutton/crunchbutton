@@ -20,8 +20,8 @@
 						<div ng-if="!restaurant.image.thumb" class="customer-image-large restaurant-image-null"></div>
 					</div>
 				</a>
-
 				<h1 class="customer-name-large">{{restaurant.name}}</h1>
+				<br>
 			</div>
 		</div>
 
@@ -45,17 +45,15 @@
 					</div>
 					<div class="field-row">
 						<div class="field-key">
-							<a href="http://live.ci.crunchbutton.crunchr.co/{{restaurant.permalink}}" target="_blank">View on Staging</a>
-						</div>
-					</div>
-					<div class="field-row">
-						<div class="field-key">
 							<strong>Important:</strong>
 							Each tab must be saved individually.
 							<br> Make sure you've saved all changes before upload an image.
 						</div>
 					</div>
 				</div>
+				<br>
+				<button ng-show="!restaurant.closed_for_today" class="button button-empty button-border button-orange" ng-click="closeForToday();"><i class="fa fa-times"></i>&nbsp;&nbsp;Close This Restaurant For Rest of Today</button>
+				<button ng-show="restaurant.closed_for_today" class="button button-border button-empty button-green" ng-click="forceReopenForToday();"><i class="fa fa-times"></i>&nbsp;&nbsp;Remove "Close for Today"</button>
 			</div>
 		</div>
 	</div>

@@ -101,7 +101,47 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 		$out = parent::exports($ignore, $where);
 		$out['images'] = $this->getImages('name');
 		$out['payment_type'] = $this->payment_type()->exports();
+		if(!$this->open_for_business && $this->reopen_for_business_at){
+			$out['closed_for_today'] = true;
+		}
 		return $out;
 	}
 
+	public static function reopenRestaurantsForBusiness(){
+		$query = 'SELECT * FROM restaurant WHERE open_for_business = false AND reopen_for_business_at IS NOT NULL AND reopen_for_business_at > ?';
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$restaurants = Restaurant::q( $query, [ $now->format( 'Y-m-d H:i:s' ) ] );
+		if( count( $restaurants ) ){
+			foreach( $restaurants as $restaurant ){
+				$restaurant->reopenForBusiness();
+			}
+		}
+	}
+
+	public function closeForBusinessForToday(){
+		$this->open_for_business = false;
+		$now = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
+		$now->setTime( 23,59, 59 );
+		$now->setTimeZone( new DateTimeZone( c::config()->timezone ) );
+		$this->reopen_for_business_at = $now->format( 'Y-m-d H:i:s' );
+		$this->save();
+	}
+
+	public function forceReopenForBusiness(){
+		$this->open_for_business = true;
+		$this->reopen_for_business_at = null;
+		$this->save();
+	}
+
+	public function reopenForBusiness(){
+		if(!$this->open_for_business && $this->reopen_for_business_at){
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$reopen_for_business_at = new DateTime( $this->reopen_for_business_at, new DateTimeZone( c::config()->timezone ) );
+			if($now >= $this->reopen_for_business_at){
+				$this->open_for_business = true;
+				$this->reopen_for_business_at = null;
+				$this->save();
+			}
+		}
+	}
 }

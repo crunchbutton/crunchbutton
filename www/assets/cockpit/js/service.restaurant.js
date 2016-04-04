@@ -421,7 +421,33 @@ NGApp.factory( 'RestaurantEditService', function( $rootScope, $resource, $routeP
 			}
 		);
 
+	service.closeRestaurantForToday = function( id_restaurant, callback ){
+		var success = function(){
+			service.save.closeForToday({permalink:id_restaurant}, callback);
+		}
+		App.confirm('Confirm close this restaurant for today?', 'Confirm?', success, function(){}, 'Yes,No', true);
+	}
+
+	service.forceReopenReopenForToday = function( id_restaurant, callback ){
+		var success = function(){
+			service.save.forceReopenForToday({permalink:id_restaurant}, callback);
+		}
+		App.confirm('Confirm reopen this restaurant?', 'Confirm?', success, function(){}, 'Yes,No', true);
+	}
+
 	service.save = {
+		closeForToday : function( data, callback ){
+			data.action = 'close-for-today';
+			save.post( data, function( data ){
+				callback( data );
+			} );
+		},
+		forceReopenForToday : function( data, callback ){
+			data.action = 'force-reopen-for-today';
+			save.post( data, function( data ){
+				callback( data );
+			} );
+		},
 		basic : function( data, callback ){
 			data.action = 'basic';
 			save.post( data, function( data ){

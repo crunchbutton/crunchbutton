@@ -49,6 +49,12 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 			case 'duplicate':
 				$this->_duplicate();
 				break;
+			case 'close-for-today':
+				$this->_closeForToday();
+				break;
+			case 'force-reopen-for-today':
+				$this->_forceReopenForToday();
+				break;
 		}
 	}
 
@@ -59,6 +65,17 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 		$restaurant->save();
 		$this->_return( [ 'permalink' => $restaurant->permalink ] );
 	}
+
+	private function _closeForToday(){
+		$this->restaurant->closeForBusinessForToday();
+		$this->_return( [ 'permalink' => $restaurant->permalink ] );
+	}
+
+	private function _forceReopenForToday(){
+		$this->restaurant->forceReopenForBusiness();
+		$this->_return( [ 'permalink' => $restaurant->permalink ] );
+	}
+
 
 	private function _new(){
 
@@ -115,6 +132,10 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 		$out[ 'name' ] = $this->restaurant->name;
 		$out[ 'permalink' ] = $this->restaurant->permalink;
 		$out[ 'image' ] = $this->restaurant->getImages('name');
+		$out[ 'image' ] = $this->restaurant->getImages('name');
+		if(!$this->restaurant->open_for_business && $this->restaurant->reopen_for_business_at){
+			$out['closed_for_today'] = true;
+		}
 		$this->_return( $out );
 	}
 
