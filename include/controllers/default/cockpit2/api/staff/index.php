@@ -107,6 +107,11 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 							$this->_reverify($staff);
 							break;
 
+						case 'send-driver-licence-to-stripe':
+							$this->_permissionDenied();
+							$this->_sendDriversLicenceToStripe($staff);
+							break;
+
 						case 'support':
 							$this->_listSupport();
 							break;
@@ -201,6 +206,15 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 		$reverify = $staff->autoStripeVerify($this->request()['force'] ? true : false);
 		$status = $staff->stripeVerificationStatus();
 		echo json_encode(['stripe_id' => $staff->payment_type()->stripe_id, 'reverify' => $reverify, 'status' => $status]);
+	}
+
+	private function _sendDriversLicenceToStripe($staff) {
+		$reverify = $staff->autoStripeVerify($this->request()['force'] ? true : false);
+		$status = $staff->sendDriverLicenceToStripe();
+		if($status && $status->id){
+			echo json_encode(['file_id' => $status->id]);exit;
+		}
+		echo  json_encode(['error' => true]);exit;
 	}
 
 	private function _locations($staff) {

@@ -146,6 +146,19 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 		$rootScope.$broadcast( 'CommunitiesAssign', { 'communities': $scope.staff.communities } );
 	}
 
+	$scope.sendDriverLicenceToStripe = function(callback, e){
+		StaffService.sendDriverLicenceToStripe( $scope.staff.id_admin, function( data ) {
+			if(data && data.file_id){
+				App.alert("Driver's licence sent to Stripe!<br>");
+			} else {
+				App.alert("Error sending driver's licence to Stripe!<br>");
+			}
+			if( callback ){ callback(); }
+			// load();
+		});
+
+	}
+
 	$scope.reverify = function( callback, e) {
 		StaffService.reverify( $scope.staff.id_admin, e.altKey ? true : false, function( data ) {
 			if (data.status.status == 'unverified') {

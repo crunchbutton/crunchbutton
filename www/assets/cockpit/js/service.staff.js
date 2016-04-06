@@ -22,6 +22,11 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 			method: 'GET',
 			params : {}
 		},
+		'sendDriverLicenceToStripe' : {
+			url: App.service + 'staff/:id_admin/send-driver-licence-to-stripe',
+			method: 'GET',
+			params : {}
+		},
 		'locations' : {
 			url: App.service + 'staff/:id_admin/locations',
 			method: 'GET',
@@ -195,6 +200,13 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 
 	service.has_pexcard = function(id_admin, callback) {
 		staff.has_pexcard({id_admin: id_admin}, function(data) {
+			callback(data);
+		});
+	}
+
+	service.sendDriverLicenceToStripe = function(id_admin, callback){
+		var params = {id_admin: id_admin};
+		staff.sendDriverLicenceToStripe(params, function(data) {
 			callback(data);
 		});
 	}
