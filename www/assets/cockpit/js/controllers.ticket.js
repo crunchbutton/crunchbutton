@@ -96,6 +96,11 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 
 	var id_support = $routeParams.id;
 
+
+	setTimeout(function(){
+		$rootScope.focus('#support-chat-box');
+	}, 1000 );
+
 	$scope.closeForToday = function(){
 		RestaurantEditService.closeRestaurantForToday($scope.ticket.restaurant.id_restaurant, update);
 	}
