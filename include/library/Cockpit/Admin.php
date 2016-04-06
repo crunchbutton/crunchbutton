@@ -118,9 +118,14 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$stripeAccount = $this->stripeAccount();
 		$file = $this->driverLicence();
 		if( $file && $stripeAccount->id ){
-			$file = \Stripe\FileUpload::create( [ 'purpose' => 'identity_document', 'file' => fopen($file, 'r') ],
-																					[ 'stripe_account' => $stripeAccount->id ]
+			$status = \Stripe\FileUpload::create( [ 'purpose' => 'identity_document', 'file' => fopen($file, 'r') ],
+																						[ 'stripe_account' => $stripeAccount->id ]
 			);
+			if($status && $status->id){
+				$stripeAccount->legal_entity->verification->document = $status->id;
+				$stripeAccount->save();
+			}
+			return $status;
 		}
 	}
 
