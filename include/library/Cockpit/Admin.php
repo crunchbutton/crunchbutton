@@ -106,6 +106,24 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		return $out;
 	}
 
+	public function driverLicence(){
+		$doc = Cockpit_Driver_Document_Status::document( $this->id_admin, Cockpit_Driver_Document::ID_DRIVERS_LICENCE );
+		if($doc->id_driver_document_status){
+			return $doc->getFile();
+		}
+		return null;
+	}
+
+	public function sendDriverLicenceToStripe(){
+		$stripeAccount = $this->stripeAccount();
+		$file = $this->driverLicence();
+		if( $file && $stripeAccount->id ){
+			$file = \Stripe\FileUpload::create( [ 'purpose' => 'identity_document', 'file' => fopen($file, 'r') ],
+																					[ 'stripe_account' => $stripeAccount->id ]
+			);
+		}
+	}
+
 	public function autoStripeVerify( $force = false ) {
 		$stripeAccount = $this->stripeAccount();
 		$status = $this->stripeVerificationStatus();
@@ -126,8 +144,8 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		// ref #6702 sometimes it says they are verified but still wants info
 		// also we cant force update when its verified or it will error out
 		//if (trim($status['status']) == 'unverified' && !$status['contacted'] && ($force || $status['due_by'])) {
-		if ($status['contacted']) {
 
+		if ($status['contacted']) {
 			if ($status['status'] != 'verified') {
 				if ($paymentType->verified) {
 					$paymentType->verified = false;
@@ -184,6 +202,10 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 								$saving++;
 							}
 							break;
+						case 'legal_entity.verification.document':
+							$this->sendDriverLicenceToStripe();
+							$saving++;
+							break;
 						case 'legal_entity.personal_id_number':
 							if (!$stripeAccount->legal_entity->personal_id_number && $ssn) {
 								$stripeAccount->legal_entity->personal_id_number = $ssn;
@@ -193,6 +215,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 					}
 				}
 			} else {
+				// $this->sendDriverLicenceToStripe();
 				$stripeAccount->legal_entity->type = 'individual';
 				if (trim($status['status']) != 'verified') {
 					$stripeAccount->legal_entity->first_name = array_shift($name);
@@ -487,7 +510,7 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		$_ignore = [];
 		if( isset( $params[ 'ignore' ] ) ){
 			 foreach( $params[ 'ignore' ] as $key => $val ){
-			 	$_ignore[ $val ] = true;
+				$_ignore[ $val ] = true;
 			 }
 		}
 
