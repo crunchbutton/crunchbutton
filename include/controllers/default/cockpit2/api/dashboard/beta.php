@@ -15,13 +15,26 @@ class Controller_api_dashboard_beta extends Crunchbutton_Controller_RestAccount 
 				}
 				echo json_encode( $out );exit;
 				break;
+			case 'pre-orders':
+				$out = [];
+				$orders = Dashboard::preOrders();
+				foreach($orders as $order){
+					$out[] = $order;
+				}
+				echo json_encode( $out );exit;
+				break;
 			case 'communities':
 				$out = [];
 				$communities = $this->request()[ 'communities' ];
-				foreach($communities as $community){
-					$dashboard = new Dashboard($community);
-					$out[] = $dashboard->statusByCommunity($community);
+				if(count($communities)){
+					foreach($communities as $community){
+						$dashboard = new Dashboard($community);
+						$out[] = $dashboard->statusByCommunity($community);
+					}
 				}
+				usort($out, function( $a, $b ) {
+					return( $a[ 'total_undelivered_orders' ] < $b[ 'total_undelivered_orders' ] );
+				} );
 				echo json_encode( $out );exit;
 				break;
 			case 'current-driver-status':

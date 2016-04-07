@@ -21,6 +21,12 @@ NGApp.factory('DashboardService', function(ResourceFactory, $routeParams, $resou
 			params : {},
 			isArray: true
 		},
+		'pre_orders' : {
+			url: App.service + 'dashboard/beta/pre-orders',
+			method: 'GET',
+			params : {},
+			isArray: true
+		},
 		'chart_last_orders' : {
 			url: App.service + 'dashboard/beta/chart-last-orders',
 			method: 'GET',
@@ -40,6 +46,12 @@ NGApp.factory('DashboardService', function(ResourceFactory, $routeParams, $resou
 
 	service.current_driver_status = function(callback) {
 		dashboard.current_driver_status({}, function(data) {
+			callback(data);
+		});
+	}
+
+	service.pre_orders = function(callback) {
+		dashboard.pre_orders({}, function(data) {
 			callback(data);
 		});
 	}

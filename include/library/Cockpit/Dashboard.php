@@ -11,7 +11,7 @@ class Cockpit_Dashboard extends Cana_Table {
 	public static function communitiesWithShits(){
 		$query = 'SELECT DISTINCT(community.id_community) FROM community_shift
 								INNER JOIN community ON community.id_community = community_shift.id_community
-								WHERE date_start BETWEEN SUBDATE( NOW(), INTERVAL 12 HOUR) AND ADDDATE( NOW(), INTERVAL 12 HOUR ) AND community.id_community != 92 AND community_shift.active = 1 ORDER BY community.name ASC';
+								WHERE date_start BETWEEN SUBDATE( NOW(), INTERVAL 12 HOUR) AND ADDDATE( NOW(), INTERVAL 12 HOUR ) AND community.id_community != 92 AND community.id_community != 6 AND community_shift.active = 1 ORDER BY community.name ASC';
 		$communities = c::db()->get( $query );
 		$out = [];
 		if(count($communities)){
@@ -72,8 +72,11 @@ class Cockpit_Dashboard extends Cana_Table {
 		$out['community'] = ['id_community' => $community->id_community, 'name' => $community->name, 'permalink' => $community->permalink, 'timezone' => $community->timezone, 'current' => $now->format('Y-m-d H:i')];
 		$orders = $this->lastOrders();
 		$shifts = $this->workingDriversByCommunity();
-		$out['orders'] = ['unaccepted' => [], 'undelivered' => [], 'in_transit' => []];
+		$out['orders'] = ['unaccepted' => [], 'undelivered' => [], 'in_transit' => [], 'pre_order' => []];
 		foreach ($orders as $order) {
+			if($order['preordered_date']){
+				$out['orders']['pre_order'][] = $order;
+			}
 			if(!$order['driver_login']){
 				$out['orders']['unaccepted'][] = $order;
 			} else {
@@ -101,10 +104,39 @@ class Cockpit_Dashboard extends Cana_Table {
 		}
 		$out['total_shifts_today'] = count($out['shifts_today']);
 		$out['total_current_drivers'] = count($out['current_drivers']);
+		$out['total_pre_orders'] = count($out['orders']['pre_order']);
 		$out['total_unaccepted_orders'] = count($out['orders']['unaccepted']);
 		$out['total_undelivered_orders'] = count($out['orders']['undelivered']);
 		$out['total_in_transit_orders'] = count($out['orders']['in_transit']);
 		return $out;
+	}
+
+	public function preOrders(){
+		$query = 'SELECT
+				o.id_order,
+				o.name,
+				o.phone,
+				a.name AS driver,
+				a.phone as driver_phone,
+				oa.type AS status,
+				r.name AS restaurant,
+				r.timezone,
+				c.name AS community,
+				o.date_delivery,
+				o.preordered_date,
+				o.preorder_processed,
+				o.delivery_service,
+				o.confirmed,
+				r.confirmation AS restaurant_confirmation
+			FROM `order` o
+				LEFT JOIN order_action oa ON oa.id_order_action = o.delivery_status
+				LEFT JOIN admin a on oa.id_admin = a.id_admin
+				INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
+				INNER JOIN community c ON c.id_community = o.id_community
+			WHERE preordered = 1  HAVING ( oa.type != ? AND oa.type != ? ) OR oa.type IS NULL
+				ORDER BY date_delivery ASC';
+		$orders = c::db()->get( $query, [Crunchbutton_Order_Action::DELIVERY_CANCELED, Crunchbutton_Order_Action::DELIVERY_DELIVERED] );
+		return $orders;
 	}
 
 	public function lastOrders(){

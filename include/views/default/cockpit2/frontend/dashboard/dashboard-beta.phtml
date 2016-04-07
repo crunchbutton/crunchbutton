@@ -47,6 +47,7 @@
 					<th>Current time</th>
 					<th>Unaccepted Orders</th>
 					<th>Undelivered Orders</th>
+					<th>Pre Orders</th>
 					<th>Orders in Transit</th>
 					<th>Drivers working</th>
 					<th>Shifts today</th>
@@ -57,13 +58,74 @@
 					<td>{{clock | convertimeformat:community.community.timezone:'h:mm a'}}</td>
 					<td ng-click="modalOrders(community.orders.unaccepted, community.community.name  + ': Unaccepted Orders')" class="dashboard-light" ng-class="{'dashboard-warning':community.total_unaccepted_orders}">{{community.total_unaccepted_orders}}</td>
 					<td ng-click="modalOrders(community.orders.undelivered, community.community.name  + ': Undelivered Orders', true)" class="dashboard-light" ng-class="{'dashboard-warning':community.total_undelivered_orders}">{{community.total_undelivered_orders}}</td>
+					<td ng-click="modalOrders(community.orders.pre_order, community.community.name  + ': Pre Orders', true)" class="dashboard-light" ng-class="{'dashboard-warning':community.total_pre_orders}">{{community.total_pre_orders}}</td>
+
 					<td ng-click="modalOrders(community.orders.in_transit, community.community.name  + ': Orders in Transit', true)" class="dashboard-light" ng-class="{'dashboard-ok':community.total_in_transit_orders}">{{community.total_in_transit_orders}}</td>
+
+
 					<td ng-click="modalDrivers(community.current_drivers, community.community.name  + ': Drivers working')" class="dashboard-light" ng-class="{'dashboard-ok':community.total_current_drivers}">{{community.total_current_drivers}}</td>
 					<td ng-click="modalDrivers(community.shifts_today, community.community.name  + ': Shifts today')"class="dashboard-light" ng-class="{'dashboard-ok':community.total_shifts_today}">{{community.total_shifts_today}}</td>
 				</tr>
 			</table>
 		</div>
 	</div>
+
+	<div class="support-box-wrap box-content2">
+		<div class="support-box-wrap-header">
+			<h1>Pre-orders</h1>
+			<div class="divider"></div>
+		</div>
+		<div class="no-box-content-color">
+			<table class="basic-table tb-zebra table-dashboard">
+				<tr>
+					<th>#</th>
+					<th>Community</th>
+					<th>Restaurant</th>
+					<th>Customer</th>
+					<th>Desired Delivery Time</th>
+					<th>Status</th>
+					<th>Driver</th>
+				</tr>
+				<!-- aqui -->
+				<tr ng-repeat="order in preorders">
+					<td><a href="/order/{{order.id_order}}">{{order.id_order}}</a></td>
+					<td>{{order.community}}<br>{{order.timezone}}</td>
+					<td>{{order.restaurant}}</td>
+					<td>{{order.name}}<br><a href ng-click="callText(order.phone)" class="listview-smaller">{{order.phone | formatPhone}}</td>
+					<td>
+						<span ng-if="order.timezone != account.user.timezone">
+							{{order.date_delivery | convertimeformat:order.timezone:'MMMM Do YYYY, h:mm:ss a'}}
+							&nbsp;(<span class="listview-bold">{{order.date_delivery | convertimeformat:order.timezone:'z'}}</span>)
+							<br>
+						</span>
+						{{order.date_delivery | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}
+						&nbsp;(<span class="listview-bold">{{order.date_delivery | convertimeformat:account.user.timezone:'z'}}</span>)
+					</td>
+					<td>
+						<span ng-if="order.delivery_service">
+							<span class="tag tag-black" ng-if="order.status == 'delivery-canceled'">Canceled</span>
+							<span class="tag tag-red" ng-if="!order.status || order.status == 'delivery-new'">Not&nbsp;yet&nbsp;accepted</span>
+							<span class="tag tag-green" ng-if="order.status == 'delivery-accepted'">Accepted</span>
+							<span class="tag tag-blue" ng-if="order.status == 'delivery-pickedup'">Pickedup</span>
+							<span class="tag tag-purple" ng-if="order.status == 'delivery-delivered'">Delivered</span>
+						</span>
+						<span ng-if="!order.delivery_service && order.restaurant_confirmation">
+							<span class="tag tag-red" ng-if="!order.confirmed">Unconfirmed</span>
+							<span class="tag tag-green" ng-if="order.confirmed">Confirmed</span>
+						</span>
+						<span ng-if="!order.delivery_service && !order.restaurant_confirmation">
+							<span class="tag tag-grey">Placed</span>
+							<span class="tag tag-black" ng-if="order.status == 'delivery-canceled'">Canceled</span>
+						</span>
+					</td>
+					<td>
+						{{order.driver}}<br><a href ng-click="callText(order.driver_phone)" class="listview-smaller">{{order.driver_phone | formatPhone}}
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
 	<div class="support-boxes">
 
 		<div class="support-box-wrap box-content2">
@@ -121,8 +183,6 @@
 </div>
 
 <div class="support-boxes">
-
-
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
 				<h1>Opened Tickets</h1>
@@ -195,8 +255,6 @@
 	</div>
 </div>
 
-
-
 <div class="dashboard-drivers-dialog-container dashboard-dialog-container zoom-anim-dialog mfp-hide dialog">
 	<div class="support-box-wrap box-content2">
 		<div class="support-box-wrap-header">
@@ -214,7 +272,7 @@
 					</tr>
 					<tr ng-repeat="driver in modal.drivers">
 						<td>
-							<a href="/staff/{{driver_login}}">{{driver.name}}</a>
+							<a href="/staff/{{driver.login}}">{{driver.name}}</a>
 							<br>
 							{{driver.phone | formatPhone}}
 						</td>

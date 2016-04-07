@@ -107,6 +107,12 @@ NGApp.controller('DashboardBetaCtrl', function ($rootScope, $scope, $timeout, Da
 		});
 	}
 
+	var getPreOrders = function(){
+		DashboardService.pre_orders(function(data){
+			$scope.preorders = data;
+		});
+	}
+
 	var getCurrentDriverStatus = function(){
 		DashboardService.current_driver_status(function(data){
 			$scope.current_driver_status = data;
@@ -116,6 +122,7 @@ NGApp.controller('DashboardBetaCtrl', function ($rootScope, $scope, $timeout, Da
 	getCurrentDriverStatus();
 	getLastOrders();
 	getTickets();
+	getPreOrders();
 
 	var startTimer = function(){
 		var timer = $timeout( function(){
@@ -124,6 +131,7 @@ NGApp.controller('DashboardBetaCtrl', function ($rootScope, $scope, $timeout, Da
 				getTickets();
 				getLastOrders();
 				getCurrentDriverStatus();
+				getPreOrders();
 			}
 			startTimer()
 		}, 20000);
