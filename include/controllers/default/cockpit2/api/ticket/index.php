@@ -80,7 +80,7 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 				}
 			}
 			if( $message ){
-				echo $message->json();
+				echo json_encode( $message->exportsSide() );exit;
 				exit;
 			}
 		}
