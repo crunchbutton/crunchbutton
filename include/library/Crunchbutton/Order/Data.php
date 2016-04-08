@@ -68,6 +68,8 @@ class Crunchbutton_Order_Data extends Cana_Table {
 					if( $delivery_service_markup > 0 && $price > 0 ){
 						$option_price = Crunchbutton_Restaurant::roundDeliveryMarkupPrice( $option->option()->price + ( $option->option()->price * $delivery_service_markup / 100 ), 2 );
 						$price = $price + $option_price;
+					} else {
+						$price += $option->option()->price;
 					}
 
 					$option_price = floatval( $option->option()->price );
@@ -99,7 +101,7 @@ class Crunchbutton_Order_Data extends Cana_Table {
 
 			$out[ 'dishes' ][] = [ 'id_dish' => $dish->id_dish, 'name' => $food, 'price' => [ 'regular' => floatval( $regular_price ), 'final_price' => floatval( $price ) ], 'options' => [ 'without_default_options' => $withoutDefaultOptions, 'with_option' => $withOptions ] ];
 		}
-
+echo json_encode( $out[ 'dishes' ] );exit;
 		$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder( 246139 );
 		$out[ 'drivers' ] = [];
 		foreach( $drivers as $driver ){
@@ -111,7 +113,7 @@ class Crunchbutton_Order_Data extends Cana_Table {
 		$data->timestamp = date('Y-m-d H:i:s');
 		$data->type = self::TYPE_SNAPSHOT;
 		$data->content = json_encode( $out );
-		$data->save();
+		// $data->save();
 
 	}
 
