@@ -229,7 +229,7 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 		$result = $this->getLastOrdersFromSameRestaurant( $order );
 		if( $result ){
 			$time = $this->getSetting( $rule[ 'settings' ][ 'time' ] );
-			if ( $result->minutes < $time ){
+			if ( $time && $result->minutes < $time ){
 				$order_1 = Order::o( $result->last_id_order );
 				$order_2 = Order::o( $result->id_order );
 				if( $order_1->orderMessage( 'web' ) == $order_2->orderMessage( 'web' ) ){
@@ -244,7 +244,7 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 		$result = $this->getLastOrdersFromSameRestaurant( $order );
 		if( $result ){
 			$time = $this->getSetting( $rule[ 'settings' ][ 'time' ] );
-			if ( $result->minutes < $time ){
+			if ( $time && $result->minutes < $time ){
 				$order_1 = Order::o( $result->last_id_order );
 				$order_2 = Order::o( $result->id_order );
 				if( $order_1->orderMessage( 'web' ) != $order_2->orderMessage( 'web' ) ){
