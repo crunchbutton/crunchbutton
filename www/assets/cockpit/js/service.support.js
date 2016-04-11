@@ -14,6 +14,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	}
 
 	service.sideInfo.reset = function(){
+		service.uniques = {};
 		service.sideInfo.data = { id_support: service.sideInfo.id_support, messages: [], page: 0, loaded: 0, total: null, has_more: false };
 		service._private = { first_load: true, current_scroll: 0, could_load: true };
 		service.sideInfo.update_controller();
@@ -54,13 +55,17 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	service.sideInfo.release = function(){
 		setTimeout(function() { service._private.could_load = true }, 500 );
 	}
-
+// aqui
 	service.sideInfo.add_message = function( message ){
+		if(hasHash(message)){
+			return true;
+		}
 		service.sideInfo.data.messages.push( message );
 		service.sideInfo.data.total++;
 		service.sideInfo.data.loaded++;
 		service.sideInfo.update_controller();
 		setTimeout(function(){service.sideInfo.scroll( 'begin' );},500);
+		hashMessage(message);
 	}
 
 	service.sideInfo.load_ticket_page = function(){
@@ -98,11 +103,13 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 				for( x in data.messages.list ){
 					if( data.messages.list[ x ].id_support_message ){
 						messages.push( data.messages.list[ x ] );
+						hashMessage(data.messages.list[ x ])
 					}
 				}
 				for( x in service.sideInfo.data.messages ){
 					if( service.sideInfo.data.messages[ x ].id_support_message ){
 						messages.push( service.sideInfo.data.messages[ x ] );
+						hashMessage(data.messages.list[ x ]);
 					}
 				}
 				service.sideInfo.data.messages = messages;
@@ -122,6 +129,20 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		}
 		return false;
 	};
+
+	function hashMessage(message){
+		if(message){
+			var key = btoa( message.first_name + message.from + message.body + message.timestamp );
+			service.uniques[key] = true;
+		}
+	}
+
+	function hasHash(message){
+		if(message){
+			var key = btoa( message.first_name + message.from + message.body + message.timestamp );
+			return service.uniques[key];
+		}
+	}
 
 	service.setViewTicket = function(id) {
 		service.scope.viewTicket = id;
