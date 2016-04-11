@@ -6,10 +6,9 @@
 		<span class="restaurant-box-content">
 			<div class="restaurant-box-title"><span ng-if="!restaurant._opensIn_formatted">Not </span>Available {{restaurant._opensIn_formatted}}</div>
 			<div class="restaurant-box-text">
-
-				<span ng-if="restaurant.open_for_business && !restaurant.delivery_service">Hours of operation</span>
-				<span ng-if="restaurant.open_for_business && restaurant.delivery_service">Hours we deliver</span>
-				<span ng-if="restaurant.open_for_business">&nbsp;(<span ng-bind="restaurant._tzabbr"></span>):<br></span>
+				<span ng-if="restaurant.open_for_business && restaurant.hours.length && !restaurant.delivery_service">Hours of operation</span>
+				<span ng-if="restaurant.open_for_business && restaurant.hours.length && restaurant.delivery_service">Hours we deliver</span>
+				<span ng-if="restaurant.open_for_business && restaurant.hours.length">&nbsp;(<span ng-bind="restaurant._tzabbr"></span>):<br></span>
 				<span ng-bind-html-unsafe="restaurant.closedMessage() | nl2br"></span>
 			</div>
 		</span>
