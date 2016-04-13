@@ -648,6 +648,9 @@ p {
 	}
 }
 
+.side-menu{
+	overflow: hidden !important;
+}
 
 /* SNAPS */
 @media(min-width:$desktopWidth) {
@@ -3617,6 +3620,7 @@ h1.driver-title {
 .support-side-chat-table {
 	height: 100%;
 	width: 100%;
+	margin-right: 1em;
 }
 
 .support-side-chat .ul-inputs{
