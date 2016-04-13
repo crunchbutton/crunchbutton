@@ -648,7 +648,7 @@ p {
 	}
 }
 
-.side-menu{
+#side-menu-right{
 	overflow: hidden !important;
 }
 
@@ -3464,6 +3464,7 @@ h1.driver-title {
 .support-chat-header {
 	font-family: Ruda;
 	padding: 1em;
+	padding-right: 3em;
 }
 
 .support-chat-header-details {
@@ -3620,7 +3621,6 @@ h1.driver-title {
 .support-side-chat-table {
 	height: 100%;
 	width: 100%;
-	margin-right: 1em;
 }
 
 .support-side-chat .ul-inputs{
