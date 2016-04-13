@@ -22,7 +22,7 @@ NGApp.controller('DashboardCtrl', function ($rootScope, $scope, DashboardService
 	});
 });
 
-NGApp.controller('DashboardBetaCtrl', function ($rootScope, $scope, $timeout, DashboardService, CommunityService, TicketService) {
+NGApp.controller('DashboardBetaCtrl', function ($rootScope, $scope, $timeout, DashboardService, CommunityService, TicketService, CommunityService) {
 
 	$scope.loading = true;
 
@@ -46,6 +46,10 @@ NGApp.controller('DashboardBetaCtrl', function ($rootScope, $scope, $timeout, Da
 			}
 		}
 	});
+
+	CommunityService.closed( function( json ){
+ 		$scope.closed_communities = json;
+	} );
 
 	$scope.selectNoneCommunity = function(){
 		$scope.options.communities = [];

@@ -182,7 +182,7 @@
 		</div>
 </div>
 
-<div class="support-boxes">
+	<div class="support-boxes">
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
 				<h1>Opened Tickets</h1>
@@ -248,6 +248,39 @@
 							&nbsp;&nbsp;View</button></a>
 						</td>
 					</tr>
+				</table>
+			</div>
+		</div>
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Closed Communities</h1>
+				<div class="divider"></div>
+			</div>
+			<div class="no-box-content-color">
+				<table class="basic-table tb-zebra table-dashboard">
+					<thead>
+						<tr>
+							<th>Community</th>
+							<th>Closed Since</th>
+							<th>Closed</th>
+							<th>Message</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="community in closed_communities track by $index" ng-attr-tabindex="{{$index+1}}" tab-select="/community/{{community.permalink || community.id_community}}" ng-init="$last ? ngRepeatFinished() : null">
+							<td><a class="listview-smaller" href="/community/{{community.permalink}}">{{community.name}}</a></td>
+							<td><span class="listview-smaller">{{community.log.how_long}}</span></td>
+							<td nowrap="">
+								<span class="tag tag-orange" ng-if="community.is_auto_closed">Is Auto Closed</span>
+								<span ng-if="community.is_auto_closed && community.close_3rd_party_delivery_restaurants"><br></span>
+								<span class="tag tag-purple" ng-if="community.close_3rd_party_delivery_restaurants">3rd Party Restaurants</span>
+								<span ng-if="( community.is_auto_closed && community.close_all_restaurants && !community.close_3rd_party_delivery_restaurants ) || (community.close_all_restaurants && community.close_3rd_party_delivery_restaurants )"><br></span>
+								<span class="tag tag-red" ng-if="community.close_all_restaurants">All Restaurants</span>
+							</td>
+							<td><span class="listview-smaller">{{community.log.note}}</span></td>
+						</tr>
+					</tbody>
 				</table>
 			</div>
 		</div>
