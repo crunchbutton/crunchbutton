@@ -101,8 +101,7 @@ class Crunchbutton_Order_Data extends Cana_Table {
 
 			$out[ 'dishes' ][] = [ 'id_dish' => $dish->id_dish, 'name' => $food, 'price' => [ 'regular' => floatval( $regular_price ), 'final_price' => floatval( $price ) ], 'options' => [ 'without_default_options' => $withoutDefaultOptions, 'with_option' => $withOptions ] ];
 		}
-echo json_encode( $out[ 'dishes' ] );exit;
-		$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder( 246139 );
+
 		$out[ 'drivers' ] = [];
 		foreach( $drivers as $driver ){
 			$out[ 'drivers' ][] = $driver->exports();
@@ -113,8 +112,7 @@ echo json_encode( $out[ 'dishes' ] );exit;
 		$data->timestamp = date('Y-m-d H:i:s');
 		$data->type = self::TYPE_SNAPSHOT;
 		$data->content = json_encode( $out );
-		// $data->save();
-
+		$data->save();
 	}
 
 	public function dishes( $id_order ){
@@ -132,7 +130,6 @@ echo json_encode( $out[ 'dishes' ] );exit;
 		$data = Crunchbutton_Order_Data::q( 'SELECT * FROM order_data WHERE id_order = ? AND type = ? ORDER BY id_order_data DESC LIMIT 1', [ $id_order, self::TYPE_SNAPSHOT ] )->get( 0 );
 		if( $data->id_order_data ){
 			$data = json_decode( $data->content );
-			// echo json_encode( $data );exit;
 			if( $data->dishes ){
 				foreach( $data->dishes as $data_dish ){
 					$data_dish->name = $data_dish->name . ': ';
@@ -148,7 +145,6 @@ echo json_encode( $out[ 'dishes' ] );exit;
 				}
 			}
 		}
-		// echo '<pre>';var_dump( $dishesList );exit();
 		return $dishesList;
 	}
 
