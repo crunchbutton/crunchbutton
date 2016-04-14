@@ -1,13 +1,13 @@
 NGApp.config(['$routeProvider', function($routeProvider) {
 	$routeProvider
-		.when('/marketing/materials/refil', {
+		.when('/marketing/materials/refill', {
 			action: 'marketing-rep-request-materials',
-			controller: 'MarketingMaterialsRefilCtrl',
-			templateUrl: '/assets/view/marketing-materials-refil.html'
+			controller: 'MarketingMaterialsRefillCtrl',
+			templateUrl: '/assets/view/marketing-materials-refill.html'
 		});
 }]);
 
-NGApp.controller('MarketingMaterialsRefilCtrl', function ($rootScope, $scope, MarketingMaterialsService) {
+NGApp.controller('MarketingMaterialsRefillCtrl', function ($rootScope, $scope, MarketingMaterialsService) {
 
 	$scope.loading = true;
 
