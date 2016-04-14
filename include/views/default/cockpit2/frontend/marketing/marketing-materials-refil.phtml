@@ -1,0 +1,46 @@
+<div class="top-pad"></div>
+<div class="content-padding">
+	<div class="page-title-wrap">
+		<h1 class="title"><i class="fa fa-users"></i>Marketing Materials Refill</h1>
+	</div>
+	<div class="divider"></div>
+	<div class="support-boxes">
+		<div class="support-box-wrap box-content2" class="support-box-wrap">
+			<div class="support-box-wrap-header">
+				<h1>You should have them in 3-5 business days!</h1>
+				<div class="divider"></div>
+			</div>
+			<div class="no-box-content-color" ng-if="!loading">
+				<div class="field-container">
+					<div class="field-row">
+						<div class="field-key">Name</div>
+						<div class="field-value">{{info.name}}</div>
+					</div>
+					<div class="field-row" ng-if="info.email">
+						<div class="field-key">Email</div>
+						<div class="field-value">{{info.email}}</div>
+					</div>
+					<div class="field-row" ng-if="info.address">
+						<div class="field-key">Address</div>
+						<div class="field-value">{{info.address}}</div>
+					</div>
+					<div>
+						<br>
+						<button class="button orange" ng-click="save();">Send</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="support-boxes">
+		<div class="support-box-wrap box-content2" class="support-box-wrap">
+			<div class="support-box-wrap-header">
+				<h1>Don't want to wait? <a href="https://www.dropbox.com/sh/trk2i7wl4234z3j/AADmDMzJC4nKWrDbHOsUX46ya?dl=0" target="_blank">Download marketing materials here</a></h1>
+				<div class="divider"></div>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': loading}"></div>
+</div>
