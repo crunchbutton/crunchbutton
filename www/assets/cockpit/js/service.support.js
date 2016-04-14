@@ -132,7 +132,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 	function hashMessage(message){
 		if(message){
-			var key = btoa( message.first_name + message.from + message.body + message.timestamp );
+			var key = btoa(unescape(encodeURIComponent(message.first_name + message.from + message.body + message.timestamp)));
 			service.uniques[key] = true;
 		}
 	}
