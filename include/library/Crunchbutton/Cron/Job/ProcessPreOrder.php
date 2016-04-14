@@ -19,12 +19,13 @@ class Crunchbutton_Cron_Job_ProcessPreOrder extends Crunchbutton_Cron_Log {
 	}
 
 	public function process( $order ){
+		$order = Order::o($order->id_order);
 		$status = $order->status()->last();
 		if( $status[ 'status' ] == 'new' ){
-			$order->que();
 			$order->date = date( 'Y-m-d H:i:s' );
 			$order->preorder_processed = 1;
 			$order->save();
+			$order->que();
 		}
 	}
 }
