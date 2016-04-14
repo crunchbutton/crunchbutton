@@ -31,13 +31,13 @@ class Cockpit_Marketing_Materials_Refil extends Cana_Table {
 				$date = new DateTime( $request->date, new DateTimeZone( c::config()->timezone ) );
 				$date->setTimeZone(new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ));
 				$out[] = '- [ ] ';
-				$out[] = $request->name . ' - ' . Phone::formatted($request->phone) . "\n";
-				$out[] = ' ' . $request->address . "\n";
+				$out[] = $request->name . ' - ' . Phone::formatted($request->phone) . "\r\n";
+				$out[] = ' ' . $request->address . "\r\n";
 				if($request->email){
-					$out[] = ' ' . $request->email . "\n";
+					$out[] = ' ' . $request->email . "\r\n";
 				}
-				$out[] = ' ' . $date->format('M jS Y g:i:s A') . "\n";
-				$out[] = "\n";
+				$out[] = ' ' . $date->format('M jS Y g:i:s A') . "\r\n";
+				$out[] = "\r\n\r\n";
 			}
 			$body = join($out);
 			if(trim($body)){
