@@ -41,7 +41,7 @@ class Cockpit_Marketing_Materials_Refil extends Cana_Table {
 			}
 			$body = join($out);
 			if(trim($body)){
-				$title = 'Marketing Materials Refill: ' . date('M jS Y');s
+				$title = 'Marketing Materials Refill: ' . date('M jS Y');
 				$issue = Github::createIssue( $title, $body, self::ASSIGNEE, self::LABEL);
 				if($issue['number']){
 					foreach($requests as $r){
