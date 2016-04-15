@@ -1878,7 +1878,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	public function que() {
 		$q = Queue::create([
 			'type' => Crunchbutton_Queue::TYPE_ORDER,
-			'id_order' => $this->id_order
+			'id_order' => $this->id_order,
+			'seconds' => 3
 		]);
 	}
 
