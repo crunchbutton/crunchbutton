@@ -151,8 +151,8 @@ class Crunchbutton_Queue_Order extends Crunchbutton_Queue {
 		}
 
 		// replaces Crunchbutton_Cron_Job_OrderRules
-		$rules = new Crunchbutton_Order_Rules;
-		$rules->run($this->order());
+		// $rules = new Crunchbutton_Order_Rules;
+		// $rules->run($this->order());
 
 		return self::STATUS_SUCCESS;
 	}
