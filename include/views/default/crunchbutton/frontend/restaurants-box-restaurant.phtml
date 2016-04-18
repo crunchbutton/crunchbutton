@@ -22,9 +22,13 @@
 
 
 					<div class="meal-item-tag meal-item-tag-closed" ng-switch-when="force_close">
-						<span ng-if="restaurant.open_for_business && restaurant.closed_message && !restaurant._opensIn_formatted">{{restaurant.closed_message}}</span>
-						<span ng-if="restaurant.open_for_business && restaurant._opensIn_formatted">Available {{restaurant._opensIn_formatted}}</span>
-						<span ng-if="!restaurant.open_for_business || ( !restaurant._opensIn_formatted && !restaurant.closed_message )">Temporarily unavailable {{restaurant._closedDueTo}}</span>
+						<span ng-if="restaurant.reopen_tomorrow">Closed today--back tomorrow!</span>
+						<span ng-if="!restaurant.reopen_tomorrow">
+							<span ng-if="restaurant.open_for_business && restaurant.closed_message && !restaurant._opensIn_formatted">{{restaurant.closed_message}}</span>
+							<span ng-if="restaurant.open_for_business && restaurant._opensIn_formatted">Available {{restaurant._opensIn_formatted}}</span>
+							<span ng-if="!restaurant.open_for_business || ( !restaurant._opensIn_formatted && !restaurant.closed_message )">Temporarily unavailable {{restaurant._closedDueTo}}
+							</span>
+						</span>
 					</div>
 
 					<div class="meal-item-tag" ng-switch-when="takeout">Take out only</div>
