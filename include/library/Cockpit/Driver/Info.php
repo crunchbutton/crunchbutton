@@ -25,7 +25,6 @@ class Cockpit_Driver_Info extends Cana_Table_Trackchange {
 			->load($id);
 	}
 
-
 	public function carrierTypes(){
 		return [ self::CARRIER_TYPE_ATT,
 						 self::CARRIER_TYPE_VERIZON,

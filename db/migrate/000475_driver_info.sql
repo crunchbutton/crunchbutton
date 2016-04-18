@@ -1,0 +1,1 @@
+ALTER TABLE `driver_info` ADD `ignore_shift_reminders` tinyint(1) NOT NULL DEFAULT '0';

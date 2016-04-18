@@ -159,6 +159,7 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		$driver_info->down_to_help_out = $this->request()[ 'down_to_help_out' ];
 		$driver_info->notes_to_driver = $this->request()[ 'notes_to_driver' ];
 		$driver_info->weekend_driver = $this->request()[ 'weekend_driver' ];
+		$driver_info->ignore_shift_reminders = ($this->request()[ 'ignore_shift_reminders' ] == 'true') ? true : false;
 
 		$driver_info->phone_subtype = null;
 		$driver_info->phone_version = null;
