@@ -61,9 +61,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		if( $this->preordered ){
 			$deliveryDay = $params['deliveryDay'];
 			$deliveryHour = $params['deliveryHour'];
-			$date_delivery = new DateTime( $deliveryDay . ' ' . $deliveryHour, new DateTimeZone( $this->restaurant()->timezone ) );
-			$date_delivery->setTimezone( new DateTimeZone( c::config()->timezone ) );
-			$this->date_delivery = $date_delivery->format( 'Y-m-d H:i:s' );
+			$this->_date_delivery = new DateTime( $deliveryDay . ' ' . $deliveryHour, new DateTimeZone( $this->restaurant()->timezone ) );
+			$this->_date_delivery->setTimezone( new DateTimeZone( c::config()->timezone ) );
+			$this->date_delivery = $this->_date_delivery->format( 'Y-m-d H:i:s' );
 		}
 
 		// Log the order - process started
@@ -111,8 +111,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$errors['set-processor'] = Crunchbutton_User_Payment_Type::processor();
 		}
 
-
-
 		if( $this->preordered ){
 			if( !$params['deliveryDay'] ){
 				$errors['preorder_day'] = 'Please select the desired delivery day.';
@@ -120,9 +118,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			if( !$params['deliveryHour'] ){
 				$errors['preorder_hour'] = 'Please select the desired delivery hour.';
 			}
-			if( $this->date_delivery ){
+			if( $this->_date_delivery ){
 				$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-				if( $now < $this->date_delivery ){
+				if( $now->format('YmdHis') > $this->_date_delivery->format('YmdHis') ){
 					$errors['preorder_prev_date'] = 'The desired delivery hour should not be in the past.';
 				}
 			}
