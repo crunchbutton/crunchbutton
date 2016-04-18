@@ -676,6 +676,18 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		return $out;
 	}
 
+	public function sendShiftReminder(){
+		return !$this->ignoreShiftReminder();
+	}
+
+	public function ignoreShiftReminder(){
+		$info = Cockpit_Driver_Info::byAdmin($this->id_admin);
+		if($info){
+			return $info->ignore_shift_reminders;
+		}
+		return false;
+	}
+
 	public function score() {
 		$qString = "SELECT * FROM `admin_score` WHERE id_admin= ? ";
 		$s = Cockpit_Admin_Score::q($qString, [$this->id_admin,]);

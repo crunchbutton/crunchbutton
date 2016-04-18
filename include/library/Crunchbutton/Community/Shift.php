@@ -1637,6 +1637,11 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 							$admin = $assignment->admin();
 							$minutesToStart = $shift->minutesToStart();
 
+							if(!$admin->sendShiftReminder()){
+								Log::debug( [ 'id_admin_shift_assign' => $assignment->id_admin_shift_assign, 'message' => 'driver set to not receive the reminder', 'type' => 'driver-remind' ] );
+								return true;
+							}
+
 							if( $minutesToStart > 0 ){
 
 								// convert to string
