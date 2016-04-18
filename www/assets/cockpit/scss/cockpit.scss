@@ -3367,7 +3367,11 @@ body.ng-scope {
 }
 .tickets-side-ticket {
 	float: left;
-
+  width: 130px;
+  height:18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 	color: #de5750;
 	text-decoration: none;
 	font-weight: bold;
