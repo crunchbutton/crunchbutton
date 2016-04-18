@@ -1449,7 +1449,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			foreach ( $_ignore as $property ) {
 				$ignore[ $property ] = true;
 			}
-
 		}
 
 		// method ByRand doesnt need all the properties
@@ -1673,6 +1672,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$out[ 'campus_cash_default_payment' ] = $this->campusCashDefaultPaymentMethod();
 		} else {
 			$out[ 'campus_cash' ] = false;
+		}
+
+		if(!$out[ '_open' ] && !$out[ 'hours' ] && $this->reopen_for_business_at){
+			$out[ 'reopen_tomorrow' ] = true;
 		}
 		return $out;
 	}
