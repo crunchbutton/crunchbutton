@@ -1329,7 +1329,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
 						$schedule->status_date = date( 'Y-m-d H:i:s' );
 						$schedule->save();
-						Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+						self::paymentErrorEmail(['body' => $message, 'subject'=> 'Restaurant Payment error! Restaurant: ' . $restaurant->name]);
 						return false;
 					}
 
@@ -1411,7 +1411,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
 						$schedule->status_date = date( 'Y-m-d H:i:s' );
 						$schedule->save();
-						Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+						self::paymentErrorEmail(['body' => $message, 'subject'=> 'Restaurant Payment error! Restaurant: ' . $schedule->restaurant()->name]);
 						return false;
 					}
 				}
@@ -1453,7 +1453,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$schedule->status_date = date( 'Y-m-d H:i:s' );
 						$schedule->save();
 						$this->log( 'payRestaurant: Error', $schedule->properties() );
-						Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+						self::paymentErrorEmail(['body' => $message, 'subject'=> 'Restaurant Payment error! Restaurant: ' . $schedule->restaurant()->name]);
 					} else {
 
 						$check_name = $schedule->restaurant()->name;
@@ -1543,7 +1543,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 							$schedule->status_date = date( 'Y-m-d H:i:s' );
 							$schedule->save();
 							$this->log( 'payRestaurant: Error', $schedule->properties() );
-							Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+							self::paymentErrorEmail(['body' => $message, 'subject'=> 'Restaurant Payment error! Restaurant: ' . $schedule->restaurant()->name]);
 							return false;
 						}
 					}
@@ -1558,7 +1558,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$schedule->status_date = date( 'Y-m-d H:i:s' );
 						$schedule->save();
 						$this->log( 'payRestaurant: Error', $schedule->properties() );
-						Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+						self::paymentErrorEmail(['body' => $message, 'subject'=> 'Restaurant Payment error! Restaurant: ' . $schedule->restaurant()->name]);
 					}
 				}
 
@@ -1621,7 +1621,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
 						$schedule->status_date = date( 'Y-m-d H:i:s' );
 						$schedule->save();
-						Crunchbutton_Support::createNewWarningStaffTicket(  [ 'staff' => true, 'body' => $message, 'phone' => $schedule->driver()->phone ] );
+						self::paymentErrorEmail(['body' => $message, 'subject'=> 'Driver Payment error! Driver: ' . $schedule->driver()->name]);
 						return false;
 					}
 
@@ -1732,7 +1732,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$schedule->status_date = date( 'Y-m-d H:i:s' );
 						$schedule->save();
 						$this->driverPaymentError( $schedule->id_payment_schedule );
-						Crunchbutton_Support::createNewWarningStaffTicket(  [ 'staff' => true, 'body' => $message, 'phone' => $schedule->driver()->phone ] );
+						self::paymentErrorEmail(['body' => $message, 'subject'=> 'Driver Payment error! Driver: ' . $schedule->driver()->name]);
 						return false;
 					}
 				} else {
@@ -1746,7 +1746,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$schedule->save();
 					$this->log( 'payDriver: Error', $schedule->properties() );
 					$this->driverPaymentError( $schedule->id_payment_schedule );
-					Crunchbutton_Support::createNewWarningStaffTicket(  [ 'staff' => true, 'body' => $message, 'phone' => $schedule->driver()->phone ] );
+					self::paymentErrorEmail(['body' => $message, 'subject'=> 'Driver Payment error! Driver: ' . $schedule->driver()->name]);
 				}
 			} else {
 				return false;
@@ -1778,7 +1778,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 				if( $driver->phone ){
 					Crunchbutton_Message_Sms::send( [ 'from' => 'driver', 'to' => $driver->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_SETTLEMENT_FAIL ] );
-					Crunchbutton_Support::createNewWarningStaffTicket(  [ 'staff' => true, 'body' => $message, 'phone' => $driver->phone ] );
 				}
 				if( $driver->email ){
 					$mail = new Cockpit_Email_Driver_Broadcast( [ 'driver' => $driver,
@@ -2076,7 +2075,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			} else if( $error == 'fax' ){
 				$message .= 'Summary fax missing.';
 			}
-			Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+			self::paymentErrorEmail(['body' => $message, 'subject'=> 'Payment Summary send error! Restaurant: ' . $summary[ 'restaurant' ]]);
 			return;
 		}
 
@@ -2269,6 +2268,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 			return false;
 		}
 		return true;
+	}
+
+	public static function paymentErrorEmail($params = []){
+		$mail = new Crunchbutton_Email_Payment_Error( $params );
+		$send = $mail->send();
 	}
 
 	public function revertPaymentByScheduleId( $id_payment_schedule ){
