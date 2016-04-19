@@ -187,8 +187,7 @@ class Crunchbutton_Support_Message extends Cana_Table {
 
 	public function exportsSide(){
 		$out = $this->exports();
-		$out[ 'status' ] = $this->status();
-		$remove = [ 'id_support', 'id_admin', 'id', 'id_phone', 'id_phone_log' ];
+		$remove = [ 'id_admin', 'id', 'id_phone', 'id_phone_log' ];
 		foreach( $out as $key => $val ){
 			if( in_array( $key, $remove ) || !$val ){
 				unset( $out[ $key ] );
