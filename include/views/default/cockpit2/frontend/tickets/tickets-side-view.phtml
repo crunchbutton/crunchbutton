@@ -120,7 +120,7 @@
 						<br><br>
 					</div>
 
-					<div bindonce ng-repeat="message in ticket.messages" class="support-chat-contents-message suppport-chat-message-{{message.id_support_message}}" id="suppport-chat-message-{{message.id_support}}" ng-class="{
+					<div bindonce ng-repeat="message in ticket.messages track by message.md5" class="support-chat-contents-message suppport-chat-message-{{message.id_support_message}}" id="suppport-chat-message-{{message.id_support}}" ng-class="{
 					'support-chat-contents-message-support': message.is_support,
 					'support-chat-contents-message-driver': message.is_driver,
 					'support-chat-contents-message-customer': (!message.is_support && !message.is_driver),

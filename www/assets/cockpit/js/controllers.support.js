@@ -119,28 +119,13 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $route, $rootScope, $routeP
 		} );
 	}
 
-	// $scope.$watchCollection( 'ticket', function( newValue, oldValue ) {
-	// 	if( newValue && newValue.total && !$rootScope.supportToggled ){
-	// 		$timeout( function(){
-	// 			$rootScope.supportToggled = true;
-	// 		}, 300 );
-	// 	}
-	// } );
-
 	$scope.isLoading = false;
 
 	$scope.loadMoreMessages = function(){
 		loadData()
 	}
 
-	$rootScope.$on( 'triggerViewTicket', function(e, ticket) {
-		if( ticket.pexcard != $scope.ticket.pexcard ){
-			$scope.ticket.pexcard = ticket.pexcard;
-		}
-		$scope.ticket.status = ticket.status;
-	} );
-
-	$rootScope.$on( 'triggerTicketInfoUpdated', function(e, data) {
+	var triggerTicketInfoUpdated = $scope.$on( 'triggerTicketInfoUpdated', function(e, data) {
 
 		$rootScope.$safeApply( function(){
 			if( !$scope.ticket || $scope.ticket.id_support != data.id_support ){
@@ -164,9 +149,21 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $route, $rootScope, $routeP
 		}
 	} );
 
-
-	$rootScope.$on( 'loadMoreMessages', function(e, data) {
+	var loadMoreMessages = $scope.$on( 'loadMoreMessages', function(e, data) {
 		$scope.loadMoreMessages();
+	} );
+
+	var triggerViewTicket = $scope.$on( 'triggerViewTicket', function(e, ticket) {
+		if( ticket.pexcard != $scope.ticket.pexcard ){
+			$scope.ticket.pexcard = ticket.pexcard;
+		}
+		$scope.ticket.status = ticket.status;
+		if( ticket.id_support != TicketViewService.sideInfo.id_support ){
+			TicketViewService.sideInfo.setTicket( 0 );
+			TicketViewService.sideInfo.setTicket( ticket.id_support );
+			loadData();
+			socketStuff();
+		}
 	} );
 
 	var socketStuff = function(){
@@ -176,9 +173,7 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $route, $rootScope, $routeP
 					if ( TicketViewService.sideInfo.data.messages[x].guid == d.guid ) {
 						if( TicketViewService.sideInfo.data.messages[x].sending ){
 							TicketViewService.sideInfo.data.messages[x] = d;
-							console.log('updated status');
 						}
-						console.log('message already added!');
 						return;
 					}
 				}
@@ -187,27 +182,16 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $route, $rootScope, $routeP
 		});
 	}
 
-	$rootScope.$on( 'triggerViewTicket', function(e, ticket) {
-		if( ticket.id_support != TicketViewService.sideInfo.id_support ){
-			TicketViewService.sideInfo.setTicket( 0 );
-			TicketViewService.sideInfo.setTicket( ticket.id_support );
-			loadData();
-			socketStuff();
-		}
-	} );
-
-
-	$rootScope.$on( 'replyStarted', function(e, data) {
-		$scope.isReplying = true;
-	});
-
-	$rootScope.$on( 'replyFinished', function(e, data) {
-		$scope.isReplying = false;
-	});
-
 	$scope.send = TicketViewService.send;
 	loadData();
 	socketStuff();
+
+	$scope.$on('$destroy', function() {
+		triggerTicketInfoUpdated();
+		loadMoreMessages();
+		triggerViewTicket();
+	});
+
 
 } );
 

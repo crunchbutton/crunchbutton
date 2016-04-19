@@ -200,8 +200,8 @@ class Crunchbutton_Support_Message extends Cana_Table {
 			$out[ 'is_support' ] = true;
 		}
 
+		$out[ 'md5' ] = md5($out['first_name'] . $out['from'] . $out['body'] . $out['timestamp']);
 		$out[ 'body' ] = $this->cleanBody();
-
 		return $out;
 	}
 
