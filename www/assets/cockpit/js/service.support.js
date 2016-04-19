@@ -102,14 +102,18 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 				var messages = [];
 				for( x in data.messages.list ){
 					if( data.messages.list[ x ].id_support_message ){
-						messages.push( data.messages.list[ x ] );
-						hashMessage(data.messages.list[ x ])
+						if(!hasHash(data.messages.list[ x ])){
+							messages.push(data.messages.list[ x ]);
+							hashMessage(data.messages.list[ x ])
+						}
 					}
 				}
 				for( x in service.sideInfo.data.messages ){
 					if( service.sideInfo.data.messages[ x ].id_support_message ){
-						messages.push( service.sideInfo.data.messages[ x ] );
-						hashMessage(data.messages.list[ x ]);
+						if(!hasHash(data.messages.list[ x ])){
+							messages.push( service.sideInfo.data.messages[ x ] );
+							hashMessage(data.messages.list[ x ]);
+						}
 					}
 				}
 				service.sideInfo.data.messages = messages;
@@ -132,15 +136,19 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 
 	function hashMessage(message){
 		if(message){
-			var key = btoa(unescape(encodeURIComponent(message.first_name + message.from + message.body + message.timestamp)));
-			service.uniques[key] = true;
+			if(!message.md5){
+				message.md5 = md5(message.first_name + message.from + message.body + message.timestamp);
+			}
+			service.uniques[message.md5] = true;
 		}
 	}
 
 	function hasHash(message){
 		if(message){
-			var key = btoa( message.first_name + message.from + message.body + message.timestamp );
-			return service.uniques[key];
+			if(!message.md5){
+				message.md5 = md5( message.first_name + message.from + message.body + message.timestamp );
+			}
+			return service.uniques[message.md5];
 		}
 	}
 
@@ -150,7 +158,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	};
 
 	$rootScope.$on('triggerViewTicket', function(e, ticket) {
-
 		if( service.scope.viewTicket && service.scope.ticket &&
 				service.scope.viewTicket.id_support == ticket.id_support &&
 				service.scope.ticket.id_support == ticket.id_support ){
@@ -258,7 +265,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	service.send = function(message, add_as_note, callback) {
 		var add_as_note = ( add_as_note ? true : false );
 		var guid = App.guid();
-		console.log('guid',guid);
 		if( !service.sideInfo.id_support ){
 			return;
 		}
@@ -287,7 +293,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			callback()
 		} else {
 			service.scope.$apply(function() {
-				console.log('no callback');
 				service.sideInfo.add_message( { body: message, name: AccountService.user.firstName, timestamp: new Date().getTime(), sending: true, guid: guid, status: 'queued' } );
 			});
 		}
