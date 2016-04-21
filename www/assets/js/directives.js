@@ -503,18 +503,7 @@ NGApp.directive( 'geoComplete', function() {
 				var autoComplete = new google.maps.places.Autocomplete( el, { types: [ 'establishment','geocode' ] } );
 				 google.maps.event.addListener( autoComplete, 'place_changed', function() {
 					$('body').scrollTop(0);
-					var place = autoComplete.getPlace();
-					var part = place.name.split( ',' )[0].toLowerCase().replace(/( )?the/);
-					var val = '';
-
-					if (App && App.aliases && App.aliases[part]) {
-						val = App.aliases[part].name_alt;
-					} else if (App && App.communities && App.communities[part.replace(/ /g, '-')]) {
-						val = App.communities[part.replace(/ /g, '-')].name;
-					} else {
-						val = el.value;
-					}
-
+				 	var val = el.value;
 					val = val.replace(/, United States/,'').replace(/, USA/,'');
 
 					scope.$apply( function() {
