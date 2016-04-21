@@ -2675,6 +2675,9 @@ b, strong{ font-weight: bold; }
 		display: block;
 		text-align: left !important;
 	}
+	input[type="checkbox"].switch + div {
+		margin: 0 !important;
+	}
 
 	.quadruple-cols .button .label{
 		display:none;
