@@ -231,6 +231,8 @@ class Crunchbutton_Notification extends Cana_Table
 		$message .= "\n";
 		$message .= 'R# ' . $order->restaurant()->phone();
 		$message .= "\n";
+		$message .= 'F# ' . $order->restaurant()->fax();
+		$message .= "\n";
 		$message .= 'C# ' . $order->user()->name . ' : ' . $order->phone();
 		$message .= "\n";
 		$message .= 'E# ' . $env;
