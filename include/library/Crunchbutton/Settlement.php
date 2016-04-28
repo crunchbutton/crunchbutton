@@ -153,7 +153,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$start = new DateTime( $filters[ 'start' ] . ' 00:00:01', new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
 		$start->setTimeZone(new DateTimeZone( c::config()->timezone ));
 
-		$end = new DateTime( $filters[ 'end' ] . ' 00:00:00', new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
+		$end = new DateTime( $filters[ 'end' ] . ' 23:59:59', new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
 		$end->setTimeZone(new DateTimeZone( c::config()->timezone ));
 
 		$query = 'SELECT o.* FROM `order` o
