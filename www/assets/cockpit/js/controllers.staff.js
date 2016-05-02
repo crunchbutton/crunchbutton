@@ -173,6 +173,8 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 					error += 'Missing fields: ' + data.status.fields.join(',');
 				}
 				App.alert(error);
+			} else if (!data.status.status || data.status.status == 'pending'){
+				App.alert('Could not finish verification. Check bank account information.');
 			} else {
 				App.alert('Looks like it might have reverified successfully.');
 				load();
