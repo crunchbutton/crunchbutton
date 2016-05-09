@@ -49,7 +49,7 @@ class Crunchbutton_Phone extends Cana_Table {
 	public static function adminsWithPhoneNumber($phone){
 		$phone = Phone::byPhone($phone);
 		if($phone->id_phone){
-			return Admin::q('SELECT * FROM admin WHERE id_phone = ? ORDER BY id_admin ASC',[$phone->id_phone]);
+			return Admin::q('SELECT * FROM admin WHERE id_phone = ? AND active = 1 ORDER BY id_admin ASC',[$phone->id_phone]);
 		}
 		return false;
 	}
