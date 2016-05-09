@@ -20,7 +20,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 	}
 
 	public static function start(){
-		$crons = Crunchbutton_Cron_Log::q( "SELECT * FROM cron_log WHERE `interval` != '' AND interval_unity > 0" );
+		$crons = Crunchbutton_Cron_Log::q( "SELECT * FROM cron_log WHERE `interval` != '' AND interval_unity > 0", c::dbWrite() );
 		if( $crons->count() ){
 			foreach( $crons as $cron ){
 				if( $cron->should_start() ){
@@ -36,7 +36,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 		if( $crons->count() ){
 			foreach( $crons as $cron ){
 				if( $cron->should_start() ){
-					echo "queing ... \n";
+					echo "starting que ... \n";
 					$cron->que();
 				} else {
 					echo "do not should start ... \n";
@@ -98,7 +98,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 
 		if( $now > $cronJob->next_time( true ) ){
 			// make sure it is not running
-			if( $cronJob->current_status != Crunchbutton_Cron_Log::CURRENT_STATUS_RUNNING ){
+			if( $cronJob->currentStatus() != Crunchbutton_Cron_Log::CURRENT_STATUS_RUNNING ){
 				return true;
 			} else {
 				// if it is time to run again and the last job didn't finished, some problem occurred
@@ -109,6 +109,10 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 		return false;
 	}
 
+	public function currentStatus(){
+		$job = c::dbWrite()->get( 'SELECT * FROM cron_log WHERE id_cron_log = ?', [$this->id_cron_log])->get(0);
+		return $job->current_status;
+	}
 
 	public function update_next_time(){
 
