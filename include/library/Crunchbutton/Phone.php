@@ -16,6 +16,44 @@ class Crunchbutton_Phone extends Cana_Table {
 		return explode(',',c::config()->site->config('twilio-number')->value);
 	}
 
+	public static function phoneNumberBelongsToDriver($phone){
+		return self::phoneNumberBelongsTo($phone, 'driver');
+	}
+
+	public static function phoneNumberBelongsToSupport($phone){
+		return self::phoneNumberBelongsTo($phone, 'support');
+	}
+
+	public static function phoneNumberBelongsTo($phone, $type){
+		$admins = self::adminsWithPhoneNumber($phone);
+		if($admins && $admins->count() > 0){
+			foreach($admins as $admin){
+				switch ($type) {
+					case 'driver':
+						if($admin->isDriver()){
+							return $admin;
+						}
+						break;
+					case 'support':
+						if($admin->isSupport()){
+							return $admin;
+						}
+						break;
+				}
+
+			}
+		}
+		return false;
+	}
+
+	public static function adminsWithPhoneNumber($phone){
+		$phone = Phone::byPhone($phone);
+		if($phone->id_phone){
+			return Admin::q('SELECT * FROM admin WHERE id_phone = ? ORDER BY id_admin ASC',[$phone->id_phone]);
+		}
+		return false;
+	}
+
 	// return a number specific from number based on our numbers in the last 30 days
 	public function from() {
 		$phone = Phone::q('
