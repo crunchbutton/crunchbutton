@@ -20,7 +20,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 	}
 
 	public static function start(){
-		$crons = Crunchbutton_Cron_Log::q( "SELECT * FROM cron_log WHERE `interval` != '' AND interval_unity > 0", c::dbWrite() );
+		$crons = Crunchbutton_Cron_Log::q( "SELECT * FROM cron_log WHERE `interval` != '' AND interval_unity > 0" );
 		if( $crons->count() ){
 			foreach( $crons as $cron ){
 				if( $cron->should_start() ){
