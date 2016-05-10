@@ -149,7 +149,7 @@ NGApp.controller('DashboardBetaCtrl', function ($rootScope, $scope, $timeout, Da
 
 	$timeout(tick, 1000);
 		$scope.$on( "$destroy", function( event ) {
-			$timeout.cancel( timer );
-			$timeout.cancel( tick );
+			if(timer) {$timeout.cancel( timer );}
+			if (tick) {$timeout.cancel( tick );}
 	} );
 });

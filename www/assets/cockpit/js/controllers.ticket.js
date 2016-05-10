@@ -145,14 +145,16 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		$rootScope.$broadcast( 'openCommunityNoteContainer', $scope.ticket.community.id_community );
 	}
 
-	$rootScope.$on( 'communityNoteSaved', function(e, data) {
+	var communityNoteSaved = $rootScope.$on( 'communityNoteSaved', function(e, data) {
 		if( $scope.ticket.community && $scope.ticket.community.id_community ){
 			CommunityService.lastNote( $scope.ticket.community.id_community, function( json ){
-				console.log('$scope.ticket.community',$scope.ticket.community);
-				console.log('json',json);
 				$scope.ticket.community.note = json;
 			} );
 		}
+	});
+
+	$scope.$on('$destroy', function() {
+		if(communityNoteSaved){communityNoteSaved();}
 	});
 
 	$scope.do_not_pay_restaurant = function(){
@@ -241,6 +243,8 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		});
 	};
 
+	var cleanup = null;
+
 	var update = function( ignoreBroadcast ) {
 		$rootScope.title = 'Ticket #' + id_support;
 		$scope.loading = true;
@@ -269,6 +273,10 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		});
 	};
 
+	$scope.$on('$destroy', function() {
+		if(cleanup){cleanup();}
+	});
+
 	$scope.openCloseTicket = function(){
 		TicketService.openClose( id_support, function() { update( true ); } );
 	}
@@ -283,17 +291,16 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		$rootScope.$broadcast( 'openStaffNoteContainer', id_admin );
 	}
 
-	$rootScope.$on( 'staffNoteSaved', function(e, data) {
-		// $scope.ticket.driver.note = data;
-	});
-
-
-	$rootScope.$on( 'ticketStatusUpdated', function(e, data) {
+	var ticketStatusUpdated = $rootScope.$on( 'ticketStatusUpdated', function(e, data) {
 		if( data.ignoreBroadcast ){
 			update( true );
 		} else {
 			update();
 		}
+	});
+
+	$scope.$on('$destroy', function() {
+		if(ticketStatusUpdated){ticketStatusUpdated();}
 	});
 
 	$scope.campus_cash_retrieving = false;

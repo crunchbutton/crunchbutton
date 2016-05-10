@@ -47,6 +47,7 @@ NGApp.controller('ChatCtrl', function($scope, $rootScope, $routeParams, SocketSe
 
 
 NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, $location, TicketService, TicketViewService, AccountService) {
+
 	$scope.params = { status: 'open' };
 
 	var getTickets = function() {
@@ -73,11 +74,11 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, $location, Tick
 		} );
 	}
 
-	$rootScope.$on( 'updateSideTickets', function(e, data) {
+	var updateSideTickets = $rootScope.$on( 'updateSideTickets', function(e, data) {
 		getTickets();
 	});
 
-	$rootScope.$watch('supportMessages', function(newValue, oldValue) {
+	var supportMessages = $rootScope.$watch('supportMessages', function(newValue, oldValue) {
 		if (!newValue) {
 			return;
 		}
@@ -85,6 +86,14 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, $location, Tick
 			getTickets();
 		}
 	}, true);
+
+	$scope.$on('$destroy', function() {
+		if(updateSideTickets){updateSideTickets();}
+		if(supportMessages){supportMessages();}
+	});
+
+	getTickets();
+
 });
 
 NGApp.controller( 'SideTicketCtrl', function($scope, $route, $rootScope, $routeParams, $timeout, TicketService, TicketViewService, SocketService, MainNavigationService ) {

@@ -33,7 +33,9 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		switch( action ){
 			case 'begin':
 				$timeout( function(){
-					container.stop( true, false ).animate( { scrollTop: container[0].scrollHeight }, 0 );
+					if(container && container[0] && container[0].scrollHeight){
+						container.stop( true, false ).animate( { scrollTop: container[0].scrollHeight }, 0 );
+					}
 					service.sideInfo.release();
 				}, 500 );
 				break;
