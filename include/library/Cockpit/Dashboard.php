@@ -27,11 +27,16 @@ class Cockpit_Dashboard extends Cana_Table {
 		$drivers = Community_Shift::driversWorking();
 
 		foreach($drivers as $driver){
+			// exclude test and cs communities
+			if($driver->community_permalink == 'cs' || $driver->community_permalink == 'test'){
+				continue;
+			}
 			$lastAction = self::lastActionByDriver($driver->id_admin);
 			$out[] = [ 	'name' =>	$driver->name,
 									'login' => $driver->login,
 									'phone' => $driver->phone,
 									'community' => $driver->community,
+									'community_permalink' => $driver->community_permalink,
 									'last_action' => $lastAction ];
 		}
 		return $out;
@@ -72,33 +77,48 @@ class Cockpit_Dashboard extends Cana_Table {
 		$out['community'] = ['id_community' => $community->id_community, 'name' => $community->name, 'permalink' => $community->permalink, 'timezone' => $community->timezone, 'current' => $now->format('Y-m-d H:i')];
 		$orders = $this->lastOrders();
 		$shifts = $this->workingDriversByCommunity();
-		$out['orders'] = ['unaccepted' => [], 'undelivered' => [], 'in_transit' => [], 'pre_order' => []];
+		$out['orders'] = ['unaccepted' => [], 'undelivered' => [], 'in_transit' => [], 'pre_order' => [], 'first_party_orders' => []];
 		foreach ($orders as $order) {
-			if($order['preordered_date']){
-				$out['orders']['pre_order'][] = $order;
-			}
-			if(!$order['driver_login']){
-				$out['orders']['unaccepted'][] = $order;
-			} else {
+			if(!$order['delivery_service']){
+				$out['orders']['first_party_orders'][] = $order;
 				$out['orders']['in_transit'][] = $order;
-			}
-			if($order['order_status'] != 'delivery-canceled' && $order['order_status'] !=  'delivery-delivered'){
-				$out['orders']['undelivered'][] = $order;
-				if($order['driver_login']){
-					if(!$orders_by_drivers[$order['driver_login']]){
-						$orders_by_drivers[$order['driver_login']] = 0;
+			} else {
+				if($order['preordered_date']){
+					$out['orders']['pre_order'][] = $order;
+				}
+				if(!$order['driver_login']){
+					$out['orders']['unaccepted'][] = $order;
+				} else {
+					$out['orders']['in_transit'][] = $order;
+				}
+				if($order['order_status'] != 'delivery-canceled' && $order['order_status'] !=  'delivery-delivered'){
+					$out['orders']['undelivered'][] = $order;
+					if($order['driver_login']){
+						if(!$orders_by_drivers[$order['driver_login']]){
+							$orders_by_drivers[$order['driver_login']] = 0;
+						}
+						$orders_by_drivers[$order['driver_login']]++;
 					}
-					$orders_by_drivers[$order['driver_login']]++;
 				}
 			}
 		}
 		$out['shifts_today'] = $shifts;
 		$out['current_drivers'] = [];
+		$out['actively_delivering_drivers'] = [];
 		if(count($shifts)){
 			foreach ($shifts as $shift) {
 				$shift['orders'] = $orders_by_drivers[$shift['login']] ? $orders_by_drivers[$shift['login']] : 0;
 				if($shift['current']){
 					$out['current_drivers'][] = $shift;
+				}
+			}
+		}
+		if (count($out['orders']['in_transit'])) {
+			foreach ($out['orders']['in_transit'] as $order) {
+				foreach ($shifts as $shift) {
+					if($order['driver_login'] == $shift['login']){
+						$out['actively_delivering_drivers'][] = $shift;
+					}
 				}
 			}
 		}
@@ -108,25 +128,31 @@ class Cockpit_Dashboard extends Cana_Table {
 		$out['total_unaccepted_orders'] = count($out['orders']['unaccepted']);
 		$out['total_undelivered_orders'] = count($out['orders']['undelivered']);
 		$out['total_in_transit_orders'] = count($out['orders']['in_transit']);
+		$out['total_first_party_orders'] = count($out['orders']['first_party_orders']);
+		$out['total_actively_delivering_drivers'] = count($out['actively_delivering_drivers']);
 		return $out;
 	}
 
 	public function preOrders(){
 		$query = 'SELECT
 				o.id_order,
+				o.id_user,
 				o.name,
 				o.phone,
 				a.name AS driver,
-				a.phone as driver_phone,
+				a.login AS driver_login,
+				a.phone AS driver_phone,
 				oa.type AS status,
 				r.name AS restaurant,
 				r.timezone,
+				r.permalink AS restaurant_permalink,
 				c.name AS community,
+				c.permalink AS community_permalink,
 				o.date_delivery,
 				o.preordered_date,
 				o.preorder_processed,
-				o.delivery_service,
 				o.confirmed,
+				o.delivery_service,
 				r.confirmation AS restaurant_confirmation
 			FROM `order` o
 				LEFT JOIN order_action oa ON oa.id_order_action = o.delivery_status
@@ -145,14 +171,18 @@ class Cockpit_Dashboard extends Cana_Table {
 								o.id_order,
 								o.name AS customer,
 								o.phone AS customer_phone,
+								o.confirmed AS confirmed,
 								o.date AS order_date,
 								r.name AS restaurant,
 								r.permalink AS restaurant_permalink,
+								r.delivery_service,
+								r.confirmation AS restaurant_confirmation,
 								a.name AS driver,
 								a.login AS driver_login,
 								a.phone AS driver_phone,
 								oa.timestamp AS order_status_date,
 								oa.type AS order_status,
+								o.confirmed,
 								o.preordered_date,
 								o.date_delivery
 							FROM `order` o
@@ -169,6 +199,10 @@ class Cockpit_Dashboard extends Cana_Table {
 										'customer_phone' => $order->customer_phone,
 										'order_date' => $order->order_date,
 										'restaurant' => $order->restaurant,
+										'confirmed' => ($order->confirmed ? true : false),
+										'delivery_service' => ($order->delivery_service ? true : false),
+										'confirmed' => ($order->confirmed ? true : false),
+										'restaurant_confirmation' => ($order->restaurant_confirmation ? true : false),
 										'restaurant_permalink' => $order->restaurant_permalink,
 										'id_admin' => $order->id_admin,
 										'driver' => $order->driver,
