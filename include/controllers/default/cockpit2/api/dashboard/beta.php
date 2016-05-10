@@ -13,6 +13,9 @@ class Controller_api_dashboard_beta extends Crunchbutton_Controller_RestAccount 
 					$dashboard = new Dashboard($community);
 					$out[] = $dashboard->statusByCommunity($community);
 				}
+				usort($out, function( $a, $b ) {
+					return( $a[ 'total_undelivered_orders' ] < $b[ 'total_undelivered_orders' ] );
+				} );
 				echo json_encode( $out );exit;
 				break;
 			case 'pre-orders':
