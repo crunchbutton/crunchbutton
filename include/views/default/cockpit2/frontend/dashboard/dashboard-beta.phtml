@@ -152,7 +152,7 @@
 						<td>
 							<a href="/staff/{{driver.login}}">{{driver.name}}</a>
 							<br>
-							{{driver.phone | formatPhone}}
+							<a href ng-click="closeModalAndCallText(driver.phone)" class="listview-smaller">{{driver.phone | formatPhone}}</a>
 						</td>
 						<td>
 							<span class="tag tag-black" ng-if="driver.last_action.type == 'delivery-canceled'">Canceled</span>
@@ -310,7 +310,7 @@
 						<td>
 							<a href="/staff/{{driver.login}}">{{driver.name}}</a>
 							<br>
-							{{driver.phone | formatPhone}}
+							<a href ng-click="closeModalAndCallText(driver.phone)" class="listview-smaller">{{driver.phone | formatPhone}}</a>
 						</td>
 						<td>
 							<span ng-bind="formatDate(driver.date_start) |  date:'MM/d h:mm a'"></span> - <span ng-bind="formatDate(driver.date_end) |  date:'MM/d h:mm a'"></span>
