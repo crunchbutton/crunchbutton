@@ -653,7 +653,7 @@ NGApp.controller('StaffGroupCtrl', function( $scope, $routeParams, $rootScope, G
 
 		if( data.groups ){
 			angular.forEach( data.groups, function(name, id_group) {
-				$scope.assigned.groups.push( id_group );
+				$scope.assigned.groups.push( parseInt(id_group) );
 			} );
 		}
 
