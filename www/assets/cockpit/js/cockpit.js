@@ -753,7 +753,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		if(App.dialog.isOpen()){
 			App.dialog.close();
 		}
-		setTimeout(function(){$rootScope.$broadcast('callText', num);}, 1500);
+		setTimeout(function(){$rootScope.$broadcast('callText', num);}, 1000);
 	};
 
 	$rootScope.creditDialog = function(id_user, id_order) {
