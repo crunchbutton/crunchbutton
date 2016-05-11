@@ -67,7 +67,6 @@ class Controller_api_call extends Crunchbutton_Controller_RestAccount {
 			foreach( $numbers as $number ){
 				if( trim( $number ) != '' ){
 
-
 					$admin = Crunchbutton_Admin::getByPhone( $number );
 					if( $admin->id_admin ){
 						$name = $admin->firstName();

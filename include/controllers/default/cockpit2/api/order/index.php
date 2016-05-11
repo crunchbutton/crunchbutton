@@ -233,6 +233,18 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 				break;
 
+				case 'text_drivers':
+					if ( !c::admin()->permission()->check(['global','orders-all','orders-notification'])) {
+						$this->error(401, true);
+					}
+					$drivers = $order->community()->getDriversOfCommunity();
+					$out = ['drivers'=> [], 'message' => $order->message('text-drivers')];
+					foreach($drivers as $driver){
+						$out['drivers'][] = [ 'name' => $driver->name, 'phone' => $driver->phone];
+					}
+					echo json_encode($out);
+					break;
+
 			case 'eta':
 				if (c::getPagePiece(4) == 'refresh') {
 					$order->eta(true);
