@@ -2339,6 +2339,31 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				}
 				break;
 
+				case 'text-drivers':
+					$msg = "Order #{$this->id_order}. {$this->restaurant()->name}. " . ( $this->pay_type == 'card' ? 'Credit' : 'Cash' ) . ". ";
+					$dishes = explode("\n", $food);
+					$_food = '';
+					foreach($dishes as $dish){
+						$dish = str_replace('- ', '', $dish);
+						$dish = str_replace('.', '', $dish);
+						$dish = trim($dish);
+						$dish = str_replace('  ', ': ', $dish);
+						if($dish){
+							$_food .= '{{' . $dish . '}} ';
+						}
+					}
+					$msg .= $_food . ". ";
+					$msg .= "Subtotal $" . number_format($this->price, 2) . ".";
+					if ($this->pay_type == 'card' && $this->tip) {
+						$msg .= " Tip: $".$this->tip();
+						$msg .= "(" . number_format( $this->tip() / $this->price * 100, 2 ) . "%).";
+					}
+					$msg .= "\n\nOrder #{$this->id_order}. {$this->name}. {$this->phone}. {$this->address}.";
+					if ($this->notes) {
+						$msg .= " \nNOTES: ".$this->notes;
+					}
+					break;
+
 			case 'sms-driver-priority':
 					$spacer = '/';
 					$msg = $this->user()->nameAbbr() . "\n" . strtoupper( $this->pay_type ) . $spacer . $this->restaurant()->name . $spacer . $this->driverInstructionsFoodStatus() . $spacer . $this->driverInstructionsPaymentStatus();

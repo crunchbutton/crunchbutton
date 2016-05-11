@@ -1,0 +1,32 @@
+<div class="send-text-drivers-container zoom-anim-dialog mfp-hide dialog">
+	<div ng-controller="OrderSendTextDriversCtrl">
+		<h2 class="title left"><span>Text Drivers: Order #{{order.id_order}}</span></h2>
+		<div class="divider"></div>
+		<form name="formRefund" novalidate ng-if="!loading">
+			<ul ng-class="{'submitted':formRefundSubmitted}" class="ul-inputs">
+				<li class="li-input">
+					<strong>Drivers:</strong><br>
+					<ul class="drivers-list big">
+						<li ng-repeat="driver in drivers">
+							<label>
+								<input type="checkbox" ng-model="driver.sent" style="width:20px;"><strong>{{driver.name}}</strong>: {{driver.phone}}
+							</label>
+						</li>
+					</ul>
+				</li>
+				<li class="li-input">
+					<div class="label">Message:</div>
+					<div class="input">
+						<textarea name="message" class="big" ng-model="message"></textarea>
+					</div>
+				</li>
+				<li class="li-input" ng-show="!formSMSSending">
+					<button class="button button-empty button-border button-green button-full" ng-click="send_text();">Send Text</button>
+				</li>
+				<li class="li-input" ng-show="formSMSSending">
+					<i class="fa fa-circle-o-notch fa-spin"></i>
+				</li>
+			</ul>
+		</form>
+	</div>
+</div>

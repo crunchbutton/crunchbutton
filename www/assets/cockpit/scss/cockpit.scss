@@ -1193,6 +1193,9 @@ input {
 	box-sizing: border-box;
 	@include box-border-radius(4px);
 }
+.li-input textarea.big{
+	height: 180px !important;
+}
 .li-input select {
 	height: 2.4em;
 	background: none;
@@ -2887,6 +2890,17 @@ canvas.chart {
 	margin-bottom: 1em;
 	width: 100%;
 }
+
+.quintuple-cols {
+	-webkit-column-count: 5;
+	-webkit-column-gap: 10px;
+	@include gpu();
+	float: left;
+	clear: both;
+	margin-bottom: 1em;
+	width: 100%;
+}
+
 
 .field-container .field-row-button .field-two-rows {
 	width: 40% !important;
@@ -4686,6 +4700,9 @@ h1.title.box-title {
 		border-bottom:1px dashed #CCC;
 		display:block;
 		padding:.4em 0;
+	}
+	.drivers-list.big{
+		height: 120px;
 	}
 
 table.receipt{
