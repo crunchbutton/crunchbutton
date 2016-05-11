@@ -44,8 +44,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	 * @todo Add more security here
 	 * @todo It looks like if there are orders not set as delivery nor takeout, we need to log them.
 	 */
-	public function process($params, $processType = 'web')
-	{
+	public function process($params, $processType = 'web'){
 
 		$this->campus_cash = ( $params['pay_type'] == self::PAY_TYPE_CAMPUS_CASH );
 
@@ -122,6 +121,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 				if( $now->format('YmdHis') > $this->_date_delivery->format('YmdHis') ){
 					$errors['preorder_prev_date'] = 'The desired delivery hour should not be in the past.';
+				}
+				if(!$this->restaurant()->validatePreOrderDate($this->_date_delivery->format('Y-m-d H:i:s'))){
+					$errors['preorder_date'] = 'Oops, there is something wrong with the desired time!';
 				}
 			}
 		}
