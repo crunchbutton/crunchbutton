@@ -189,8 +189,9 @@ class Cockpit_Dashboard extends Cana_Table {
 							INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 							LEFT JOIN order_action oa ON o.delivery_status = oa.id_order_action
 							LEFT JOIN admin a on oa.id_admin = a.id_admin
-							WHERE o.id_community = ? AND ( o.date > SUBDATE( NOW(), INTERVAL 6 HOUR) OR o.preordered_date > SUBDATE( NOW(), INTERVAL 6 HOUR) )';
-		$orders = c::db()->get( $query, [$community->id_community] );
+							WHERE o.id_community = ? AND ( o.date > SUBDATE( NOW(), INTERVAL 6 HOUR) OR o.preordered_date > SUBDATE( NOW(), INTERVAL 6 HOUR) )
+							HAVING ( oa.type != ? ) OR oa.type IS NULL';
+		$orders = c::db()->get( $query, [$community->id_community, Crunchbutton_Order_Action::DELIVERY_CANCELED] );
 		$out = [];
 		if($orders){
 			foreach($orders as $order){
