@@ -208,7 +208,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 	public function host_callback(){
 		if( c::getEnv() == 'live' ){
-			return 'live.ci.crunchbutton.crunchr.co';
+			return '_DOMAIN_';
 		} else {
 			return $_SERVER['HTTP_HOST'];
 		}
