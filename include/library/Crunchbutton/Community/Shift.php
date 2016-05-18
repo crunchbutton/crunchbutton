@@ -1685,6 +1685,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 								} else {
 									$message = sprintf( $messagePattern, $minutesToStart, $now->format( 'M jS Y' ), $shift->startEndToString() );
 								}
+
 								$txt = $admin->txt;
 								$phone = $admin->phone;
 
