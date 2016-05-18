@@ -38,7 +38,10 @@
 				</span>
 
 				<span class="restaurant-payment-item" ng-if="order.info.delivery=='0.00' && order.info.fee!='0.00'">
-					<span class="restaurant-payment-item-label">Service Fee: </span>
+					<span class="restaurant-payment-item-label">
+						<span ng-if="!restaurant.delivery_service">Delivery Fee:</span>
+						<span ng-if="restaurant.delivery_service">Service Fee:</span>
+					</span>
 					<span class="restaurant-payment-item-value">{{AB.dollar}}{{order.info.fee}}</span>
 				</span>
 
