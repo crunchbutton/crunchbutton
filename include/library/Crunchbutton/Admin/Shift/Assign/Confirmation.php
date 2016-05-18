@@ -232,7 +232,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 		$rets = Crunchbutton_Message_Sms::send( [ 'to' => $num, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_SHIFT ]);
 
 		self::create( [ 'id_admin_shift_assign' => $assignment->id_admin_shift_assign, 'type' => self::TYPE_TEXT ] );
-		$message .= '[' . $ret->sid . ']';
+
 		Crunchbutton_Support::createNewWarningStaffTicket(  [ 'dont_open_ticket' => true, 'body' => $message, 'phone' => $num ] );
 
 		foreach ($rets as $ret) {
