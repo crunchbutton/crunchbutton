@@ -148,6 +148,7 @@ class Controller_api_group extends Crunchbutton_Controller_Rest {
 		while ($s = $r->fetch()) {
 			$s->description = ( !$s->description ? '' : $s->description );
 			if(!$s->id_community || ($s->id_community && $s->active)){
+				$s->id_group = intval($s->id_group);
 				$data[] = $s;
 				$i++;
 			}
