@@ -678,7 +678,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	public function groups(){
 		if( $this->id_admin ){
 			if( !$this->_groups ){
-				$this->_groups = Crunchbutton_Group::q('SELECT g.* FROM `group` g INNER JOIN admin_group ag ON ag.id_group = g.id_group AND ag.id_admin = ? INNER JOIN community c ON c.id_community = g.id_community AND c.active = true ORDER BY name ASC', [$this->id_admin]);
+				$this->_groups = Crunchbutton_Group::q('SELECT g.* FROM `group` g INNER JOIN admin_group ag ON ag.id_group = g.id_group AND ag.id_admin = ? LEFT JOIN community c ON c.id_community = g.id_community AND c.active = true ORDER BY name ASC', [$this->id_admin]);
 			}
 			return $this->_groups;
 		}
