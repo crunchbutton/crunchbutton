@@ -116,6 +116,7 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 		$_permissions[ 'support' ][ 'doAllPermission' ] = 'support-all';
 		$_permissions[ 'support' ][ 'permissions' ] = array(
 																											'support-all' => array( 'description' => 'Can perform ALL support related actions' ),
+																											'community-cs' => array( 'description' => 'Community CS' ),
 																											'support-crud' => array( 'description' => 'Create, update and delete any support ticket' ),
 																											'support-create' => array( 'description' => 'Create support ticket', 'dependency' => array( 'support-view' ) ),
 																											'support-create-edit-ID' => array( 'description' => 'Create, update and delete any support ticket he has access to', 'type' => 'combo', 'element' => 'Restaurant', 'dependency' => array( 'support-view' ), 'copy' => array( 'title' => 'Copy from restaurants he has access to edit', 'permissions' => array( 'restaurant-ID-all', 'restaurant-ID-edit' ) ) ),

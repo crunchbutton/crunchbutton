@@ -4,6 +4,10 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
+		if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud', 'community-cs' ])) {
+			$this->error(401, true);
+		}
+
 		$limit = $this->request()['limit'] ? $this->request()['limit'] : 20;
 		$status = $this->request()['status'] ? $this->request()['status'] : 'open';
 		$type = $this->request()['type'] ? $this->request()['type'] : 'all';
