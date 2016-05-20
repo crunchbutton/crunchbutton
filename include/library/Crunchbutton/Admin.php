@@ -371,6 +371,17 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return false;
 	}
 
+	public function isCommunityCS(){
+		return $this->isCommunitySupport();
+	}
+
+	public function isCommunitySupport(){
+		if (!isset($this->_isCommunitySupport)) {
+			$this->_isCommunitySupport = $this->is( Crunchbutton_Group::TYPE_COMMUNITY_CS );
+		}
+		return $this->_isCommunitySupport;
+	}
+
 	public function isDriver() {
 		if (!isset($this->_isDriver)) {
 			$this->_isDriver = $this->is( Crunchbutton_Group::TYPE_DRIVER );

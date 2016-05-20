@@ -28,6 +28,9 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 							s.type,
 							s.status,
 
+							c.id_community,
+							c.name AS community,
+
 							o.name AS order_name,
 							o.id_user AS order_id_user,
 							o.phone AS order_phone,
@@ -65,6 +68,7 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 							WHERE
 							s.id_support > ( SELECT id_support FROM support ORDER BY id_support DESC LIMIT 1) - 10000 ) temp
 							INNER JOIN support s ON temp.id_support = s.id_support
+							LEFT JOIN community c ON c.id_community = s.id_community
 							LEFT JOIN support_message client_message ON client_message.id_support_message = id_support_message_client
 							LEFT JOIN support_message rep_message ON rep_message.id_support_message = id_support_message_rep
 							LEFT JOIN support_message system_message ON system_message.id_support_message = id_support_message_system
