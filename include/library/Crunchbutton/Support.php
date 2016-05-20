@@ -232,6 +232,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		$support->type = Crunchbutton_Support::TYPE_SMS;
 		$support->phone = $params[ 'phone' ];
 		$support->id_phone = $params[ 'phone' ];
+		$support->id_community = $params[ 'id_community' ];
 		$support->status = Crunchbutton_Support::STATUS_OPEN;
 		$support->ip = c::getIp();
 		$support->id_session_twilio = $params[ 'id_session_twilio' ];

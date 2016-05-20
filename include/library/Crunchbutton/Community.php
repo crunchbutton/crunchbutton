@@ -1703,6 +1703,12 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		}
 	}
 
+	public static function customerCommunityByPhone($phone){
+		// returns the community that the phone belongs to
+		$query = 'SELECT id_community FROM `order` o INNER JOIN phone p ON p.id_phone = o.id_phone AND p.phone = ? ORDER BY o.id_order DESC LIMIT 1';
+		return self::q($query, [$phone]);
+	}
+
 	// Smart population of "our most popular locations" on UI2 #6056
 	public static function smartSortPopulation(){
 		$query = Crunchbutton_Custom_Query::mostPopularLocationQuery();

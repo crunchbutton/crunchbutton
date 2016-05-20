@@ -25,6 +25,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			FROM support s
 			inner join support_message sm on sm.id_support=s.id_support
 			inner join support_message smr on smr.id_support=s.id_support
+			left join community c on c.id_community = s.id_community
 			left JOIN `order` o ON o.id_order=s.id_order
 			left join `phone` p on p.id_phone=sm.id_phone
 			left JOIN `user` u ON u.id_phone=p.id_phone
@@ -120,6 +121,8 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			s.name,
 			s.phone,
 			s.type,
+			c.id_community as id_community,
+			c.name as community,
 			max(sm.phone) as message_phone,
 			max(sm.from) as from_client,
 			max(smr.from) as from_recent,
@@ -174,7 +177,7 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 
 			$support = Support::o( $o->id_support );
 			$lastReplyFrom = $support->lastMessage();
-			$o->last_reply = $lastReplyFrom->from;
+			$o->last_reply = ucfirst($lastReplyFrom->from);
 			$o->last_reply_type = $lastReplyFrom->type;
 
 			$o->media = $lastReplyFrom->media;
