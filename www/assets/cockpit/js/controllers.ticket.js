@@ -7,13 +7,6 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			reloadOnSearch: false
 
 		})
-		.when('/tickets/beta', {
-			action: 'tickets-beta',
-			controller: 'TicketsCtrl',
-			templateUrl: '/assets/view/tickets.html',
-			reloadOnSearch: false
-
-		})
 		.when('/ticket/:id', {
 			action: 'ticket',
 			controller: 'TicketCtrl',
@@ -40,24 +33,12 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, $locatio
 			update();
 		}
 	});
-	$scope.beta = false;
-
-	if( $location.path() == '/tickets/beta' ){
-		$scope.beta = true;
-	}
 
 	var update = function(){
-		if( $scope.beta ){
-			TicketService.list_beta($scope.query, function(d) {
-				$scope.lotsoftickets = d.results;
-				$scope.complete(d);
-			});
-		} else {
-			TicketService.list($scope.query, function(d) {
-				$scope.lotsoftickets = d.results;
-				$scope.complete(d);
-			});
-		}
+		TicketService.list_beta($scope.query, function(d) {
+			$scope.lotsoftickets = d.results;
+			$scope.complete(d);
+		});
 	}
 
 	$scope.closeTicket = function( id_support ){

@@ -1,0 +1,1 @@
+ALTER TABLE `admin_group` CHANGE `type` `type` enum('driver','support','brand-representative','community-manager','community-cs') DEFAULT NULL;

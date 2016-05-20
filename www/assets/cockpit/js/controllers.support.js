@@ -434,7 +434,7 @@ NGApp.controller('SupportCtrl', function($scope, $rootScope, $timeout, TicketSer
 	}, true);
 
 	var update = function(){
-		TicketService.list($scope.ticketparams, function(d) {
+		TicketService.list_beta($scope.ticketparams, function(d) {
 			$scope.lotsoftickets = d.results;
 			TicketViewService.scope.tickets = d.results;
 		});
