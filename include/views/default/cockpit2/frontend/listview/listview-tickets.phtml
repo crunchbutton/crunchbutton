@@ -3,7 +3,7 @@
 		<table class="thead">
 			<tr>
 				<th>Contact</th>
-				<th>Message</th>
+				<th>Messages</th>
 				<th nowrap class="tb-center">Last</th>
 				<th class="tb-small tb-center">Type</th>
 				<th class="tb-small tb-center">Status</th>
@@ -13,7 +13,7 @@
 		<div class="tbody">
 			<table class="tb-zebra">
 				<tr ng-repeat="ticket in lotsoftickets" ng-init="$last ? ngRepeatFinished() : null">
-					<td nowrap>
+					<td nowrap class="listview-smaller">
 						<span ng-if="ticket.type == 'WARNING'">
 							<i>System</i>
 						</span>
@@ -37,12 +37,16 @@
 						<span class="tag tag-empty tag-red" ng-if="ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply'">{{ticket.last_reply}}</span>
 						<span class="tag tag-empty tag-green" ng-if="ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply'">{{ticket.last_reply}}</span>
 					</td>
-					<td class="tb-v-center tb-center">
+					<td class="tb-v-center tb-center" nowrap="">
 						<span class="tag tag-empty tag-purple" ng-if="ticket.type == 'WARNING'">System</span>
 						<span ng-if="ticket.type != 'WARNING'">
+
 							<span class="tag tag-empty tag-blue" ng-if="ticket.id_user && !ticket.id_admin_from">Customer</span>
 							<span class="tag tag-empty tag-orange" ng-if="ticket.id_admin_from">Driver</span>
 							<span class="tag tag-empty tag-grey" ng-if="!ticket.id_user && !ticket.id_admin_from">Unknown</span>
+							<div>
+								<span class="tag tag-empty tag-green" ng-if="ticket.community">{{ticket.community}}</span>
+							</div>
 						</span>
 					</td>
 					<td class="tb-v-center tb-center">
