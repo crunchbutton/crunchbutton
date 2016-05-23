@@ -37,8 +37,7 @@
 								Unknown
 							</span>
 							<br>
-							<a ng-if="account.user.permissions.GLOBAL" href ng-click="callText(ticket.support_phone)" class="listview-smaller">{{ticket.support_phone | formatPhone}}</a>
-							<span ng-if="!account.user.permissions.GLOBAL">{{ticket.support_phone | formatPhone}}</span>
+							<a href ng-click="callText(ticket.support_phone)" class="listview-smaller">{{ticket.support_phone | formatPhone}}</a>
 							<div ng-if="ticket.id_order">
 								<a ng-if="account.user.permissions.GLOBAL" href="/order/{{ticket.id_order}}">Order #{{ticket.id_order}}</a>
 								<span ng-if="account.user.permissions.GLOBAL">Order #{{ticket.id_order}}</span>
@@ -87,7 +86,7 @@
 							<span class="tag tag-empty tag-grey" ng-if="!ticket.id_user && !ticket.id_admin_from && !ticket.client_id_user">Unknown</span>
 						</span>
 						<div ng-if="ticket.community">
-							<span class="tag tag-empty tag-green">{{ticket.community}}</span>
+							<span class="tag tag-empty" ng-class="{'tag-green':ticket.community_has_cs, 'tag-red':!ticket.community_has_cs}">{{ticket.community}}</span>
 						</div>
 					</td>
 					<!-- status -->
