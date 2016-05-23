@@ -65,7 +65,7 @@
 			<div class="support-box-wrap-header">
 				<h1>Order #{{ticket.order.id_order}}</h1>
 				<div class="support-box-header-actions-wrap">
-					<div class="support-box-header-actions">
+					<div class="support-box-header-actions" ng-if="ticket.show_details">
 						<a href="/order/{{ticket.order.id_order}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 					</div>
 				</div>
@@ -230,7 +230,7 @@
 			<div class="support-box-wrap-header">
 				<h1>Staff #{{ticket.staff.id_admin}}</h1>
 				<div class="support-box-header-actions-wrap">
-					<div class="support-box-header-actions">
+					<div class="support-box-header-actions" ng-if="ticket.show_details">
 						<a href="/staff/{{ticket.staff.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 					</div>
 				</div>
@@ -304,7 +304,7 @@
 			<div class="support-box-wrap-header">
 				<h1>Customer #{{ticket.user.id_user}}</h1>
 				<div class="support-box-header-actions-wrap">
-					<div class="support-box-header-actions">
+					<div class="support-box-header-actions" ng-if="ticket.show_details">
 						<a href="/customer/{{ticket.user.id_user}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 					</div>
 				</div>
@@ -341,7 +341,7 @@
 			<div class="support-box-wrap-header">
 				<h1>Delivering</h1>
 				<div class="support-box-header-actions-wrap">
-					<div class="support-box-header-actions">
+					<div class="support-box-header-actions" ng-if="ticket.show_details">
 						<a href="/orders?limit=20&page=1&fullcount=false&search=&restaurant=&community=&driver={{ticket.staff.id_admin}}&date=&view=list&datestart=&dateend=&user=&phone="><button class="button button-small button-empty button-green"><i class="fa fa-car"></i>&nbsp;&nbsp;All Orders Delivered by This Driver</button></a>
 					</div>
 				</div>
@@ -381,7 +381,7 @@
 			<div class="support-box-wrap-header">
 				<h1>Restaurant #{{ticket.restaurant.id_restaurant}}</h1>
 				<div class="support-box-header-actions-wrap">
-					<div class="support-box-header-actions">
+					<div class="support-box-header-actions" ng-if="ticket.show_details">
 						<a href="/restaurant/{{ticket.restaurant.id_restaurant}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 					</div>
 				</div>
@@ -430,8 +430,10 @@
 				<h1>Community #{{ticket.community.id_community}}</h1>
 				<div class="support-box-header-actions-wrap">
 					<div class="support-box-header-actions">
-						<a href="/community/{{ticket.community.permalink}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+						<a ng-if="ticket.show_details" href="/community/{{ticket.community.permalink}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
+						<a href ng-click="openClosingTimeContainer()"><button class="button button-small button-small button-empty button-green"><i class="fa fa-power-off"></i>&nbsp;&nbsp;Switch</button></a>
 						<a href ng-click="openCommunityNoteContainer()"><button class="button button-small button-empty button-green"><i class="fa fa-file"></i>&nbsp;&nbsp;Add Note</button></a>
+
 					</div>
 				</div>
 				<div class="divider"></div>
@@ -451,6 +453,30 @@
 							</a>
 						</div>
 					</div>
+
+					<div class="field-row">
+						<div class="field-key">Is Auto Closed</div>
+						<div class="field-value">
+							<span class="tag tag-red" ng-if="ticket.community.is_auto_closed">Yes</span>
+							<span class="tag tag-green" ng-if="!ticket.community.is_auto_closed">No</span>
+						</div>
+					</div>
+					<div class="field-row">
+						<div class="field-key">All Restaurants</div>
+						<div class="field-value">
+							<span class="tag tag-red" ng-if="ticket.community.close_all_restaurants">Closed</span>
+							<span class="tag tag-green" ng-if="!ticket.community.close_all_restaurants">Open</span>
+						</div>
+					</div>
+
+					<div class="field-row">
+						<div class="field-key">3rd Party Restaurants</div>
+						<div class="field-value">
+							<span class="tag tag-red" ng-if="ticket.community.close_3rd_party_delivery_restaurants">Closed</span>
+							<span class="tag tag-green" ng-if="!ticket.community.close_3rd_party_delivery_restaurants">Open</span>
+						</div>
+					</div>
+
 				</div>
 			</div>
 		</div>
@@ -459,7 +485,7 @@
 			<div class="support-box-wrap-header">
 				<h1>Driver #{{ticket.order.driver.id_admin}}</h1>
 				<div class="support-box-header-actions-wrap">
-					<div class="support-box-header-actions">
+					<div class="support-box-header-actions" ng-if="ticket.show_details">
 						<a href="/staff/{{ticket.order.driver.id_admin}}"><button class="button button-small button-empty button-green"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</button></a>
 						<a href ng-click="openStaffNoteContainer(ticket.order.driver.id_admin)"><button class="button button-small button-empty button-green"><i class="fa fa-file"></i>&nbsp;&nbsp;Add Note</button></a>
 					</div>
@@ -521,7 +547,7 @@
 			</div>
 		</div>
 
-	<div class="support-box-wrap box-content2">
+	<div class="support-box-wrap box-content2" ng-if="ticket.show_details">
 			<div class="support-box-wrap-header">
 				<h1>Shifts</h1>
 				<div class="support-box-header-actions-wrap">
@@ -622,6 +648,7 @@
 
 	</div>
 
+<ng-include src="'/assets/view/communities-community-open-close-form.html'"></ng-include>
 
 	<div class="support-box-wrap box-content2" class="support-box-wrap" ng-if="ticket.order.driver && ticket.order.driver.location">
 		<div class="support-box-wrap-header">

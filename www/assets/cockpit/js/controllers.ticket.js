@@ -77,7 +77,6 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 
 	var id_support = $routeParams.id;
 
-
 	setTimeout(function(){
 		$rootScope.focus('#support-chat-box');
 	}, 1000 );
@@ -115,9 +114,9 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	$scope.do_not_pay_driver = function(){
 		OrderService.do_not_pay_driver( $scope.ticket.order.id_order, function( result ){
 			if( result.success ){
-				$scope.flash.setMessage( 'Saved!' );
+				App.alert( 'Saved!' );
 			} else {
-				$scope.flash.setMessage( 'Error!' );
+				App.alert( 'Error!' );
 			}
 		} );
 	}
@@ -141,9 +140,9 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	$scope.do_not_pay_restaurant = function(){
 		OrderService.do_not_pay_restaurant( $scope.ticket.order.id_order, function( result ){
 			if( result.success ){
-				$scope.flash.setMessage( 'Saved!' );
+				App.alert( 'Saved!' );
 			} else {
-				$scope.flash.setMessage( 'Error!' );
+				App.alert( 'Error!' );
 			}
 		} );
 	}
@@ -151,9 +150,9 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	$scope.do_not_pay_driver = function(){
 		OrderService.do_not_pay_driver( $scope.ticket.order.id_order, function( result ){
 			if( result.success ){
-				$scope.flash.setMessage( 'Saved!' );
+				App.alert( 'Saved!' );
 			} else {
-				$scope.flash.setMessage( 'Error!' );
+				App.alert( 'Error!' );
 			}
 		} );
 	}
@@ -225,6 +224,14 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	};
 
 	var cleanup = null;
+
+	$scope.openClosingTimeContainer = function(){
+		$rootScope.$broadcast( 'openClosingTimeContainer', { permalink: $scope.ticket.community.permalink } );
+	}
+
+	$rootScope.$on( 'communityOpenClosedSaved', function(e, data) {
+		update();
+	});
 
 	var update = function( ignoreBroadcast ) {
 		$rootScope.title = 'Ticket #' + id_support;

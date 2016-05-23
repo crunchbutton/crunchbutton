@@ -4,7 +4,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
+		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud', 'community-cs'])) {
 			$this->error(401, true);
 		}
 
@@ -32,6 +32,12 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 
 						if (!$community->id_community) {
 							$this->error(404, true);
+						}
+
+						if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
+							if(!c::user()->hasCSPermissionForCommunity($community->id_community)){
+								$this->error(401, true);
+							}
 						}
 
 						switch ( c::getPagePiece(3) ) {
@@ -165,14 +171,14 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 
 			case 'post':
 
-				if (!c::admin()->permission()->check(['global'])) {
-					$this->error(401, true);
-				}
-
 				switch ( c::getPagePiece(3) ) {
 
 					// save aliases
 					case 'aliases':
+
+						if (!c::admin()->permission()->check(['global'])) {
+							$this->error(401, true);
+						}
 
 						$community = Community::permalink( c::getPagePiece(2) );
 
@@ -200,6 +206,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 
 								break;
 							case 'remove':
+
 								$alias = Crunchbutton_Community_Alias::o( $this->request()[ 'id_community_alias' ] );
 								if( !$alias->id_community_alias ){
 									$this->_error();
@@ -216,6 +223,18 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 
 					// save close/open
 					case 'save-open-close':
+						$hasPermission = false;
+						if (c::admin()->permission()->check(['global', 'orders-all','orders-notification', 'support-all', 'support-view', 'support-crud'])) {
+							$hasPermission = true;
+						}
+
+						if(!$hasPermission && c::admin()->permission()->check(['community-cs']) && c::user()->hasCSPermissionForCommunity($order->id_community)){
+							$hasPermission = true;
+						}
+
+						if (!$hasPermission) {
+							$this->error(401, true);
+						}
 
 						$status_changed = false;
 
@@ -326,7 +345,9 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 
 					// save a community
 					default:
-
+						if (!c::admin()->permission()->check(['global'])) {
+							$this->error(401, true);
+						}
 						// save a community
 						$id_community = $this->request()[ 'id_community' ];
 						$is_new = false;

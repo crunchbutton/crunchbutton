@@ -357,6 +357,28 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return false;
 	}
 
+	public function hasCSPermissionForCommunity($id_community){
+		$hasPermission = false;
+		$communities = $this->communitiesDriverDelivery();
+		foreach($communities as $_community){
+			if ($id_community == $_community->id_community) {
+				$hasPermission = true;
+			}
+		}
+		return $hasPermission;
+	}
+
+	public function communitiesDriverDelivery(){
+		$adminCommunities = [];
+		$groups = $this->groups();
+		foreach ( $groups as $group ) {
+			if( $group->id_community && $group->type == Crunchbutton_Group::TYPE_DRIVER ){
+				$adminCommunities[] = $group->community();
+			}
+		}
+		return $adminCommunities;
+	}
+
 	public function amountPerOrder( $id_community = null ){
 		$paymentType = $this->paymentType();
 		return $paymentType->amountPerOrder( $id_community );

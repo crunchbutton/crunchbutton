@@ -89,6 +89,18 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 
 							 WHERE 1 = 1';
 
+		if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
+			$communities = c::user()->communitiesDriverDelivery();
+			$q .= ' AND (';
+			$or = '';
+			foreach($communities as $community){
+				$q .= $or . 'tickets.id_community = ?';
+				$or = ' OR ';
+				$keys[] = $community->id_community;
+			}
+			$q .= ') ';
+		}
+
 		if( $type == 'system' ){
 			$q .= '
 				tickets.type = ?

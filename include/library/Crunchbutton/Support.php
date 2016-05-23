@@ -916,6 +916,9 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 				$out[ 'community' ] = [];
 				$out[ 'community' ][ 'id_community' ] = $community->id_community;
 				$out[ 'community' ][ 'name' ] = $community->name;
+				$out[ 'community' ][ 'close_all_restaurants' ] = $community->close_all_restaurants;
+				$out[ 'community' ][ 'close_3rd_party_delivery_restaurants' ] = $community->close_3rd_party_delivery_restaurants;
+				$out[ 'community' ][ 'auto_close' ] = $community->auto_close;
 				$out[ 'community' ][ 'permalink' ] = $community->permalink;
 				$note = $community->lastNote();
 				if ($note) {
