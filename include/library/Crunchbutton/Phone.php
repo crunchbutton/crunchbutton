@@ -35,7 +35,7 @@ class Crunchbutton_Phone extends Cana_Table {
 						}
 						break;
 					case 'support':
-						if($admin->isSupport()){
+						if($admin->isSupport() || $admin->isCommunityCS()){
 							return $admin;
 						}
 						break;
