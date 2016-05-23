@@ -4,7 +4,7 @@ class Controller_api_config_pexcard extends Crunchbutton_Controller_RestAccount 
 
 	public function init() {
 
-		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all' ] ) ){
+		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'community-cs' ] ) ){
 			$this->_error();
 		}
 
