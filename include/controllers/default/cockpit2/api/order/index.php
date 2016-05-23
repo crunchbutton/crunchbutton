@@ -9,7 +9,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 		// list recent orders for restaurants
 		// @todo: move this over to orders php
 		if (c::getPagePiece(2) == 'restaurant-list-last') {
-			if (is_numeric(c::getPagePiece(3)) && c::admin()->permission()->check(['global'])) {
+			if (is_numeric(c::getPagePiece(3)) &&c::admin()->permission()->check(['global'])) {
 				$restaurant = Restaurant::o(intval(c::getPagePiece(3)));
 			}
 
@@ -35,7 +35,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 		// post an order
 		if (!c::getPagePiece(2) && $this->method() == 'post') {
 
-			if (is_numeric($_POST['restaurant']) && c::admin()->permission()->check(['global'])){
+			if (is_numeric($_POST['restaurant']) &&c::admin()->permission()->check(['global'])){
 				$restaurant = Restaurant::o(intval($_POST['restaurant']));
 			}
 
@@ -74,7 +74,12 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 			$this->error(404, true);
 		}
 
-		if (!c::admin()->permission()->check(['global','orders-all','orders-list-page']) && $restaurant->id_restaurant != $order->id_restaurant) {
+		$hasPermission = false;
+		if (c::admin()->permission()->check(['global','orders-all','orders-list-page','community-cs']) && $restaurant->id_restaurant != $order->id_restaurant) {
+			$hasPermission = true;
+		}
+
+		if (!$hasPermission) {
 			$this->error(401, true);
 		}
 
@@ -98,7 +103,16 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 		switch (c::getPagePiece(3)) {
 
 			case 'refund-info':
-				if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
+				$hasPermission = false;
+				if (c::admin()->permission()->check(['global', 'orders-all','orders-notification', 'support-all', 'support-view', 'support-crud'])) {
+					$hasPermission = true;
+				}
+
+				if(!$hasPermission && c::admin()->permission()->check(['community-cs']) && c::user()->hasCSPermissionForCommunity($order->id_community)){
+					$hasPermission = true;
+				}
+
+				if (!$hasPermission) {
 					$this->error(401, true);
 				}
 
@@ -126,7 +140,16 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 			case 'refund':
 
-				if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
+				$hasPermission = false;
+				if (c::admin()->permission()->check(['global', 'orders-all','orders-notification', 'support-all', 'support-view', 'support-crud'])) {
+					$hasPermission = true;
+				}
+
+				if(!$hasPermission && c::admin()->permission()->check(['community-cs']) && c::user()->hasCSPermissionForCommunity($order->id_community)){
+					$hasPermission = true;
+				}
+
+				if (!$hasPermission) {
 					$this->error(401, true);
 				}
 
@@ -167,7 +190,16 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				break;
 
 			case 'do_not_reimburse_driver':
-				if (!c::admin()->permission()->check(['global', 'support-all'])) {
+				$hasPermission = false;
+				if (c::admin()->permission()->check(['global', 'orders-all','orders-notification', 'support-all', 'support-view', 'support-crud'])) {
+					$hasPermission = true;
+				}
+
+				if(!$hasPermission && c::admin()->permission()->check(['community-cs']) && c::user()->hasCSPermissionForCommunity($order->id_community)){
+					$hasPermission = true;
+				}
+
+				if (!$hasPermission) {
 					$this->error(401, true);
 				}
 				$order->do_not_reimburse_driver = ( $order->do_not_reimburse_driver == 1 ? false : true );
@@ -176,7 +208,16 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				break;
 
 			case 'do_not_pay_driver':
-				if (!c::admin()->permission()->check(['global', 'support-all'])) {
+				$hasPermission = false;
+				if (c::admin()->permission()->check(['global', 'orders-all','orders-notification', 'support-all', 'support-view', 'support-crud'])) {
+					$hasPermission = true;
+				}
+
+				if(!$hasPermission && c::admin()->permission()->check(['community-cs']) && c::user()->hasCSPermissionForCommunity($order->id_community)){
+					$hasPermission = true;
+				}
+
+				if (!$hasPermission) {
 					$this->error(401, true);
 				}
 				$order->do_not_pay_driver = ( $order->do_not_pay_driver == 1 ? false : true );
@@ -186,7 +227,16 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				break;
 
 			case 'do_not_pay_restaurant':
-				if (!c::admin()->permission()->check(['global', 'support-all'])) {
+				$hasPermission = false;
+				if (c::admin()->permission()->check(['global', 'orders-all','orders-notification', 'support-all', 'support-view', 'support-crud'])) {
+					$hasPermission = true;
+				}
+
+				if(!$hasPermission && c::admin()->permission()->check(['community-cs']) && c::user()->hasCSPermissionForCommunity($order->id_community)){
+					$hasPermission = true;
+				}
+
+				if (!$hasPermission) {
 					$this->error(401, true);
 				}
 				$order->do_not_pay_restaurant = ( $order->do_not_pay_restaurant == 1 ? 0 : 1 );
@@ -218,15 +268,34 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 
 			case 'resend_notification':
-				if ( !c::admin()->permission()->check(['global','orders-all','orders-notification'])) {
+				$hasPermission = false;
+				if (c::admin()->permission()->check(['global', 'orders-all','orders-notification', 'support-all', 'support-view', 'support-crud'])) {
+					$hasPermission = true;
+				}
+
+				if(!$hasPermission && c::admin()->permission()->check(['community-cs']) && c::user()->hasCSPermissionForCommunity($order->id_community)){
+					$hasPermission = true;
+				}
+
+				if (!$hasPermission) {
 					$this->error(401, true);
 				}
+
 				echo json_encode(['status' => $order->resend_notify() ? 'success' : 'error']);
 
 				break;
 
 			case 'resend_notification_drivers':
-				if ( !c::admin()->permission()->check(['global','orders-all','orders-notification'])) {
+				$hasPermission = false;
+				if (c::admin()->permission()->check(['global', 'orders-all','orders-notification', 'support-all', 'support-view', 'support-crud'])) {
+					$hasPermission = true;
+				}
+
+				if(!$hasPermission && c::admin()->permission()->check(['community-cs']) && c::user()->hasCSPermissionForCommunity($order->id_community)){
+					$hasPermission = true;
+				}
+
+				if (!$hasPermission) {
 					$this->error(401, true);
 				}
 				echo json_encode(['status' => $order->resend_notify_drivers() ? 'success' : 'error']);
@@ -272,7 +341,6 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				break;
 
 			case 'status-change':
-
 
 				$new_status = $this->request()[ 'status' ];
 
