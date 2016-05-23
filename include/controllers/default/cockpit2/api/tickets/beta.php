@@ -171,7 +171,6 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 		$d = [];
 		$query = str_replace('-WILD-','*', $q);
 
-
 		$r = c::db()->query($query, $keys);
 
 		$i = 1;
@@ -182,6 +181,13 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 				$more = true;
 				break;
 			}
+			if($o->id_community){
+				$c = Community::o($o->id_community);
+				if($c->hasCommunityCS()){
+					$o->community_has_cs = true;
+				}
+			}
+
 			$d[] = $o;
 			$i++;
 		}

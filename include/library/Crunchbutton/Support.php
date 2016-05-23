@@ -175,6 +175,11 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			$twilio_session->save();
 		}
 
+		$driver = Phone::phoneNumberBelongsToDriver($params[ 'From' ]);
+		if($driver && $driver->community() && $driver->community()->id_community){
+			$params['id_community'] = $driver->community()->id_community;
+		}
+
 		// Get the current support ticket
 		$support = Support::getByTwilioSessionId( $twilio_session->id_session_twilio );
 		$createNewTicket = false;
@@ -214,6 +219,10 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 				}
 			}
 			$support->status = Crunchbutton_Support::STATUS_OPEN;
+			$support->save();
+		}
+		if($params['id_community'] && !$support->id_community){
+			$support->id_community = $params['id_community'];
 			$support->save();
 		}
 		if( $params[ 'ignoreReply' ] ){
