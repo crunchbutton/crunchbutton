@@ -75,7 +75,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 		}
 
 		$hasPermission = false;
-		if (c::admin()->permission()->check(['global','orders-all','orders-list-page','community-cs']) && $restaurant->id_restaurant != $order->id_restaurant) {
+		if (c::admin()->permission()->check(['global','orders-all','orders-list-page','community-cs']) || $restaurant->id_restaurant == $order->id_restaurant) {
 			$hasPermission = true;
 		}
 
