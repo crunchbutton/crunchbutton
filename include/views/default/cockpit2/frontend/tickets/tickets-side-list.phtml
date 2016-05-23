@@ -1,6 +1,6 @@
 <div class="tickets-side-list">
 	<div ng-controller="SideTicketsCtrl">
-		<div ng-if="account.user.permissions.GLOBAL">
+		<div ng-if="account.user.permissions.GLOBAL || account.user.permissions['COMMUNITY-CS']">
 			<h1>Tickets</h1>
 			<a class="support-side-header-closed-tickets" href="/tickets">View all tickets</a>
 			<div class="divider"></div>
@@ -33,7 +33,7 @@
 				</div>
 			</div>
 		</div>
-		<div ng-if="!account.user.permissions.GLOBAL">
+		<div ng-if="!account.user.permissions.GLOBAL && !account.user.permissions['COMMUNITY-CS']">
 			<br>
 			<p>To contact Crunchbutton support, please text <br><br><a href ng-click="callText('16467831444')">(646) 783-1444</a></p>
 		</div>

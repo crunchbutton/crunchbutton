@@ -67,11 +67,23 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			$keys[] = $admin;
 		}
 
-		if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
+		if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud', 'community-cs' ])) {
 			// only display support to their number
 			$phone = preg_replace('/[^0-9]/','', c::admin()->phone);
 			$q .= ' AND s.phone=?';
 			$keys[] = $phone;
+		}
+
+		if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
+			$communities = c::user()->communitiesDriverDelivery();
+			$q .= ' AND (';
+			$or = '';
+			foreach($communities as $community){
+				$q .= $or . 's.id_community = ?';
+				$or = ' OR ';
+				$keys[] = $community->id_community;
+			}
+			$q .= ') ';
 		}
 
 		if ($search) {

@@ -21,13 +21,27 @@ class Controller_api_heartbeat extends Crunchbutton_Controller_RestAccount {
 		// support
 		$tickets = null;
 
-		if (c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
+		if (c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud', 'community-cs' ])) {
+
+			$filter = '';
+			if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
+				$communities = c::user()->communitiesDriverDelivery();
+				$filter .= ' AND (';
+				$or = '';
+				foreach($communities as $community){
+					$filter .= $or . 's.id_community = ' . $community->id_community;
+					$or = ' OR ';
+				}
+				$filter .= ') ';
+			}
+
 			// Only tickets that haven't been responded to should cause an increase in the number over the chat bubble - #5929
 			$q = "SELECT COUNT( DISTINCT( sm.id_support ) ) AS c FROM support_message sm
 					INNER JOIN (
 							SELECT MAX( sm.id_support_message ) AS id_support_message FROM support s
 								INNER JOIN support_message sm ON sm.id_support = s.id_support
-								WHERE s.status = 'open' GROUP BY sm.id_support ) last_message_from_opened_tickets ON last_message_from_opened_tickets.id_support_message = sm.id_support_message AND ( sm.from = 'client' OR sm.type = 'warning' )";
+								WHERE s.status = 'open' {$filter} GROUP BY sm.id_support  ) last_message_from_opened_tickets ON last_message_from_opened_tickets.id_support_message = sm.id_support_message AND ( sm.from = 'client' OR sm.type = 'warning' )";
+
 			$q = c::db()->get($q);
 			$tickets = $q->get(0)->c;
 
