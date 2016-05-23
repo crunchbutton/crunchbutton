@@ -59,11 +59,13 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 	}
 
 	public function reply() {
+
 		$this->support->addAdminMessage( [
 			'phone' => $this->from,
 			'body' => $this->message,
 			'media' => $this->media
 		] );
+
 		$this->log( [ 'action' => 'saving the answer', 'id_support' => $this->support->id_support, 'phone' => $this->from, 'message' => $this->body] );
 
 		Crunchbutton_Message_Sms::send([
@@ -100,8 +102,25 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 	}
 
 	public static function notifyReps($message, $support = null, $media = null) {
+		$users = [];
+		if($support->id_support && $support->id_community){
+			$community = Community::q('SELECT * FROM community WHERE id_community = ?',[$support->id_community])->get(0);
+			if($community->id_community){
+				$community_cs = $community->workingCommunityCS();
+				if($community_cs && count($community_cs) > 0){
+					foreach($community_cs as $cs){
+						$users[$cs->name] = $cs->phone;
+					}
+				}
+			}
+		}
+
+		if(!$users || count($users) == 0){
+			$users = Crunchbutton_Support::getUsers();
+		}
+
 		Crunchbutton_Message_Sms::send([
-			'to' => Crunchbutton_Support::getUsers(),
+			'to' => $users,
 			'message' => $message,
 			'media' => $media,
 			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT

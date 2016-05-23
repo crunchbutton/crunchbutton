@@ -187,7 +187,7 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 					$o->community_has_cs = true;
 				}
 			}
-
+			$o->recent_from = ucfirst($o->recent_from);
 			$d[] = $o;
 			$i++;
 		}
