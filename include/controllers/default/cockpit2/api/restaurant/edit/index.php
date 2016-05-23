@@ -14,14 +14,33 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 			$restaurant = Restaurant::o( c::getPagePiece( 4 ) );
 		}
 
-		if (!c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud', 'restaurant-'.$restaurant->id_restaurant.'-edit', 'restaurant-'.$restaurant->id_restaurant.'-all'])) {
-			$this->error(401, true);
+		$hasPermission = false;
+
+		if (c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud', 'restaurant-'.$restaurant->id_restaurant.'-edit', 'restaurant-'.$restaurant->id_restaurant.'-all'])) {
+			$hasPermission = true;
 		}
 
 		$this->restaurant = $restaurant;
 
+		// permission to close/open restaurant
+		if (!$hasPermission &&
+				(c::getPagePiece(3) == 'close-for-today' || c::getPagePiece(3) == 'force-reopen-for-today') &&
+				c::admin()->permission()->check(['community-cs'])) {
+			$communities = c::user()->communitiesDriverDelivery();
+			foreach($communities as $community){
+				$_community = $this->restaurant->community();
+				if ($community->id_community == $_community->id_community) {
+					$hasPermission = true;
+				}
+			}
+		}
+
 		if( !$this->restaurant->id_restaurant ){
 			$this->error(404, true);
+		}
+
+		if (!$hasPermission) {
+			$this->error(401, true);
 		}
 
 		switch (c::getPagePiece(3)) {
