@@ -1114,14 +1114,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 				$ticket .= 'The community message was set to: "' . $message . '"' . "\n";
 
-				if( $this->driver_checkin ){
-					$ticket .= 'Because this community needs the driver to check in.';
+				if( $nextShift->id_community ){
+					$ticket .= 'that is when the next shift will start.';
 				} else {
-					if( $nextShift->id_community ){
-						$ticket .= 'that is when the next shift will start.';
-					} else {
-						$ticket .= 'Because it has no next shift with drivers.';
-					}
+					$ticket .= 'Because it has no next shift with drivers.';
 				}
 
 				$reason = new Cockpit_Community_Closed_Reason;
