@@ -2893,14 +2893,16 @@ canvas.chart {
 
 .quintuple-cols {
 	-webkit-column-count: 5;
-	-webkit-column-gap: 10px;
+	-webkit-column-gap: 8px;
 	@include gpu();
 	float: left;
 	clear: both;
 	margin-bottom: 1em;
 	width: 100%;
 }
-
+.quintuple-cols button{
+	margin-bottom:8px;
+}
 
 .field-container .field-row-button .field-two-rows {
 	width: 40% !important;
