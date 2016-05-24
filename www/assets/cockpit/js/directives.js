@@ -836,12 +836,13 @@ NGApp.directive( 'stickyHeader', function ( $rootScope, $document ) {
 			restrict: 'A',
 
 			link: function ( scope, elem, attrs, ctrl ) {
+
 				var processing = false;
 
 				var process = function() {
-
 					setTimeout(function() {
 						if (processing) {
+							setTimeout(function(){ if(processing){ processing = false; process(); } }, 300);
 							return;
 						}
 						processing = true;
