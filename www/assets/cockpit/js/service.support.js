@@ -81,7 +81,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	}
 
 	service.sideInfo.load = function(){
-
 		if( service.sideInfo.id_support ){
 			if( !service._private.could_load ){
 				return false;
