@@ -102,7 +102,7 @@ class Controller_api_credit_add extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _permission(){
-		if (!c::admin()->permission()->check(['global', 'gift-card-all', 'gift-card-create-all', 'support-all', 'support-view', 'support-crud', 'community-cs' ])) {
+		if (!c::admin()->permission()->check(['global', 'gift-card-all', 'gift-card-create-all', 'support-all', 'support-view', 'support-crud' ])) {
 			header('HTTP/1.1 401 Unauthorized');
 			exit;
 		}
