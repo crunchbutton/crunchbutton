@@ -31,7 +31,7 @@
 						<span ng-if="ticket.order.eta.time"><br>ETA: {{ticket.order.eta.time}} minutes</span>
 					</div>
 
-					<div ng-if="ticket.pexcard" ng-controller="SideSupportPexCardCtrl">
+					<div ng-if="ticket.pexcard && account.user.permissions.GLOBAL" ng-controller="SideSupportPexCardCtrl">
 
 							<div class="link no-underline" ng-click="ticket.pexcard.show_info = !ticket.pexcard.show_info"><i class="fa fa-credit-card"></i> Last Four: {{ticket.pexcard.last_four}} / Serial: {{ticket.pexcard.card_serial}}</div>
 

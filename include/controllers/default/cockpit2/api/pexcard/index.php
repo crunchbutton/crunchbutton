@@ -82,7 +82,7 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 
 	private function _add_funds(){
 
-		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud', 'community-cs' ] ) ){
+		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud' ] ) ){
 			$this->_error();
 		}
 		$id_pexcard = $this->request()[ 'id_pexcard' ];
