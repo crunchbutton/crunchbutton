@@ -85,11 +85,9 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 							LEFT JOIN user u ON u.id_user = tickets.client_id_user
 							LEFT JOIN admin client_admin ON client_admin.id_admin = client_id_admin
 							) tickets
-
-
 							 WHERE 1 = 1';
 
-		if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
+		// if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
 			$communities = c::user()->communitiesDriverDelivery();
 			$q .= ' AND (';
 			$or = '';
@@ -99,7 +97,7 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 				$keys[] = $community->id_community;
 			}
 			$q .= ') ';
-		}
+		// }
 
 		if( $type == 'system' ){
 			$q .= '
@@ -171,7 +169,7 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 		$d = [];
 		$query = str_replace('-WILD-','*', $q);
 
-		$r = c::db()->query($query, $keys);
+		$r = c::db()->show_query($query, $keys);
 
 		$i = 1;
 		$more = false;
