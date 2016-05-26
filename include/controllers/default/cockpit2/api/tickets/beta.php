@@ -86,7 +86,14 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 							LEFT JOIN admin client_admin ON client_admin.id_admin = client_id_admin
 							) tickets
 							 WHERE 1 = 1';
-
+echo '<pre>';var_dump(
+	c::user()->permission()->check(['global']) ,
+	c::user()->permission()->check(['support-all']) ,
+	c::user()->permission()->check(['support-view']) ,
+	c::user()->permission()->check(['support-crud']) ,
+	!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])
+	);
+exit();
 		if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
 			$communities = c::user()->communitiesDriverDelivery();
 			$q .= ' AND (';
