@@ -7,11 +7,39 @@ class Controller_api_driver_community extends Crunchbutton_Controller_RestAccoun
 			case 'open':
 				$this->_open();
 				break;
+			case 'close':
+				$this->_close();
+				break;
 			case 'status':
 			default:
 				$this->_status();
 				break;
 		}
+	}
+
+	private function _close(){
+		$driver = c::user();
+		if( !$driver->isDriver() ){
+			return $this->error( 404 );
+		}
+
+		$id_community = $this->request()[ 'id_community' ];
+		$communities = $driver->driverCommunities();
+		$community = null;
+		foreach ( $communities as $_community ) {
+			if( $_community->id_community == $id_community ){
+				$community = $_community;
+			}
+		}
+		if( $community->id_community ){
+			$minutes = intval($this->request()[ 'how_long' ]);
+			$reason = $this->request()[ 'reason' ];
+			$success = $community->closeCommunityByDriver( $driver->id_admin, $minutes, $reason );
+			if( $success ){
+				return $this->_status();
+			}
+		}
+		echo json_encode( [ 'error' => true ] );exit;
 	}
 
 	private function _open(){
@@ -47,7 +75,7 @@ class Controller_api_driver_community extends Crunchbutton_Controller_RestAccoun
 		$communities = $driver->driverCommunities();
 		foreach ( $communities as $community ) {
 
-			if( !$community->drivers_can_open ){
+			if( !$community->drivers_can_open && !$community->drivers_can_close ){
 				continue;
 			}
 
@@ -62,6 +90,7 @@ class Controller_api_driver_community extends Crunchbutton_Controller_RestAccoun
 
 			$_community[ 'is_open' ] = $community->isOpen();
 			$_community[ 'could_be_opened' ] = $community->isElegibleToBeOpened();
+			$_community[ 'could_be_closed' ] = $community->isElegibleToBeClosed();
 
 			$_community[ 'name_status' ] = $community->name . ( $_community[ 'is_open' ] ? ' [Open]' : ' [Closed]' );
 

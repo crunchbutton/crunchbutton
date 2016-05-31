@@ -69,6 +69,13 @@
 						</div>
 					</li>
 
+					<li class="li-input" ng-class="{'error':form.communityCanBeClosedByDrivers.$invalid}">
+						<div class="label">Community can be closed by drivers:</div>
+						<div class="input">
+							<select name="communityCanBeClosedByDrivers" required ng-model="community.drivers_can_close" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
+
 					<li class="li-input" ng-class="{'error':form.automaticDriverRestaurantName.$invalid}">
 						<div class="label">Change driver restaurant name automatically based on assigned shifts:</div>
 						<div class="input">

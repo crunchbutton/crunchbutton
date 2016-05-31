@@ -30,6 +30,7 @@ class Controller_api_config extends Crunchbutton_Controller_Rest {
 				$user['has_resource'] = c::user()->hasResource();
 				$user['side_resource'] = c::user()->hasResource( 'side' );
 				$user['has_community_to_open'] = c::user()->hasCommunityToOpen();
+				$user['has_community_to_close'] = c::user()->hasCommunityToClose();
 
 				if( $payment_type->using_pex ){
 					$user[ 'using_pex' ] = true;

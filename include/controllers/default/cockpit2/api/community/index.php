@@ -73,7 +73,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 									case 'open-close-status':
 
 										$out = $community->properties();
-										$remove = [ 'delivery_logistics', 'id_driver_group', 'combine_restaurant_driver_hours', 'driver_checkin', 'top', 'tagline1', 'tagline2', 'drivers_can_open', 'amount_per_order', 'campus_cash', 'campus_cash_name', 'campus_cash_validation', 'campus_cash_fee', 'campus_cash_mask', 'campus_cash_receipt_info', 'signature', 'campus_cash_delivery_confirmation', 'campus_cash_default_payment', 'allow_preorder' ];
+										$remove = [ 'delivery_logistics', 'id_driver_group', 'combine_restaurant_driver_hours', 'driver_checkin', 'top', 'tagline1', 'tagline2', 'drivers_can_open', 'drivers_can_close', 'amount_per_order', 'campus_cash', 'campus_cash_name', 'campus_cash_validation', 'campus_cash_fee', 'campus_cash_mask', 'campus_cash_receipt_info', 'signature', 'campus_cash_delivery_confirmation', 'campus_cash_default_payment', 'allow_preorder' ];
 										foreach ( $remove as $rem ) {
 											unset( $out[ $rem ] );
 										}
@@ -384,6 +384,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						$community->display_hours_restaurants_page = $this->request()[ 'display_hours_restaurants_page' ];
 						$community->combine_restaurant_driver_hours = $this->request()[ 'combine_restaurant_driver_hours' ];
 						$community->drivers_can_open = $this->request()[ 'drivers_can_open' ];
+						$community->drivers_can_close = $this->request()[ 'drivers_can_close' ];
 						if( $is_new ){
 							$community->automatic_driver_restaurant_name = 1;
 						} else {

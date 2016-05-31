@@ -72,23 +72,41 @@ NGApp.controller( 'DriversCommunityCtrl', function ($scope, $filter, DriverCommu
 		}
 	});
 
-	$scope.open = function(){
-		if( $scope.form.$invalid ){
+	$scope.close = function(){
+		if( $scope.formClose.$invalid ){
 			$scope.submitted = true;
+			return;
+		}
+
+		$scope.isSavingClose = true;
+		DriverCommunityService.close( { id_community: $scope.id_community, how_long: $scope.community.how_long, reason: $scope.community.reason }, function( json ){
+			if ( json.error ) {
+				App.alert( 'Error, the community is not open!' );
+			} else {
+				App.alert( 'The community is closed!' );
+			}
+			load();
+			$scope.isSavingClose = false;
+		} );
+	}
+
+	$scope.open = function(){
+		if( $scope.formOpen.$invalid ){
+			$scope.submittedOpen = true;
 			return;
 		}
 
 		var hour = $filter('date')( $scope.community.hour, 'H:mm' );
 
-		$scope.isSaving = true;
+		$scope.isSavingOpen = true;
 		DriverCommunityService.open( { id_community: $scope.id_community, hour: hour }, function( json ){
 			if ( json.error ) {
-				App.alert( 'Error, the community is not open!' );
+				App.alert( 'Error, the community is not closed!' );
 			} else {
 				App.alert( 'The community is open!' );
 			}
 			load();
-			$scope.isSaving = false;
+			$scope.isSavingOpen = false;
 		} );
 	}
 
