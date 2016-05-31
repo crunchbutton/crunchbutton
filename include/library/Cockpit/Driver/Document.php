@@ -26,8 +26,7 @@ class Cockpit_Driver_Document extends Cana_Table {
 	public function isRequired( $vehicle = false ){
 		if( $this->required ){
 			if( $vehicle ){
-				if( ( $this->id_driver_document == Cockpit_Driver_Document::ID_DRIVERS_LICENCE && $vehicle == Crunchbutton_Admin::VEHICLE_BIKE ) ||
-						( $this->id_driver_document == Cockpit_Driver_Document::ID_AUTO_INSURANCE_CARD && $vehicle == Crunchbutton_Admin::VEHICLE_BIKE ) ){
+				if( ( $this->id_driver_document == Cockpit_Driver_Document::ID_AUTO_INSURANCE_CARD && $vehicle == Crunchbutton_Admin::VEHICLE_BIKE ) ){
 					return false;
 				}
 			}
@@ -39,8 +38,7 @@ class Cockpit_Driver_Document extends Cana_Table {
 	public function showDocument( $vehicle = false ){
 		if( $this->required ){
 			if( $vehicle ){
-				if( ( $this->id_driver_document == Cockpit_Driver_Document::ID_DRIVERS_LICENCE && $vehicle == Crunchbutton_Admin::VEHICLE_BIKE ) ||
-						( $this->id_driver_document == Cockpit_Driver_Document::ID_AUTO_INSURANCE_CARD && $vehicle == Crunchbutton_Admin::VEHICLE_BIKE ) ){
+				if( ( $this->id_driver_document == Cockpit_Driver_Document::ID_AUTO_INSURANCE_CARD && $vehicle == Crunchbutton_Admin::VEHICLE_BIKE ) ){
 					return false;
 				}
 			}
