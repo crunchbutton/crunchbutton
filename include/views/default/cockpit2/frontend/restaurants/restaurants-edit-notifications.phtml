@@ -29,6 +29,27 @@
 									<small ng-show="form.restaurantSendOrderNotifications.$error.required">Required.</small>
 								</div>
 							</li>
+							<li class="li-input" ng-class="{'error':form.restaurantConfirmation.$invalid}"  ng-if="restaurant.order_notifications_sent">
+								<div class="label">Confirmation Phone Call?</div>
+								<div class="input">
+									<select name="restaurantConfirmation" ng-required="restaurant.order_notifications_sent" ng-model="restaurant.confirmation" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+								</div>
+								<div class="box-error">
+									<small ng-show="form.restaurantConfirmation.$error.required">Required.</small>
+								</div>
+							</li>
+							<li class="li-input" ng-class="{'error':form.restaurantConfirmationType.$invalid}"  ng-if="restaurant.confirmation">
+								<div class="label">Confirmation Type:</div>
+								<div class="input">
+									<select name="restaurantConfirmationType" ng-required="restaurant.confirmation" ng-model="restaurant.confirmation_type">
+										<option value="regular">Regular</option>
+										<option value="stealth">Stealth Confirmation</option>
+									</select>
+								</div>
+								<div class="box-error">
+									<small ng-show="form.restaurantConfirmationType.$error.required">Required.</small>
+								</div>
+							</li>
 						</ul>
 					</div>
 				</div>
