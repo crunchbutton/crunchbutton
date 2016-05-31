@@ -1812,6 +1812,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		if ($this->confirmed || !$this->restaurant()->confirmation) {
 			return;
 		}
+
 		// the restaurant asked crunchbutton to call it, stop sending confirmations call - See #2848
 		if( $this->asked_to_call ){
 			Log::debug([ 'order' => $this->id_order, 'action' => 'asked_to_call() - dial confirm call', '$this->asked_to_call' => $this->asked_to_call, '$this->restaurant()->confirmation' =>$this->restaurant()->confirmation, 'type' => 'notification']);
@@ -1831,9 +1832,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		// Added new confirmation type: stealth. More 'Stealth confirmation call' #2848
 		if( $this->restaurant()->confirmation_type == 'stealth' ){
-			$confirmURL = 'http://'.c::config()->host_callback.'/api/order/'.$this->id_order.'/doconfirmstealth';
+			$confirmURL = 'https://'.c::config()->host_callback.'/api/order/'.$this->id_order.'/doconfirmstealth';
 		} else {
-			$confirmURL = 'http://'.c::config()->host_callback.'/api/order/'.$this->id_order.'/doconfirm';
+			$confirmURL = 'https://'.c::config()->host_callback.'/api/order/'.$this->id_order.'/doconfirm';
 		}
 
 		// Log
@@ -1853,7 +1854,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			'+1'.$num,
 			$confirmURL,
 			[
-				'StatusCallback' => 'http://'.c::config()->host_callback.'/api/notification/'.$log->id_notification_log.'/confirm'
+				'StatusCallback' => 'https://'.c::config()->host_callback.'/api/notification/'.$log->id_notification_log.'/confirm'
 			]
 		);
 
@@ -1905,6 +1906,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 		// Check if there are another confirm que, if it does it will not send two confirms. Just one is enough.
 		$nl = Notification_Log::q("SELECT * FROM notification_log WHERE id_order=? AND type = 'confirm' AND ( status = 'created' OR status = 'queued' )", [$order->id_order]);
+
 		if( $nl->count() > 0 ){
 			return;
 		}
