@@ -17,7 +17,7 @@
 		</div>
 		<br>
 
-		<h1 class="title"><i class="fa fa-briefcase"></i>Documents</h1>
+		<h1 class="title"><i class="fa fa-briefcase"></i>Documents (Max file size 2MB)</h1>
 
 		<h2 class="title driver-docs-text">
 			To complete the documents section, please visit <a href="https://cockpit.la" target="_system">https://cockpit.la</a> from a computer using Chrome as your browser. Download the docs, fill them out and then upload them back to this page. We recommend signing them with <a href="https://www.hellosign.com/" target="_system">Hellosign</a>.
@@ -30,7 +30,7 @@
 					<i class="fa fa-check-circle documents-check-bad" ng-show="!doc.status || doc.status.file.substring(9, 14) == 'blank'"></i>
 				</td>
 				<td ng-click="edit(driver.id_admin)" class="td-medium driver-docs-name">
-					<h2 class="driver-docs-name"><b>{{doc.name}}</b></h2>
+					<h2 class="driver-docs-name"><b>{{doc.name}} </b></h2>
 					<a class="docs-download-form" href="{{doc.url}}" target="_blank"><b>Download Form</b></a>
 					<!-- if he already have this doc, show the download link -->
 					<span ng-show="1==2 && doc.status && doc.status.file.substring(9, 14) !== 'blank'" title="Sent at {{doc.status.date_formated}}">
@@ -49,7 +49,7 @@
 			</tr>
 		</table>
 
-		<h1 class="title" ><i class="fa fa-picture-o"></i><span>Identification</span></h1>
+		<h1 class="title" ><i class="fa fa-picture-o"></i><span>Identification (Max file size 2MB)</span></h1>
 
 		<h2 class="title driver-docs-text">
 			Upload a clear picture of your Drivers License and Insurance card. You can do this from most smartphones if you have already taken a picture. If that doesn't work, please use Chrome on your computer.
