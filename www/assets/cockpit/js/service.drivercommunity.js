@@ -6,11 +6,18 @@ NGApp.factory( 'DriverCommunityService', function( $resource, $routeParams ) {
 				'status' : { 'method': 'GET', params : { 'action' : 'status' }, isArray: true },
 				'open' : { 'method': 'POST', params : { 'action' : 'open' }, isArray: true },
 				'close' : { 'method': 'POST', params : { 'action' : 'close' }, isArray: true },
+				'textMessage' : { 'method': 'POST', params : { 'action' : 'text-message' }},
 			}
 		);
 
 	service.status = function( callback ){
 		drivers.status( function( data ){
+			callback( data );
+		} );
+	}
+
+	service.textMessage = function( params, callback ){
+		drivers.textMessage( params, function( data ){
 			callback( data );
 		} );
 	}
