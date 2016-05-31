@@ -248,6 +248,7 @@ var Restaurant = function(id) {
 		self._closesIn = false;
 		self._closesIn_formatted = '';
 		self.processHours();
+		var force_close = true;
 		var now_time = now.getTime();
 		if( self.hours ){
 			for( x in self.hours ){
@@ -257,10 +258,14 @@ var Restaurant = function(id) {
 						self._closesIn_formatted = formatTime( self._closesIn );
 						return;
 					}
+				} else {
+					if( self.hours[ x ].status == 'open' ){
+						force_close = false;
+					}
 				}
 			}
 		}
-		if( self._closesIn == 0 || self._closesIn === false ){
+		if( !self._open && force_close && ( self._closesIn == 0 || self._closesIn === false ) ){
 			self._open = false;
 		}
 	}
