@@ -293,6 +293,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			'combine_restaurant_driver_hours',
 			'top',
 			'drivers_can_open',
+			'drivers_can_close',
 			'auto_close_predefined_message',
 			'amount_per_order',
 			'campus_cash',
@@ -1455,6 +1456,17 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return false;
 	}
 
+	public function isElegibleToBeClosed(){
+		if( $this->id_community && $this->drivers_can_close ){
+			if( $this->allThirdPartyDeliveryRestaurantsClosed() || $this->allRestaurantsClosed() || $this->is_auto_closed || !$this->isOpen()){
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+
 	public function isOpen(){
 		$shift = Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
 		return ( !$this->allThirdPartyDeliveryRestaurantsClosed() && !$this->allRestaurantsClosed() && !$this->is_auto_closed && $shift->id_community_shift );
@@ -1543,6 +1555,55 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			}
 			return $newShift;
 		}
+	}
+
+	// aqui
+	public function closeCommunityByDriver($id_driver, $minutes, $reason){
+		// check if the driver belongs to the community
+		$driver = Admin::o( $id_driver );
+
+		$communities = $driver->driverCommunities();
+		$canClose = false;
+		foreach( $communities as $community ){
+			if( $community->id_community == $this->id_community ){
+				$canClose = true;
+			}
+		}
+
+		if(!$canClose){
+			return self::DRIVER_OPEN_COMMUNITY_ERROR_COMMUNITY;
+		}
+
+		$reopen_at = new DateTime( 'now', new DateTimeZone(c::config()->timezone));
+		$reopen_at->modify('+ ' . $minutes . ' minutes');
+		$reopen_at = $reopen_at->format('Y-m-d H:i:s');
+
+		$dont_warn_till = new DateTime( 'now', new DateTimeZone(Crunchbutton_Community_Shift::CB_TIMEZONE));
+		$dont_warn_till->modify('+ ' . $minutes . ' minutes');
+		$dont_warn_till = $dont_warn_till->format('Y-m-d H:i:s');
+
+		$this->close_3rd_party_delivery_restaurants = true;
+		$this->close_3rd_party_delivery_restaurants_id_admin = $driver->id_admin;
+		$this->close_3rd_party_delivery_restaurants_id_admin = $driver->id_admin;
+		$this->reopen_at = $reopen_at;
+		$this->dont_warn_till = $dont_warn_till;
+
+		$closedReason = new Cockpit_Community_Closed_Reason;
+		$closedReason->id_admin = c::user()->id_admin;
+		$closedReason->id_community = $this->id_community;
+		$closedReason->type = Cockpit_Community_Closed_Reason::TYPE_3RD_PARTY_DELIVERY_RESTAURANTS;
+		$closedReason->date = date( 'Y-m-d H:i:s' );
+		$closedReason->reason = $reason;
+		$closedReason->save();
+
+		$this->save();
+
+		$message = 'The community ' . $this->name . ' was closed';
+		$message .= ' by ' . $driver->name;
+		$message .= ' during the period of ' . $minutes . ' minutes.';
+		$message .= ' Reason: ' . $reason;
+		Crunchbutton_Support::createNewWarning( [ 'staff' => true, 'phone' => $driver->phone, 'bubble' => true, 'body' => $message ] );
+		return true;
 	}
 
 	public function openCommunityByDriver( $id_driver, $shiftEnd ){

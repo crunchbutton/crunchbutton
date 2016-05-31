@@ -59,9 +59,56 @@
 
 	</div>
 
+	<div class="support-box-wrap box-content2" ng-show="community.could_be_closed">
+
+		<form name="formClose" novalidate>
+			<div class="support-box-wrap-header">
+				<h1>Close Community</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+					<li class="li-input" ng-class="{'error':formClose.howLong.$invalid}">
+						<div class="label">For how long do you want to close the community?</div>
+						<div class="input">
+							<select name="howLong" required ng-model="community.how_long">
+								<option value="15">15 minutes</option>
+								<option value="30">30 minutes</option>
+								<option value="45">45 minutes</option>
+								<option value="60">1 hour</option>
+								<option value="120">2 hours</option>
+							</select>
+						</div>
+						<div class="box-error">
+							<small ng-show="formClose.howLong.$error.required">Required.</small>
+						</div>
+					</li>
+					<li class="li-input" ng-class="{'error':formClose.reason.$invalid}">
+						<div class="label">Reason why you want to close the community:</div>
+						<div class="input">
+							<input type="text" maxlength="50" required name="reason" ng-model="community.reason">
+						</div>
+						<div class="box-error">
+							<small ng-show="formClose.reason.$error.required">Required.</small>
+						</div>
+					</li>
+					<li class="li-input" ng-show="!isSavingClose">
+						<button class="button save" ng-click="close();">Close</button>
+					</li>
+					<li class="li-input" ng-show="isSavingClose">
+						<i class="fa fa-circle-o-notch fa-spin"></i>
+					</li>
+				</ul>
+
+			</div>
+		</form>
+	</div>
+
 	<div class="support-box-wrap box-content2" ng-show="community.could_be_opened">
 
-		<form name="form" novalidate>
+		<form name="formOpen" novalidate>
 			<div class="support-box-wrap-header">
 				<h1>Open Community</h1>
 				<div class="divider"></div>
@@ -71,20 +118,20 @@
 
 				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
-					<li class="li-input" ng-class="{'error':form.hour.$invalid}">
+					<li class="li-input" ng-class="{'error':formOpen.hour.$invalid}">
 						<div class="label">When do you want to drive until?</div>
 						<div class="input">
 							<input type="time" required min="{{community.now}}" name="hour" ng-model="community.hour">
 						</div>
 						<div class="box-error">
-							<small ng-show="form.hour.$error.required">Required.</small>
-							<small ng-show="form.hour.$error.min">It should be after {{community.now_formated}}.</small>
+							<small ng-show="formOpen.hour.$error.required">Required.</small>
+							<small ng-show="formOpen.hour.$error.min">It should be after {{community.now_formated}}.</small>
 						</div>
 					</li>
-					<li class="li-input" ng-show="!isSaving">
+					<li class="li-input" ng-show="!isSavingOpen">
 						<button class="button save" ng-click="open();">Open</button>
 					</li>
-					<li class="li-input" ng-show="isSaving">
+					<li class="li-input" ng-show="isSavingOpen">
 						<i class="fa fa-circle-o-notch fa-spin"></i>
 					</li>
 				</ul>

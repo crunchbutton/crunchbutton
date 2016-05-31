@@ -960,15 +960,27 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function hasCommunityToOpen(){
-  	if( $this->isDriver() ){
-  		$communities = $this->driverCommunities();
-  		foreach( $communities as $community ){
-  			if( $community->drivers_can_open ){
-  				return true;
-  			}
-  		}
-  	}
-  	return false;
+		if( $this->isDriver() ){
+			$communities = $this->driverCommunities();
+			foreach( $communities as $community ){
+				if( $community->drivers_can_open ){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public function hasCommunityToClose(){
+		if( $this->isDriver() ){
+			$communities = $this->driverCommunities();
+			foreach( $communities as $community ){
+				if( $community->drivers_can_close ){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public function driverCommunities(){
