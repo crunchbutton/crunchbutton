@@ -44,7 +44,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			$twilio = c::twilio();
 
 
-			$url = 'http://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcalling';
+			$url = 'https://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcalling';
 
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB - starting', 'url' => $url, 'type' => 'notification' ]);
 
@@ -281,7 +281,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 		$env = c::getEnv();
 		$twilio = c::twilio();
 
-		$url = 'http://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcalling?id_notification=' . $log->id_notification;
+		$url = 'https://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcalling?id_notification=' . $log->id_notification;
 
 		Log::debug( [ 'order' => $this->id_order, 'action' => 'MAX CB - starting', 'url' => $url, 'callto'=> $support, 'type' => 'notification' ]);
 

@@ -724,7 +724,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 			$id_support = $this->id_support;
 
-			$url = 'http://' . c::config()->host_callback . '/api/support/say/' . $id_support;
+			$url = 'https://' . c::config()->host_callback . '/api/support/say/' . $id_support;
 
 			Log::debug( [ 'action' => 'Need to call', 'id_support' => $id_support, 'url' => $url, 'hour' => $hour, 'type' => 'sms' ] );
 
