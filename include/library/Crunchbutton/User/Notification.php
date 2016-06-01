@@ -3,7 +3,7 @@
 class Crunchbutton_User_Notification extends Cana_Table {
 
 	const TYPE_SMS = 'sms';
-	//const TYPE_EMAIL = 'email';
+	const TYPE_EMAIL = 'email';
 	const TYPE_PUSH_IOS = 'push-ios';
 	const TYPE_PUSH_ANDROID = 'push-android';
 
@@ -56,11 +56,11 @@ class Crunchbutton_User_Notification extends Cana_Table {
 				case Crunchbutton_Admin_Notification::TYPE_SMS :
 					$res = $this->sendSms($data, $content, $title);
 					break;
-/*
+
 				case Crunchbutton_Admin_Notification::TYPE_EMAIL :
 					$res = $this->sendEmail($data, $content, $title);
 					break;
-*/
+
 				case Crunchbutton_Admin_Notification::TYPE_PUSH_IOS :
 					$res = $this->sendPushIos($data, $content, $title);
 					break;
@@ -69,7 +69,6 @@ class Crunchbutton_User_Notification extends Cana_Table {
 					$res = $this->sendPushAndroid($data, $content, $title);
 					break;
 			}
-
 		return $res;
 	}
 
@@ -95,24 +94,18 @@ class Crunchbutton_User_Notification extends Cana_Table {
 
 		return $ret;
 	}
-/*
-	public function sendEmail( Crunchbutton_Order $order ){
 
+	public function sendEmail($data, $message, $title){
 		$mail = $this->value;
-		$admin = $this->admin();
-		Log::debug( [ 'order' => $order->id_order, 'action' => 'send mail to admin', 'mail' => $mail, 'type' => 'admin-notification' ]);
-		$cockpit_url = static::REPS_COCKPIT . $order->id_order;
-
-		$mail = new Email_Order( [	'order' => $order,
+		$mail = new Email_Notification( [
 			'email' => $mail,
-			'cockpit_url' => $cockpit_url,
-			'show_credit_card_tips' => $admin->showCreditCardTips(),
-			'show_delivery_fees' => $admin->showDeliveryFees(),
+			'title' => $title,
+			'message' => $message
 		] );
-		$mail->send();
+		return $mail->send();
 	}
-*/
-	public function sendPushIos($data, $message, $title, $link) {
+
+	public function sendPushIos($data, $message, $title, $link = '') {
 
 		$r = Crunchbutton_Message_Push_Ios::send([
 			'to' => $this->value,
@@ -125,7 +118,7 @@ class Crunchbutton_User_Notification extends Cana_Table {
 		return $r;
 	}
 
-	public function sendPushAndroid($data, $message, $title, $link) {
+	public function sendPushAndroid($data, $message, $title, $link='') {
 
 		$r = Crunchbutton_Message_Push_Android::send([
 			'to' => $this->value,

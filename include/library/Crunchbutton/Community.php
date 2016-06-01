@@ -295,6 +295,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			'top',
 			'drivers_can_open',
 			'drivers_can_close',
+			'notify_customer_when_driver_open',
 			'auto_close_predefined_message',
 			'amount_per_order',
 			'campus_cash',
@@ -1677,6 +1678,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					$message .= 'but it was reopened by ' . $driver->name;
 					$message .= ' during the period ' . $newShift->startEndToString();
 					Crunchbutton_Support::createNewWarning( [ 'staff' => true, 'phone' => $driver->phone, 'bubble' => true, 'body' => $message ] );
+					$this->createNotificationForCommunityOpenedByDriver();
 					return true;
 				} else {
 					return self::DRIVER_OPEN_COMMUNITY_ERROR_ASSIGNING_SHIFT;
@@ -1781,6 +1783,30 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		// returns the community that the phone belongs to
 		$query = 'SELECT id_community FROM `order` o INNER JOIN phone p ON p.id_phone = o.id_phone AND p.phone = ? ORDER BY o.id_order DESC LIMIT 1';
 		return self::q($query, [$phone]);
+	}
+
+	public function createNotificationForCommunityOpenedByDriver(){
+		if (Community_Notification::notifyCommunityWhenIsOpenedByDriver() && $this->notify_customer_when_driver_open) {
+			$config = Community_Notification::openByDriverNotifyConfig();
+			$notifications = [];
+			if ($config[Community_Notification::CONFIG_KEY_OPEN_BY_DRIVER_NOTIFY_EMAIL]) {
+				$notifications[] = Community_Notification::NOTIFICATION_TYPE_EMAIL;
+			}
+			if ($config[Community_Notification::CONFIG_KEY_OPEN_BY_DRIVER_NOTIFY_PUSH]) {
+				$notifications[] = Community_Notification::NOTIFICATION_TYPE_PUSH;
+			}
+			if ($config[Community_Notification::CONFIG_KEY_OPEN_BY_DRIVER_NOTIFY_SMS]) {
+				$notifications[] = Community_Notification::NOTIFICATION_TYPE_SMS;
+			}
+			$days = $config[Community_Notification::CONFIG_KEY_OPEN_BY_DRIVER_NOTIFY_DAYS];
+			$message = $config[Community_Notification::CONFIG_KEY_OPEN_BY_DRIVER_NOTIFY_MSG];
+			foreach ($notifications as $notification) {
+				Community_Notification::create([	'id_community' => $this->id_community,
+																					'notification_type' => $notification,
+																					'message' => $message,
+																					'customer_period' => $days ]);
+			}
+		}
 	}
 
 	// Smart population of "our most popular locations" on UI2 #6056
