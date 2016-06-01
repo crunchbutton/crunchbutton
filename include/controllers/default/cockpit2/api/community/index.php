@@ -391,6 +391,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 							$community->automatic_driver_restaurant_name = $this->request()[ 'automatic_driver_restaurant_name' ];
 						}
 						$community->auto_close = $this->request()[ 'auto_close' ];
+						$community->notify_cs_when_driver_dont_checkin = $this->request()[ 'notify_cs_when_driver_dont_checkin' ];
 						$community->loc_lat = $this->request()[ 'loc_lat' ];
 						$community->loc_lon = $this->request()[ 'loc_lon' ];
 						$community->name = $this->request()[ 'name' ];

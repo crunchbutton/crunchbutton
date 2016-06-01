@@ -3,6 +3,7 @@
 class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 	const CUSTOMER_SERVICE_ID_COMMUNITY = 92;
+	const COMMUNITY_TEST = 6;
 	const CUSTOMER_SERVICE_COMMUNITY_GROUP = 'support';
 	const AUTO_SHUTDOWN_COMMUNITY_LOGIN = 'autoshutdowncommunity';
 
