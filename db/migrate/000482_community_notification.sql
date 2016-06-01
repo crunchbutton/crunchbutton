@@ -11,7 +11,7 @@ CREATE TABLE `community_notification` (
   PRIMARY KEY (`id_community_notification`),
   KEY `id_community` (`id_community`),
   CONSTRAINT `community_notification_ibfk_1` FOREIGN KEY (`id_community`) REFERENCES `community` (`id_community`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `community_notification_user` (
   `id_community_notification_user` int(11) unsigned NOT NULL AUTO_INCREMENT,
