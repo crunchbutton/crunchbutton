@@ -76,6 +76,19 @@
 						</div>
 					</li>
 
+					<li class="li-input" ng-class="{'error':form.communityNotifyCustomerWhenDriverOpen.$invalid}" ng-if="community.drivers_can_open">
+						<div class="label">Send notification to customers when driver opens it:</div>
+						<div class="input">
+							<select name="communityNotifyCustomerWhenDriverOpen" required ng-model="community.notify_customer_when_driver_open" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+						<div class="note" ng-show="community.notify_customer_when_driver_open">
+							<br>
+							<a href="/config/community-open">Please make sure this option is also enabled here.</a>
+						</div>
+					</li>
+
+
+
 					<li class="li-input" ng-class="{'error':form.communityCanBeClosedByDrivers.$invalid}">
 						<div class="label">Community can be closed by drivers:</div>
 						<div class="input">

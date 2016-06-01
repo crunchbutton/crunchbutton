@@ -283,6 +283,8 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 				'auto_close': true,
 				'driver_checkin': true,
 				'drivers_can_open': false,
+				'drivers_can_close': false,
+				'notify_customer_when_driver_open': false,
 				'campus_cash': false,
 				'signature': false,
 				'allow_preorder': false,
