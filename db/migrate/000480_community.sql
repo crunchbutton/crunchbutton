@@ -1,0 +1,1 @@
+ALTER TABLE `community` ADD `notify_cs_when_driver_dont_checkin` tinyint(1) NOT NULL DEFAULT '1';

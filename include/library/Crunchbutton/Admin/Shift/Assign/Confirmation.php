@@ -90,7 +90,10 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 			// 3rd time - warn CS - after 10 min of the first message
 			case 2:
-				self::warnCS( $assignment );
+				// Cockpit: don't need notifications when driver in Testing restaurant doesn't check in #8319
+				if($shift->community()->notify_cs_when_driver_dont_checkin){
+					self::warnCS( $assignment );
+				}
 				break;
 		}
 	}

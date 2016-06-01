@@ -55,6 +55,13 @@
 						</div>
 					</li>
 
+					<li class="li-input" ng-class="{'error':form.driverCheckin.$invalid}">
+						<div class="label">Notify CS when drivers don't check in:</div>
+						<div class="input">
+							<select name="driverCheckin" required ng-model="community.notify_cs_when_driver_dont_checkin" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
+
 					<li class="li-input" ng-class="{'error':form.communityMergeHours.$invalid}">
 						<div class="label">Combine Restaurant and Driver's Shift Hours:</div>
 						<div class="input">
