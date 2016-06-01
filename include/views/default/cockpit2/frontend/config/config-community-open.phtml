@@ -50,7 +50,7 @@
 					</li>
 
 					<li class="li-input" ng-if="config.notify_community_opened_driver" ng-class="{'error':form.notifyDays.$invalid}">
-						<div class="label">Notify active customers for the last X days:</div>
+						<div class="label">Notify active customers that have placed at least one order for the last X days:</div>
 						<div class="input"><input type="number" ng-required="config.notify_community_opened_driver" name="notifyDays" ng-model="config.notify_community_opened_driver_days"></div>
 					<div class="box-error">
 							<small ng-show="form.notifyDays.$error.required">Required.</small>
