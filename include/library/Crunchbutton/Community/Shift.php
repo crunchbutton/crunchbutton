@@ -1008,7 +1008,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 		$driversWillReceiveTheNotification = [];
 
 		// Get the communities with active and delivery_service restaurants
-		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = true AND r.delivery_service = true AND c.id_community != "' . Crunchbutton_Community::CUSTOMER_SERVICE_ID_COMMUNITY . '" ORDER BY c.name' );
+		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = true AND r.delivery_service = true AND c.message_drivers_fill_preferences = true ORDER BY c.name' );
 
 		foreach( $communities as $community ){
 
@@ -1167,7 +1167,8 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 
 		$adminsWithShifts = Crunchbutton_Admin::q( 'SELECT DISTINCT( asa.id_admin )
 																									FROM admin_shift_assign asa
-																									INNER JOIN community_shift cs ON asa.id_community_shift = cs.id_community_shift AND cs.id_community != "' . Crunchbutton_Community::CUSTOMER_SERVICE_ID_COMMUNITY . '"
+																									INNER JOIN community_shift cs ON asa.id_community_shift = cs.id_community_shift
+																									INNER JOIN community c ON cs.id_community = c.id_community AND c.remind_drivers_about_their_shifts = true
 																									WHERE ( cs.hidden != 1 ) AND cs.date_start BETWEEN "' . $now->format( 'Y-m-d' ) . ' 00:00:00" AND "' . $now->format( 'Y-m-d' ) . ' 23:59:59" AND cs.active = true' );
 
 		$now_start = $now->format( 'Y-m-d' ) . ' 00:00:00';
@@ -1317,6 +1318,10 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 
 			foreach( $communities as $community ){
 
+				if(!$community->remindDriversaboutTheirShifts()){
+					return false;
+				}
+
 				$message = '';
 
 				$shifts = Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift WHERE cs.date_start >= "' . $dateStart . ' 00:00:00" AND cs.date_end <= "' . $dateEnd . ' 23:59:59" AND asa.id_admin = "' . $driver->id_admin . '" AND cs.id_community = "' . $community->id_community . '" ORDER BY cs.date_start ASC' );
@@ -1358,7 +1363,6 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 					if( $driver->phone ){
 						// Send the sms
 						Crunchbutton_Message_Sms::send( [ 'to' => $driver->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_SHIFT ] );
-						// Crunchbutton_Support::createNewWarning(  [ 'body' => $message, 'phone' => $driver->phone, 'dont_open_ticket' => true ] );
 					}
 
 					// Send the email
@@ -1596,7 +1600,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 
 		$minutes = 15;
 
-		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = true AND r.delivery_service = true AND c.id_community != ? AND ( c.driver_checkin IS NULL OR c.driver_checkin = 0 ) ORDER BY c.name', [ Crunchbutton_Community::CUSTOMER_SERVICE_ID_COMMUNITY ] );
+		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = true AND r.delivery_service = true AND c.remind_drivers_about_their_shifts = true AND ( c.driver_checkin IS NULL OR c.driver_checkin = 0 ) ORDER BY c.name', [] );
 
 		$messagePattern = 'Your shift starts in %s minutes. Your shift(s) today, %s: %s. If you have any questions/feedback for us, feel free to text us back!';
 

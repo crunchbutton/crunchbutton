@@ -1809,6 +1809,14 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		}
 	}
 
+	public function sendMessageToDriversFillTheirPreferences(){
+		return ($this->message_drivers_fill_preferences ? true : false);
+	}
+
+	public function remindDriversaboutTheirShifts(){
+		return ($this->remind_drivers_about_their_shifts ? true : false);
+	}
+
 	// Smart population of "our most popular locations" on UI2 #6056
 	public static function smartSortPopulation(){
 		$query = Crunchbutton_Custom_Query::mostPopularLocationQuery();

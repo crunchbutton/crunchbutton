@@ -60,7 +60,21 @@
 		<div class="support-box-wrap box-content2">
 
 		<div class="support-box-wrap-header">
-			<h1>{{community.name}}</h1>
+			<h1><a href="/community/edit/{{community.permalink}}">{{community.name}}</a></h1>
+				<div class="support-box-header-actions-wrap">
+					<div class="support-box-header-actions">
+						<strong>Remind drivers about their shifts:</strong>
+						<span class="tag tag-green" ng-if="community.remind_drivers_about_their_shifts">Yes</span>
+						<span class="tag tag-red" ng-if="!community.remind_drivers_about_their_shifts">No</span> |
+						<strong>Send messages to drivers fill their preferences:</strong>
+						<span class="tag tag-green" ng-if="community.message_drivers_fill_preferences">Yes</span>
+						<span class="tag tag-red" ng-if="!community.message_drivers_fill_preferences">No</span> |
+						<strong>Driver check in:</strong>
+						<span class="tag tag-green" ng-if="community.driver_checkin">Yes</span>
+						<span class="tag tag-red" ng-if="!community.driver_checkin">No</span>
+					</div>
+				</div>
+
 			<div class="divider"></div>
 		</div>
 		<div class="bar-loader bar-loader-search" ng-class="{'bar-loader-loading': !loaded}"></div>

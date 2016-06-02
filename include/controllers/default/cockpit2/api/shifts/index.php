@@ -640,7 +640,13 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 						$editable = true;
 						$shifts[ $day->format( 'Ymd' ) ] = [ 'shifts' => [], 'editable' => $editable, 'date' => [ 'day' => $day->format( 'Y-m-d' ), 'formatted' => $day->format( 'M jS Y' ), 'tz' => $community->timezone ] ];
 					}
-					$communities[ $community->id_community ] = [ 'id_community' => $community->id_community, 'name' => $community->name, 'days' => $shifts ];
+					$communities[ $community->id_community ] = [ 	'id_community' => $community->id_community,
+																												'name' => $community->name,
+																												'permalink' => $community->permalink,
+																												'message_drivers_fill_preferences' => $community->message_drivers_fill_preferences,
+																												'remind_drivers_about_their_shifts' => $community->remind_drivers_about_their_shifts,
+																												'driver_checkin' => $community->driver_checkin,
+																												'days' => $shifts ];
 				}
 			}
 
