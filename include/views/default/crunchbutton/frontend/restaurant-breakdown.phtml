@@ -74,7 +74,7 @@
 		<div class="giftcard-payment-message">Pay with a card, NOT CASH, to use your {{AB.dollar}}{{credit.value}} gift card</div>
 	</div>
 
-	<div ng-if="restaurant.delivery == '1' && order.form.delivery_type=='delivery' && points.free_delivery_message">
+	<div ng-if="restaurant.delivery == '1' && order.form.delivery_type=='delivery' && points.free_delivery_message && restaurant.delivery_service">
 		<p class="delivery-free restaurant-delivery-free">
 			<strong ng-if="order.form.pay_type == 'card' || order.form.pay_type == 'campus_cash'">You have {{points.show}} points! This delivery fee is on us.</strong>
 			<strong ng-if="order.form.pay_type == 'cash'">Pay with a card, NOT CASH, to get your delivery free.</strong>
