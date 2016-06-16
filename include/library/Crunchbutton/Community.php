@@ -1657,8 +1657,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				$assignment->save();
 
 				$pexcard = $driver->pexcard();
-				$pexcard->addShiftStartFunds( $shift->id_admin_shift_assign );
-
+				if($pexcard){
+					$pexcard->addShiftStartFunds( $shift->id_admin_shift_assign );
+				}
 				if( $assignment->id_admin_shift_assign ){
 
 					$message = 'The community ' . $this->name . ' was ';
