@@ -11,10 +11,10 @@
 						<i class="fa fa-times-circle-o close-ticket" title="Close issue" ng-click="closeTicket( ticket.id_support )"></i>
 						<div ng-click="loadTicket( ticket.id_support )">
 							<a class="tickets-side-ticket" href="/ticket/{{ticket.id_support}}" eat-click>
-								<span ng-if="ticket.type == 'WARNING' && ticket.last_reply != 'client'">
+								<span ng-if="ticket.type == 'WARNING' && ticket.last_reply != 'Client'">
 									<i>System</i>
 								</span>
-								<span ng-if="ticket.type == 'WARNING' && ticket.last_reply == 'client' && ticket.name">
+								<span ng-if="ticket.type == 'WARNING' && ticket.last_reply == 'Client' && ticket.name">
 									{{ticket.name}}
 								</span>
 								<span ng-if="ticket.type != 'WARNING'">{{ticket.name}}</span>
@@ -22,7 +22,7 @@
 							<span class="tickets-side-time">{{ticket.timestamp_client * 1000 | date:'EEE MM/dd @ h:mm a'}}</span>
 							<div class="divider"></div>
 							<br>
-							<span class="tickets-side-message" ng-class="{ 'text-danger': ( ticket.last_reply == 'Client' || ticket.last_reply == 'auto-reply' || ticket.last_reply_type == 'warning'), 'text-muted': (ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply') }">{{ticket.message_client}}</span>
+							<span class="tickets-side-message" ng-class="{ 'text-danger': ( ticket.last_reply == 'Client' || ticket.last_reply == 'auto-reply' || ticket.last_reply_type == 'warning'), 'text-muted': (ticket.last_reply != 'Client' && ticket.last_reply != 'auto-reply') }">{{ticket.message_client}}</span>
 
 							<div ng-if="ticket.media" ng-repeat="image in ticket.media">
 								<img ng-if="image" class="support-side-image" src="{{image}}">
