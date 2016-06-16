@@ -14,14 +14,33 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 			$restaurant = Restaurant::o( c::getPagePiece( 4 ) );
 		}
 
-		if (!c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud', 'restaurant-'.$restaurant->id_restaurant.'-edit', 'restaurant-'.$restaurant->id_restaurant.'-all'])) {
-			$this->error(401, true);
+		$hasPermission = false;
+
+		if (c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud', 'restaurant-'.$restaurant->id_restaurant.'-edit', 'restaurant-'.$restaurant->id_restaurant.'-all'])) {
+			$hasPermission = true;
 		}
 
 		$this->restaurant = $restaurant;
 
+		// permission to close/open restaurant
+		if (!$hasPermission &&
+				(c::getPagePiece(3) == 'close-for-today' || c::getPagePiece(3) == 'force-reopen-for-today') &&
+				c::admin()->permission()->check(['community-cs'])) {
+			$communities = c::user()->communitiesDriverDelivery();
+			foreach($communities as $community){
+				$_community = $this->restaurant->community();
+				if ($community->id_community == $_community->id_community) {
+					$hasPermission = true;
+				}
+			}
+		}
+
 		if( !$this->restaurant->id_restaurant ){
 			$this->error(404, true);
+		}
+
+		if (!$hasPermission) {
+			$this->error(401, true);
 		}
 
 		switch (c::getPagePiece(3)) {
@@ -90,7 +109,7 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 		$restaurant->giftcard = 1;
 		$restaurant->delivery = 1;
 		$restaurant->takeout = 1;
-		$restaurant->confirmation = 1;
+		$restaurant->confirmation = 0;
 		$restaurant->charge_credit_fee = 1;
 		$restaurant->max_pay_promotion = 2;
 		$restaurant->pay_apology_credits = 1;
@@ -374,6 +393,8 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 	private function _notificationsExport(){
 		$out = [ 'id_restaurant' => $this->restaurant->id_restaurant, 'permalink' => $this->restaurant->permalink ];
 		$out[ 'order_notifications_sent' ] = $this->restaurant->order_notifications_sent;
+		$out[ 'confirmation' ] = $this->restaurant->confirmation;
+		$out[ 'confirmation_type' ] = $this->restaurant->confirmation_type;
 		$out['notifications'] = [];
 		foreach ( $this->restaurant->notifications( [ 'active' => null ] ) as $notification ) {
 			$out['notifications'][] = $notification->exports();
@@ -400,6 +421,8 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 		}
 
 		$this->restaurant->order_notifications_sent = $this->request()[ 'order_notifications_sent' ];
+		$this->restaurant->confirmation = $this->request()[ 'confirmation' ];
+		$this->restaurant->confirmation_type = $this->request()[ 'confirmation_type' ];
 		$this->restaurant->save();
 
 		if( $this->restaurant->id_restaurant ){

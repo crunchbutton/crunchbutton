@@ -44,8 +44,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	 * @todo Add more security here
 	 * @todo It looks like if there are orders not set as delivery nor takeout, we need to log them.
 	 */
-	public function process($params, $processType = 'web')
-	{
+	public function process($params, $processType = 'web'){
 
 		$this->campus_cash = ( $params['pay_type'] == self::PAY_TYPE_CAMPUS_CASH );
 
@@ -122,6 +121,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 				if( $now->format('YmdHis') > $this->_date_delivery->format('YmdHis') ){
 					$errors['preorder_prev_date'] = 'The desired delivery hour should not be in the past.';
+				}
+				if(!$this->restaurant()->validatePreOrderDate($this->_date_delivery->format('Y-m-d H:i:s'))){
+					$errors['preorder_date'] = 'Oops, there is something wrong with the desired time!';
 				}
 			}
 		}
@@ -1810,6 +1812,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		if ($this->confirmed || !$this->restaurant()->confirmation) {
 			return;
 		}
+
 		// the restaurant asked crunchbutton to call it, stop sending confirmations call - See #2848
 		if( $this->asked_to_call ){
 			Log::debug([ 'order' => $this->id_order, 'action' => 'asked_to_call() - dial confirm call', '$this->asked_to_call' => $this->asked_to_call, '$this->restaurant()->confirmation' =>$this->restaurant()->confirmation, 'type' => 'notification']);
@@ -1829,9 +1832,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 		// Added new confirmation type: stealth. More 'Stealth confirmation call' #2848
 		if( $this->restaurant()->confirmation_type == 'stealth' ){
-			$confirmURL = 'http://'.c::config()->host_callback.'/api/order/'.$this->id_order.'/doconfirmstealth';
+			$confirmURL = 'https://'.c::config()->host_callback.'/api/order/'.$this->id_order.'/doconfirmstealth';
 		} else {
-			$confirmURL = 'http://'.c::config()->host_callback.'/api/order/'.$this->id_order.'/doconfirm';
+			$confirmURL = 'https://'.c::config()->host_callback.'/api/order/'.$this->id_order.'/doconfirm';
 		}
 
 		// Log
@@ -1851,7 +1854,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			'+1'.$num,
 			$confirmURL,
 			[
-				'StatusCallback' => 'http://'.c::config()->host_callback.'/api/notification/'.$log->id_notification_log.'/confirm'
+				'StatusCallback' => 'https://'.c::config()->host_callback.'/api/notification/'.$log->id_notification_log.'/confirm'
 			]
 		);
 
@@ -1903,6 +1906,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		}
 		// Check if there are another confirm que, if it does it will not send two confirms. Just one is enough.
 		$nl = Notification_Log::q("SELECT * FROM notification_log WHERE id_order=? AND type = 'confirm' AND ( status = 'created' OR status = 'queued' )", [$order->id_order]);
+
 		if( $nl->count() > 0 ){
 			return;
 		}
@@ -2338,6 +2342,31 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					$msg .= " \nTIP: $".$this->tip();
 				}
 				break;
+
+				case 'text-drivers':
+					$msg = "Order #{$this->id_order}. {$this->restaurant()->name}. " . ( $this->pay_type == 'card' ? 'Credit' : 'Cash' ) . ". ";
+					$dishes = explode("\n", $food);
+					$_food = '';
+					foreach($dishes as $dish){
+						$dish = str_replace('- ', '', $dish);
+						$dish = str_replace('.', '', $dish);
+						$dish = trim($dish);
+						$dish = str_replace('  ', ': ', $dish);
+						if($dish){
+							$_food .= '{{' . $dish . '}} ';
+						}
+					}
+					$msg .= $_food . ". ";
+					$msg .= "Subtotal $" . number_format($this->price, 2) . ".";
+					if ($this->pay_type == 'card' && $this->tip) {
+						$msg .= " Tip: $".$this->tip();
+						$msg .= "(" . number_format( $this->tip() / $this->price * 100, 2 ) . "%).";
+					}
+					$msg .= "\n\nOrder #{$this->id_order}. {$this->name}. {$this->phone}. {$this->address}.";
+					if ($this->notes) {
+						$msg .= " \nNOTES: ".$this->notes;
+					}
+					break;
 
 			case 'sms-driver-priority':
 					$spacer = '/';

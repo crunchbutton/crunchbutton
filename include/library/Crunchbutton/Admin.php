@@ -181,7 +181,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function getByPhone( $phone, $activeOnly = false){
-		return Admin::q( "SELECT * FROM admin a WHERE phone = ? ".($activeOnly ? 'AND a.active=true ' : '')." ORDER BY id_admin DESC LIMIT 1", [ Phone::clean( $phone ) ] )->get( 0 );
+		return Admin::q( "SELECT a.* FROM admin a INNER JOIN phone p ON a.id_phone = p.id_phone WHERE p.phone = ? ".($activeOnly ? 'AND a.active=true ' : '')." ORDER BY id_admin DESC LIMIT 1", [ Phone::clean( $phone ) ] )->get( 0 );
 	}
 
 	public function getByPhoneSetup( $phone ){
@@ -357,6 +357,28 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return false;
 	}
 
+	public function hasCSPermissionForCommunity($id_community){
+		$hasPermission = false;
+		$communities = $this->communitiesDriverDelivery();
+		foreach($communities as $_community){
+			if ($id_community == $_community->id_community) {
+				$hasPermission = true;
+			}
+		}
+		return $hasPermission;
+	}
+
+	public function communitiesDriverDelivery(){
+		$adminCommunities = [];
+		$groups = $this->groups();
+		foreach ( $groups as $group ) {
+			if( $group->id_community && $group->type == Crunchbutton_Group::TYPE_DRIVER ){
+				$adminCommunities[] = $group->community();
+			}
+		}
+		return $adminCommunities;
+	}
+
 	public function amountPerOrder( $id_community = null ){
 		$paymentType = $this->paymentType();
 		return $paymentType->amountPerOrder( $id_community );
@@ -369,6 +391,17 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 			return true;
 		}
 		return false;
+	}
+
+	public function isCommunityCS(){
+		return $this->isCommunitySupport();
+	}
+
+	public function isCommunitySupport(){
+		if (!isset($this->_isCommunitySupport)) {
+			$this->_isCommunitySupport = $this->is( Crunchbutton_Group::TYPE_COMMUNITY_CS );
+		}
+		return $this->_isCommunitySupport;
 	}
 
 	public function isDriver() {
@@ -438,7 +471,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	public function communitiesHeDeliveriesFor() {
 		if (!isset($this->_communitiesHeDeliveriesFor)) {
 			$this->_communitiesHeDeliveriesFor = Community::q('
-				SELECT c.* FROM community c INNER JOIN admin_group ag ON ag.id_group=c.id_driver_group WHERE ag.id_admin=?
+				SELECT c.* FROM community c INNER JOIN admin_group ag ON ag.id_group=c.id_driver_group WHERE ag.id_admin=? AND c.active = true
 			', [$this->id_admin]);
 		}
 		return $this->_communitiesHeDeliveriesFor;
@@ -678,7 +711,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	public function groups(){
 		if( $this->id_admin ){
 			if( !$this->_groups ){
-				$this->_groups = Crunchbutton_Group::q('SELECT g.* FROM `group` g INNER JOIN admin_group ag ON ag.id_group = g.id_group AND ag.id_admin = ? ORDER BY name ASC', [$this->id_admin]);
+				$this->_groups = Crunchbutton_Group::q('SELECT g.* FROM `group` g INNER JOIN admin_group ag ON ag.id_group = g.id_group AND ag.id_admin = ? LEFT JOIN community c ON c.id_community = g.id_community AND c.active = true ORDER BY name ASC', [$this->id_admin]);
 			}
 			return $this->_groups;
 		}
@@ -927,15 +960,27 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function hasCommunityToOpen(){
-  	if( $this->isDriver() ){
-  		$communities = $this->driverCommunities();
-  		foreach( $communities as $community ){
-  			if( $community->drivers_can_open ){
-  				return true;
-  			}
-  		}
-  	}
-  	return false;
+		if( $this->isDriver() ){
+			$communities = $this->driverCommunities();
+			foreach( $communities as $community ){
+				if( $community->drivers_can_open ){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public function hasCommunityToClose(){
+		if( $this->isDriver() ){
+			$communities = $this->driverCommunities();
+			foreach( $communities as $community ){
+				if( $community->drivers_can_close ){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public function driverCommunities(){

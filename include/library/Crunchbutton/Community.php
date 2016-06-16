@@ -3,6 +3,7 @@
 class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 	const CUSTOMER_SERVICE_ID_COMMUNITY = 92;
+	const COMMUNITY_TEST = 6;
 	const CUSTOMER_SERVICE_COMMUNITY_GROUP = 'support';
 	const AUTO_SHUTDOWN_COMMUNITY_LOGIN = 'autoshutdowncommunity';
 
@@ -293,6 +294,8 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			'combine_restaurant_driver_hours',
 			'top',
 			'drivers_can_open',
+			'drivers_can_close',
+			'notify_customer_when_driver_open',
 			'auto_close_predefined_message',
 			'amount_per_order',
 			'campus_cash',
@@ -459,26 +462,42 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function getDriversOfCommunity(){
-
 		$group = $this->driver_group()->id_group;
+		$query = 'SELECT a.* from admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = ? WHERE a.active = 1 ORDER BY a.name ASC';
+		return Admin::q( $query, [$group]);
+	}
 
-		$query = 'SELECT a.* FROM admin a
-												INNER JOIN (
-													SELECT DISTINCT(id_admin) FROM (
-													SELECT DISTINCT(a.id_admin)
-														FROM admin a
-														INNER JOIN notification n ON n.id_admin = a.id_admin AND n.active = true
-														LEFT JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = true
-														INNER JOIN restaurant r ON r.id_restaurant = n.id_restaurant
-														INNER JOIN restaurant_community c ON c.id_restaurant = r.id_restaurant AND c.id_community = ?
-													UNION
-													SELECT DISTINCT(a.id_admin) FROM admin a
-														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = ?
-														) drivers
-													)
-											drivers ON drivers.id_admin = a.id_admin AND a.active = true ORDER BY name ASC';
+	public function workingCommunityCS(){
+		if(!$this->_workingCommunityCS){
+			$community_cs = $this->communityCS();
+			$this->_workingCommunityCS = [];
+			foreach($community_cs as $cs){
+				if($cs->isWorking()){
+					$this->_workingCommunityCS[] = $cs;
+				}
+			}
+		}
+		return $this->_workingCommunityCS;
+	}
 
-		return Admin::q( $query, [$this->id_community, $group]);
+	public function hasWorkingCommunityCS(){
+		return count($this->workingCommunityCS()) > 0;
+	}
+
+	public function hasCommunityCS(){
+		return $this->communityCS()->count() > 0;
+	}
+
+	public function communityCS(){
+		if(!$this->_communityCS){
+			$group = $this->driver_group()->id_group;
+			$query = 'SELECT a.* from admin a
+								INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = ?
+								INNER JOIN (SELECT ag.id_admin FROM admin_group ag INNER JOIN `group` g ON ag.id_group = g.id_group AND g.name = ?) community_cs ON community_cs.id_admin = a.id_admin
+								WHERE a.active = 1 ORDER BY a.name ASC';
+			$this->_communityCS = Admin::q( $query, [$group, Crunchbutton_Group::TYPE_COMMUNITY_CS]);
+		}
+		return $this->_communityCS;
 	}
 
 	public function slug(){
@@ -1098,14 +1117,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 				$ticket .= 'The community message was set to: "' . $message . '"' . "\n";
 
-				if( $this->driver_checkin ){
-					$ticket .= 'Because this community needs the driver to check in.';
+				if( $nextShift->id_community ){
+					$ticket .= 'that is when the next shift will start.';
 				} else {
-					if( $nextShift->id_community ){
-						$ticket .= 'that is when the next shift will start.';
-					} else {
-						$ticket .= 'Because it has no next shift with drivers.';
-					}
+					$ticket .= 'Because it has no next shift with drivers.';
 				}
 
 				$reason = new Cockpit_Community_Closed_Reason;
@@ -1443,6 +1458,17 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return false;
 	}
 
+	public function isElegibleToBeClosed(){
+		if( $this->id_community && $this->drivers_can_close ){
+			if( $this->allThirdPartyDeliveryRestaurantsClosed() || $this->allRestaurantsClosed() || $this->is_auto_closed || !$this->isOpen()){
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+
 	public function isOpen(){
 		$shift = Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
 		return ( !$this->allThirdPartyDeliveryRestaurantsClosed() && !$this->allRestaurantsClosed() && !$this->is_auto_closed && $shift->id_community_shift );
@@ -1533,6 +1559,55 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		}
 	}
 
+	// aqui
+	public function closeCommunityByDriver($id_driver, $minutes, $reason){
+		// check if the driver belongs to the community
+		$driver = Admin::o( $id_driver );
+
+		$communities = $driver->driverCommunities();
+		$canClose = false;
+		foreach( $communities as $community ){
+			if( $community->id_community == $this->id_community ){
+				$canClose = true;
+			}
+		}
+
+		if(!$canClose){
+			return self::DRIVER_OPEN_COMMUNITY_ERROR_COMMUNITY;
+		}
+
+		$reopen_at = new DateTime( 'now', new DateTimeZone(c::config()->timezone));
+		$reopen_at->modify('+ ' . $minutes . ' minutes');
+		$reopen_at = $reopen_at->format('Y-m-d H:i:s');
+
+		$dont_warn_till = new DateTime( 'now', new DateTimeZone(Crunchbutton_Community_Shift::CB_TIMEZONE));
+		$dont_warn_till->modify('+ ' . $minutes . ' minutes');
+		$dont_warn_till = $dont_warn_till->format('Y-m-d H:i:s');
+
+		$this->close_3rd_party_delivery_restaurants = true;
+		$this->close_3rd_party_delivery_restaurants_id_admin = $driver->id_admin;
+		$this->close_3rd_party_delivery_restaurants_id_admin = $driver->id_admin;
+		$this->reopen_at = $reopen_at;
+		$this->dont_warn_till = $dont_warn_till;
+
+		$closedReason = new Cockpit_Community_Closed_Reason;
+		$closedReason->id_admin = c::user()->id_admin;
+		$closedReason->id_community = $this->id_community;
+		$closedReason->type = Cockpit_Community_Closed_Reason::TYPE_3RD_PARTY_DELIVERY_RESTAURANTS;
+		$closedReason->date = date( 'Y-m-d H:i:s' );
+		$closedReason->reason = $reason;
+		$closedReason->save();
+
+		$this->save();
+
+		$message = 'The community ' . $this->name . ' was closed';
+		$message .= ' by ' . $driver->name;
+		$message .= ' during the period of ' . $minutes . ' minutes.';
+		$message .= ' Reason: ' . $reason;
+		Crunchbutton_Support::createNewWarning( [ 'staff' => true, 'phone' => $driver->phone, 'bubble' => true, 'body' => $message ] );
+		return true;
+	}
+
 	public function openCommunityByDriver( $id_driver, $shiftEnd ){
 		// check if the driver belongs to the community
 		$driver = Admin::o( $id_driver );
@@ -1581,6 +1656,9 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				$assignment->date = date('Y-m-d H:i:s');
 				$assignment->save();
 
+				$pexcard = $driver->pexcard();
+				$pexcard->addShiftStartFunds( $shift->id_admin_shift_assign );
+
 				if( $assignment->id_admin_shift_assign ){
 
 					$message = 'The community ' . $this->name . ' was ';
@@ -1603,6 +1681,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					$message .= 'but it was reopened by ' . $driver->name;
 					$message .= ' during the period ' . $newShift->startEndToString();
 					Crunchbutton_Support::createNewWarning( [ 'staff' => true, 'phone' => $driver->phone, 'bubble' => true, 'body' => $message ] );
+					$this->createNotificationForCommunityOpenedByDriver();
 					return true;
 				} else {
 					return self::DRIVER_OPEN_COMMUNITY_ERROR_ASSIGNING_SHIFT;
@@ -1701,6 +1780,44 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		} else {
 			return self::PREORDER_MINUTES_AFTER_COMMUNITY_OPEN_DEFAULT;
 		}
+	}
+
+	public static function customerCommunityByPhone($phone){
+		// returns the community that the phone belongs to
+		$query = 'SELECT id_community FROM `order` o INNER JOIN phone p ON p.id_phone = o.id_phone AND p.phone = ? ORDER BY o.id_order DESC LIMIT 1';
+		return self::q($query, [$phone]);
+	}
+
+	public function createNotificationForCommunityOpenedByDriver(){
+		if (Community_Notification::notifyCommunityWhenIsOpenedByDriver() && $this->notify_customer_when_driver_open) {
+			$config = Community_Notification::openByDriverNotifyConfig();
+			$notifications = [];
+			if ($config[Community_Notification::CONFIG_KEY_OPEN_BY_DRIVER_NOTIFY_EMAIL]) {
+				$notifications[] = Community_Notification::NOTIFICATION_TYPE_EMAIL;
+			}
+			if ($config[Community_Notification::CONFIG_KEY_OPEN_BY_DRIVER_NOTIFY_PUSH]) {
+				$notifications[] = Community_Notification::NOTIFICATION_TYPE_PUSH;
+			}
+			if ($config[Community_Notification::CONFIG_KEY_OPEN_BY_DRIVER_NOTIFY_SMS]) {
+				$notifications[] = Community_Notification::NOTIFICATION_TYPE_SMS;
+			}
+			$days = $config[Community_Notification::CONFIG_KEY_OPEN_BY_DRIVER_NOTIFY_DAYS];
+			$message = $config[Community_Notification::CONFIG_KEY_OPEN_BY_DRIVER_NOTIFY_MSG];
+			foreach ($notifications as $notification) {
+				Community_Notification::create([	'id_community' => $this->id_community,
+																					'notification_type' => $notification,
+																					'message' => $message,
+																					'customer_period' => $days ]);
+			}
+		}
+	}
+
+	public function sendMessageToDriversFillTheirPreferences(){
+		return ($this->message_drivers_fill_preferences ? true : false);
+	}
+
+	public function remindDriversaboutTheirShifts(){
+		return ($this->remind_drivers_about_their_shifts ? true : false);
 	}
 
 	// Smart population of "our most popular locations" on UI2 #6056

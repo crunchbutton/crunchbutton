@@ -678,8 +678,7 @@ class Crunchbutton_App extends Cana_App {
 			$http = new Services_Twilio_TinyHttp(
 				'https://api.twilio.com',
 				['curlopts' => [
-					CURLOPT_SSL_VERIFYPEER => true,
-					CURLOPT_SSL_VERIFYHOST => 2,
+					CURLOPT_SSL_VERIFYPEER => false
 				]]
 			);
 

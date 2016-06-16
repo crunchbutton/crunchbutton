@@ -78,16 +78,21 @@ class Controller_api_group extends Crunchbutton_Controller_Rest {
 			$offset = ($page-1) * $limit;
 		}
 
+		if($this->request()['active-only']){
+			$w = ' AND c.active = true';
+		} else {
+			$w = '';
+		}
+
 		$q = '
 			SELECT
 				-WILD-
 			FROM `group` g
-			LEFT JOIN community c ON c.id_community = g.id_community
+			LEFT JOIN community c ON c.id_community = g.id_community ' . $w . '
 			LEFT JOIN admin_group ag ON ag.id_group = g.id_group
 			WHERE
 				g.name IS NOT NULL
 		';
-
 
 		if ($search) {
 			$s = Crunchbutton_Query::search([
@@ -131,6 +136,7 @@ class Controller_api_group extends Crunchbutton_Controller_Rest {
 		$r = c::db()->query(str_replace('-WILD-','
 			g.*,
 			c.name AS community,
+			c.active,
 			c.id_community AS id_community,
 			COUNT(ag.id_admin) AS members
 		', $q), $keys);
@@ -141,8 +147,11 @@ class Controller_api_group extends Crunchbutton_Controller_Rest {
 
 		while ($s = $r->fetch()) {
 			$s->description = ( !$s->description ? '' : $s->description );
-			$data[] = $s;
-			$i++;
+			if(!$s->id_community || ($s->id_community && $s->active)){
+				$s->id_group = intval($s->id_group);
+				$data[] = $s;
+				$i++;
+			}
 		}
 
 

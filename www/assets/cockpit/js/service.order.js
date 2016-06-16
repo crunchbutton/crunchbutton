@@ -65,6 +65,7 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 		},
 		'refund' : { url: App.service + 'order/:id_order/refund', method: 'POST', params : {} },
 		'do_not_reimburse_driver' : { url: App.service + 'order/:id_order/do_not_reimburse_driver', method: 'GET', params : {} },
+		'text_drivers' : { url: App.service + 'order/:id_order/text_drivers', method: 'GET', params : {} },
 		'do_not_pay_driver' : { url: App.service + 'order/:id_order/do_not_pay_driver', method: 'GET', params : {} },
 		'do_not_pay_restaurant' : { url: App.service + 'order/:id_order/do_not_pay_restaurant', method: 'GET', params : {} },
 		'mark_cash_card_charged' : { url: App.service + 'order/:id_order/mark_cash_card_charged', method: 'GET', params : {} },
@@ -131,6 +132,12 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 		});
 	}
 
+	service.text_drivers = function( id_order, callback ){
+		order.text_drivers( { id_order: id_order }, function( data ) {
+			callback( data );
+		});
+	}
+
 	service.mark_cash_card_charged = function( id_order, callback ){
 		order.mark_cash_card_charged( { id_order: id_order }, function( data ) {
 			callback( data );
@@ -160,8 +167,6 @@ NGApp.factory('OrderService', function(ResourceFactory, $rootScope, $http) {
 			callback( data );
 		});
 	}
-
-
 
 	service.text_5_min_away = function( id_order, callback ){
 		order.text_5_min_away( { id_order: id_order }, function( data ) {

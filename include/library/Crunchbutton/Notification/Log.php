@@ -44,7 +44,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			$twilio = c::twilio();
 
 
-			$url = 'http://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcalling';
+			$url = 'https://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcalling';
 
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB - starting', 'url' => $url, 'type' => 'notification' ]);
 
@@ -157,10 +157,6 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			$this->status = 'maxconfirmbackexceeded';
 			$this->save();
 
-			if (c::env() != 'live') {
-				return;
-			}
-
 			// Create a new maxcall notification_log
 			$log = new Notification_Log();
 			$log->status = 'pending';
@@ -169,7 +165,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			$log->id_order = $this->id_order;
 			$log->save();
 
-			$this->tellRepsAboutMaxConfirmationCall();
+			// $this->tellRepsAboutMaxConfirmationCall();
 
 			$sendSMSTo = array();
 			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
@@ -186,7 +182,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			Crunchbutton_Support::createNewWarning( [ 'id_order' => $this->id_order, 'body' => $body ] );
 
 			// Send SMS to Reps - Issue #2027
-			$usersToReceiveSMS = $this->order()->restaurant()->adminReceiveSupportSMS();
+			// $usersToReceiveSMS = $this->order()->restaurant()->adminReceiveSupportSMS();
 
 			foreach( $usersToReceiveSMS as $user ){
 				$sendSMSTo[ $user->name ] = $user->txt;
@@ -281,7 +277,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 		$env = c::getEnv();
 		$twilio = c::twilio();
 
-		$url = 'http://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcalling?id_notification=' . $log->id_notification;
+		$url = 'https://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcalling?id_notification=' . $log->id_notification;
 
 		Log::debug( [ 'order' => $this->id_order, 'action' => 'MAX CB - starting', 'url' => $url, 'callto'=> $support, 'type' => 'notification' ]);
 

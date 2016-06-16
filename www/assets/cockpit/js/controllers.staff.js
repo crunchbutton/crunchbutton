@@ -601,7 +601,6 @@ NGApp.controller('StaffCommunityCtrl', function( $scope, $routeParams, $rootScop
 
 	$rootScope.$on( 'CommunitiesAssign', function(e, data ) {
 
-
 		App.dialog.show( '.assign-communities-container' );
 
 		CommunityService.listSimple( function( data ) {
@@ -644,7 +643,7 @@ NGApp.controller('StaffGroupCtrl', function( $scope, $routeParams, $rootScope, G
 
 		App.dialog.show( '.assign-groups-container' );
 
-		GroupService.list( { 'limit': 'none' }, function( data ) {
+		GroupService.list( { 'limit': 'none', 'active-only': true }, function( data ) {
 			$scope.groups = data.results;
 			$scope.ready = true;
 		} );
@@ -653,7 +652,7 @@ NGApp.controller('StaffGroupCtrl', function( $scope, $routeParams, $rootScope, G
 
 		if( data.groups ){
 			angular.forEach( data.groups, function(name, id_group) {
-				$scope.assigned.groups.push( id_group );
+				$scope.assigned.groups.push( parseInt(id_group) );
 			} );
 		}
 

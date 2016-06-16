@@ -1,0 +1,1 @@
+ALTER TABLE `community` ADD `drivers_can_close` tinyint(1) NOT NULL DEFAULT '0' AFTER `drivers_can_open`;

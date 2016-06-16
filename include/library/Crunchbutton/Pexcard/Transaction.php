@@ -218,6 +218,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 											'description' => $transaction[ 'description' ],
 											'amount' => $transaction[ 'amount' ] ];
 					Crunchbutton_Pexcard_Report_Transaction::byTransaction( $params );
+
 				}
 			}
 			$delivered_orders = $driver[ 'delivered_orders' ];
@@ -240,8 +241,8 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 
 	public static function mergeNameByTransaction($id_pexcard_transaction){
 		$query = 'SELECT pt.authTransactionId,
-							(SELECT description FROM pexcard_transaction WHERE authTransactionId = pt.authTransactionId AND isPending IS NOT NULL) AS pendingDescription,
-							(SELECT description FROM pexcard_transaction WHERE authTransactionId = pt.authTransactionId AND isPending IS NULL) AS regularDescription
+							(SELECT description FROM pexcard_transaction WHERE authTransactionId = pt.authTransactionId AND isPending IS NOT NULL LIMIT 1) AS pendingDescription,
+							(SELECT description FROM pexcard_transaction WHERE authTransactionId = pt.authTransactionId AND isPending IS NULL LIMIT 1) AS regularDescription
 							 FROM pexcard_transaction pt WHERE pt.id_pexcard_transaction = ?';
 		$transaction = c::db()->get( $query, [ $id_pexcard_transaction ] )->get(0);
 		$pendingDescription = trim(str_replace( 'Pending...', '', $transaction->pendingDescription ));

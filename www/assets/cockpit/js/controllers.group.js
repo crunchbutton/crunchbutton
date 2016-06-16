@@ -105,7 +105,7 @@ NGApp.controller('GroupCtrl', function ($scope, $routeParams, $rootScope, GroupS
 		$scope.group = d;
 		$scope.loading = false;
 
-		StaffService.list({group: d.id_group, limit: '100' }, function(d) {
+		StaffService.list({only_group: d.id_group, limit: '100' }, function(d) {
 			$scope.staff = d.results;
 			$scope.loadingStaff = false;
 		});

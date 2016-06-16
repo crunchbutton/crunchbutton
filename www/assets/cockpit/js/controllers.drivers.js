@@ -72,23 +72,86 @@ NGApp.controller( 'DriversCommunityCtrl', function ($scope, $filter, DriverCommu
 		}
 	});
 
-	$scope.open = function(){
-		if( $scope.form.$invalid ){
+	$scope.sendTextMessage = function(){
+		if( $scope.formTextDrivers.$invalid ){
+			$scope.formTextDriversSubmitted = true;
+			return;
+		}
+
+		$scope.isSendingTextMessage = true;
+		var numbers = new Array;
+
+		if( $scope.community.drivers.length ){
+			angular.forEach( $scope.community.drivers, function(staff, key) {
+				if(staff.text){
+					numbers.push(staff.phone);
+				}
+			} );
+		}
+
+		if (!numbers.length) {
+			App.alert( 'Please, select at least one driver!' );
+			return;
+		}
+
+		DriverCommunityService.textMessage( {id_community: $scope.id_community, numbers: numbers, message: $scope.community.text_message }, function( json ){
+			if ( json.error ) {
+				App.alert( 'Error sending text message!' );
+			} else {
+				App.alert( 'Text sent!' );
+			}
+			load();
+			$scope.isSendingTextMessage = false;
+		} );
+	}
+
+	$scope.updateDriversCount = function(){
+		if( $scope.community.drivers.length ){
+			var count = 0;
+			angular.forEach( $scope.community.drivers, function(staff, key) {
+				if(staff.text){
+					count++;
+				}
+			} );
+			$scope.driversCount = count;
+		}
+	}
+
+	$scope.close = function(){
+		if( $scope.formClose.$invalid ){
 			$scope.submitted = true;
+			return;
+		}
+
+		$scope.isSavingClose = true;
+		DriverCommunityService.close( { id_community: $scope.id_community, how_long: $scope.community.how_long, reason: $scope.community.reason }, function( json ){
+			if ( json.error ) {
+				App.alert( 'Error, the community is not open!' );
+			} else {
+				App.alert( 'The community is closed!' );
+			}
+			load();
+			$scope.isSavingClose = false;
+		} );
+	}
+
+	$scope.open = function(){
+		if( $scope.formOpen.$invalid ){
+			$scope.submittedOpen = true;
 			return;
 		}
 
 		var hour = $filter('date')( $scope.community.hour, 'H:mm' );
 
-		$scope.isSaving = true;
+		$scope.isSavingOpen = true;
 		DriverCommunityService.open( { id_community: $scope.id_community, hour: hour }, function( json ){
 			if ( json.error ) {
-				App.alert( 'Error, the community is not open!' );
+				App.alert( 'Error, the community is not closed!' );
 			} else {
 				App.alert( 'The community is open!' );
 			}
 			load();
-			$scope.isSaving = false;
+			$scope.isSavingOpen = false;
 		} );
 	}
 

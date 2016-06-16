@@ -48,20 +48,6 @@
 						</div>
 					</li>
 
-					<li class="li-input" ng-class="{'error':form.driverCheckin.$invalid}">
-						<div class="label">Ask drivers to check in:</div>
-						<div class="input">
-							<select name="driverCheckin" required ng-model="community.driver_checkin" ng-options="opt.value as opt.label for opt in yesNo" ></select>
-						</div>
-					</li>
-
-					<li class="li-input" ng-class="{'error':form.communityMergeHours.$invalid}">
-						<div class="label">Combine Restaurant and Driver's Shift Hours:</div>
-						<div class="input">
-							<select name="communityMergeHours" required ng-model="community.combine_restaurant_driver_hours" ng-options="opt.value as opt.label for opt in yesNo" ></select>
-						</div>
-					</li>
-
 					<li class="li-input" ng-class="{'error':form.communityCanBeOpenedByDrivers.$invalid}">
 						<div class="label">Community can be opened by drivers:</div>
 						<div class="input">
@@ -69,13 +55,25 @@
 						</div>
 					</li>
 
-					<li class="li-input" ng-class="{'error':form.automaticDriverRestaurantName.$invalid}">
-						<div class="label">Change driver restaurant name automatically based on assigned shifts:</div>
+					<li class="li-input" ng-class="{'error':form.communityNotifyCustomerWhenDriverOpen.$invalid}" ng-if="community.drivers_can_open">
+						<div class="label">Send notification to customers when driver opens it:</div>
 						<div class="input">
-							<select name="automaticDriverRestaurantName" required ng-model="community.automatic_driver_restaurant_name" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+							<select name="communityNotifyCustomerWhenDriverOpen" required ng-model="community.notify_customer_when_driver_open" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+						<div class="note" ng-show="community.notify_customer_when_driver_open">
+							<br>
+							<a href="/config/community-open">Please make sure this option is also enabled here.</a>
 						</div>
 					</li>
 
+
+
+					<li class="li-input" ng-class="{'error':form.communityCanBeClosedByDrivers.$invalid}">
+						<div class="label">Community can be closed by drivers:</div>
+						<div class="input">
+							<select name="communityCanBeClosedByDrivers" required ng-model="community.drivers_can_close" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
 
 					<li class="li-input" ng-class="{'error':form.communityAutoClose.$invalid}">
 						<div class="label">Enable Auto Close:</div>
@@ -102,6 +100,63 @@
 
 		</div>
 
+	<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Shifts</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+					<li class="li-input" ng-class="{'error':form.driverCheckin.$invalid}">
+						<div class="label">Ask drivers to check in:</div>
+						<div class="input">
+							<select name="driverCheckin" required ng-model="community.driver_checkin" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':form.driverCheckin.$invalid}">
+						<div class="label">Notify CS when drivers don't check in:</div>
+						<div class="input">
+							<select name="driverCheckin" required ng-model="community.notify_cs_when_driver_dont_checkin" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':form.communityMergeHours.$invalid}">
+						<div class="label">Combine Restaurant and Driver's Shift Hours:</div>
+						<div class="input">
+							<select name="communityMergeHours" required ng-model="community.combine_restaurant_driver_hours" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':form.automaticDriverRestaurantName.$invalid}">
+						<div class="label">Change driver restaurant name automatically based on assigned shifts:</div>
+						<div class="input">
+							<select name="automaticDriverRestaurantName" required ng-model="community.automatic_driver_restaurant_name" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':form.shiftSendMessagesDriversFillPreferences.$invalid}">
+						<div class="label">Send messages to drivers fill their preferences:</div>
+						<div class="input">
+							<select name="shiftSendMessagesDriversFillPreferences" required ng-model="community.message_drivers_fill_preferences" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':form.remindDriversAboutTheirShifts.$invalid}">
+						<div class="label">Remind drivers about their shifts:</div>
+						<div class="input">
+							<select name="remindDriversAboutTheirShifts" required ng-model="community.remind_drivers_about_their_shifts" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+						<div class="notes">Reminders sent minutes before their shifts, daily and weekly reminders (text and email)</div>
+					</li>
+				</ul>
+
+			</div>
+
+		</div>
 
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
@@ -138,7 +193,6 @@
 				</ul>
 
 			</div>
-
 		</div>
 
 		<div class="support-box-wrap box-content2">

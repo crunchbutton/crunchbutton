@@ -6,12 +6,15 @@ class Crunchbutton_Group extends Cana_Table {
 	const MARKETING_REP_GROUPS_PREFIX = 'mktrep-';
 	const MARKETING_REP_GROUP = 'marketing-rep';
 	const CAMPUS_MANAGER_GROUP = 'campus-manager';
+	const COMMUNITY_CS_GROUP = 'community-cs';
 
 	const TYPE_MARKETING_REP = 'marketing-rep';
 	const TYPE_DRIVER = 'driver';
 	const TYPE_COMMUNITY_MANAGER = 'community-manager';
 	const TYPE_BRAND_REPRESENTATIVE = 'brand-representative';
 	const TYPE_SUPPORT = 'support';
+	const TYPE_COMMUNITY_CS = 'community-cs';
+
 
 	public function driverGroupOfCommunity( $community ){
 		return Crunchbutton_Group::normalizeDriverGroup( str_replace( ' ' , '-', Crunchbutton_Group::DRIVER_GROUPS_PREFIX . strtolower( str_replace( "'", '', str_replace( '"', '', str_replace( ".", '', $community ) ) ) ) ), 0, 20);
@@ -25,6 +28,9 @@ class Crunchbutton_Group extends Cana_Table {
 	public function getType(){
 		if( $this->name == self::TYPE_SUPPORT ){
 			return self::TYPE_SUPPORT;
+		}
+		if( $this->name == self::COMMUNITY_CS_GROUP ){
+			return self::TYPE_COMMUNITY_CS;
 		}
 		if( $this->name == self::CAMPUS_MANAGER_GROUP ){
 			return self::TYPE_COMMUNITY_MANAGER;

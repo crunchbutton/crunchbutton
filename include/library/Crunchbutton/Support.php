@@ -175,6 +175,11 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			$twilio_session->save();
 		}
 
+		$driver = Phone::phoneNumberBelongsToDriver($params[ 'From' ]);
+		if($driver && $driver->community() && $driver->community()->id_community){
+			$params['id_community'] = $driver->community()->id_community;
+		}
+
 		// Get the current support ticket
 		$support = Support::getByTwilioSessionId( $twilio_session->id_session_twilio );
 		$createNewTicket = false;
@@ -216,6 +221,10 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			$support->status = Crunchbutton_Support::STATUS_OPEN;
 			$support->save();
 		}
+		if($params['id_community'] && !$support->id_community){
+			$support->id_community = $params['id_community'];
+			$support->save();
+		}
 		if( $params[ 'ignoreReply' ] ){
 			// to prevent the support ticket to open
 			$support->status = self::STATUS_CLOSED;
@@ -232,6 +241,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		$support->type = Crunchbutton_Support::TYPE_SMS;
 		$support->phone = $params[ 'phone' ];
 		$support->id_phone = $params[ 'phone' ];
+		$support->id_community = $params[ 'id_community' ];
 		$support->status = Crunchbutton_Support::STATUS_OPEN;
 		$support->ip = c::getIp();
 		$support->id_session_twilio = $params[ 'id_session_twilio' ];
@@ -714,7 +724,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 			$id_support = $this->id_support;
 
-			$url = 'http://' . c::config()->host_callback . '/api/support/say/' . $id_support;
+			$url = 'https://' . c::config()->host_callback . '/api/support/say/' . $id_support;
 
 			Log::debug( [ 'action' => 'Need to call', 'id_support' => $id_support, 'url' => $url, 'hour' => $hour, 'type' => 'sms' ] );
 
@@ -915,6 +925,9 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 				$out[ 'community' ] = [];
 				$out[ 'community' ][ 'id_community' ] = $community->id_community;
 				$out[ 'community' ][ 'name' ] = $community->name;
+				$out[ 'community' ][ 'close_all_restaurants' ] = $community->close_all_restaurants;
+				$out[ 'community' ][ 'close_3rd_party_delivery_restaurants' ] = $community->close_3rd_party_delivery_restaurants;
+				$out[ 'community' ][ 'auto_close' ] = $community->auto_close;
 				$out[ 'community' ][ 'permalink' ] = $community->permalink;
 				$note = $community->lastNote();
 				if ($note) {

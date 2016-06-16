@@ -4,7 +4,7 @@ class Controller_api_community_note extends Crunchbutton_Controller_RestAccount 
 
 	public function init() {
 
-		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'notes-all' ])) {
+		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'notes-all', 'community-cs' ])) {
 			$this->error(401, true);
 		}
 

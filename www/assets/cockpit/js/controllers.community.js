@@ -274,6 +274,7 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 			$scope.community = {
 				'active': true,
 				'private': false,
+				'notify_cs_when_driver_dont_checkin': true,
 				'image': false,
 				'close_all_restaurants': false,
 				'close_3rd_party_delivery_restaurants': false,
@@ -282,6 +283,8 @@ NGApp.controller('CommunityFormCtrl', function ($scope, $routeParams, $rootScope
 				'auto_close': true,
 				'driver_checkin': true,
 				'drivers_can_open': false,
+				'drivers_can_close': false,
+				'notify_customer_when_driver_open': false,
 				'campus_cash': false,
 				'signature': false,
 				'allow_preorder': false,

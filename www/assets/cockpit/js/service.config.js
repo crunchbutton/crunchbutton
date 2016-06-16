@@ -28,6 +28,33 @@ NGApp.factory( 'ConfigService', function( $resource ) {
 } );
 
 
+NGApp.factory( 'NotificationCommunityOpenService', function( $rootScope, $resource, $routeParams ) {
+
+	var service = {};
+
+	var config = $resource( App.service + 'config/communityopennotification', {}, {
+				'load': {'method':'GET', params:{}},
+				'save': {'method':'POST', params:{}}
+			}
+		);
+
+	service = {
+		load: function( callback ){
+			config.load( function( data ){
+				callback( data );
+			} );
+		},
+		save: function( params, callback ){
+			config.save( params, function( data ){
+				callback( data );
+			} );
+		}
+	}
+
+	return service;
+
+} );
+
 NGApp.factory( 'CustomerRewardService', function( $rootScope, $resource, $routeParams ) {
 
 	var service = {};

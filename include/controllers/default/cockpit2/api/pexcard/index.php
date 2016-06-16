@@ -320,7 +320,7 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _clear_cache(){
-		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud' ] ) ){
+		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud', 'community-cs' ] ) ){
 			$this->_error();
 		}
 		$id_pexcard = $this->request()[ 'id' ];
@@ -332,7 +332,7 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _id_pexcard(){
-		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud' ] ) ){
+		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud', 'community-cs' ] ) ){
 			$this->_error();
 		}
 		$id_pexcard = $this->request()[ 'id' ];
@@ -384,7 +384,7 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 
 	private function _pex_id(){
 
-		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud' ] ) ){
+		if( !c::admin()->permission()->check( ['global', 'settlement', 'support-all', 'support-crud', 'community-cs' ] ) ){
 			$this->_error();
 		}
 

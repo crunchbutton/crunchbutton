@@ -21,7 +21,18 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 																		ORDER BY sm.id_support_message DESC
 																		LIMIT 1',[ $phone->id_phone ])->get(0);
 
+
+
 		$response = [];
+
+		if($order && $order->id_community){
+			$params['id_community'] = $order->id_community;
+		} else {
+			$community = Community::customerCommunityByPhone($phone->phone);
+			if($community){
+				$params['id_community'] = $community->id_community;
+			}
+		}
 
 		switch ($action) {
 			case self::ACTION_REPLY:
@@ -83,6 +94,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 			// create a new ticket
 			$this->support = Support::createNewSMSTicket([
 				'phone' => $params['from'],
+				'id_community' => $params['id_community'],
 				'id_order' => $this->order->id_order,
 				'body' => $params['body'],
 				'media' => $params['media']
@@ -102,6 +114,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 				'body' => $params['body'],
 				'media' => $params['media']
 			]);
+			$this->id_community = $params['id_community'];
 			$this->support->save();
 		}
 
@@ -135,7 +148,6 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 					'Last Order: #'.$this->order->id_order.' on '.$date."\n".
 					'Customer: '.$this->order->name.' / '.$this->order->phone.($this->order->address ? ' / '.$this->order->address : '')."\n".
 					'Restaurant: '.$this->order->restaurant()->name.$community.' / '.$this->order->restaurant()->phone.$notifications;
-
 				Crunchbutton_Message_Incoming_Support::notifyReps($newMessageNotification, $this->support);
 			}
 		}

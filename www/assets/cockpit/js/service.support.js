@@ -33,7 +33,9 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 		switch( action ){
 			case 'begin':
 				$timeout( function(){
-					container.stop( true, false ).animate( { scrollTop: container[0].scrollHeight }, 0 );
+					if(container && container[0] && container[0].scrollHeight){
+						container.stop( true, false ).animate( { scrollTop: container[0].scrollHeight }, 0 );
+					}
 					service.sideInfo.release();
 				}, 500 );
 				break;
@@ -55,17 +57,17 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	service.sideInfo.release = function(){
 		setTimeout(function() { service._private.could_load = true }, 500 );
 	}
-// aqui
+
 	service.sideInfo.add_message = function( message ){
 		if(hasHash(message)){
 			return true;
 		}
+		hashMessage(message);
 		service.sideInfo.data.messages.push( message );
 		service.sideInfo.data.total++;
 		service.sideInfo.data.loaded++;
 		service.sideInfo.update_controller();
 		setTimeout(function(){service.sideInfo.scroll( 'begin' );},500);
-		hashMessage(message);
 	}
 
 	service.sideInfo.load_ticket_page = function(){
@@ -79,7 +81,6 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	}
 
 	service.sideInfo.load = function(){
-
 		if( service.sideInfo.id_support ){
 			if( !service._private.could_load ){
 				return false;
@@ -135,9 +136,10 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	};
 
 	function hashMessage(message){
+
 		if(message){
 			if(!message.md5){
-				message.md5 = md5(message.first_name + message.from + message.body + message.timestamp);
+				message.md5 = md5(message.first_name + message.from + message.body);
 			}
 			service.uniques[message.md5] = true;
 		}
@@ -146,7 +148,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 	function hasHash(message){
 		if(message){
 			if(!message.md5){
-				message.md5 = md5( message.first_name + message.from + message.body + message.timestamp );
+				message.md5 = md5(message.first_name + message.from + message.body + message.timestamp);
 			}
 			return service.uniques[message.md5];
 		}

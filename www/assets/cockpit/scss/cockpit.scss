@@ -1193,6 +1193,9 @@ input {
 	box-sizing: border-box;
 	@include box-border-radius(4px);
 }
+.li-input textarea.big{
+	height: 180px !important;
+}
 .li-input select {
 	height: 2.4em;
 	background: none;
@@ -2888,6 +2891,19 @@ canvas.chart {
 	width: 100%;
 }
 
+.quintuple-cols {
+	-webkit-column-count: 5;
+	-webkit-column-gap: 8px;
+	@include gpu();
+	float: left;
+	clear: both;
+	margin-bottom: 1em;
+	width: 100%;
+}
+.quintuple-cols button{
+	margin-bottom:8px;
+}
+
 .field-container .field-row-button .field-two-rows {
 	width: 40% !important;
 }
@@ -3348,6 +3364,7 @@ body.ng-scope {
 		font-size: 1.2em;
 		display: block;
 		width: 1.5em;
+		margin:-3px 1px 3px 2px;
 		text-align: right;
 	}
 
@@ -3386,6 +3403,11 @@ body.ng-scope {
 	float: right;
 	font-style: italic;
 	color: #7e828e;
+}
+.tickets-side-community {
+	float: left;
+	color: #CCC;
+
 }
 .tickets-side-message {
 	line-height: 1.4em;
@@ -4687,6 +4709,9 @@ h1.title.box-title {
 		display:block;
 		padding:.4em 0;
 	}
+	.drivers-list.big{
+		height: 120px;
+	}
 
 table.receipt{
 	width:100%;
@@ -5010,6 +5035,9 @@ a.button {
 		padding: .5m;
 		line-height: 1.4em;
 	}
+	.table-dashboard th.center{
+		text-align: center;
+	}
 	.dashboard-warning{
 		color:red !important;
 		font-weight: bold;
@@ -5026,3 +5054,8 @@ a.button {
 	.dashboard-current-time{
 		font-weight: bold;
 	}
+.select2-search-field input{
+	padding-left:2px !important;
+	padding-right:2px !important;
+	max-width:50px !important;
+}

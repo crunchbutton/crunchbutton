@@ -1024,7 +1024,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$ext = $info['extension'];
 			if (!$ext) {
 				$pos = strrpos($name, '.');
-        		$ext = substr($name, $pos+1);
+						$ext = substr($name, $pos+1);
 			}
 			$ext = strtolower($ext);
 			switch ($ext) {
@@ -1964,30 +1964,30 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$restaurant_calc = sprintf( $formula, $lat, $locCast('max(r.loc_lat)'), $lat, $locCast('max(r.loc_lat)'), $lon, $locCast('max(r.loc_long)') );
 
 		$query .= "
-  			SELECT
-  				count(*) as _weight,
-  				".$locCast('max(c.loc_lat)')." AS loc_lat,
-  				".$locCast('max(c.loc_lon)')." AS loc_long,
-  				'byrange' as type,
-  				{$restaurant_calc} AS distance,
-  				r.*
-  			FROM restaurant r
-  			LEFT JOIN `order` o ON o.id_restaurant = r.id_restaurant AND o.date > '{$interval}'
-  			INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant
-  			INNER JOIN community c ON c.id_community = rc.id_community
-  			WHERE
-  				r.active = true AND r.delivery_radius_type = 'community' AND c.active = true
-  			GROUP BY r.id_restaurant
-  			 HAVING
-  					r.takeout = true
-  				AND
-  					r.delivery = false
-  				AND
-  					{$community_calc} <= {$range}
-  				OR
-  					delivery = true
-  				AND
-  					{$community_calc} <= (delivery_radius + {$rangeDif} ) ";
+				SELECT
+					count(*) as _weight,
+					".$locCast('max(c.loc_lat)')." AS loc_lat,
+					".$locCast('max(c.loc_lon)')." AS loc_long,
+					'byrange' as type,
+					{$restaurant_calc} AS distance,
+					r.*
+				FROM restaurant r
+				LEFT JOIN `order` o ON o.id_restaurant = r.id_restaurant AND o.date > '{$interval}'
+				INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant
+				INNER JOIN community c ON c.id_community = rc.id_community
+				WHERE
+					r.active = true AND r.delivery_radius_type = 'community' AND c.active = true
+				GROUP BY r.id_restaurant
+				 HAVING
+						r.takeout = true
+					AND
+						r.delivery = false
+					AND
+						{$community_calc} <= {$range}
+					OR
+						delivery = true
+					AND
+						{$community_calc} <= (delivery_radius + {$rangeDif} ) ";
 
 		$query .= " ORDER BY _weight DESC; ";
 
@@ -2533,16 +2533,16 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return false;
 	}
 
-    public function parking($time, $dow) {
-        $qString = "SELECT * FROM order_logistics_parking WHERE id_restaurant= ? and "
-            ."time_start_community <= ? and time_end_community > ? and day_of_week = ?";
-        $parking = Crunchbutton_Order_Logistics_Parking::q($qString, [$this->id_restaurant, $time, $time, $dow]);
-        if (is_null($parking) || $parking->count()==0){
-            return null;
-        } else{
-            return $parking->get(0);
-        }
-    }
+		public function parking($time, $dow) {
+				$qString = "SELECT * FROM order_logistics_parking WHERE id_restaurant= ? and "
+						."time_start_community <= ? and time_end_community > ? and day_of_week = ?";
+				$parking = Crunchbutton_Order_Logistics_Parking::q($qString, [$this->id_restaurant, $time, $time, $dow]);
+				if (is_null($parking) || $parking->count()==0){
+						return null;
+				} else{
+						return $parking->get(0);
+				}
+		}
 
 	public function service($time, $dow) {
 		$qString = "SELECT * FROM order_logistics_service WHERE id_restaurant= ? and "
@@ -2555,42 +2555,90 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 	}
 
-    public function ordertime($time, $dow) {
-        $qString = "SELECT * FROM order_logistics_ordertime WHERE id_restaurant= ? and "
-            ."time_start_community <= ? and time_end_community > ? and day_of_week = ?";
-        $ot = Crunchbutton_Order_Logistics_Ordertime::q($qString, [$this->id_restaurant, $time, $time, $dow]);
-        if (is_null($ot) || $ot->count()==0){
-            return null;
-        } else{
-            return $ot->get(0);
-        }
-    }
+		public function ordertime($time, $dow) {
+				$qString = "SELECT * FROM order_logistics_ordertime WHERE id_restaurant= ? and "
+						."time_start_community <= ? and time_end_community > ? and day_of_week = ?";
+				$ot = Crunchbutton_Order_Logistics_Ordertime::q($qString, [$this->id_restaurant, $time, $time, $dow]);
+				if (is_null($ot) || $ot->count()==0){
+						return null;
+				} else{
+						return $ot->get(0);
+				}
+		}
 
-    public function cluster($time, $dow) {
-        $qString = "SELECT * FROM order_logistics_cluster WHERE id_restaurant= ? and "
-            ."time_start_community <= ? and time_end_community > ? and day_of_week = ?";
-        $olc = Crunchbutton_Order_Logistics_Cluster::q($qString, [$this->id_restaurant, $time, $time, $dow]);
-        // Clear out the cluster that day just in case
-        if (is_null($olc) || $olc->count()==0){
-            $qString = "SELECT * FROM `order_logistics_cluster` WHERE id_restaurant= ? and "
-                ."day_of_week = ?";
-            $olc = Crunchbutton_Order_Logistics_Cluster::q($qString, [$this->id_restaurant, $dow]);
-            if (!is_null($olc) && $olc->count()==0) {
-                $olc->delete();
-            }
-            $olc = new Crunchbutton_Order_Logistics_Cluster([
-                'id_restaurant_cluster' => $this->id_restaurant,
-                'id_restaurant' => $this->id_restaurant,
-                'time_start_community' => '00:00:00',
-                'time_end_community' => '24:00:00',
-                'day_of_week' => $dow
-            ]);
-            $olc->save();
-            return $olc;
-        } else{
-            return $olc->get(0);
-        }
-    }
+		public function cluster($time, $dow) {
+				$qString = "SELECT * FROM order_logistics_cluster WHERE id_restaurant= ? and "
+						."time_start_community <= ? and time_end_community > ? and day_of_week = ?";
+				$olc = Crunchbutton_Order_Logistics_Cluster::q($qString, [$this->id_restaurant, $time, $time, $dow]);
+				// Clear out the cluster that day just in case
+				if (is_null($olc) || $olc->count()==0){
+						$qString = "SELECT * FROM `order_logistics_cluster` WHERE id_restaurant= ? and "
+								."day_of_week = ?";
+						$olc = Crunchbutton_Order_Logistics_Cluster::q($qString, [$this->id_restaurant, $dow]);
+						if (!is_null($olc) && $olc->count()==0) {
+								$olc->delete();
+						}
+						$olc = new Crunchbutton_Order_Logistics_Cluster([
+								'id_restaurant_cluster' => $this->id_restaurant,
+								'id_restaurant' => $this->id_restaurant,
+								'time_start_community' => '00:00:00',
+								'time_end_community' => '24:00:00',
+								'day_of_week' => $dow
+						]);
+						$olc->save();
+						return $olc;
+				} else{
+						return $olc->get(0);
+				}
+		}
+
+	public function validatePreOrderDate($date){
+		$date = new DateTime($date, new DateTimeZone(c::config()->timezone));
+		$date->setTimezone(new DateTimeZone($this->timezone));
+		$now = new DateTime('now', new DateTimeZone($this->timezone));
+		if($date < $now){
+			return false;
+		}
+
+		$hours = Hour::hoursByRestaurant($this);
+
+		$open = false;
+		$day = strtolower($date->format('D'));
+		foreach($hours as $hour){
+			if($hour->day == $day){
+				$time_open = new DateTime($date->format('Y-m-d ') . $hour->time_open, new DateTimeZone($this->timezone));
+				$time_close = new DateTime($date->format('Y-m-d ') . $hour->time_close, new DateTimeZone($this->timezone));
+				if($time_open->format('YmdHi') <= $date->format('YmdHi') && $time_close->format('YmdHi') >= $date->format('YmdHi')){
+					$open = true;
+				}
+			}
+		}
+
+		if(!$open){
+			return false;
+		}
+
+		// delivered by CB
+		if ($this->delivery_service) {
+			// check if there is a shift
+			$next = clone $date;
+			// some shifts start at one day and finish at the next one
+			$next->modify('+ 1 day');
+			$shifts = Community_Shift::q('SELECT * FROM community_shift WHERE date_start >= ? AND date_end <= ? AND id_community = ? AND active = true',
+																		[$date->format('Y-m-d'), $next->format('Y-m-d 23:59:59' ), $this->community()->id_community]);
+
+			if($shifts->count()){
+				foreach($shifts as $shift)	{
+					if($shift->dateStart()->format('YmdHi') <= $date->format('YmdHi') && $shift->dateEnd()->format('YmdHi') >= $date->format('YmdHi')){
+						return true;
+					}
+				}
+			}
+			return false;
+		} else {
+			return true;
+		}
+	}
 
 	public static function selectFakeRestaurant($id_community) {
 		$fr = null;

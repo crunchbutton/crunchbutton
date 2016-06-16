@@ -4,7 +4,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
+		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud', 'community-cs'])) {
 			$this->error(401, true);
 		}
 
@@ -32,6 +32,12 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 
 						if (!$community->id_community) {
 							$this->error(404, true);
+						}
+
+						if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
+							if(!c::user()->hasCSPermissionForCommunity($community->id_community)){
+								$this->error(401, true);
+							}
 						}
 
 						switch ( c::getPagePiece(3) ) {
@@ -67,7 +73,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 									case 'open-close-status':
 
 										$out = $community->properties();
-										$remove = [ 'delivery_logistics', 'id_driver_group', 'combine_restaurant_driver_hours', 'driver_checkin', 'top', 'tagline1', 'tagline2', 'drivers_can_open', 'amount_per_order', 'campus_cash', 'campus_cash_name', 'campus_cash_validation', 'campus_cash_fee', 'campus_cash_mask', 'campus_cash_receipt_info', 'signature', 'campus_cash_delivery_confirmation', 'campus_cash_default_payment', 'allow_preorder' ];
+										$remove = [ 'delivery_logistics', 'id_driver_group', 'combine_restaurant_driver_hours', 'driver_checkin', 'top', 'tagline1', 'tagline2', 'drivers_can_open', 'notify_customer_when_driver_open', 'message_drivers_fill_preferences', 'remind_drivers_about_their_shifts', 'drivers_can_close', 'amount_per_order', 'campus_cash', 'campus_cash_name', 'campus_cash_validation', 'campus_cash_fee', 'campus_cash_mask', 'campus_cash_receipt_info', 'signature', 'campus_cash_delivery_confirmation', 'campus_cash_default_payment', 'allow_preorder' ];
 										foreach ( $remove as $rem ) {
 											unset( $out[ $rem ] );
 										}
@@ -165,14 +171,14 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 
 			case 'post':
 
-				if (!c::admin()->permission()->check(['global'])) {
-					$this->error(401, true);
-				}
-
 				switch ( c::getPagePiece(3) ) {
 
 					// save aliases
 					case 'aliases':
+
+						if (!c::admin()->permission()->check(['global'])) {
+							$this->error(401, true);
+						}
 
 						$community = Community::permalink( c::getPagePiece(2) );
 
@@ -200,6 +206,7 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 
 								break;
 							case 'remove':
+
 								$alias = Crunchbutton_Community_Alias::o( $this->request()[ 'id_community_alias' ] );
 								if( !$alias->id_community_alias ){
 									$this->_error();
@@ -216,6 +223,18 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 
 					// save close/open
 					case 'save-open-close':
+						$hasPermission = false;
+						if (c::admin()->permission()->check(['global', 'orders-all','orders-notification', 'support-all', 'support-view', 'support-crud'])) {
+							$hasPermission = true;
+						}
+
+						if(!$hasPermission && c::admin()->permission()->check(['community-cs']) && c::user()->hasCSPermissionForCommunity($order->id_community)){
+							$hasPermission = true;
+						}
+
+						if (!$hasPermission) {
+							$this->error(401, true);
+						}
 
 						$status_changed = false;
 
@@ -326,7 +345,9 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 
 					// save a community
 					default:
-
+						if (!c::admin()->permission()->check(['global'])) {
+							$this->error(401, true);
+						}
 						// save a community
 						$id_community = $this->request()[ 'id_community' ];
 						$is_new = false;
@@ -363,12 +384,17 @@ class Controller_api_community extends Crunchbutton_Controller_RestAccount {
 						$community->display_hours_restaurants_page = $this->request()[ 'display_hours_restaurants_page' ];
 						$community->combine_restaurant_driver_hours = $this->request()[ 'combine_restaurant_driver_hours' ];
 						$community->drivers_can_open = $this->request()[ 'drivers_can_open' ];
+						$community->notify_customer_when_driver_open = $this->request()[ 'notify_customer_when_driver_open' ];
+						$community->remind_drivers_about_their_shifts = $this->request()[ 'remind_drivers_about_their_shifts' ];
+						$community->message_drivers_fill_preferences = $this->request()[ 'message_drivers_fill_preferences' ];
+						$community->drivers_can_close = $this->request()[ 'drivers_can_close' ];
 						if( $is_new ){
 							$community->automatic_driver_restaurant_name = 1;
 						} else {
 							$community->automatic_driver_restaurant_name = $this->request()[ 'automatic_driver_restaurant_name' ];
 						}
 						$community->auto_close = $this->request()[ 'auto_close' ];
+						$community->notify_cs_when_driver_dont_checkin = $this->request()[ 'notify_cs_when_driver_dont_checkin' ];
 						$community->loc_lat = $this->request()[ 'loc_lat' ];
 						$community->loc_lon = $this->request()[ 'loc_lon' ];
 						$community->name = $this->request()[ 'name' ];

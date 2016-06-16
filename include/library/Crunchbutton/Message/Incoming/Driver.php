@@ -45,7 +45,6 @@ class Crunchbutton_Message_Incoming_Driver extends Cana_Model {
 				case self::ACTION_HELP:
 					$response = ['msg' => $this->help($order), 'stop' => false];
 					break;
-
 			}
 
 		} elseif ($action == self::ACTION_HELP) {

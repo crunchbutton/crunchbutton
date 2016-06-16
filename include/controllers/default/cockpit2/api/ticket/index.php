@@ -3,7 +3,8 @@
 class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
-		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
+
+		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud', 'community-cs' ])) {
 			$this->error(401, true);
 		}
 
@@ -19,6 +20,14 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 		}
 
 		$ticket = Support::o( c::getPagePiece( 2 ) );
+
+		if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
+			if(!c::user()->hasCSPermissionForCommunity($ticket->id_community)){
+				$this->error(401, true);
+			} else {
+				$isCommunityCS = true;
+			}
+		}
 
 		if (!$ticket->id_support) {
 			$this->error(404, true);
@@ -50,6 +59,7 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 
 				default:
 					$out = $ticket->exportsPage( 'ticket' );
+					$out['show_details'] = !$isCommunityCS;
 					echo json_encode( $out );exit;
 					break;
 			}
