@@ -1,16 +1,12 @@
 <div class="tickets-side-list">
 	<div ng-controller="SideTicketsCtrl">
-		<div ng-if="account.user.permissions.GLOBAL || account.user.permissions['COMMUNITY-CS']">
+		<div ng-if="account.user.permissions.GLOBAL">
 			<h1>Tickets</h1>
-			<a class="support-side-header-closed-tickets" href="/tickets">View all tickets</a>
+			<a class="support-side-header-closed-tickets" href="/tickets/beta">View all tickets</a>
 			<div class="divider"></div>
 			<div class="tickets-side-tickets">
-<<<<<<< HEAD
 				<div ng-repeat="ticket in tickets" ng-if="ticket.status == 'open'" class="tickets-side-item" ng-class="{'tickets-side-item-unread': ( ticket.last_reply == 'Client' || ticket.last_reply == 'auto-reply' || ticket.last_reply_type == 'warning' ), 'tickets-side-item-read': ( ticket.last_reply != 'Client' && ticket.last_reply != 'auto-reply' )}">
 
-=======
-				<div ng-repeat="ticket in tickets" ng-if="ticket.status == 'open'" class="tickets-side-item" ng-class="{'tickets-side-item-unread': ( ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply' || ticket.last_reply_type == 'warning' ), 'tickets-side-item-read': ( ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply' )}">
->>>>>>> d5e9074771d6a3a5e2bab034b682da2d71323684
 					<div class="tickets-side-tickets-wrap">
 						<i class="fa fa-times-circle-o close-ticket" title="Close issue" ng-click="closeTicket( ticket.id_support )"></i>
 						<div ng-click="loadTicket( ticket.id_support )">
@@ -24,15 +20,10 @@
 								<span ng-if="ticket.type != 'WARNING'">{{ticket.name}}</span>
 							</a>
 							<span class="tickets-side-time">{{ticket.timestamp_client * 1000 | date:'EEE MM/dd @ h:mm a'}}</span>
-							<span class="tickets-side-community">{{ticket.community}}</span>
 							<div class="divider"></div>
 							<br>
-<<<<<<< HEAD
 							<span class="tickets-side-message" ng-class="{ 'text-danger': ( ticket.last_reply == 'Client' || ticket.last_reply == 'auto-reply' || ticket.last_reply_type == 'warning'), 'text-muted': (ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply') }">{{ticket.message_client}}</span>
 
-=======
-							<span class="tickets-side-message" ng-class="{ 'text-warning': ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply' || ticket.last_reply_type == 'warning', 'text-muted': ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply' }">{{ticket.message_client}}</span>
->>>>>>> d5e9074771d6a3a5e2bab034b682da2d71323684
 							<div ng-if="ticket.media" ng-repeat="image in ticket.media">
 								<img ng-if="image" class="support-side-image" src="{{image}}">
 							</div>
@@ -41,7 +32,7 @@
 				</div>
 			</div>
 		</div>
-		<div ng-if="!account.user.permissions.GLOBAL && !account.user.permissions['COMMUNITY-CS']">
+		<div ng-if="!account.user.permissions.GLOBAL">
 			<br>
 			<p>To contact Crunchbutton support, please text <br><br><a href ng-click="callText('16467831444')">(646) 783-1444</a></p>
 		</div>
