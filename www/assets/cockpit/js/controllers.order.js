@@ -240,6 +240,44 @@ NGApp.controller('OrderRefundCtrl', function ($scope, $rootScope, OrderService )
 	}
 });
 
+NGApp.controller('OrderSendTextDriversCtrl', function ($scope, $rootScope, CallService ) {
+	$scope.loading = true;
+	$rootScope.$on('openSendTextDrivers', function(e, data) {
+		$scope.drivers = data.drivers;
+		$scope.message = data.message;
+		$scope.loading = false;
+		App.dialog.show('.send-text-drivers-container');
+	});
+
+	$scope.send_text = function(){
+		var phones = new Array();
+		for(x in $scope.drivers){
+			if($scope.drivers[x].sent){
+				phones.push($scope.drivers[x].phone);
+			}
+		}
+		if(!phones.length){
+			alert('Please, select at least one driver!');
+			return;
+		}
+		if(!$scope.message){
+			alert('Please, type enter a message!');
+			return;
+		}
+		$scope.formSMSSending = true;
+		var params = {phone: phones, message: $scope.message};
+		CallService.send_sms_list(params, function( json ){
+			$scope.formSMSSending = false;
+			$rootScope.closePopup();
+			if( json.success ){
+				setTimeout(function() { App.alert( 'Text sent to drivers!<br>' ); }, 500);
+			} else {
+				setTimeout(function() { App.alert( 'Error sending text!' ); }, 500);
+			}
+		} );
+	}
+});
+
 NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $interval, OrderService, MapService, SocketService) {
 
 	SocketService.listen('order.' + $routeParams.id, $scope)
@@ -368,6 +406,13 @@ NGApp.controller('OrderCtrl', function ($scope, $rootScope, $routeParams, $inter
 			} else {
 				App.alert( 'Error!' );
 			}
+		} );
+	}
+
+	$scope.text_drivers = function(){
+		OrderService.text_drivers($scope.order.id_order, function(data){
+			data.id_order = $scope.order.id_order;
+			$rootScope.$broadcast('openSendTextDrivers', data);
 		} );
 	}
 

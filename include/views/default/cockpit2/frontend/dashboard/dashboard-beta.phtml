@@ -45,15 +45,17 @@
 					<th>Community</th>
 					<th>Timezone</th>
 					<th>Current time</th>
-					<th>Unaccepted Orders</th>
-					<th>Undelivered Orders</th>
-					<th>Pre Orders</th>
-					<th>Orders in Transit</th>
-					<th>Drivers working</th>
+					<th class="center">Unaccepted<br>Orders</th>
+					<th class="center">Undelivered<br>Orders</th>
+					<th class="center">Pre Orders</th>
+					<th class="center">Orders in<br>Transit</th>
+					<th class="center">1st Party<br>Delivery Orders</th>
+					<th class="center">Drivers<br>working</th>
 					<th>Shifts today</th>
+					<th class="center">Drivers Actively<br>Delivering</th>
 				</tr>
 				<tr ng-repeat="community in dashboard">
-					<td>{{community.community.name}}</td>
+					<td><a href="/community/{{community.community.permalink}}">{{community.community.name}}</a></td>
 					<td>{{community.community.timezone}}</td>
 					<td>{{clock | convertimeformat:community.community.timezone:'h:mm a'}}</td>
 					<td ng-click="modalOrders(community.orders.unaccepted, community.community.name  + ': Unaccepted Orders')" class="dashboard-light" ng-class="{'dashboard-warning':community.total_unaccepted_orders}">{{community.total_unaccepted_orders}}</td>
@@ -62,9 +64,10 @@
 
 					<td ng-click="modalOrders(community.orders.in_transit, community.community.name  + ': Orders in Transit', true)" class="dashboard-light" ng-class="{'dashboard-ok':community.total_in_transit_orders}">{{community.total_in_transit_orders}}</td>
 
-
+					<td ng-click="modalOrders(community.orders.first_party_orders, community.community.name  + ': 1st Delivery Orders')" class="dashboard-light" ng-class="{'dashboard-ok':community.total_first_party_orders}">{{community.total_first_party_orders}}</td>
 					<td ng-click="modalDrivers(community.current_drivers, community.community.name  + ': Drivers working')" class="dashboard-light" ng-class="{'dashboard-ok':community.total_current_drivers}">{{community.total_current_drivers}}</td>
 					<td ng-click="modalDrivers(community.shifts_today, community.community.name  + ': Shifts today')"class="dashboard-light" ng-class="{'dashboard-ok':community.total_shifts_today}">{{community.total_shifts_today}}</td>
+					<td ng-click="modalDrivers(community.actively_delivering_drivers, community.community.name  + ': Drivers Actively Delivering')"class="dashboard-light" ng-class="{'dashboard-ok':community.total_actively_delivering_drivers}">{{community.total_actively_delivering_drivers}}</td>
 				</tr>
 			</table>
 		</div>
@@ -89,9 +92,9 @@
 				<!-- aqui -->
 				<tr ng-repeat="order in preorders">
 					<td><a href="/order/{{order.id_order}}">{{order.id_order}}</a></td>
-					<td>{{order.community}}<br>{{order.timezone}}</td>
-					<td>{{order.restaurant}}</td>
-					<td>{{order.name}}<br><a href ng-click="callText(order.phone)" class="listview-smaller">{{order.phone | formatPhone}}</td>
+					<td><a href="/community/{{order.community_permalink}}">{{order.community}}</a><br>{{order.timezone}}</td>
+					<td><a href="/restaurant/{{order.restaurant_permalink}}">{{order.restaurant}}</a></td>
+					<td><a href="/customer/{{order.id_user}}">{{order.name}}</a><br><a href ng-click="callText(order.phone)" class="listview-smaller">{{order.phone | formatPhone}}</td>
 					<td>
 						<span ng-if="order.timezone != account.user.timezone">
 							{{order.date_delivery | convertimeformat:order.timezone:'MMMM Do YYYY, h:mm:ss a'}}
@@ -119,7 +122,8 @@
 						</span>
 					</td>
 					<td>
-						{{order.driver}}<br><a href ng-click="callText(order.driver_phone)" class="listview-smaller">{{order.driver_phone | formatPhone}}
+						<a href="/staff/{{order.driver_login}}">{{order.driver}}</a>
+						<br><a href ng-click="callText(order.driver_phone)" class="listview-smaller">{{order.driver_phone | formatPhone}}
 					</td>
 				</tr>
 			</table>
@@ -127,7 +131,6 @@
 	</div>
 
 	<div class="support-boxes">
-
 		<div class="support-box-wrap box-content2">
 			<div class="support-box-wrap-header">
 				<h1>Drivers working</h1>
@@ -144,12 +147,12 @@
 
 					<tr ng-repeat="driver in current_driver_status">
 						<td>
-							{{driver.community}}
+							<a href="/community/community_permalink">{{driver.community}}</a>
 						</td>
 						<td>
 							<a href="/staff/{{driver.login}}">{{driver.name}}</a>
 							<br>
-							{{driver.phone | formatPhone}}
+							<a href ng-click="closeModalAndCallText(driver.phone)" class="listview-smaller">{{driver.phone | formatPhone}}</a>
 						</td>
 						<td>
 							<span class="tag tag-black" ng-if="driver.last_action.type == 'delivery-canceled'">Canceled</span>
@@ -307,7 +310,7 @@
 						<td>
 							<a href="/staff/{{driver.login}}">{{driver.name}}</a>
 							<br>
-							{{driver.phone | formatPhone}}
+							<a href ng-click="closeModalAndCallText(driver.phone)" class="listview-smaller">{{driver.phone | formatPhone}}</a>
 						</td>
 						<td>
 							<span ng-bind="formatDate(driver.date_start) |  date:'MM/d h:mm a'"></span> - <span ng-bind="formatDate(driver.date_end) |  date:'MM/d h:mm a'"></span>
@@ -361,11 +364,24 @@
 							{{order.driver_phone | formatPhone}}
 						</td>
 						<td>
+
+							<span ng-if="order.delivery_service">
 								<span class="tag tag-black" ng-if="order.order_status == 'delivery-canceled'">Canceled</span>
 								<span class="tag tag-red" ng-if="order.order_status == 'delivery-new' || !order.order_status">Not&nbsp;yet&nbsp;accepted</span>
 								<span class="tag tag-green" ng-if="order.order_status == 'delivery-accepted'">Accepted</span>
 								<span class="tag tag-blue" ng-if="order.order_status == 'delivery-pickedup'">Pickedup</span>
 								<span class="tag tag-purple" ng-if="order.order_status == 'delivery-delivered'">Delivered</span>
+							</span>
+							<span ng-if="!order.delivery_service && order.restaurant_confirmation">
+								<span class="tag tag-red" ng-if="!order.confirmed">Unconfirmed</span>
+								<span class="tag tag-green" ng-if="order.confirmed">Confirmed</span>
+							</span>
+							<span ng-if="!order.delivery_service && !order.restaurant_confirmation">
+								<span class="tag tag-grey">Placed</span>
+								<span class="tag tag-black" ng-if="order.order_status == 'delivery-canceled'">Canceled</span>
+							</span>
+
+
 						</td>
 						<td>
 							<span ng-if="order.order_date">{{order.order_date | localtime:'h:mm a'}}</span>

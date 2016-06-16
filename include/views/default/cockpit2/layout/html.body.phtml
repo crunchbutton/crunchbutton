@@ -170,7 +170,7 @@
 					</table>
 				</a>
 
-				<a href="/drivers/community" ng-click="instant()" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver' && account.user.permissions.GLOBAL && account.user.has_community_to_open" ng-class="{'nav-active': (navigation.page == 'drivers-community')}">
+				<a href="/drivers/community" ng-click="instant()" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-community')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-slideshare"></i></td>
@@ -188,6 +188,14 @@
 					</table>
 				</a>
 
+				<a href="/tickets" ng-click="instant()" class="menu-link" ng-if="account.user.permissions['COMMUNITY-CS'] && menu.toggle=='driver'" ng-class="{'nav-active': ( navigation.page == 'tickets' || navigation.page == 'ticket')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-comments-o"></i></td>
+							<td class="side-menu-label">Tickets</a></td>
+						</tr>
+					</table>
+				</a>
 
 				<a href="/drivers/shifts" ng-click="instant()" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-shifts')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
@@ -433,7 +441,7 @@
 					</table>
 				</a>
 
-				<a href="/support" ng-click="instant()" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'support' || navigation.page == 'tickets' || navigation.page == 'calls' || navigation.page == 'ticket' || navigation.page == 'call')}">
+				<a href="/support" ng-click="instant()" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'support' || navigation.page == 'calls' || navigation.page == 'ticket' || navigation.page == 'call')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-comments-o"></i></td>
@@ -442,7 +450,7 @@
 					</table>
 				</a>
 
-				<a href="/tickets/beta" ng-click="instant()" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': ( navigation.page == 'tickets-beta')}">
+				<a href="/tickets" ng-click="instant()" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': ( navigation.page == 'tickets')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-comments-o"></i></td>
@@ -529,6 +537,7 @@
 
 		</div>
 		<div class="left-menu-fix"></div>
+		<!-- aqui -->
 		<div class="snap-drawer snap-drawer-right side-menu" id="side-menu-right">
 			<div class="drawer-right-content scroll-tickets" ng-controller="SideSupportCtrl">
 				<div class="drawer-right-content-list" ng-include="'/assets/view/tickets-side-list.html'" ng-if="!viewTicket"></div>
@@ -571,11 +580,12 @@
 								<div class="badge" ng-show="newDriverOrders.count">{{newDriverOrders.count}}</div>
 								<i class="fa fa-truck"></i>
 							</div>
-							<div class="clickable hide-desktop notification notification-support" ng-class="{'notification-support-mobile': !account.user.permissions.GLOBAL}" ng-click="navigation.menu('right')">
+
+							<div class="clickable hide-desktop notification notification-support" ng-class="{'notification-support-mobile': !account.user.permissions.GLOBAL && !account.user.permissions['COMMUNITY-CS']}" ng-click="navigation.menu('right')">
 								<div class="badge" ng-show="supportMessages.count && supportMessages.count != '0'">{{supportMessages.count}}</div>
 								<i class="fa fa-comment"></i>
 							</div>
-							<div class="clickable hide-mobile notification notification-support" ng-class="{'notification-support-mobile': !account.user.permissions.GLOBAL}" ng-click="supportToggle()">
+							<div class="clickable hide-mobile notification notification-support" ng-class="{'notification-support-mobile': !account.user.permissions.GLOBAL && !account.user.permissions['COMMUNITY-CS']}" ng-click="supportToggle()">
 								<div class="badge" ng-show="supportMessages.count && supportMessages.count != '0'">{{supportMessages.count}}</div>
 								<i class="fa fa-comment"></i>
 							</div>

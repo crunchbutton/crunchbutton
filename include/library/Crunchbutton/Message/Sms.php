@@ -115,7 +115,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 
 			// dont message yourself
 			if (c::admin()->id_admin && Phone::dirty(c::admin()->txt) == $t) {
-				continue;
+				// continue;
 			}
 
 			// dont message our own numbers
@@ -156,7 +156,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 
 					$params = [];
 					if( $log && c::getEnv() == 'live' ){
-						$params = [ 'StatusCallback' => 'http://live.ci.crunchbutton.crunchr.co/api/twilio/sms/status' ];
+						$params = [ 'StatusCallback' => 'https://_DOMAIN_/api/twilio/sms/status' ];
 					}
 
 					$_ret = c::twilio()->account->messages->sendMessage($tfrom, $t, $msg, $media ? $media : null, $params);

@@ -4,6 +4,10 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
+		if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud', 'community-cs' ])) {
+			$this->error(401, true);
+		}
+
 		$limit = $this->request()['limit'] ? $this->request()['limit'] : 20;
 		$status = $this->request()['status'] ? $this->request()['status'] : 'open';
 		$type = $this->request()['type'] ? $this->request()['type'] : 'all';
@@ -27,6 +31,9 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 							s.phone AS support_phone,
 							s.type,
 							s.status,
+
+							c.id_community,
+							c.name AS community,
 
 							o.name AS order_name,
 							o.id_user AS order_id_user,
@@ -65,6 +72,7 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 							WHERE
 							s.id_support > ( SELECT id_support FROM support ORDER BY id_support DESC LIMIT 1) - 10000 ) temp
 							INNER JOIN support s ON temp.id_support = s.id_support
+							LEFT JOIN community c ON c.id_community = s.id_community
 							LEFT JOIN support_message client_message ON client_message.id_support_message = id_support_message_client
 							LEFT JOIN support_message rep_message ON rep_message.id_support_message = id_support_message_rep
 							LEFT JOIN support_message system_message ON system_message.id_support_message = id_support_message_system
@@ -77,9 +85,19 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 							LEFT JOIN user u ON u.id_user = tickets.client_id_user
 							LEFT JOIN admin client_admin ON client_admin.id_admin = client_id_admin
 							) tickets
-
-
 							 WHERE 1 = 1';
+
+		if (!c::user()->permission()->check(['global'])) {
+			$communities = c::user()->communitiesDriverDelivery();
+			$q .= ' AND (';
+			$or = '';
+			foreach($communities as $community){
+				$q .= $or . 'tickets.id_community = ?';
+				$or = ' OR ';
+				$keys[] = $community->id_community;
+			}
+			$q .= ') ';
+		}
 
 		if( $type == 'system' ){
 			$q .= '
@@ -151,7 +169,6 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 		$d = [];
 		$query = str_replace('-WILD-','*', $q);
 
-
 		$r = c::db()->query($query, $keys);
 
 		$i = 1;
@@ -162,6 +179,13 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 				$more = true;
 				break;
 			}
+			if($o->id_community){
+				$c = Community::o($o->id_community);
+				if($c->hasCommunityCS()){
+					$o->community_has_cs = true;
+				}
+			}
+			$o->recent_from = ucfirst($o->recent_from);
 			$d[] = $o;
 			$i++;
 		}

@@ -7,13 +7,6 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			reloadOnSearch: false
 
 		})
-		.when('/tickets/beta', {
-			action: 'tickets-beta',
-			controller: 'TicketsCtrl',
-			templateUrl: '/assets/view/tickets.html',
-			reloadOnSearch: false
-
-		})
 		.when('/ticket/:id', {
 			action: 'ticket',
 			controller: 'TicketCtrl',
@@ -40,24 +33,12 @@ NGApp.controller('TicketsCtrl', function ($rootScope, $scope, $timeout, $locatio
 			update();
 		}
 	});
-	$scope.beta = false;
-
-	if( $location.path() == '/tickets/beta' ){
-		$scope.beta = true;
-	}
 
 	var update = function(){
-		if( $scope.beta ){
-			TicketService.list_beta($scope.query, function(d) {
-				$scope.lotsoftickets = d.results;
-				$scope.complete(d);
-			});
-		} else {
-			TicketService.list($scope.query, function(d) {
-				$scope.lotsoftickets = d.results;
-				$scope.complete(d);
-			});
-		}
+		TicketService.list_beta($scope.query, function(d) {
+			$scope.lotsoftickets = d.results;
+			$scope.complete(d);
+		});
 	}
 
 	$scope.closeTicket = function( id_support ){
@@ -96,7 +77,6 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 
 	var id_support = $routeParams.id;
 
-
 	setTimeout(function(){
 		$rootScope.focus('#support-chat-box');
 	}, 1000 );
@@ -134,9 +114,9 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	$scope.do_not_pay_driver = function(){
 		OrderService.do_not_pay_driver( $scope.ticket.order.id_order, function( result ){
 			if( result.success ){
-				$scope.flash.setMessage( 'Saved!' );
+				App.alert( 'Saved!' );
 			} else {
-				$scope.flash.setMessage( 'Error!' );
+				App.alert( 'Error!' );
 			}
 		} );
 	}
@@ -145,22 +125,24 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		$rootScope.$broadcast( 'openCommunityNoteContainer', $scope.ticket.community.id_community );
 	}
 
-	$rootScope.$on( 'communityNoteSaved', function(e, data) {
+	var communityNoteSaved = $rootScope.$on( 'communityNoteSaved', function(e, data) {
 		if( $scope.ticket.community && $scope.ticket.community.id_community ){
 			CommunityService.lastNote( $scope.ticket.community.id_community, function( json ){
-				console.log('$scope.ticket.community',$scope.ticket.community);
-				console.log('json',json);
 				$scope.ticket.community.note = json;
 			} );
 		}
 	});
 
+	$scope.$on('$destroy', function() {
+		if(communityNoteSaved){communityNoteSaved();}
+	});
+
 	$scope.do_not_pay_restaurant = function(){
 		OrderService.do_not_pay_restaurant( $scope.ticket.order.id_order, function( result ){
 			if( result.success ){
-				$scope.flash.setMessage( 'Saved!' );
+				App.alert( 'Saved!' );
 			} else {
-				$scope.flash.setMessage( 'Error!' );
+				App.alert( 'Error!' );
 			}
 		} );
 	}
@@ -168,9 +150,9 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 	$scope.do_not_pay_driver = function(){
 		OrderService.do_not_pay_driver( $scope.ticket.order.id_order, function( result ){
 			if( result.success ){
-				$scope.flash.setMessage( 'Saved!' );
+				App.alert( 'Saved!' );
 			} else {
-				$scope.flash.setMessage( 'Error!' );
+				App.alert( 'Error!' );
 			}
 		} );
 	}
@@ -241,6 +223,16 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		});
 	};
 
+	var cleanup = null;
+
+	$scope.openClosingTimeContainer = function(){
+		$rootScope.$broadcast( 'openClosingTimeContainer', { permalink: $scope.ticket.community.permalink } );
+	}
+
+	$rootScope.$on( 'communityOpenClosedSaved', function(e, data) {
+		update();
+	});
+
 	var update = function( ignoreBroadcast ) {
 		$rootScope.title = 'Ticket #' + id_support;
 		$scope.loading = true;
@@ -269,6 +261,10 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		});
 	};
 
+	$scope.$on('$destroy', function() {
+		if(cleanup){cleanup();}
+	});
+
 	$scope.openCloseTicket = function(){
 		TicketService.openClose( id_support, function() { update( true ); } );
 	}
@@ -283,17 +279,16 @@ NGApp.controller('TicketCtrl', function($scope, $rootScope, $interval, $routePar
 		$rootScope.$broadcast( 'openStaffNoteContainer', id_admin );
 	}
 
-	$rootScope.$on( 'staffNoteSaved', function(e, data) {
-		// $scope.ticket.driver.note = data;
-	});
-
-
-	$rootScope.$on( 'ticketStatusUpdated', function(e, data) {
+	var ticketStatusUpdated = $rootScope.$on( 'ticketStatusUpdated', function(e, data) {
 		if( data.ignoreBroadcast ){
 			update( true );
 		} else {
 			update();
 		}
+	});
+
+	$scope.$on('$destroy', function() {
+		if(ticketStatusUpdated){ticketStatusUpdated();}
 	});
 
 	$scope.campus_cash_retrieving = false;

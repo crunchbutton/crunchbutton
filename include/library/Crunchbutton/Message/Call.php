@@ -25,11 +25,11 @@ class Crunchbutton_Message_Call extends Crunchbutton_Message {
 
 		$from = self::formatNumber($from);
 		$to = self::formatNumber($to);
-		
+
 		if ($callback) {
-			$callback = ['StatusCallback' => 'http://'.c::config()->host_callback.$callback];
+			$callback = ['StatusCallback' => 'https://'.c::config()->host_callback.$callback];
 		}
-		
+
 		if (!$from || !$to) {
 			return false;
 		}
@@ -45,7 +45,7 @@ class Crunchbutton_Message_Call extends Crunchbutton_Message {
 			]);
 
 			$call = c::twilio()->account->calls->create($fro, $to, $url, $callback);
-											
+
 		} catch (Exception $e) {
 			Log::error([
 				'action' => 'call failed',

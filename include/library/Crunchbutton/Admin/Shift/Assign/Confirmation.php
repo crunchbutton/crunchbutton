@@ -90,7 +90,10 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 			// 3rd time - warn CS - after 10 min of the first message
 			case 2:
-				self::warnCS( $assignment );
+				// Cockpit: don't need notifications when driver in Testing restaurant doesn't check in #8319
+				if($shift->community()->notify_cs_when_driver_dont_checkin){
+					self::warnCS( $assignment );
+				}
 				break;
 		}
 	}
@@ -208,7 +211,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 	public function host_callback(){
 		if( c::getEnv() == 'live' ){
-			return 'live.ci.crunchbutton.crunchr.co';
+			return '_DOMAIN_';
 		} else {
 			return $_SERVER['HTTP_HOST'];
 		}
@@ -284,7 +287,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 		$minutes = 15;
 
-		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = true AND r.delivery_service = true AND c.id_community != ? AND c.driver_checkin = 1 ORDER BY c.name', [ Crunchbutton_Community::CUSTOMER_SERVICE_ID_COMMUNITY ] );
+		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = true AND r.delivery_service = true AND c.driver_checkin = 1 ORDER BY c.name', [] );
 
 		foreach( $communities as $community ){
 

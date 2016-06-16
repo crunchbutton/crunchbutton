@@ -1,0 +1,93 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-volume-up"></i><span>Community Notifications</span></h1>
+
+	<div class="divider"></div>
+
+
+	<form name="form" novalidate>
+
+	<div class="support-boxes">
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Settings</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+					<li class="li-input" ng-class="{'error':form.notify.$invalid}">
+						<div class="label">Notify customers when community is opened by a driver?</div>
+						<div class="input">
+							<select name="notify" required ng-model="config.notify_community_opened_driver" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
+
+					<li class="li-input" ng-if="config.notify_community_opened_driver" ng-class="{'error':form.notifyByEmail.$invalid}">
+						<div class="label">Notify by Email:</div>
+						<div class="input">
+							<select name="notifyByEmail" required ng-model="config.notify_community_opened_driver_email" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
+
+					<li class="li-input" ng-if="config.notify_community_opened_driver" ng-class="{'error':form.notifyBySMS.$invalid}">
+						<div class="label">Notify by SMS:</div>
+						<div class="input">
+							<select name="notifyBySMS" required ng-model="config.notify_community_opened_driver_sms" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
+
+					<li class="li-input" ng-if="config.notify_community_opened_driver" ng-class="{'error':form.notifyByPush.$invalid}">
+						<div class="label">Notify by Push:</div>
+						<div class="input">
+							<select name="notifyByPush" required ng-model="config.notify_community_opened_driver_push" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
+
+					<li class="li-input" ng-if="config.notify_community_opened_driver" ng-class="{'error':form.notifyDays.$invalid}">
+						<div class="label">Notify active customers that have placed at least one order for the last X days:</div>
+						<div class="input"><input type="number" ng-required="config.notify_community_opened_driver" name="notifyDays" ng-model="config.notify_community_opened_driver_days"></div>
+					<div class="box-error">
+							<small ng-show="form.notifyDays.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-if="config.notify_community_opened_driver" ng-class="{'error':form.message.$invalid}">
+						<div class="label">Message:</div>
+						<div class="input">
+							<input type="text" name="message" ng-model="config.notify_community_opened_driver_msg" ng-required="config.notify_community_opened_driver" maxlength="250">
+						</div>
+						<div class="box-error">
+							<small ng-show="form.message.$error.required">Required.</small>
+						</div>
+						<div class="notes">
+							You can use the string <code>%community%</code> that will be replaced by the community's name.
+						</div>
+					</li>
+
+				</ul>
+
+			</div>
+
+		</div>
+
+	</form>
+</div>
+
+<div class="support-box-wrap box-content2" sticky-bottom="80">
+	<div class="no-box-content-color">
+		<ul class="ul-inputs">
+			<li class="li-input" ng-show="!isSaving">
+				<button class="button save" ng-click="save();">Save</button>
+			</li>
+			<li class="li-input" ng-show="isSaving">
+				<i class="fa fa-circle-o-notch fa-spin"></i>
+			</li>
+		</ul>
+	</div>
+</div>

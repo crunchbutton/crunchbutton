@@ -1134,6 +1134,14 @@ class Cockpit_Order extends Crunchbutton_Order {
 		return $ip;
 	}
 
+	public function isCancelled(){
+		$status = $this->status()->last();
+		if($status && ($status['status'] == 'canceled' || $status['status'] == 'cancelled')){
+			return true;
+		}
+		return false;
+	}
+
 	public function minutesToDelivery(){
 			$ordered_at = $this->date();
 			$ordered_at->setTimeZone( new DateTimeZone( c::config()->timezone ) );

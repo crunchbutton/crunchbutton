@@ -3,7 +3,7 @@
 		<table class="thead">
 			<tr>
 				<th>Contact</th>
-				<th>Message</th>
+				<th>Last Messages</th>
 				<th nowrap class="tb-center">Last</th>
 				<th class="tb-small tb-center">Type</th>
 				<th class="tb-small tb-center">Status</th>
@@ -13,38 +13,83 @@
 		<div class="tbody">
 			<table class="tb-zebra">
 				<tr ng-repeat="ticket in lotsoftickets" ng-init="$last ? ngRepeatFinished() : null">
+					<!-- contact -->
 					<td nowrap>
 						<span ng-if="ticket.type == 'WARNING'">
 							<i>System</i>
 						</span>
 						<span ng-if="ticket.type != 'WARNING'">
-							<a href="/customer/{{ticket.id_user}}" ng-if="ticket.id_user">{{ticket.name}}</a>
-							<span ng-if="!ticket.id_user">{{ticket.name}}</span>
-							<br><a href ng-click="callText(ticket.phone)" class="listview-smaller">{{ticket.phone | formatPhone}}</a>
+							<span ng-if="ticket.order_id_user">
+								<a ng-if="account.user.permissions.GLOBAL" href="/customer/{{ticket.order_id_user}}">{{ticket.order_name}}</a>
+								<span ng-if="!account.user.permissions.GLOBAL">{{ticket.order_name}}</span>
+							</span>
+							<span ng-if="!ticket.order_id_user && ticket.client_id_user">
+								<a ng-if="account.user.permissions.GLOBAL" href="/customer/{{ticket.client_id_user}}">{{ticket.customer_name}}</a>
+								<span ng-if="!account.user.permissions.GLOBAL">{{ticket.customer_name}}</span>
+							</span>
+
+							<span ng-if="!ticket.order_id_user && !ticket.client_id_user && ticket.client_id_admin">
+								<a ng-if="account.user.permissions.GLOBAL" href="/staff/{{ticket.client_id_admin}}">{{ticket.client_admin_name}}</a>
+								<span ng-if="!account.user.permissions.GLOBAL">{{ticket.client_admin_name}}</span>
+							</span>
+
+							<span ng-if="!ticket.order_id_user && !ticket.client_id_admin && !ticket.client_id_user">
+								Unknown
+							</span>
+							<br>
+							<a href ng-click="callText(ticket.support_phone)" class="listview-smaller">{{ticket.support_phone | formatPhone}}</a>
+							<div ng-if="ticket.id_order">
+								<a ng-if="account.user.permissions.GLOBAL" href="/order/{{ticket.id_order}}">Order #{{ticket.id_order}}</a>
+								<span ng-if="account.user.permissions.GLOBAL">Order #{{ticket.id_order}}</span>
+							</div>
 						</span>
 					</td>
+					<!-- message -->
 					<td>
 						<span class="listview-smaller">
-							<i ng-if="ticket.timestamp_client">{{ticket.timestamp_client * 1000| date:'EEE MM/dd @ h:mm a'}}</i>
-							<i ng-if="!ticket.timestamp_client"><i>Unknown</i></i>
-							<br>
-							<span ng-class="{ 'text-danger': ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply', 'text-muted': ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply' }" >
-								<span ng-bind-html="ticket.message_client"></span>
-							</span>
+							<!-- client -->
+							<div ng-if="ticket.client_last_message">
+								<span class="tag tag-empty tag-red">Client</span>
+									<span ng-class="{ 'text-danger': ticket.recent_from == 'client' || ticket.recent_type == 'auto-reply', 'text-muted': ticket.recent_from != 'client' && ticket.recent_type != 'auto-reply' }" >
+									<span ng-bind-html="ticket.client_last_message"></span>
+								</span>
+								<i class="listview-smaller" ng-if="ticket.client_message_timestamp">{{ticket.client_message_timestamp * 1000| date:'EEE MM/dd @ h:mm a'}}</i>
+							</div>
+							<!-- rep -->
+							<div ng-if="ticket.rep_last_message">
+								<span class="tag tag-empty tag-green">CS: {{ticket.rep_name}}</span>
+									<span class="text-muted" ng-bind-html="ticket.rep_last_message"></span>
+								</span>
+								<i class="listview-smaller" ng-if="ticket.rep_timestamp">{{ticket.rep_timestamp * 1000| date:'EEE MM/dd @ h:mm a'}}</i>
+							</div>
+							<!-- system -->
+							<div ng-if="ticket.system_last_message">
+								<span class="tag tag-empty tag-blue">System</span>
+									<span class="text-muted" ng-bind-html="ticket.system_last_message"></span>
+								</span>
+								<i class="listview-smaller" ng-if="ticket.system_timestamp">{{ticket.system_timestamp * 1000| date:'EEE MM/dd @ h:mm a'}}</i>
+							</div>
+
 						</span>
 					</td>
+					<!-- last -->
 					<td class="tb-v-center tb-center">
-						<span class="tag tag-empty tag-red" ng-if="ticket.last_reply == 'client' || ticket.last_reply == 'auto-reply'">{{ticket.last_reply}}</span>
-						<span class="tag tag-empty tag-green" ng-if="ticket.last_reply != 'client' && ticket.last_reply != 'auto-reply'">{{ticket.last_reply}}</span>
+						<span class="tag tag-empty tag-red" ng-if="ticket.recent_from == 'Client' || ticket.recent_type == 'auto-reply'">{{ticket.recent_from}}</span>
+						<span class="tag tag-empty tag-green" ng-if="ticket.recent_from != 'Client' && ticket.recent_type != 'auto-reply'">{{ticket.recent_from}}</span>
 					</td>
-					<td class="tb-v-center tb-center">
+					<!-- type -->
+					<td class="tb-v-center tb-center" nowrap="">
 						<span class="tag tag-empty tag-purple" ng-if="ticket.type == 'WARNING'">System</span>
 						<span ng-if="ticket.type != 'WARNING'">
-							<span class="tag tag-empty tag-blue" ng-if="ticket.id_user && !ticket.id_admin_from">Customer</span>
+							<span class="tag tag-empty tag-blue" ng-if="(ticket.id_user || ticket.client_id_user) && !ticket.id_admin_from">Customer</span>
 							<span class="tag tag-empty tag-orange" ng-if="ticket.id_admin_from">Driver</span>
-							<span class="tag tag-empty tag-grey" ng-if="!ticket.id_user && !ticket.id_admin_from">Unknown</span>
+							<span class="tag tag-empty tag-grey" ng-if="!ticket.id_user && !ticket.id_admin_from && !ticket.client_id_user">Unknown</span>
 						</span>
+						<div ng-if="ticket.community">
+							<span class="tag tag-empty" ng-class="{'tag-green':ticket.community_has_cs, 'tag-red':!ticket.community_has_cs}">{{ticket.community}}</span>
+						</div>
 					</td>
+					<!-- status -->
 					<td class="tb-v-center tb-center">
 						<span class="tag tag-green" ng-if="ticket.status == 'open'">Open</span>
 						<span class="tag tag-red" ng-if="ticket.status != 'open'">Closed</span>

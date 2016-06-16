@@ -4,7 +4,7 @@ class Controller_api_call extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
+		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud', 'community-cs'])) {
 			$this->error(401, true);
 		}
 
@@ -66,7 +66,6 @@ class Controller_api_call extends Crunchbutton_Controller_RestAccount {
 			$numbers = $this->request()[ 'phone' ];
 			foreach( $numbers as $number ){
 				if( trim( $number ) != '' ){
-
 
 					$admin = Crunchbutton_Admin::getByPhone( $number );
 					if( $admin->id_admin ){

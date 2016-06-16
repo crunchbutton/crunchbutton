@@ -499,6 +499,7 @@ GROUP BY admin.id_admin ORDER BY name ASC' );
 		$pexcard = $this->request()['pexcard'] ? $this->request()['pexcard'] : 'all';
 		$community = $this->request()['community'] ? $this->request()['community'] : null;
 		$group = $this->request()['group'] ? $this->request()['group'] : null;
+		$only_group = $this->request()['only_group'] ? $this->request()['only_group'] : null;
 		$send_text = $this->request()['send_text'] ? $this->request()['send_text'] : null;
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
 		$place = ( $this->request()['place'] ? $this->request()['place'] : null );
@@ -534,11 +535,17 @@ GROUP BY admin.id_admin ORDER BY name ASC' );
 
 		if( $group ){
 			$q .= '
-				left JOIN admin_group ag ON ag.id_admin = admin.id_admin AND ag.id_group = ?
+				LEFT JOIN admin_group ag ON ag.id_admin = admin.id_admin AND ag.id_group = ?
 			';
 			$keys[] = $group;
 		}
 
+		if( $only_group ){
+			$q .= '
+				INNER JOIN admin_group ag ON ag.id_admin = admin.id_admin AND ag.id_group = ?
+			';
+			$keys[] = $only_group;
+		}
 
 		if ($type == 'driver') {
 			$q .= '
@@ -678,8 +685,6 @@ GROUP BY admin.id_admin ORDER BY name ASC' );
 				break;
 		}
 
-
-
 		if ($working == 'all') {
 			$q .= '
 				LIMIT '.intval($getCount ? $limit : $limit+1).'
@@ -722,9 +727,6 @@ GROUP BY admin.id_admin ORDER BY name ASC' );
 
 			$admin = Admin::o( $s );
 
-//			$staff = $admin->exports(['permissions', 'groups', 'working' => ($working == 'all' ? false : true)]);
-
-
 			$staff = $admin->properties();
 			$staff['verified'] = $admin->paymentType()->verified ? true : false;
 			$staff['vehicle'] = $admin->vehicle();
@@ -736,7 +738,6 @@ GROUP BY admin.id_admin ORDER BY name ASC' );
 					$staff['communities'][ $community->id_community ] = $community->name;
 				}
 			}
-
 
 			$staff['id_admin_payment_type'] = $s->id_admin_payment_type;
 			$staff['pexcard'] = ( $s->using_pex ) ? true : false;

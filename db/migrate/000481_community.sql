@@ -1,0 +1,1 @@
+ALTER TABLE `community` ADD `notify_customer_when_driver_open` tinyint(1) NOT NULL DEFAULT '0';
