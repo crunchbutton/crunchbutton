@@ -3192,7 +3192,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			}
 		}
 
-
 		// Add/Remove pex card funds
 		$q = Queue::create([
 			'type' => Crunchbutton_Queue::TYPE_ORDER_PEXCARD_FUNDS,
@@ -3284,7 +3283,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					switch ( $status ) {
 
 						case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
-
+						case Crunchbutton_Order_Action::FORCE_COMMISSION_PAYMENT:
 								// Add $10 for the first accepted order - #3993
 								$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $driver->id_admin );
 
