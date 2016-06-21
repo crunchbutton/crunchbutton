@@ -1,0 +1,68 @@
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="title left"><i class="fa fa-fax"></i><span>Send Fax</span></h1>
+
+	<div class="divider"></div>
+
+
+	<form name="form" novalidate>
+
+	<div class="support-boxes">
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Sent Fax To:</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+					<li class="li-input" ng-class="{'error':form.fax.$invalid}">
+						<div class="label">Fax Number:</div>
+						<div class="input">
+							<input type="text" name="fax" ng-model="fax.fax" required maxlength="40">
+						</div>
+						<div class="box-error">
+							<small ng-show="form.fax.$error.required">Required.</small>
+						</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':form.message.$invalid}">
+						<div class="label">File:</div>
+						<div class="input">
+							<div class="upbutton" fax-file-upload>
+								<button class="ladda-button upload" data-color="mint" data-style="zoom-in">
+									<span ng-show="!isMobile" class="ladda-label"><b>UPLOAD</b></span>
+								</button>
+								<input ng-if="init" type="file" nv-file-select="" uploader="uploader" name="file" class="file-hidden" class="file" options="{}">
+							</div>
+						</div>
+						<div ng-if="!fax.file" class="notes">Attach a pdf or image file.</div>
+						<div ng-if="fax.file" class="notes">File attached!</div>
+					</li>
+
+				</ul>
+
+			</div>
+
+		</div>
+
+	</form>
+</div>
+
+<div class="support-box-wrap box-content2" sticky-bottom="80">
+	<div class="no-box-content-color">
+		<ul class="ul-inputs">
+			<li class="li-input" ng-show="!isSending">
+				<button class="button save" ng-click="send();">Send</button>
+			</li>
+			<li class="li-input" ng-show="isSending">
+				<i class="fa fa-circle-o-notch fa-spin"></i>
+			</li>
+		</ul>
+	</div>
+</div>

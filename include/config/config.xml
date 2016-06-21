@@ -22,6 +22,10 @@
 		<key>_KEY_</key>
 		<secret>***REMOVED***</secret>
 		<buckets>
+			<fax-files>
+				<name>crunchbutton-fax-files</name>
+				<cache></cache>
+			</fax-files>
 			<image-restaurant>
 				<name>crunchbutton-image-restaurant</name>
 				<cache>_URL_</cache>

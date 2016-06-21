@@ -486,6 +486,73 @@ NGApp.directive( 'restaurantImageUpload', function ($rootScope, FileUploader) {
 	}
 });
 
+NGApp.directive( 'faxFileUpload', function ($rootScope, FileUploader) {
+	return {
+		restrict: 'AE',
+		replace: false,
+		scope: true,
+		link: function ( scope, elem, attrs, ctrl ) {
+
+			var button = elem.find('button')[0];
+
+			var message = elem.find( 'div' );
+
+			scope.init = true;
+
+			if (!window.Ladda) {
+				return;
+			}
+
+			var l = Ladda.create(button);
+
+			angular.element(button).on('click', function() {
+				angular.element(elem.find('input')[0]).click();
+			});
+
+			scope.uploader = new FileUploader({
+				url: '/api/fax/upload/',
+				autoUpload: true
+			});
+
+			scope.uploader.onBeforeUploadItem = function() {
+				l.start();
+				if( App.isMobile() ){
+					message.html( '<i class="fa fa-refresh fa-spin"></i> Uploading' );
+				}
+			};
+
+			scope.uploader.onSuccessItem = function(fileItem, response, status, headers) {
+				if( response.success ){
+					$rootScope.$broadcast( 'faxFileUploaded', { success: response.success } );
+				} else {
+					$rootScope.$broadcast( 'faxFileUploaded', { error: true } );
+				}
+				message.html( '' );
+				scope.uploader.clearQueue();
+				l.stop();
+			};
+
+			scope.uploader.onErrorItem = function (fileItem, response, status, headers) {
+				$rootScope.$broadcast( 'faxFileUploadedError', {} );
+				scope.uploader.clearQueue();
+				message.html( '' );
+				l.stop();
+			};
+
+			scope.$watch( 'uploader.progress', function( newValue, oldValue, scope ) {
+				if( App.isMobile() && newValue ){
+					message.html( 'Uploading ' +  newValue + '%' );
+					if( newValue >= 100 ){
+						message.html( '<i class="fa fa-refresh fa-spin"></i> Processing' );
+					}
+				}
+
+			});
+		}
+	}
+});
+
+
 
 NGApp.directive('uiTab', function ( $routeParams ) {
 		return {

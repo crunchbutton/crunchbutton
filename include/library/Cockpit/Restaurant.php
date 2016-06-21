@@ -104,6 +104,7 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 		if(!$this->open_for_business && $this->reopen_for_business_at){
 			$out['closed_for_today'] = true;
 		}
+		$out['fax'] = $this->fax();
 		return $out;
 	}
 
