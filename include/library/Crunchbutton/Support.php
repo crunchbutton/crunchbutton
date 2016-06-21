@@ -18,6 +18,9 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 	const SUPPORT_EMAIL = 'support@_DOMAIN_';
 
+	const CONFIG_KEY_CS_CALL_DRIVER = 'cs_config_call_driver';
+	const CONFIG_KEY_CS_CALL_DEFAULT_PHONE = 'cs_config_call_default_phone';
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
@@ -29,6 +32,40 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		if( !$this->id_support ){
 			$this->status = 'open';
 		}
+	}
+
+	public static function callDefaultPhoneNumber(){
+		return Crunchbutton_Config::getVal(self::CONFIG_KEY_CS_CALL_DEFAULT_PHONE);
+	}
+
+	public static function callDriverOnCS(){
+		return (Crunchbutton_Config::getVal(self::CONFIG_KEY_CS_CALL_DRIVER) ? true : false);
+	}
+
+	public static function forwardCSCall($params){
+		if(!self::callDriverOnCS()){
+			return self::callDefaultPhoneNumber();
+		} else {
+			$from = Phone::clean($params['From']);
+			$community = Community::customerCommunityByPhone($from);
+			if($community->id_community){
+				$community = Community::q('SELECT * FROM community WHERE id_community = ?',[$community->id_community])->get(0);
+				$workingCS = $community->workingCommunityCS();
+				if(count($workingCS)){
+					foreach ($workingCS as $admin) {
+						return $admin->phone;
+					}
+				}
+			}
+			// default cs
+			$cs = self::getUsers();
+			if(count($cs)){
+				foreach ($cs as $phone) {
+					return $phone;
+				}
+			}
+		}
+		return self::callDefaultPhoneNumber();
 	}
 
 	public function tellCustomerService( $message ){

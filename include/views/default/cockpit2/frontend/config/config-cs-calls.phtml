@@ -1,0 +1,62 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-volume-up"></i><span>Customer Service Calls</span></h1>
+
+	<div class="divider"></div>
+
+
+	<form name="form" novalidate>
+
+	<div class="support-boxes">
+
+		<div class="support-box-wrap box-content2">
+			<div class="support-box-wrap-header">
+				<h1>Settings</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color">
+
+				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+
+					<li class="li-input" ng-class="{'error':form.notify.$invalid}">
+						<div class="label">Forward calls to drivers when they're on CS?</div>
+						<div class="input">
+							<select name="notify" required ng-model="config.cs_config_call_driver" ng-options="opt.value as opt.label for opt in yesNo" ></select>
+						</div>
+					</li>
+
+					<li class="li-input" ng-class="{'error':form.defaultPhone.$invalid}">
+						<div class="label">Default Phone Number:</div>
+						<div class="input"><input type="text" required name="defaultPhone" ng-model="config.cs_config_call_default_phone"></div>
+						<div class="box-error">
+							<small ng-show="form.defaultPhone.$error.required">Required.</small>
+						</div>
+						<div class="notes">
+							If the system didn't find any availabe phone number it will forward the call to this number.
+						</div>
+					</li>
+
+				</ul>
+
+			</div>
+
+		</div>
+
+	</form>
+</div>
+
+<div class="support-box-wrap box-content2" sticky-bottom="80">
+	<div class="no-box-content-color">
+		<ul class="ul-inputs">
+			<li class="li-input" ng-show="!isSaving">
+				<button class="button save" ng-click="save();">Save</button>
+			</li>
+			<li class="li-input" ng-show="isSaving">
+				<i class="fa fa-circle-o-notch fa-spin"></i>
+			</li>
+		</ul>
+	</div>
+</div>

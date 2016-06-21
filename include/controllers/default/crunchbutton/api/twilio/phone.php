@@ -15,10 +15,10 @@ class Controller_api_twilio_phone extends Crunchbutton_Controller_Rest {
 		    	break;
 		    case 'call':
 				$callback = 'http'.($_SERVER['HTTPS'] != 'on' ? '' : 's').'://'.c::config()->host_callback.'/api/twilio/phone/recording';
-
+				$forwardTo = Crunchbutton_Support::forwardCSCall($_POST);
 				echo '<?xml version="1.0" encoding="UTF-8"?>'."\n"
 					.'<Response>'
-					.'<Dial timeout="10" record="record-from-answer" trim="trim-silence" action="'.$callback.'">'.($_REQUEST['forward'] ? $_REQUEST['forward'] : '800-351-4161').'</Dial>'
+					.'<Dial timeout="10" record="record-from-answer" trim="trim-silence" action="'.$callback.'">'.($forwardTo).'</Dial>'
 					.'</Response>';
 		    	break;
 		}
