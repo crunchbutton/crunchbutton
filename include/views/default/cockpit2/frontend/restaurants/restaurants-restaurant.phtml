@@ -24,6 +24,13 @@
 				</a>
 
 				<h1 class="customer-name-large">{{restaurant.name}}</h1>
+				<br><br>
+					<div class="double-cols">
+						<a href="/tools/fax?id_restaurant={{restaurant.id_restaurant}}&fax={{restaurant.fax}}" class="button button-empty button-border button-orange">
+							<i class="fa fa-fax"></i>&nbsp;&nbsp;Send a Fax
+						</a>
+						<button  ng-click="callText(restaurant.phone)" class="button button-empty button-border button-blue"><i class="fa fa-phone"></i>&nbsp;&nbsp;Call / Text</button>
+				</div>
 			</div>
 		</div>
 
