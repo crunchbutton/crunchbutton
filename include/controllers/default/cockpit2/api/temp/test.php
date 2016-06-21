@@ -1,8 +1,8 @@
 <?php
 
-class Controller_api_temp_test extends Crunchbutton_Controller_Account {
+class Controller_api_temp_test extends Crunchbutton_Controller_Rest {
 
 	public function init() {
-		// phpinfo();
+		Log::debug([$_POST, $_GET]);
 	}
 }
