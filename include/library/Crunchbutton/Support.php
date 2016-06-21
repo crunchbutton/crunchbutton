@@ -61,7 +61,10 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			$cs = self::getUsers();
 			if(count($cs)){
 				foreach ($cs as $phone) {
-					return $phone;
+					$phone = Phone::clean($phone);
+					if($phone && $phone != '0000000000'){
+						return $phone;
+					}
 				}
 			}
 		}
