@@ -34,6 +34,11 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			action: 'tools',
 			controller: 'ConfigNotificationCommunityOpenCtrl',
 			templateUrl: '/assets/view/config-community-open.html'
+		})
+		.when('/config/cs-calls', {
+			action: 'tools',
+			controller: 'ConfigCSCallsCtrl',
+			templateUrl: '/assets/view/config-cs-calls.html'
 		});
 
 }]);
@@ -72,6 +77,43 @@ NGApp.controller('ConfigBlockedsCtrl', function( $scope, BlockedService ) {
 				return;
 			} else {
 				App.alert( 'Information saved!' );
+			}
+		} );
+	}
+
+	load();
+
+});
+
+NGApp.controller('ConfigCSCallsCtrl', function( $scope, CustomerServiceConfig) {
+
+	$scope.yesNo = CustomerServiceConfig.yesNo();
+
+	var load = function(){
+		CustomerServiceConfig.load( function( json ){
+			if( !json.error ){
+				$scope.config = json;
+				$scope.ready = true;
+			}
+		} )
+	}
+
+
+	$scope.save = function(){
+		if( $scope.form.$invalid ){
+			App.alert( 'Please fill in all required fields' );
+			$scope.submitted = true;
+			return;
+		}
+		$scope.isSaving = true;
+		CustomerServiceConfig.save( $scope.config, function( data ){
+			$scope.isSaving = false;
+			if( data.error ){
+				App.alert( data.error);
+				return;
+			} else {
+				load();
+				App.alert( 'Settings saved!' );
 			}
 		} );
 	}
