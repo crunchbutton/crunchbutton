@@ -53,7 +53,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 		$assignment = Crunchbutton_Admin_Shift_Assign::o( $id_admin_shift_assign );
 		if( $assignment->id_admin_shift_assign ){
 			self::confirm( $assignment );
-			return 'Thanks, if you need anything, feel free to text us!';
+			return 'Thanks!';
 		}
 		return false;
 	}
