@@ -592,9 +592,10 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 				}
 			}
 			if( $close ){
-				$support->status = Crunchbutton_Support::STATUS_CLOSED;
-				$support->save();
-				$support->addSystemMessage( 'Automatically close support ticket older than a day' );
+				// get rid of "Automatically close support ticket older than a day" #8418
+				// $support->status = Crunchbutton_Support::STATUS_CLOSED;
+				// $support->save();
+				// $support->addSystemMessage( 'Automatically close support ticket older than a day' );
 			}
 		}
 	}
