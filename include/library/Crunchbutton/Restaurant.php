@@ -1244,6 +1244,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$day = [ 'value' => $now->format( 'Y-m-d' ), 'label' => $label, 'hours' => [] ];
 
 			$day[ 'hours' ][] = [ 'label' => 'Desired Time', 'value' => false ];
+			$first_hour_of_day = true;
 
 			foreach( $hours as $hour ){
 				if( $hour->day == strtolower( $now->format( 'D' ) ) ){
@@ -1256,7 +1257,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 						}
 					}
 					if( $store ){
-						$label = $hour->time_open . ' - ' . $hour->time_close;
+
+						if($first_hour_of_day && !$this->delivery_service){
+							$label = 'ASAP after the restaurant opens';
+						} else {
+							$label = $hour->time_open . ' - ' . $hour->time_close;
+						}
+						$first_hour_of_day = false;
 						$day[ 'hours' ][] = [ 'label' => $label, 'value' => strtolower( $hour->time_open ) ];
 					}
 
@@ -1343,7 +1350,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$close = new DateTime( $hour->date . ' ' . $hour->time_close, new DateTimeZone( $this->timezone ) );
 			$count = 0;
 
-			$minutes = $this->preorderMinAfterCommunityOpen();
+			if($this->delivery_service){
+				$minutes = $this->preorderMinAfterCommunityOpen();
+			} else {
+				$minutes = $this->delivery_estimated_time + 5;
+			}
+
 
 			$open->modify( "+ $minutes minutes" );
 
