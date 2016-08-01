@@ -3298,10 +3298,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 									$loadCard = false;
 								}
 
-								if($order->pay_type == 'cash'){
-									$loadCard = false;
-								}
-
 								if( $loadCard ){
 
 									$pexcard->addFundsOrderAccepeted( $order->id_order );
