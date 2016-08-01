@@ -476,6 +476,14 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 					$this->_workingCommunityCS[] = $cs;
 				}
 			}
+			// When only one driver is on shift at a community, send them all texts from customers in that community #8437
+			if(!count($this->_workingCommunityCS)){
+				foreach($community_cs as $cs){
+					if($cs->hasWorkedForTheLastHours(3)){
+						$this->_workingCommunityCS[] = $cs;
+					}
+				}
+			}
 		}
 		return $this->_workingCommunityCS;
 	}

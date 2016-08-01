@@ -486,6 +486,15 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return true;
 	}
 
+	public function hasWorkedForTheLastHours( $hours, $id_community = null, $checkIfTheyCheckedIn = false ){
+		// When only one driver is on shift at a community, send them all texts from customers in that community #8437
+		$shift = Crunchbutton_Community_Shift::shiftDriverHasWorkedForTheLastHours( $this->id_admin, $hours, $id_community, $checkIfTheyCheckedIn );
+		if( !$shift ){
+			return false;
+		}
+		return true;
+	}
+
 	// this means that the driver opened the community
 	public function isWorkingOnExtraShifts( $dt = null, $id_community = null, $checkIfTheyCheckedIn = false ){
 		$shift = Crunchbutton_Community_Shift::shiftDriverIsCurrentWorkingOn( $this->id_admin, $dt, $id_community, $checkIfTheyCheckedIn );
