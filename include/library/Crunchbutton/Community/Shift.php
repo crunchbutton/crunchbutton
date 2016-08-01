@@ -370,6 +370,63 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 		return Crunchbutton_Community_Shift::q($query, $params);
 	}
 
+	public static function shiftDriverHasWorkedForTheLastHours($id_admin, $hours, $id_community = null, $checkIfTheyCheckedIn = false) {
+
+		$admin = Admin::o($id_admin);
+
+		// start using community's timezone - #4965
+		$community = $admin->communityDriverDelivery();
+
+		if ($community->id_community && $community->timezone) {
+			$timezone = $community->timezone;
+		} else {
+			$timezone = $admin->timezone;
+		}
+
+		if ($timezone) {
+			$now = new DateTime( $time, new DateTimeZone( c::config()->timezone ) );
+			$now->setTimezone( new DateTimeZone( $timezone ) );
+			$startFormat = $now->format( 'Y-m-d H:i' );
+			$now->modify('- ' . $hours . ' hours');
+			$finishFormat = $now->format( 'Y-m-d H:i' );
+
+
+			$params = [$id_admin, $startFormat, $finishFormat];
+
+			$query = '
+				SELECT cs.*, asa.id_admin_shift_assign, asa.confirmed FROM community_shift cs
+				INNER JOIN admin_shift_assign asa ON asa.id_community_shift = cs.id_community_shift
+				WHERE asa.id_admin = ?
+					AND cs.active = true
+					AND cs.date_start <= ?
+	 				AND cs.date_end >= ?
+			';
+
+			if ($id_community) {
+				$query .= ' AND cs.id_community = ? ';
+				$params[] = $id_community;
+			}
+
+			if( $checkIfTheyCheckedIn ){
+				$query .= ' AND asa.confirmed = 1 ';
+			}
+
+	 		$shift = Crunchbutton_Community_Shift::q($query, $params);
+	 		if ($shift->id_admin_shift_assign) {
+	 			if( $checkIfTheyCheckedIn ){
+	 				if( $shift->confirmed ){
+	 					return $shift;
+	 				}
+	 			} else {
+	 				return $shift;
+	 			}
+
+	 		}
+		}
+
+ 		return false;
+	}
+
 	public static function shiftDriverIsCurrentWorkingOn($id_admin, $dt = null, $id_community = null, $checkIfTheyCheckedIn = false) {
 
 		$admin = Admin::o($id_admin);
