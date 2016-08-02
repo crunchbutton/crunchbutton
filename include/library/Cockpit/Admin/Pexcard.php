@@ -198,7 +198,7 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 			$config = Crunchbutton_Config::getConfigByKey( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_AMOUNT_TO_SHIFT_START );
 			if( $config->value ){
 				// Make sure the haven't received funds yet
-				if( $id_admin_shift_assign && !Crunchbutton_Pexcard_Action::checkShiftReceivedFunds( $id_admin_shift_assign ) ){
+				if( $id_admin_shift_assign && !Crunchbutton_Pexcard_Action::driverShiftReceivedFundsToday( $id_admin_shift_assign ) ){
 					$amount = number_format( floatval( $config->value ), 2 );
 					return $this->addFunds( [ 'action' => Crunchbutton_Pexcard_Action::ACTION_SHIFT_STARTED, 'id_admin_shift_assign' => $id_admin_shift_assign, 'amount' => $amount ] );
 				}

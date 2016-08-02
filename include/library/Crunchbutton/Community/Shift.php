@@ -798,6 +798,9 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 		if( !$this->_timezone ){
 			$this->_timezone = $this->community()->timezone;
 		}
+		if(!$this->_timezone){
+			$this->_timezone = self::CB_TIMEZONE;
+		}
 		return $this->_timezone;
 	}
 
