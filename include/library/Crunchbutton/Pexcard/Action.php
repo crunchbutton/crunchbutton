@@ -31,6 +31,27 @@ class Crunchbutton_Pexcard_Action extends Cana_Table {
 		return ( $action->id_pexcard_action );
 	}
 
+	public function driverShiftReceivedFundsToday( $id_admin_shift_assign ){
+		$assigment = Crunchbutton_Admin_Shift_Assign::o($id_admin_shift_assign);
+		$shift = $assigment->shift();
+		if($shift->id_community_shift){
+			$date = $shift->dateStart( c::config()->timezone);
+			if($date){
+				$date_start = $date->format('Y-m-d') . ' 00:00:00';
+				$date_end = $date->format('Y-m-d') . ' 23:59:59';
+				$action = Crunchbutton_Pexcard_Action::q( 'SELECT * FROM pexcard_action WHERE id_driver = ? AND type = ? AND date BETWEEN ? AND ? AND action = ?', [
+					$assigment->id_admin,
+					Crunchbutton_Pexcard_Action::TYPE_CREDIT,
+					$date_start,
+					$date_end,
+					Crunchbutton_Pexcard_Action::ACTION_SHIFT_STARTED
+					]);
+			}
+			return ( $action->id_pexcard_action );
+		}
+		return false;
+	}
+
 	public function checkShiftReturnedFunds(){
 		$action = Crunchbutton_Pexcard_Action::q( 'SELECT * FROM pexcard_action WHERE id_admin_shift_assign = "' . $id_admin_shift_assign . '" AND type = "' . Crunchbutton_Pexcard_Action::TYPE_DEBIT . '"' );
 		return ( $action->id_pexcard_action );
