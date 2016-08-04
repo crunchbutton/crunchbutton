@@ -24,7 +24,7 @@ ENV PHPREDIS_VERSION 3.0.0
 #    && mv phpredis-$PHPREDIS_VERSION /usr/src/php/ext/redis \
 #    && docker-php-ext-install redis
 
-RUN docker-php-ext-install redis
+RUN pecl install redis-3.0.0 && docker-php-ext-install redis
 
 
 ADD conf/nginx.docker.conf /etc/nginx/sites-available/default
