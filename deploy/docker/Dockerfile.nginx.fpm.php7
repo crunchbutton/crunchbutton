@@ -16,19 +16,15 @@ RUN apt-get update && apt-get install -y \
 	&& docker-php-ext-install mbstring \
 	&& docker-php-ext-install zip
 
-ENV PHPREDIS_VERSION 3.0.0
-
-#RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz \
-#    && tar xfz /tmp/redis.tar.gz \
-#    && rm -r /tmp/redis.tar.gz \
-#    && mv phpredis-$PHPREDIS_VERSION /usr/src/php/ext/redis \
-#    && docker-php-ext-install redis
-
-# RUN pecl install redis-3.0.0 && docker-php-ext-install redis
-RUN pecl install -o -f redis \
-&&  rm -rf /tmp/pear \
-&&  echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
-
+# https://github.com/docker-library/php/issues/262#issuecomment-233109231
+RUN docker-php-source extract \
+    && curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/3.0.0.tar.gz \
+    && tar xfz /tmp/redis.tar.gz \
+    && rm -r /tmp/redis.tar.gz \
+    && mv phpredis-3.0.0 /usr/src/php/ext/redis \
+    && sed -i '$ a redis' /usr/src/php-available-exts \
+    && docker-php-ext-install redis \
+    && docker-php-source delete
 
 ADD conf/nginx.docker.conf /etc/nginx/sites-available/default
 RUN echo "cgi.fix_pathinfo = 0;" >> /usr/local/etc/php/conf.d/fix_pathinfo.ini
