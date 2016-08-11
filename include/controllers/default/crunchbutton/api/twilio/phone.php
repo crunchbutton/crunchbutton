@@ -26,9 +26,18 @@ class Controller_api_twilio_phone extends Crunchbutton_Controller_Rest {
 				$forwardTo = Crunchbutton_Support::forwardCSCall($this->request());
 				echo '<?xml version="1.0" encoding="UTF-8"?>'."\n"
 					.'<Response>'
-						.'<Say>Testing</Say>'
+						.'<Say>Testing 1</Say>'
 						.'<Dial timeout="1">9</Dial>'
 						.'<Dial timeout="1">#</Dial>'
+						.'<Pause length="1" />'
+						.'<Say>Testing 2</Say>'
+						.'<Dial timeout="1">9</Dial>'
+						.'<Dial timeout="1">#</Dial>'
+						.'<Pause length="1" />'
+						.'<Say>Testing 3</Say>'
+						.'<Dial timeout="1">9</Dial>'
+						.'<Dial timeout="1">#</Dial>'
+						.'<Pause length="1" />'
 					.'</Response>';
 		    	break;
 		}
