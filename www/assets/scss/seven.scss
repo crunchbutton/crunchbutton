@@ -184,6 +184,24 @@ html {
 	box-sizing: border-box;
 }
 
+.run-business-textarea{
+	border: 2px solid #003f35;
+	border-radius: 6px;
+	font-size: 15px;
+	padding: .5em 0 .5em .6em;
+	margin: 0 0 15px 0;
+	width: 100%;
+	box-sizing: border-box;
+}
+.run-business-error{
+	font-size:1.2em;
+	margin-bottom: .3em;
+	line-height: 1.6em;
+}
+.run-business-thank-you{
+	text-align: center;
+	font-size: 1.3em;
+}
 .location-detect .fa {
 	font-size: 22px;
 }
@@ -3043,6 +3061,9 @@ sup {
 }
 .splash-continue:active {
 	color: #eb6557;
+}
+.splash-continue.small{
+	font-size:.8em;
 }
 
 .splash-tagline b {

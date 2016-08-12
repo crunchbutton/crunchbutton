@@ -63,6 +63,9 @@ class Controller_api_Support extends Crunchbutton_Controller_Rest {
 						echo $support->json();
 						$support->notify( false );
 					break;
+					case 'run-business':
+						$this->runBusiness();
+						break;
 					case 'say':
 						$this->say();
 						break;
@@ -81,6 +84,30 @@ class Controller_api_Support extends Crunchbutton_Controller_Rest {
 						break;
 				}
 		}
+	}
+
+	private function runBusiness(){
+		$name = $this->request()['name'];
+		$email = $this->request()['email'];
+		$phone = $this->request()['phone'];
+		$address = $this->request()['address'];
+		$reason = $this->request()['reason'];
+
+		$html = 'Name: ' . $name . '<br>';
+		$html .= 'Email: ' . $email . '<br>';
+		$html .= 'Phone: ' . $phone . '<br>';
+		$html .= 'Address: ' . $address . '<br>';
+		$html .= 'Why: ' . $reason;
+
+		$res = c::mailgun()->sendMessage(c::config()->mailgun->domain, [
+		'from' => 'iwanttobuildmyownbusiness@_DOMAIN_',
+		'to' => 'iwanttobuildmyownbusiness@_DOMAIN_',
+		'subject'	=> 'I want to build my own business',
+		'html' => $html
+
+
+		]);
+
 	}
 
 	function say(){
