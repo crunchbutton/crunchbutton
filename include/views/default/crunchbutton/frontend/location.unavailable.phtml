@@ -1,7 +1,7 @@
 <div class="bg">
 	<div class="home-top parallax-bg">
 		<div class="top-pad"></div>
-	
+
 		<div class="home-inputs">
 		<div class="splash-inputs">
 
@@ -15,7 +15,7 @@
 						<span class="small" ng-switch-when="4">How about becoming a driver?</span>
 						<span class="small" ng-switch-when="5">Head over to our jobs page and let us know!</span>
 						<span class="single-line" ng-switch-when="6"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
-						<span class="single-line" ng-switch-default><b>Coming soon</b></span>
+						<span class="small" ng-switch-default><b>Grow your own delivery company</b></span>
 
 					</div>
 				</div>
@@ -25,27 +25,66 @@
 			<div class="divider spacer-one-two"></div>
 
 			<div ng-if="!complete">
-				<p>
-					Crunchbutton is currently in a limited area trial featuring only a select few colleges.
-					<span ng-if="account.user.email"> Want Crunchbutton in your area? Click the button below to vote and be notified when we join your area.</span>
-					<span ng-if="!account.user.email"> Enter your email below to be notified when Crunchbutton is available near you.</span>
-				</p>
 
-				<div class="divider spacer-one-two" ng-if="account.user.email"></div>
-				<div class="divider spacer-one-one" ng-if="!account.user.email"></div>
+				<div ng-show="!show_form">
+					<p>
+						Want to run your own on-demand business? Launch Crunchbutton in your community!
+						<br><br>
+						Crunchbutton provides you with the resources you'll need to deliver orders, add restaurants, and find customers. Develop your own small business with our tech powering you.
+					</p>
 
-				<input ng-if="!account.user.email" class="location-recommend" autocapitalize="off" autocorrect="off" placeholder="Please enter your email address" ng-enter="recommend.notify()" ng-model="recommend.form.email">
+					<div class="divider spacer-one-two"></div>
 
+					<div class="button-pushable">
+						<button class="button orange" ng-click="show_form = true;">
+							<div><b>Bring Crunchbutton to Me</b></div>
+						</button>
+					</div>
 
-				<div class="button-pushable">
-					<button class="button orange" ng-click="notifyMe()">
-						<div ng-spinner="loadingNotifyme" data-spinner-color="#fff" data-spinner-scale="1.6"><b>Bring crunchbutton to me</b></div>
-					</button>
+					<div class="divider spacer-one-one"></div>
+
+					<p class="center-text">
+						<a href="" class="splash-continue" ng-instant="navigation.link('/location')">Try another location</a>
+					</p>
+
 				</div>
+
+				<div ng-show="show_form">
+
+					<div class="divider spacer-one-one"></div>
+
+					<div class="run-business-error" ng-if="submitted && !contact.name">Please enter your name</div>
+					<input class="location-recommend" autocapitalize="off" autocorrect="off" placeholder="Name"  ng-model="contact.name">
+
+					<div class="run-business-error" ng-if="submitted && !contact.phone">Please enter your phone</div>
+					<input class="location-recommend" autocapitalize="off" autocorrect="off" placeholder="Phone"  ng-model="contact.phone">
+
+					<div class="run-business-error" ng-if="submitted && !contact.email">Please enter your email</div>
+					<div class="run-business-error" ng-if="submitted && email_invalid">Please enter a valid email</div>
+					<input class="location-recommend" autocapitalize="off" autocorrect="off" placeholder="Email"  ng-model="contact.email">
+
+					<div class="run-business-error" ng-if="submitted && !contact.address">Please enter your address</div>
+					<input class="location-recommend" autocapitalize="off" autocorrect="off" placeholder="Address"  ng-model="contact.address">
+
+					<div class="run-business-error" ng-if="submitted && !contact.reason">Please tell us why you'd be a good fit to build your own business</div>
+					<textarea class="run-business-textarea" autocapitalize="off" autocorrect="off" placeholder="Why I'd be a good fit to build my own business:" ng-model="contact.reason"></textarea>
+
+					<div class="button-pushable">
+						<a class="button orange" ng-click="sendMessage()">
+							<div><b>Send</b></div>
+						</a>
+					</div>
+
+					<p class="center-text">
+						<a href="" class="splash-continue small" ng-click="show_form = false;">Cancel</a>
+					</p>
+
+				</div>
+
 			</div>
-			
-			<div ng-if="complete">
-				<p>Thanks! We will let you know as soon as we are in your area.</p>
+
+			<div ng-if="complete" class="run-business-thank-you">
+				<p>Thank you!</p>
 			</div>
 
 
@@ -69,14 +108,11 @@
 			</div>
 			*/ ?>
 
-			<p class="center-text">
-				<a href="" class="splash-continue" ng-instant="navigation.link('/location')">Try another location</a>
-			</p>
 		</div>
-		
+
 
 		</div>
 	</div>
-	
+
 	<div ng-include src="'/assets/view/location.bottom.html'"></div>
 </div>

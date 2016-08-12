@@ -88,7 +88,6 @@ NGApp.controller('ApplyCtrl', function ($scope, $http, ApplyService, $location) 
     	if (jQuery.isEmptyObject($scope.errors)) {
     			ApplyService.post($scope.apply, function(data){
     				$location.path( '/thankyou' );
-        		console.log(data);
     			})
     	} else {
 			App.alert('Please fill out all of the fields.');
@@ -967,6 +966,28 @@ NGApp.controller('LocationUnavailableCtrl', function ($scope, $http, $location, 
 			$scope.loadingNotifyme = false;
 			$scope.complete = true;
 		} );
+	};
+
+	$scope.contact = {};
+
+	$scope.sendMessage = function() {
+		$scope.submitted = true;
+		if($scope.contact.name && $scope.contact.phone && $scope.contact.email && $scope.contact.address && $scope.contact.reason){
+			if(/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( $scope.contact.email )){
+				var url = App.service + 'support/run-business';
+				$http( {
+					method: 'POST',
+					url: url,
+					data: $.param({name: $scope.contact.name, phone: $scope.contact.phone, email: $scope.contact.email, address: $scope.contact.address, reason: $scope.contact.reason}),
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+					} ).success( function( data ) {
+						$scope.complete = true;
+						$rootScope.$safeApply();
+				});
+			} else {
+				$scope.email_invalid = true;
+			}
+		}
 	};
 });
 
