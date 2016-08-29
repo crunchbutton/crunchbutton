@@ -1376,7 +1376,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 							$payment->save();
 						}
 
-						$schedule->id_payment = $payment->id_payment;
+						$schedule->id_payment = $p;
 						$schedule->status = Cockpit_Payment_Schedule::STATUS_DONE;
 						$schedule->log = 'Payment finished';
 						$schedule->status_date = date( 'Y-m-d H:i:s' );
@@ -1396,12 +1396,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 							$order_transaction->save();
 
 							$payment_order_transaction = new Cockpit_Payment_Order_Transaction;
-							$payment_order_transaction->id_payment = $payment->id_payment;
+							$payment_order_transaction->id_payment = $schedule->id_payment;
 							$payment_order_transaction->id_order_transaction = $order_transaction->id_order_transaction;
 							$payment_order_transaction->save();
 						}
-
-						$this->sendRestaurantPaymentNotification( $payment->id_payment );
+						$this->sendRestaurantPaymentNotification( $schedule->id_payment );
 						return true;
 					} else {
 						$message = 'Restaurant Payment error! Restaurant: ' . $schedule->restaurant()->name;
@@ -2205,10 +2204,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 																							AND balanced_id IS NOT NULL ORDER BY p.payment_date_checked;" );
 		foreach( $payments as $payment ){
 			$id_payment = $payment->id_payment;
-			Cana::timeout( function() use( $id_payment ) {
-				$payment = Crunchbutton_Payment::o( $id_payment );
-				$status = $payment->checkPaymentStatus();
-			} );
+			$payment = Crunchbutton_Payment::o( $id_payment );
+			$status = $payment->checkPaymentStatus();
 			$message = 'id_payment : ' . $payment->id_payment;
 			$this->log( 'checkPaymentStatus', $message );
 		}
