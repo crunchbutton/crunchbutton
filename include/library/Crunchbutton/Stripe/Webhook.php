@@ -25,6 +25,9 @@ class Crunchbutton_Stripe_Webhook extends Cana_Table {
 			case Crunchbutton_Stripe_Webhook_Type::TYPE_ACCOUNT_UPDATED:
 				self::accountUpdateWarning($webhook);
 				break;
+			case Crunchbutton_Stripe_Webhook_Type::TYPE_TRANSFER_FAILED:
+				self::transferFail($webhook);
+				break;
 			case Crunchbutton_Stripe_Webhook_Type::TYPE_DISPUTE_CREATED:
 				// create dispute
 				Crunchbutton_Stripe_Dispute::create( $webhook->id_stripe_webhook );
@@ -48,6 +51,23 @@ class Crunchbutton_Stripe_Webhook extends Cana_Table {
 		if( $details->data && $details->data->object && $details->data->object->charge ){
 			return $details->data->object->charge;
 		}
+	}
+
+	public static function transferFail($webhook){
+		$data = $webhook->data();
+		$content = 'Stripe transfer failed ' . $data->data->object->business_name;
+		$amount = 0;
+		if($data->data->object->amount){
+			$amount = $data->data->object->amount / 100;
+		}
+		$content .= "\n".'Amount: $' . $amount ;
+		$content .= "\n".'More Info: https://dashboard.stripe.com/transfers/' . $data->data->object->id ;
+		$params = [];
+		$params['subject'] = 'Action required: Stripe transfer failed';
+		$params['body'] = $content;
+		Support::createNewWarning(['body'=>$content, 'bubble'=>true]);
+		$mail = new Crunchbutton_Email_Payment_Error($params);
+		$send = $mail->send();
 	}
 
 	public static function accountUpdateWarning($webhook){

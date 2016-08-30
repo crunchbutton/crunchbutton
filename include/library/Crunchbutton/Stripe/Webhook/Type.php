@@ -5,6 +5,7 @@ class Crunchbutton_Stripe_Webhook_Type extends Cana_Table {
 	const TYPE_DISPUTE_CREATED = 'charge.dispute.created';
 	const TYPE_DISPUTE_UPDATED = 'charge.dispute.updated';
 	const TYPE_ACCOUNT_UPDATED = 'account.updated';
+	const TYPE_TRANSFER_FAILED = 'transfer.failed';
 
 	public function __construct($id = null) {
 		parent::__construct();
