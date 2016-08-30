@@ -22,6 +22,9 @@ class Crunchbutton_Stripe_Webhook extends Cana_Table {
 		$webhook->id_stripe_webhook_type = $type->id_stripe_webhook_type;
 		$webhook->save();
 		switch ( $type->type ) {
+			case Crunchbutton_Stripe_Webhook_Type::TYPE_ACCOUNT_UPDATED:
+				self::accountUpdateWarning($webhook);
+				break;
 			case Crunchbutton_Stripe_Webhook_Type::TYPE_DISPUTE_CREATED:
 				// create dispute
 				Crunchbutton_Stripe_Dispute::create( $webhook->id_stripe_webhook );
@@ -44,6 +47,23 @@ class Crunchbutton_Stripe_Webhook extends Cana_Table {
 		$details = $this->data();
 		if( $details->data && $details->data->object && $details->data->object->charge ){
 			return $details->data->object->charge;
+		}
+	}
+
+	public static function accountUpdateWarning($webhook){
+		$data = $webhook->data();
+		if(count($data->data->object->verification->fields_needed)){
+			$content = 'There is a problem with the Stripe Account: ' . $data->data->object->business_name . ' (' . $data->data->object->display_name . ')';
+			$content .= "\n".'URL: https://dashboard.stripe.com/applications/users/' . $data->data->object->id ;
+			$content .= "\n\n".'Field(s) Needed: ';
+			$content .= join($data->data->object->verification->fields_needed, "\n");
+			$content .= "\n\n".'Please take some actions otherwise this account will not be able to create charges or receive transfers.';
+			$params = [];
+			$params['subject'] = 'Action required';
+			$params['body'] = $content;
+			Support::createNewWarning(['body'=>$content, 'bubble'=>true]);
+			$mail = new Crunchbutton_Email_Payment_Error($params);
+			$send = $mail->send();
 		}
 	}
 
