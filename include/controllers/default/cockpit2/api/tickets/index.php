@@ -223,6 +223,10 @@ class Controller_api_tickets extends Crunchbutton_Controller_RestAccount {
 			$i++;
 		}
 
+		usort($d, function($a, $b) {
+			return $a->timestamp_client <= $b->timestamp_client;
+		});
+
 		echo json_encode([
 			'more' => $getCount ? $pages > $page : $more,
 			'count' => intval($count),
