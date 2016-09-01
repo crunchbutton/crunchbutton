@@ -91,7 +91,7 @@ class Crunchbutton_Payment extends Cana_Table {
 
 				$env = ( $this->env == 'live' ) ? 'live' : 'dev';
 
-				\Stripe\Stripe::setApiKey( c::config()->stripe->{ $env }->secret );
+				\Stripe\Stripe::setApiKey( c::config()->stripe->{'live'}->secret );
 
 				$credit = \Stripe\Transfer::retrieve( $this->stripe_id );
 
