@@ -1773,13 +1773,17 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 
 
 	public function hasPreOrders(){
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->modify('-1 day');
+		$yesterday = $now->format('Y-m-d');
 		$query = "SELECT
 							COUNT(*) AS total
 							FROM `order` o
 							LEFT JOIN order_action oa ON oa.id_order_action = o.delivery_status
 							WHERE o.id_community = ? AND o.preordered = 1
+							AND o.preordered_date >= ?
 							AND ( ( oa.type != ? AND oa.type != ? ) OR oa.type IS NULL )";
-		$total = c::db()->get( $query, [ $this->id_community, Crunchbutton_Order_Action::DELIVERY_DELIVERED, Crunchbutton_Order_Action::DELIVERY_CANCELED ] )->get( 0 );
+		$total = c::db()->get( $query, [ $this->id_community, $yesterday, Crunchbutton_Order_Action::DELIVERY_DELIVERED, Crunchbutton_Order_Action::DELIVERY_CANCELED ] )->get( 0 );
 		return intval( $total->total );
 	}
 
