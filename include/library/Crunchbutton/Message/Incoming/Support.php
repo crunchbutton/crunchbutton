@@ -55,7 +55,7 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 
 		$this->log( [ 'action' => 'closing support', 'id_support' => $this->support->id_support, 'phone' => $this->from, 'message' => $this->body] );
 
-		self::notifyReps($this->admin->firstName() . ' closed #' . $this->support->id_support, $support);
+		self::notifyReps($this->admin->firstName() . ' closed #' . $this->support->id_support, $support, null, $this->admin);
 	}
 
 	public function reply() {
@@ -74,7 +74,7 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT
 		]);
 
-		self::notifyReps($this->admin->firstName() . ' replied to #' . $this->support->id_support . ': ' . $this->message, $support);
+		self::notifyReps($this->admin->firstName() . ' replied to #' . $this->support->id_support . ': ' . $this->message, $support, null, $this->admin);
 	}
 
 	public function details() {
@@ -101,7 +101,7 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 		return $response;
 	}
 
-	public static function notifyReps($message, $support = null, $media = null) {
+	public static function notifyReps($message, $support = null, $media = null, $sender = null) {
 		$users = [];
 		if($support->id_support && $support->id_community){
 			$community = Community::q('SELECT * FROM community WHERE id_community = ?',[$support->id_community])->get(0);
@@ -119,12 +119,26 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 			$users = Crunchbutton_Support::getUsers();
 		}
 
-		Crunchbutton_Message_Sms::send([
-			'to' => $users,
-			'message' => $message,
-			'media' => $media,
-			'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT
-		]);
+		if($sender){
+			$_phone = $sender->phone;
+			if($_phone){
+				$_users = [];
+				foreach ($users as $name => $phone) {
+					if($_phone != $phone){
+						$_users[$name] = $phone;
+					}
+				}
+				$users = $_users;
+			}
+		}
+		if(count($users)){
+			Crunchbutton_Message_Sms::send([
+				'to' => $users,
+				'message' => $message,
+				'media' => $media,
+				'reason' => Crunchbutton_Message_Sms::REASON_SUPPORT
+			]);
+		}
 	}
 
 	public function help($order = null) {

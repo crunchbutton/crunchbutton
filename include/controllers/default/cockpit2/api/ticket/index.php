@@ -86,7 +86,7 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 			} else {
 				$message = $ticket->addAdminReply($this->request()['body'], $this->request()['guid']);
 				if ($message->id_support_message) {
-					Message_Incoming_Support::notifyReps($message->admin()->firstName() . ' replied to #' . $message->id_support . ': ' . $message->body, $message->support());
+					Message_Incoming_Support::notifyReps($message->admin()->firstName() . ' replied to #' . $message->id_support . ': ' . $message->body, $message->support(), null, $message->admin());
 				}
 			}
 			if( $message ){
