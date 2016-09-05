@@ -40,17 +40,15 @@ class Controller_api_twilio_phone extends Crunchbutton_Controller_Rest {
 			case 'say':
 				$callback = 'http'.($_SERVER['HTTPS'] != 'on' ? '' : 's').'://'.c::config()->host_callback.'/api/twilio/phone/recording';
 				$caller = $_REQUEST['CALLER'];
-				if($caller){
-					$caller = str_replace('+1', '', $caller);
-					$chars = str_split($caller);
-					echo '<?xml version="1.0" encoding="UTF-8"?>'."\n".'<Response>';
-						echo '<Say voice="'.c::config()->twilio->voice.'">9</Say><Pause length="1" />';
-						echo '<Say voice="'.c::config()->twilio->voice.'">9</Say><Pause length="1" />';
-						foreach($chars as $char){
-							echo '<Say voice="'.c::config()->twilio->voice.'">' . $char . '</Say><Pause length="1" />';
-						}
-					echo '</Response>';
+				$caller = str_replace('+1', '', $caller);
+				$chars = str_split($caller);
+				echo '<?xml version="1.0" encoding="UTF-8"?>'."\n".'<Response>';
+					echo '<Say voice="'.c::config()->twilio->voice.'">9</Say><Pause length="1" />';
+					echo '<Say voice="'.c::config()->twilio->voice.'">9</Say><Pause length="1" />';
+					foreach($chars as $char){
+						echo '<Say voice="'.c::config()->twilio->voice.'">' . $char . '</Say><Pause length="1" />';
 					}
+					echo '</Response>';
 		    	break;
 		}
 
