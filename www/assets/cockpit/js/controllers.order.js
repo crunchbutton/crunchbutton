@@ -197,7 +197,7 @@ NGApp.controller('OrderRefundCtrl', function ($scope, $rootScope, OrderService )
 		OrderService.refund_info( id_order, function(d) {
 			$scope.order = d;
 			$scope.refund_amount = parseFloat( d.charged ) > 0 ? true : false;
-			$scope.refund = {};
+			$scope.refund = {cancel_order: true};
 			$scope.refund.id_order = d.id_order;
 			$scope.refund.amount = parseFloat( d.charged );
 			$scope.amount_max = parseFloat( d.charged );
