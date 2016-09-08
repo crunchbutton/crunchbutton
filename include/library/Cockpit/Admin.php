@@ -8,9 +8,12 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 			$paymentType = $this->payment_type();
 			$ssn = $paymentType->social_security_number($this->id_admin);
 			$data = [
+				'id' => $stripeAccount->id,
 				'status' => $stripeAccount->legal_entity->verification->status,
 				'fields' => $stripeAccount->verification->fields_needed,
+				'disabled_reason' => $stripeAccount->verification->disabled_reason,
 				'due_by' => $stripeAccount->verification->due_by,
+				'details_code' => $stripeAccount->verification->details_code,
 				'contacted' => trim($stripeAccount->verification->contacted) ? true : false,
 				'ssn' => $ssn ? true : false
 			];
