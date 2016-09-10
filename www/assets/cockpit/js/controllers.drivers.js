@@ -271,7 +271,7 @@ NGApp.controller( 'DriversOrderSignatureCtrl', function ( $scope, $rootScope, $r
 
 });
 
-NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $routeParams, DriverOrdersService, DriverOrdersViewService, AccountService, MainNavigationService) {
+NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $routeParams, DriverOrdersService, DriverOrdersViewService, AccountService, MainNavigationService, OrderService) {
 
 	$rootScope.navTitle = '#' + $routeParams.id;
 	$scope.ready = false;
@@ -282,8 +282,17 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, $location, $rootScope, $
 		//console.log(arguments);
 	};
 
+	$scope.askRefund = function(){
+		OrderService.askRefund( $routeParams.id, DriverOrdersViewService.order.delivery_service, DriverOrdersViewService.order._restaurant_formal_relationship, function(){
+			$rootScope.closePopup();
+			setTimeout( function(){ App.alert( 'This order will be refunded soon!' ); }, 300 );
+			$rootScope.reload();
+		} );
+	}
+
+
 	$scope.iOS = App.iOS();
-var serv = angular.element( 'html' ).injector().get( 'AccountService' );
+	var serv = angular.element( 'html' ).injector().get( 'AccountService' );
 	var load = function() {
 		DriverOrdersViewService.load(function(){
 			if(	DriverOrdersViewService.order &&

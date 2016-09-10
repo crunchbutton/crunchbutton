@@ -13,6 +13,8 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 
 		$phone = Phone::byPhone( $params['from'] );
 
+		$this->phone = $phone;
+
 		$this->order = Order::q('select * from `order` where id_phone=? AND TIMESTAMPDIFF( hour, date, NOW() ) < 24 order by id_order desc limit 1',[$phone->id_phone])->get(0);
 		$this->support = Support::q('SELECT * FROM support_message sm
 																		INNER JOIN support s ON s.id_support = sm.id_support
@@ -21,12 +23,10 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 																		ORDER BY sm.id_support_message DESC
 																		LIMIT 1',[ $phone->id_phone ])->get(0);
 
-
-
 		$response = [];
 
-		if($order && $order->id_community){
-			$params['id_community'] = $order->id_community;
+		if($this->order && $this->order->id_community){
+			$params['id_community'] = $this->order->id_community;
 		} else {
 			$community = Community::customerCommunityByPhone($phone->phone);
 			if($community){
@@ -47,8 +47,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 				$response = ['msg' => $this->help(), 'stop' => false];
 				break;
 		}
-
-		$this->response = (object)$response;
+		$this->response = (object) $response;
 	}
 
 	public function status() {
@@ -74,9 +73,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 
 	public function reply($params) {
 
-		// when it should create a new ticket
-		// when it didnt find a ticket
-		if( $this->support->id_support ){
+		if($this->support->id_support){
 			$created = false;
 		}
 
@@ -85,12 +82,11 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 		}
 
 		// when it find a ticket but it bellongs to another order
-		if( $this->order && $this->support && $this->support->id_support && $this->order->id_order
-				&& $this->support->id_order != $this->order->id_order ){
+		if( $this->order && $this->support && $this->support->id_support && $this->order->id_order && $this->support->id_order != $this->order->id_order ){
 			$created = true;
 		}
 
-		if ( $created ) {
+		if ($created) {
 			// create a new ticket
 			$this->support = Support::createNewSMSTicket([
 				'phone' => $params['from'],
@@ -148,16 +144,74 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 					'Last Order: #'.$this->order->id_order.' on '.$date."\n".
 					'Customer: '.$this->order->name.' / '.$this->order->phone.($this->order->address ? ' / '.$this->order->address : '')."\n".
 					'Restaurant: '.$this->order->restaurant()->name.$community.' / '.$this->order->restaurant()->phone.$notifications;
-				Crunchbutton_Message_Incoming_Support::notifyReps($newMessageNotification, $this->support);
+					// Notify reps
+					$this->notifyReps($newMessageNotification, $this->support);
+				Crunchbutton_Message_Incoming_Support::notifyReps($newMessageNotification);
 			}
 		}
 
 		$message .= ': '.htmlspecialchars($params['body']);
-		Crunchbutton_Message_Incoming_Support::notifyReps($message, $this->support, $params['media']);
+		$this->notifyReps($message, $params['media']);
 
 		// notify reps if support is late at night
 		$this->support->makeACall();
 		$this->log( [ 'action' => 'sms action - support-ask', 'message' => $message] );
+	}
+
+	private function notifyReps($message, $params){
+		$reps = [];
+		$type = null;
+		$data = ['reps'=>[]];
+
+		// first check if the order was accepted and the driver is working
+		if($this->order){
+			$driver = $this->order->driver();
+			if($driver->id_admin){
+				$driver = Admin::o($driver->id_admin);
+				if($driver->isWorking()){
+					$reps[$driver->name] = $driver->phone;
+					$type = Support_Action::TYPE_NOTIFICATION_SENT_TO_DRIVER;
+					$data['reps'][] = ['id_admin' => $driver->id_admin];
+				}
+			}
+		}
+		// if not, send the message to other drivers
+		if(!count($reps)){
+			$id_community = $this->order->id_community;
+			if(!$id_community && $this->phone && $this->phone->phone){
+				$community = Crunchbutton_Community::customerCommunityByPhone($this->phone->phone);
+				if($community->id_community){
+					$id_community = $community->id_community;
+				}
+			}
+			if($id_community){
+				$community = Community::o($this->order->id_community);
+				$drivers = $community->getWorkingDrivers();
+				foreach ($drivers as $driver) {
+					$reps[$driver->name] = $driver->phone;
+					$data['reps'][] = ['id_admin' => $driver->id_admin];
+					$type = Support_Action::TYPE_NOTIFICATION_SENT_TO_DRIVERS;
+				}
+			}
+		}
+
+		// if there is no drivers to receive it, sent it to cs
+		if(!count($reps)){
+			$reps = Support::getUsers();
+			$data['reps'] = $reps;
+			$type = Support_Action::TYPE_NOTIFICATION_SENT_TO_CS;
+		}
+
+		Support_Action::create(['id_support' => $this->support->id_support,
+														'action' => Support_Action::ACTION_NOTIFICATION_SENT,
+														'type' => $type,
+														'data' => $data ]);
+		Message_Sms::send([
+			'to' => $reps,
+			'message' => $message,
+			'media' => $params['media'],
+			'reason' => Message_Sms::REASON_SUPPORT
+		]);
 	}
 
 	public function help() {
