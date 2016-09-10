@@ -404,6 +404,7 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$out['_restaurant_address'] = $restaurant->address;
 		$out['_restaurant_delivery_estimated_time'] = $restaurant->delivery_estimated_time;
 		$out['_restaurant_pickup_estimated_time'] = $restaurant->pickup_estimated_time;
+		$out['_restaurant_formal_relationship'] = $restaurant->formal_relationship;
 		$out['_restaurant_delivery_estimated_time_formated'] = $restaurant->calc_delivery_estimated_time( $this->date );
 		$out['_restaurant_pickup_estimated_time_formated'] = $restaurant->calc_pickup_estimated_time( $this->date );
 
