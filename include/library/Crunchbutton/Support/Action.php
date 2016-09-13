@@ -34,6 +34,10 @@ class Crunchbutton_Support_Action extends Cana_Table {
 
 	public static function checkStatus(){
 		// check here
+		$actions = self::q('SELECT * FROM support_action save
+												INNER JOIN(
+													SELECT MAX(id_support_action) id_support_action, id_support FROM support_action GROUP BY id_support)
+														max ON max.id_support_action = sa.id_support_action');
 	}
 
 	public static function createMessageReceived($id_support, $data){
