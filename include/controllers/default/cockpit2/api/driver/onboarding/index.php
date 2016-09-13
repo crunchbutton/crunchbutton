@@ -93,6 +93,8 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 		}
 		$driver->save();
 
+		$driver->addPermissions(['community-cs' => true]);
+
 		// create an username
 		$driver->login = $driver->createLogin();
 		$driver->save();
