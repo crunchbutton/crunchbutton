@@ -1,10 +1,11 @@
 <?php
 class Controller_api_temp_test extends Crunchbutton_Controller_Rest {
 	public function init() {
-		$payments = Payment::q('SELECT * FROM payment WHERE stripe_id IS NOT NULL AND payment_date_checked IS NULL LIMIT 100');
-		foreach ($payments as $payment) {
-			$payment->checkStripeStatus();
+		$drivers = Admin::q('SELECT * FROM admin WHERE active = 1');
+		foreach($drivers as $driver){
+			if($driver->isDriver()){
+				$driver->addPermissions(['community-cs' => true]);
+			}
 		}
-		echo 'end';
 	}
 }

@@ -95,6 +95,8 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 
 		$driver->saveVehicle( $this->request()[ 'vehicle' ] );
 
+		$driver->addPermissions(['community-cs' => true]);
+
 		// add the community
 		$id_community = $this->request()[ 'id_community' ];
 
