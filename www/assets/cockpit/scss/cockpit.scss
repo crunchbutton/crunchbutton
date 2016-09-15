@@ -4840,7 +4840,7 @@ table.receipt{
 }
 .schedule-shift-dialog-container .drivers{
 	max-height: 410px;
-	overflow: auto;
+	overflow: scroll;
 	-webkit-overflow-scrolling:touch;
 }
 .schedule-shift-dialog-container .log{
