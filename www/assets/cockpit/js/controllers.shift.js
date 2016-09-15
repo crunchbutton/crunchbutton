@@ -415,6 +415,10 @@ NGApp.controller('ShiftScheduleScheduleShiftCtrl', function ( $scope, $rootScope
 		ShiftScheduleService.loadShift( info, function( json ){
 			$scope.loading = false;
 			$scope.shift = json;
+
+			setTimeout(function(){
+				App.touchScroll('driverShiftScroll');
+			},1500);
 		} )
 	}
 
