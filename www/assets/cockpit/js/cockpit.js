@@ -34,6 +34,55 @@ App.hasFinishedSetup = function(){
 	return ( $.totalStorage('isDriverWelcomeSetup') ? true : false );
 }
 
+
+App.isTouchDevice = function(){
+	try{
+		document.createEvent('TouchEvent');
+		return true;
+	}catch(e){
+		return false;
+	}
+}
+
+App.touchScroll = function(id){
+	if(App.isTouchDevice()){
+		var el = document.getElementById(id);
+		if(!el){return; }
+		document.getElementById(id).addEventListener('touchstart', function(event) {
+			console.log('touchstart',event.target.tagName.toLowerCase());
+			if(event.target.tagName.toLowerCase() != 'div'){
+				return;
+			}
+			scrollStartPosY = this.scrollTop+event.touches[0].pageY;
+			scrollStartPosX = this.scrollLeft+event.touches[0].pageX;
+		},false);
+
+		document.getElementById(id).addEventListener('touchend', function(event) {
+			console.log('touchend',event.target.tagName.toLowerCase());
+			if(event.target.tagName.toLowerCase() != 'div'){
+				event.target.click();
+			}
+		});
+
+		document.getElementById(id).addEventListener('touchmove', function(event) {
+			console.log('touchmove',event.target.tagName.toLowerCase());
+			if(event.target.tagName.toLowerCase() != 'div'){
+				return;
+			}
+			if ((this.scrollTop < this.scrollHeight-this.offsetHeight &&
+					this.scrollTop+event.touches[0].pageY < scrollStartPosY-5) ||
+					(this.scrollTop != 0 && this.scrollTop+event.touches[0].pageY > scrollStartPosY+5))
+							event.preventDefault();
+			if ((this.scrollLeft < this.scrollWidth-this.offsetWidth &&
+					this.scrollLeft+event.touches[0].pageX < scrollStartPosX-5) ||
+					(this.scrollLeft != 0 && this.scrollLeft+event.touches[0].pageX > scrollStartPosX+5))
+							event.preventDefault();
+			this.scrollTop=scrollStartPosY-event.touches[0].pageY;
+			this.scrollLeft=scrollStartPosX-event.touches[0].pageX;
+		},false);
+	}
+}
+
 if ( navigator.appVersion.indexOf( 'Win' ) !=-1 ){
 	App.isWindows = true;
 };
