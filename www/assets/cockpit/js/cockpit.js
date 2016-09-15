@@ -49,7 +49,6 @@ App.touchScroll = function(id){
 		var el = document.getElementById(id);
 		if(!el){return; }
 		document.getElementById(id).addEventListener('touchstart', function(event) {
-			console.log('touchstart',event.target.tagName.toLowerCase());
 			if(event.target.tagName.toLowerCase() != 'div'){
 				return;
 			}
@@ -57,15 +56,7 @@ App.touchScroll = function(id){
 			scrollStartPosX = this.scrollLeft+event.touches[0].pageX;
 		},false);
 
-		document.getElementById(id).addEventListener('touchend', function(event) {
-			console.log('touchend',event.target.tagName.toLowerCase());
-			if(event.target.tagName.toLowerCase() != 'div'){
-				event.target.click();
-			}
-		});
-
 		document.getElementById(id).addEventListener('touchmove', function(event) {
-			console.log('touchmove',event.target.tagName.toLowerCase());
 			if(event.target.tagName.toLowerCase() != 'div'){
 				return;
 			}
