@@ -419,7 +419,6 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 
 	public function addCustomerMessage( $params = [] ){
-
 		$messageParams[ 'id_admin' ] = NULL;
 		$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_SMS;
 		$messageParams[ 'from' ] = Crunchbutton_Support_Message::TYPE_FROM_CLIENT;
@@ -431,11 +430,9 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 		$this->addMessage( $messageParams );
 
+		// Support_Action::createMessageReceived($this->id_support, $message->id_support_message, $messageParams);
 		// CS Auto-Reply #5042
 		$support = $this;
-		c::timeout( function() use( $support ) {
-			$support->autoReply();
-		}, 10 * 1000 );
 	}
 
 	public function autoReply(){
@@ -550,6 +547,9 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 			$messageParams[ 'body' ] = $params[ 'body' ];
 			$messageParams[ 'guid' ] = $params[ 'guid' ];
 			$messageParams[ 'media' ] = $params[ 'media' ];
+
+			// TODO: add here the support_action
+
 			return $this->addMessage( $messageParams );
 		}
 	}
