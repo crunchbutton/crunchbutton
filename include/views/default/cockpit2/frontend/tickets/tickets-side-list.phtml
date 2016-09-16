@@ -15,7 +15,9 @@
 									<i>System</i>
 								</span>
 								<span ng-if="(ticket.recent_type == 'warning' || ticket.type == 'WARNING') && ticket.recent_from == 'Client' && ticket.customer_name">
-									{{ticket.customer_name || ticket.client_admin_name}}
+									<span ng-if="ticket.customer_name">{{ticket.customer_name}}</span>
+									<span ng-if="!ticket.customer_name && ticket.client_admin_name">{{ticket.client_admin_name}}</span>
+									<span ng-if="!ticket.customer_name && !ticket.client_admin_name">Unknown</span>
 								</span>
 								<span ng-if="ticket.type != 'WARNING'">{{ticket.customer_name || ticket.client_admin_name}}</span>
 							</a>
