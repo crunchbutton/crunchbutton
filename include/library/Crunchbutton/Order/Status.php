@@ -14,8 +14,16 @@ class Crunchbutton_Order_Status extends Cana_Table {
 			and type!=?
 			and type!=?
 			and type!=?
+			and type!=?
 			order by id_order_action desc
-		', [$order->id_order, Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED, Crunchbutton_Order_Action::FORCE_COMMISSION_PAYMENT, Crunchbutton_Order_Action::TICKET_CAMPUS_CASH, Crunchbutton_Order_Action::TICKET_CAMPUS_CASH_REMINDER, Crunchbutton_Order_Action::TICKET_REPS_FAILED_PICKUP, Crunchbutton_Order_Action::TICKET_DO_NOT_DELIVERY ]);
+		', [$order->id_order,
+			Crunchbutton_Order_Action::TICKET_NOT_GEOMATCHED,
+			Crunchbutton_Order_Action::FORCE_COMMISSION_PAYMENT,
+			Crunchbutton_Order_Action::TICKET_CAMPUS_CASH,
+			Crunchbutton_Order_Action::TICKET_CAMPUS_CASH_REMINDER,
+			Crunchbutton_Order_Action::DELIVERY_CANCELED,
+			Crunchbutton_Order_Action::TICKET_REPS_FAILED_PICKUP,
+			Crunchbutton_Order_Action::TICKET_DO_NOT_DELIVERY ]);
 		$this->_order = $order;
 
 		$this->_actions = [];
@@ -41,7 +49,6 @@ class Crunchbutton_Order_Status extends Cana_Table {
 			}
 			elseif($status->type == Crunchbutton_Order_Action::DELIVERY_ORDER_TEXT_5_MIN) {
 				unset($this->_actions[$k]);
-
 			}
 		}
 
