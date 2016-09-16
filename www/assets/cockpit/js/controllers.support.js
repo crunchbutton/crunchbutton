@@ -54,7 +54,7 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, $location, Tick
 		if (!AccountService || !AccountService.user || !AccountService.user.permissions) {
 			return;
 		}
-		TicketService.shortlist( $scope.params, function(tickets) {
+		TicketService.list_beta( $scope.params, function(tickets) {
 			TicketViewService.scope.tickets = tickets.results;
 		});
 	};

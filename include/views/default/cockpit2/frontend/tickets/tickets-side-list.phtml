@@ -5,24 +5,26 @@
 			<a class="support-side-header-closed-tickets" href="/tickets">View all tickets</a>
 			<div class="divider"></div>
 			<div class="tickets-side-tickets">
-				<div ng-repeat="ticket in tickets" ng-if="ticket.status == 'open'" class="tickets-side-item" ng-class="{'tickets-side-item-unread': ( ticket.last_reply == 'Client' || ticket.last_reply == 'auto-reply' || ticket.last_reply_type == 'warning' ), 'tickets-side-item-read': ( ticket.last_reply != 'Client' && ticket.last_reply != 'auto-reply' )}">
+				<div ng-repeat="ticket in tickets" ng-if="ticket.status == 'open'" class="tickets-side-item" ng-class="{'tickets-side-item-unread': ( ticket.recent_from == 'Client' || ticket.recent_from == 'auto-reply' || ticket.recent_from_type == 'warning' ), 'tickets-side-item-read': ( ticket.recent_from != 'Client' && ticket.recent_from != 'auto-reply' )}">
 
 					<div class="tickets-side-tickets-wrap">
 						<i class="fa fa-times-circle-o close-ticket" title="Close issue" ng-click="closeTicket( ticket.id_support )"></i>
 						<div ng-click="loadTicket( ticket.id_support )">
 							<a class="tickets-side-ticket" href="/ticket/{{ticket.id_support}}" eat-click>
-								<span ng-if="ticket.type == 'WARNING' && ticket.last_reply != 'Client'">
+								<span ng-if="(ticket.recent_type == 'warning' || ticket.type == 'WARNING') && ticket.recent_from != 'Client'">
 									<i>System</i>
 								</span>
-								<span ng-if="ticket.type == 'WARNING' && ticket.last_reply == 'Client' && ticket.name">
-									{{ticket.name}}
+								<span ng-if="(ticket.recent_type == 'warning' || ticket.type == 'WARNING') && ticket.recent_from == 'Client' && ticket.customer_name">
+									{{ticket.customer_name}}
 								</span>
-								<span ng-if="ticket.type != 'WARNING'">{{ticket.name}}</span>
+								<span ng-if="ticket.type != 'WARNING'">{{ticket.customer_name}}</span>
 							</a>
-							<span class="tickets-side-time">{{ticket.timestamp_client * 1000 | date:'EEE MM/dd @ h:mm a'}}</span>
+							<span class="tickets-side-time">{{ticket.recent_timestamp * 1000 | date:'EEE MM/dd @ h:mm a'}}</span>
 							<div class="divider"></div>
 							<br>
-							<span class="tickets-side-message" ng-class="{ 'text-danger': ( ticket.last_reply == 'Client' || ticket.last_reply == 'auto-reply' || ticket.last_reply_type == 'warning'), 'text-muted': (ticket.last_reply != 'Client' && ticket.last_reply != 'auto-reply') }">{{ticket.message_client}}</span>
+							<span class="tickets-side-message" ng-class="{ 'text-danger': ( ticket.recent_from == 'Client' || ticket.recent_from == 'auto-reply' || ticket.recent_from_type == 'warning' || ticket.type == 'WARNING' ), 'text-muted': (ticket.recent_from != 'Client') }">
+								{{ticket.message_recent}}
+							</span>
 
 							<div ng-if="ticket.media" ng-repeat="image in ticket.media">
 								<img ng-if="image" class="support-side-image" src="{{image}}">
