@@ -17,7 +17,7 @@
 								<span ng-if="(ticket.recent_type == 'warning' || ticket.type == 'WARNING') && ticket.recent_from == 'Client' && ticket.customer_name">
 									{{ticket.customer_name || ticket.client_admin_name}}
 								</span>
-								<span ng-if="ticket.type != 'WARNING'">{{ticket.customer_name}}</span>
+								<span ng-if="ticket.type != 'WARNING'">{{ticket.customer_name || ticket.client_admin_name}}</span>
 							</a>
 							<span class="tickets-side-time">{{ticket.recent_timestamp * 1000 | date:'EEE MM/dd @ h:mm a'}}</span>
 							<div class="divider"></div>
