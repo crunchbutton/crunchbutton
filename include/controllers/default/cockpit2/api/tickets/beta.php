@@ -186,6 +186,13 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 				}
 			}
 			$o->recent_from = ucfirst($o->recent_from);
+			if($o->recent_from == 'Client'){
+				$o->message_recent = $o->client_last_message;
+			} else if($o->recent_from == 'Rep'){
+				$o->message_recent = $o->rep_last_message;
+			} else {
+				$o->message_recent = $o->system_last_message;
+			}
 			$d[] = $o;
 			$i++;
 		}
