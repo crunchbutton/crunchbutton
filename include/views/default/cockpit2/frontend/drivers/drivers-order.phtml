@@ -349,7 +349,12 @@
 				</div>
 			</div>
 
-
 		</div>
 	</div>
+
+			<div ng-if="oc.order.status.status != 'canceled' && account.user.permissions['COMMUNITY-CS']">
+				<br><br>
+				<button ng-click="oc.cancel_order()" id="cancelOrder" class="button orange-on-orange">Cancel Order</span></button>
+				<br><br>
+		</div>
 </div>
