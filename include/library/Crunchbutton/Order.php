@@ -1876,6 +1876,22 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$this->sendNativeAppLink();
 	}
 
+	public function tellCustomerTheOrderWasCanceled(){
+		$message = Crunchbutton_Message_Sms::greeting( $this->user()->firstName() );
+		if ($this->pay_type == self::PAY_TYPE_CREDIT_CARD) {
+			$message .= "Your order #".$this->id_order." was cancelled and refunded to your card.\n";
+		} else {
+			$message .= "Your order #".$this->id_order." was cancelled.\n";
+		}
+		$message  .= "\nCrunchbutton.com";
+
+		Crunchbutton_Message_Sms::send([
+			'to' => $this->phone,
+			'message' => $message,
+			'reason' => Crunchbutton_Message_Sms::REASON_CUSTOMER_ORDER
+		]);
+	}
+
 	public function que() {
 		$q = Queue::create([
 			'type' => Crunchbutton_Queue::TYPE_ORDER,
@@ -2766,7 +2782,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	}
 
-	public function refund($amt, $note = null, $tell_driver = false, $id_admin = null, $que = true) {
+	public function refund($amt, $note = null, $tell_driver = false, $id_admin = null, $que = true, $tell_customer = false) {
 
 		if( $que ){
 			// check if the order really was refunded
@@ -2783,6 +2799,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 			if( $tell_driver ){
 				$this->tellDriverTheOrderWasCanceled();
+			}
+
+			if($tell_customer){
+				$this->tellCustomerTheOrderWasCanceled();
 			}
 
 			// Refund the gift
