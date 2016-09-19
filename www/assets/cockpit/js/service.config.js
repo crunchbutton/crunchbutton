@@ -96,6 +96,34 @@ NGApp.factory( 'CustomerRewardService', function( $rootScope, $resource, $routeP
 
 } );
 
+NGApp.factory( 'GeoOrdersService', function( $rootScope, $resource, $routeParams ) {
+
+	var service = {};
+
+	var reward = $resource( App.service + 'config/geoorders/:action', { action: '@action' }, {
+				// list methods
+				'get' : { 'method': 'GET', params : { 'action' : '' } },
+				'config_save' : { 'method': 'POST', params : { 'action' : '' } }
+			}
+		);
+
+	service =  {
+			load: function( callback ){
+				reward.get( function( data ){
+					callback( data );
+				} );
+			},
+			save: function( params, callback ){
+				reward.config_save( params, function( data ){
+					callback( data );
+				} );
+			}
+		}
+
+		return service;
+
+} );
+
 NGApp.factory( 'RulesService', function( $rootScope, $resource, $routeParams ) {
 
 	var service = {};

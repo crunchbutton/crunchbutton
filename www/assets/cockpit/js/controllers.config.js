@@ -10,6 +10,11 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			controller: 'ConfigRewardsCtrl',
 			templateUrl: '/assets/view/config-rewards.html'
 		})
+		.when('/config/geo-orders', {
+			action: 'tools',
+			controller: 'ConfigGeoOrdersCtrl',
+			templateUrl: '/assets/view/config-geo-orders.html'
+		})
 		.when('/config/live', {
 			action: 'tools',
 			controller: 'ConfigLiveCtrl',
@@ -224,6 +229,36 @@ NGApp.controller('ConfigLiveCtrl', function( $scope, ConfigLiveMenuService ) {
 } );
 
 
+NGApp.controller('ConfigGeoOrdersCtrl', function( $scope, GeoOrdersService ) {
+
+	var load = function(){
+		GeoOrdersService.load( function( json ){
+			if( !json.error ){
+				$scope.config = json;
+				$scope.ready = true;
+			}
+		} )
+	}
+
+	$scope.save = function(){
+		$scope.isSaving = true;
+		GeoOrdersService.save( $scope.config, function( data ){
+			$scope.isSaving = false;
+			if( data.error ){
+				App.alert( data.error);
+				return;
+			} else {
+				$scope.basicInfo = data;
+				$scope.saved = true;
+				App.alert( 'Information saved!' );
+				setTimeout( function() { $scope.saved = false; }, 1500 );
+			}
+		} );
+	}
+
+	load();
+
+});
 
 NGApp.controller('ConfigRewardsCtrl', function( $scope, CustomerRewardService ) {
 
