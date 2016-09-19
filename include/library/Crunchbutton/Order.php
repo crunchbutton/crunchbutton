@@ -20,6 +20,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	const TIP_PERCENT 				 = 'percent';
 	const TIP_NUMBER				 	 = 'number';
 
+	const CONFIG_KEY_GEO_TICKET_DELIVERY_RADIUS = 'order_ticket_radius';
+	const CONFIG_KEY_GEO_TICKET_NOT_GET_ORDERS = 'order_ticket_geo';
+
 	const ORDER_LOADING_PHRASE_KEY = 'order-loading-phrase';
 
 	const PROCESS_TYPE_RESTAURANT = 'restaurant';
@@ -3771,6 +3774,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function ticketsForOutOfDeliveryRadius(){
+
+		if((intval(Crunchbutton_Config::getVal(Crunchbutton_Order::CONFIG_KEY_GEO_TICKET_NOT_GET_ORDERS)) != 1 )){
+			return;
+		}
+
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->modify( '- 5 min' );
 		$orders = Order::q( 'SELECT * FROM `order` WHERE date > ? AND delivery_type = ?', [ $now->format( 'Y-m-d H:i:s' ), self::SHIPPING_DELIVERY ] );
@@ -3806,6 +3814,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function ticketsForNotGeomatchedOrders(){
+
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->modify( '- 5 min' );
 		$orders = Order::q( 'SELECT * FROM `order` WHERE date > ? AND ( geomatched IS NULL OR geomatched = 0 )', [ $now->format( 'Y-m-d H:i:s' ) ] );

@@ -1,0 +1,39 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title"><i class="fa fa-angellist"></i>Out of Delivery Radius Notifications</h1>
+
+	<div class="divider"></div>
+
+	<form name="form" novalidate>
+		<div class="ul-inputs">
+
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
+
+				<li class="li-input">
+					<div class="input">
+						<label class="switch-wrap">
+							<input type="checkbox" class="switch" ng-model="config.order_ticket_radius"/><div></div>
+						</label>
+						<div class="label">Enable out of delivery radius notifications</div>
+					</div>
+					<br>
+					<div class="clear"></div>
+					<br>
+				</li>
+			</ul>
+
+			<ul ng-class="{'submitted':submitted}" class="box-content2">
+				<li class="li-input">
+					<button class="button green" ng-click="save();">Save</button>
+				</li>
+			</ul>
+		</div>
+
+	</form>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>
