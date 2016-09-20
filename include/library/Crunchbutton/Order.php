@@ -3477,9 +3477,29 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function getDeliveryDriver(){
 		// for payment reasons the driver could be changed at payment time #3232
-		$status = $this->status()->last();
-		if( $status[ 'driver' ] && $status[ 'driver' ][ 'id_admin' ] ){
-			return Admin::o( $status[ 'driver' ][ 'id_admin' ] );
+		// $status = $this->status()->last();
+
+		$actions = Order_Action::q('
+			select * from order_action
+			where id_order=?
+			and type!=?
+			and type!=?
+			and type!=?
+			and type!=?
+			and type!=?
+			and type!=?
+			and type!=?
+			order by id_order_action desc
+		', [$this->id_order,
+			Crunchbutton_Order_Action::DELIVERY_NEW,
+			Crunchbutton_Order_Action::FORCE_COMMISSION_PAYMENT,
+			Crunchbutton_Order_Action::TICKET_CAMPUS_CASH,
+			Crunchbutton_Order_Action::TICKET_CAMPUS_CASH_REMINDER,
+			Crunchbutton_Order_Action::DELIVERY_CANCELED,
+			Crunchbutton_Order_Action::TICKET_REPS_FAILED_PICKUP,
+			Crunchbutton_Order_Action::TICKET_DO_NOT_DELIVERY ]);
+		if($actions->id_admin){
+			return Admin::o($actions->id_admin);
 		}
 		return false;
 	}
