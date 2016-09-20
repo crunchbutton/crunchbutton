@@ -146,7 +146,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 					'Restaurant: '.$this->order->restaurant()->name.$community.' / '.$this->order->restaurant()->phone.$notifications;
 					// Notify reps
 					$this->notifyReps($newMessageNotification, $this->support);
-				Crunchbutton_Message_Incoming_Support::notifyReps($newMessageNotification);
+					return;
 			}
 		}
 

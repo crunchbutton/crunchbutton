@@ -243,15 +243,22 @@ class Crunchbutton_Util extends Cana_Model {
 		return $result;
 	}
 
-	function interval2Hours( $difference, $accuracy = 2 ) {
+	public static function interval2Hours( $difference, $accuracy = 2 ) {
+		$minutes = self::interval2Minutes($difference, $accuracy);
+		if($minutes){
+			return $minutes / 60;
+		}
+		return 0;
+	}
+
+	public static function interval2Minutes( $difference, $accuracy = 2 ) {
 		$seconds = 	( $difference->s )
 							+ ( $difference->i * 60 )
 							+ ( $difference->h * 60 * 60 )
 							+ ( $difference->d * 60 * 60 * 24 )
 							+ ( $difference->m * 60 * 60 * 24 * 30 )
 							+ ( $difference->y * 60 * 60 * 24 * 365 );
-		$hours = $seconds / 60 / 60;
-		return floatval( number_format( $hours, 2 ) );
+		return intval($seconds / 60);
 	}
 
 	public static function randomPass( $length = 6 ){
