@@ -92,7 +92,7 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, $location, Tick
 		if(supportMessages){supportMessages();}
 	});
 
-	$timeout(function(){getTickets();},1500);
+	$timeout(function(){getTickets();},2500);
 
 });
 
