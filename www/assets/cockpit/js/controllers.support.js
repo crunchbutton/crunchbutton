@@ -123,6 +123,11 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $route, $rootScope, $routeP
 	$scope.closeTicket = function(){
 		TicketService.openClose( id_support, function() {
 			$scope.setViewTicket( 0 );
+			setTimeout(function(){
+				TicketService.shortlist( { status: 'open' }, function(tickets) {
+					TicketViewService.scope.tickets = tickets.results;
+				});
+			}, 1000);
 			$rootScope.$broadcast( 'updateSideTickets' );
 			$rootScope.$broadcast( 'ticketStatusUpdated', { ignoreBroadcast: true } );
 		} );
