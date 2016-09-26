@@ -118,10 +118,12 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 
 		// build the message to send to reps
 		$message = '@'.$this->support->id_support;
+
 		if ($params['admin'] && $params['admin']->isDriver()) {
 			// format as a driver message
 			$message .= ' DRIVER '.$params['admin']->name;
 		} elseif ($this->order->id_order) {
+
 			$message .= ' #'.$this->order->id_order.' '.$this->order->name;
 
 			if ($created) {
@@ -145,22 +147,19 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 					'Customer: '.$this->order->name.' / '.$this->order->phone.($this->order->address ? ' / '.$this->order->address : '')."\n".
 					'Restaurant: '.$this->order->restaurant()->name.$community.' / '.$this->order->restaurant()->phone.$notifications;
 					// Notify reps
-					$this->notifyReps($newMessageNotification, $this->support);
+					Support_Action::createDriverAction($this->support->id_support, $newMessageNotification, $this->order, $params['media']);
 					return;
 			}
 		}
-
-		$message .= ': '.htmlspecialchars($params['body']);
-		$this->notifyReps($message, $params['media']);
-
+		Support_Action::createDriverAction($this->support->id_support, $newMessageNotification, $this->order, $params['media']);
 		// notify reps if support is late at night
 		$this->support->makeACall();
 		$this->log( [ 'action' => 'sms action - support-ask', 'message' => $message] );
 	}
 
-	private function notifyReps($message, $params){
+	private function notifyReps($message, $media = null){
+		// deprecated - #8465
 		$reps = [];
-		$type = null;
 		$data = ['reps'=>[]];
 
 		// first check if the order was accepted and the driver is working
@@ -209,7 +208,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 		Message_Sms::send([
 			'to' => $reps,
 			'message' => $message,
-			'media' => $params['media'],
+			'media' => $media,
 			'reason' => Message_Sms::REASON_SUPPORT
 		]);
 	}

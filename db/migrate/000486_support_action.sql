@@ -1,7 +1,6 @@
 CREATE TABLE `support_action` (
   `id_support_action` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `id_support` int(11) unsigned DEFAULT NULL,
-  `id_admin` int(11) unsigned DEFAULT NULL,
   `action` enum('message-received','message-replied','notification-sent') DEFAULT NULL,
   `type` enum('replied-by-driver','replied-by-cs','sent-driver','sent-drivers','sent-cs') DEFAULT NULL,
   `data` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
