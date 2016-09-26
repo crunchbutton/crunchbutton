@@ -90,7 +90,41 @@ class Crunchbutton_Support_Action extends Cana_Table {
 		return Order::q('SELECT * FROM `order` WHERE phone=? AND TIMESTAMPDIFF( hour, date, NOW() ) < 24 ORDER BY id_order DESC  LIMIT 1',[$this->support()->phone])->get(0);
 	}
 
-	public function notifyDrivers(){
+	public static function createDriverAction($id_support, $message, $order, $media = null){
+		$action = self::create(['id_support' => $id_support, 'type' => self::TYPE_NOTIFICATION_SENT_TO_DRIVER, 'action' => self::ACTION_NOTIFICATION_SENT]);
+		$action->notifyDriver($message, $order, $media);
+	}
+
+	public function notifyDriver($message, $order, $media = null){
+		$reps = [];
+		$data = ['reps'=>[]];
+
+		if($order){
+			$driver = $order->driver();
+			if($driver->id_admin){
+				$driver = Admin::o($driver->id_admin);
+				if($driver->isWorking()){
+					$reps[$driver->name] = $driver->phone;
+					$type = Support_Action::TYPE_NOTIFICATION_SENT_TO_DRIVER;
+					$data['reps'][] = ['id_admin' => $driver->id_admin];
+				}
+			}
+		}
+		if($reps && count($reps)){
+			$this->data = json_encode($params['data']);
+			$this->save();
+			Message_Sms::send([
+				'to' => $reps,
+				'message' => $message,
+				'media' => $media,
+				'reason' => Message_Sms::REASON_SUPPORT
+			]);
+		} else {
+			$this->notifyDrivers($message, $message);
+		}
+	}
+
+	public function notifyDrivers($message = null, $media = null){
 		$reps = Support::getUsers();
 		$order = $this->order();
 		$id_community = $order->id_community;
@@ -114,26 +148,34 @@ class Crunchbutton_Support_Action extends Cana_Table {
 			}
 		}
 
-		$type = self::TYPE_NOTIFICATION_SENT_TO_DRIVERS;
-		$message = $this->getMessage();
+		if(!$message){
+			$message = $this->getMessage();
+		}
+
 		self::create(['id_support' => $this->id_support,
 									'action' => self::ACTION_NOTIFICATION_SENT,
-									'type' => $type,
+									'type' => self::TYPE_NOTIFICATION_SENT_TO_DRIVERS,
 									'data' => $data]);
+
 		if($reps && count($reps)){
 			Message_Sms::send([
 				'to' => $reps,
 				'message' => $message,
+				'media' => $media,
 				'reason' => Message_Sms::REASON_SUPPORT
 			]);
+		} else {
+			$this->notifyCS($message, $media);
 		}
 	}
 
-	public function notifyCS(){
+	public function notifyCS($message = null, $media = null){
 		$reps = Support::getUsers();
 		$data = ['reps' => $reps];
 		$type = self::TYPE_NOTIFICATION_SENT_TO_CS;
-		$message = $this->getMessage();
+		if(!$message){
+			$message = $this->getMessage();
+		}
 		self::create(['id_support' => $this->id_support,
 									'action' => self::ACTION_NOTIFICATION_SENT,
 									'type' => $type,
@@ -141,6 +183,7 @@ class Crunchbutton_Support_Action extends Cana_Table {
 		Message_Sms::send([
 			'to' => $reps,
 			'message' => $message,
+			'media' => $media,
 			'reason' => Message_Sms::REASON_SUPPORT
 		]);
 	}
