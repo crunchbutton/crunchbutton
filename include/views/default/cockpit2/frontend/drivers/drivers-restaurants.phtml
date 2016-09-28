@@ -1,0 +1,45 @@
+
+<div class="top-pad"></div>
+
+<div class="content-padding">
+
+	<h1 class="title box-title"><i class="fa fa-coffee"></i><span>Restaurants</span></h1>
+
+	<div class="bar-loader bar-loader-search bar-loader-boxes-top" ng-class="{'bar-loader-loading': loading}"></div>
+
+	<div class="support" ng-show="!loading && communities.length">
+
+		<div class="support-box-wrap box-content2" ng-repeat="community in communities">
+
+			<div class="support-box-wrap-header">
+				<h1>{{community.name_status}}</h1>
+				<div class="divider"></div>
+			</div>
+
+			<div class="no-box-content-color  box-content-table">
+				<table class="tb-zebra">
+					<tr>
+						<th>Restaurant</th>
+						<th>Hours</th>
+						<th></th>
+					</tr>
+					<tr ng-repeat="restaurant in community.restaurants">
+						<td>
+							{{restaurant.name}}
+						</td>
+						<td>
+							<div ng-bind-html="restaurant.closed_message"></div>
+						</td>
+						<td>
+							<button ng-show="!restaurant.closed_for_today" class="button button-empty button-small button-border button-orange" ng-click="closeForToday(restaurant);"><i class="fa fa-times"></i>&nbsp;&nbsp;Close This Restaurant For Rest of Today</button>
+						<button ng-show="restaurant.closed_for_today" class="button button-border button-small button-empty button-green" ng-click="forceReopenForToday(restaurant);"><i class="fa fa-times"></i>&nbsp;&nbsp;Remove "Close for Today"</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="divider"></div>
+
+</div>
+
