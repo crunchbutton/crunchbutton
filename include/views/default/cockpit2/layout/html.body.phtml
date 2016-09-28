@@ -179,6 +179,16 @@
 					</table>
 				</a>
 
+				<a href="/drivers/restaurants" ng-click="instant()" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-restaurants')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-coffee"></i></td>
+							<td class="side-menu-label">Restaurants</a></td>
+						</tr>
+					</table>
+				</a>
+
+
 				<a href="/drivers/orders" ng-click="instant()" class="menu-link" ng-if="account.isDriver && menu.toggle=='driver'" ng-class="{'nav-active': (navigation.page == 'drivers-orders')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
