@@ -28,7 +28,8 @@
 								<span ng-if="!account.user.permissions.GLOBAL">{{ticket.customer_name}}</span>
 							</span>
 
-							<span ng-if="!ticket.order_id_user && !ticket.client_id_user && ticket.client_id_admin">
+							<span ng-if="ticket.client_id_admin">
+								<span ng-if="!ticket.order_id_user && ticket.client_id_user && ticket.client_id_admin"> / </span>
 								<a ng-if="account.user.permissions.GLOBAL" href="/staff/{{ticket.client_id_admin}}">{{ticket.client_admin_name}}</a>
 								<span ng-if="!account.user.permissions.GLOBAL">{{ticket.client_admin_name}}</span>
 							</span>
