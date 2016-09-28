@@ -826,7 +826,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				'id_order' => $this->id_order,
 				'time' => $informed_eta,
 				'distance' => null,
-				'date' => date('Y-m-d h:i:s'),
+				'date' => date('Y-m-d H:i:s'),
 				'method' => Crunchbutton_Order_Eta::METHOD_INFORMED_ETA
 			]);
 			$eta->save();
