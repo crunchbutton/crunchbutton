@@ -1562,7 +1562,7 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 			routing_number: $scope.bank.routing_number,
 			account_number: $scope.bank.account_number
 		}, function( header, response ){
-
+			console.log('response',response);
 			if( response.id ){
 				var params = {
 					'token': response.id,
@@ -1579,7 +1579,11 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 				} );
 			} else {
 				$scope.isTokenizing = false;
-				App.alert( 'Error creating a Stripe token' );
+				var error = '';
+				if(response.error){
+					error = ': ' + response.error.message;
+				}
+				App.alert( 'Error creating a Stripe token' + error );
 			}
 		} );
 	}
