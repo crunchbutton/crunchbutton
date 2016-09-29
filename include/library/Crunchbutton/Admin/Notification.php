@@ -580,7 +580,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		if( $env != 'live' ){
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'warningAboutNoRepsWorking at DEV - not sent','type' => 'admin-notification' ]);
-			return;
+			// return;
 		}
 
 		//spam bug - let it here for while @pererinha
@@ -594,6 +594,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		$group = Group::byName( Crunchbutton_Config::getVal( Crunchbutton_Admin_Notification::REPS_NONE_WORKING_GROUP_NAME_KEY ) );
 		$users = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );
+
 		$twilio = c::twilio();
 
 		if( $order->restaurant()->community && $order->restaurant()->community != '' ){
@@ -602,8 +603,10 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			$community = '';
 		}
 
-		if( $order->preordered && !$order->hasDriverToDeliveryPreOrder() ){
-			$message = "No drivers to delivery the pre-order O#{$order->id_order} \nR: {$order->restaurant()->name} {$community}/ {$order->restaurant()->phone()} \nC: {$order->name} / {$order->phone()} \nDesired Delivery Time: {$order->preOrderDeliveryWindow()}";
+		if( $order->preordered ){
+			if(!$order->hasDriverToDeliveryPreOrder()){
+				$message = "No drivers to delivery the pre-order O#{$order->id_order} \nR: {$order->restaurant()->name} {$community}/ {$order->restaurant()->phone()} \nC: {$order->name} / {$order->phone()} \nDesired Delivery Time: {$order->preOrderDeliveryWindow()}";
+			}
 		} else {
 			$message = "No drivers for O#{$order->id_order} \nR: {$order->restaurant()->name} {$community}/ {$order->restaurant()->phone()} \nC: {$order->name} / {$order->phone()}";
 		}
