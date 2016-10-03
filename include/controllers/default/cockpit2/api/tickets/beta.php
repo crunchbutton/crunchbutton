@@ -96,8 +96,8 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 				$keys[] = $community->id_community;
 			}
 			$q .= ') ';
-			// $q .= ' AND ( client_id_admin IS NULL OR client_id_admin = ?)';
-			// $keys[] = c::user()->id_admin;
+			$q .= ' AND ( client_id_admin IS NULL OR client_id_admin = ?)';
+			$keys[] = c::user()->id_admin;
 		}
 
 		if( $type == 'system' ){
