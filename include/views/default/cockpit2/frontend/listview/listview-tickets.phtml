@@ -28,7 +28,8 @@
 								<span ng-if="!account.user.permissions.GLOBAL">{{ticket.customer_name}}</span>
 							</span>
 
-							<span ng-if="!ticket.order_id_user && !ticket.client_id_user && ticket.client_id_admin">
+							<span ng-if="ticket.client_id_admin">
+								<span ng-if="!ticket.order_id_user && ticket.client_id_user && ticket.client_id_admin"> / </span>
 								<a ng-if="account.user.permissions.GLOBAL" href="/staff/{{ticket.client_id_admin}}">{{ticket.client_admin_name}}</a>
 								<span ng-if="!account.user.permissions.GLOBAL">{{ticket.client_admin_name}}</span>
 							</span>
@@ -47,6 +48,7 @@
 					<!-- message -->
 					<td>
 						<span class="listview-smaller">
+							<div ng-if="ticket.message_recent">{{ticket.message_recent}}</div>
 							<!-- client -->
 							<div ng-if="ticket.client_last_message">
 								<span class="tag tag-empty tag-red">Client</span>
@@ -69,13 +71,15 @@
 								</span>
 								<i class="listview-smaller" ng-if="ticket.system_timestamp">{{ticket.system_timestamp * 1000| date:'EEE MM/dd @ h:mm a'}}</i>
 							</div>
-
 						</span>
 					</td>
 					<!-- last -->
 					<td class="tb-v-center tb-center">
-						<span class="tag tag-empty tag-red" ng-if="ticket.recent_from == 'Client' || ticket.recent_type == 'auto-reply'">{{ticket.recent_from}}</span>
-						<span class="tag tag-empty tag-green" ng-if="ticket.recent_from != 'Client' && ticket.recent_type != 'auto-reply'">{{ticket.recent_from}}</span>
+						<div ng-if="ticket.last_reply">{{ticket.last_reply}}</div>
+						<div ng-if="!ticket.last_reply">
+							<span class="tag tag-empty tag-red" ng-if="ticket.recent_from == 'Client' || ticket.recent_type == 'auto-reply'">{{ticket.recent_from}}</span>
+							<span class="tag tag-empty tag-green" ng-if="ticket.recent_from != 'Client' && ticket.recent_type != 'auto-reply'">{{ticket.recent_from}}</span>
+						</div>
 					</td>
 					<!-- type -->
 					<td class="tb-v-center tb-center" nowrap="">

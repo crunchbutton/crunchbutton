@@ -32,7 +32,7 @@ class Crunchbutton_Order_Eta extends Cana_Table {
 			'id_order' => $order->id_order,
 			'time' => $ret->time,
 			'distance' => $ret->distance,
-			'date' => date('Y-m-d h:i:s'),
+			'date' => date('Y-m-d H:i:s'),
 			'method' => $method
 		]);
 		$eta->save();
@@ -51,7 +51,7 @@ class Crunchbutton_Order_Eta extends Cana_Table {
 				'id_order' => $order->id_order,
 				'time' => $time,
 				'distance' => null,
-				'date' => date('Y-m-d h:i:s'),
+				'date' => date('Y-m-d H:i:s'),
 				'method' => Crunchbutton_Order_Eta::METHOD_SMART_ETA
 			]);
 			$eta->save();

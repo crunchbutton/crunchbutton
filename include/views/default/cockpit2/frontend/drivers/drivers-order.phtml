@@ -348,11 +348,11 @@
 					</div>
 				</div>
 			</div>
-
-		</div>
-		<div>
-			<br><br>
-			<button ng-click="askRefund()" id="textCustomer5" class="ladda-button button orange-on-orange" data-color="orange" data-style="zoom-in"><span class="ladda-label">Text Customer I'm 5 Min Away</span></button>
-		</div>
 	</div>
+
+			<div ng-if="oc.order.status.status != 'canceled' && account.user.permissions['COMMUNITY-CS']">
+				<br><br>
+				<button ng-click="oc.cancel_order()" id="cancelOrder" class="button orange-on-orange">Cancel Order</span></button>
+				<br><br>
+		</div>
 </div>

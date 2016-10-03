@@ -125,6 +125,32 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 								$res['status'] = $order->undoStatus();
 								break;
 
+							case 'cancel-order':
+								$reason = 'Cancelled by Driver';
+								$tell_driver = $this->request()[ 'tell_driver' ];
+								$cancel_order = $this->request()[ 'cancel_order' ];
+								$amount = $order->charged();
+
+								$info = json_encode( [ 'amount' => $amount, 'reason' => $reason, 'tell_driver' => false, 'id_admin' => c::user()->id_admin, 'tell_customer' => true ] );
+
+								// mark as refunded so cs can work on that
+								$order->refunded = 1;
+								$order->do_not_reimburse_driver = 1;
+								$order->do_not_pay_driver = 1;
+								$order->save();
+
+								$q = Queue::create([
+									'type' => Crunchbutton_Queue::TYPE_ORDER_REFUND,
+									'id_order' => $order->id_order,
+									'info' => $info
+								]);
+
+								$order->setStatus( Crunchbutton_Order_Action::DELIVERY_CANCELED, false, null, null, true );
+
+								echo json_encode( [ 'success' => true ] );
+								exit;
+								break;
+
 							case 'text-customer-5-min-away':
 
 								// register the action

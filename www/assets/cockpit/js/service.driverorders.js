@@ -18,6 +18,7 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $http, $r
 				'accept' : { 'method': 'POST', params : { 'action' : 'delivery-accept' } },
 				'signature' : { 'method': 'POST', params : { 'action' : 'signature' } },
 				'text_customer_5_min_away' : { 'method': 'POST', params : { 'action' : 'text-customer-5-min-away' } },
+				'cancel_order' : { 'method': 'POST', params : { 'action' : 'cancel-order' } },
 				'reject' : { 'method': 'POST', params : { 'action' : 'delivery-reject' } },
 				'pickedup' : { 'method': 'POST', params : { 'action' : 'delivery-pickedup' } },
 				'delivered' : { 'method': 'POST', params : { 'action' : 'delivery-delivered' } },
@@ -92,6 +93,27 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $http, $r
 	service.text_customer_5_min_away = function( id_order, callback ){
 		orders.text_customer_5_min_away( { 'id_order': id_order }, function( json ){ callback( json ); } );
 	}
+
+	service.cancel_order = function( id_order, callback ){
+
+		var onCallBack = function(){
+			App.dialog.close();
+			if(callback){
+				callback();
+			}
+		}
+
+		var success = function(){
+			orders.cancel_order( { 'id_order': id_order }, function( json ){ callback( json ); } );
+		}
+
+		var error = function(){
+			 App.dialog.close();
+		}
+		App.confirm( 'Are you sure you want to cancel this order?', 'Confirm?', success, error , 'Yes,No', true);
+	}
+
+
 
 	service.accept = function( params, callback ){
 		if( !typeof params == 'object' ){
@@ -215,6 +237,12 @@ NGApp.factory( 'DriverOrdersViewService', function( $rootScope, $resource, $rout
 
 		App.confirm( 'Confirm send message to customer?' , 'Confirm', success, fail, null, true);
 
+	}
+
+	service.cancel_order = function(){
+		DriverOrdersService.cancel_order(service.order.id_order, function(){
+				service.order.status.status = 'canceled';
+		})
 	}
 
 	service.accept = function() {

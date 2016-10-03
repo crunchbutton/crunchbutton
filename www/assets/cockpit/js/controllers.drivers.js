@@ -26,6 +26,12 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			templateUrl: '/assets/view/drivers-community.html'
 
 		})
+		.when('/drivers/restaurants', {
+			action: 'drivers-restaurants',
+			controller: 'DriversRestaurantsCtrl',
+			templateUrl: '/assets/view/drivers-restaurants.html'
+
+		})
 		.when('/drivers/notification/:id?', {
 			action: 'drivers-notification',
 			controller: 'DriversNotificationCtrl',
@@ -39,6 +45,29 @@ NGApp.controller( 'CommunityResourcesDriverCtrl', function ($rootScope, $scope, 
 		$scope.communities = data;
 	});
 } );
+
+
+NGApp.controller( 'DriversRestaurantsCtrl', function ($scope, DriverRestaurantsService ) {
+	$scope.loading = true;
+	var load = function(){
+		$scope.communities = null;
+		DriverRestaurantsService.status( function( json ){
+			$scope.communities = json;
+			$scope.loading = false;
+		} );
+	}
+
+	$scope.closeForToday = function(restaurant){
+		DriverRestaurantsService.closeRestaurantForToday(restaurant.id_restaurant, function(){load()});
+	}
+
+	$scope.forceReopenForToday = function(restaurant){
+		DriverRestaurantsService.forceReopenReopenForToday(restaurant.id_restaurant, function(){load()});
+	}
+
+	load();
+
+});
 
 NGApp.controller( 'DriversCommunityCtrl', function ($scope, $filter, DriverCommunityService ) {
 
@@ -1571,7 +1600,7 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 			routing_number: $scope.bank.routing_number,
 			account_number: $scope.bank.account_number
 		}, function( header, response ){
-
+			console.log('response',response);
 			if( response.id ){
 				var params = {
 					'token': response.id,
@@ -1588,7 +1617,11 @@ NGApp.controller('DriversPaymentFormCtrl', function( $scope, StaffPayInfoService
 				} );
 			} else {
 				$scope.isTokenizing = false;
-				App.alert( 'Error creating a Stripe token' );
+				var error = '';
+				if(response.error){
+					error = ': ' + response.error.message;
+				}
+				App.alert( 'Error creating a Stripe token' + error );
 			}
 		} );
 	}

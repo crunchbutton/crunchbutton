@@ -29,6 +29,10 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 
+		if($isCommunityCS && $ticket->id_admin && $ticket->id_admin != c::user()->id_admin){
+			$this->error(401, true);
+		}
+
 		if (!$ticket->id_support) {
 			$this->error(404, true);
 		}
