@@ -1,0 +1,1 @@
+ALTER TABLE `community` ADD `sent_tickets_to_drivers` tinyint(1) NOT NULL DEFAULT '0';

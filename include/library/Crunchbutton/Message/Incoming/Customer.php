@@ -162,34 +162,40 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 		$reps = [];
 		$data = ['reps'=>[]];
 
-		// first check if the order was accepted and the driver is working
-		if($this->order){
-			$driver = $this->order->driver();
-			if($driver->id_admin){
-				$driver = Admin::o($driver->id_admin);
-				if($driver->isWorking()){
-					$reps[$driver->name] = $driver->phone;
-					$type = Support_Action::TYPE_NOTIFICATION_SENT_TO_DRIVER;
-					$data['reps'][] = ['id_admin' => $driver->id_admin];
-				}
-			}
+		if($this->order && $this->order->community()){
+			$community = $this->order->community();
 		}
-		// if not, send the message to other drivers
-		if(!count($reps)){
-			$id_community = $this->order->id_community;
-			if(!$id_community && $this->phone && $this->phone->phone){
-				$community = Crunchbutton_Community::customerCommunityByPhone($this->phone->phone);
-				if($community->id_community){
-					$id_community = $community->id_community;
+
+		if($community && $community->sent_tickets_to_drivers){
+			// first check if the order was accepted and the driver is working
+			if($this->order){
+				$driver = $this->order->driver();
+				if($driver->id_admin){
+					$driver = Admin::o($driver->id_admin);
+					if($driver->isWorking()){
+						$reps[$driver->name] = $driver->phone;
+						$type = Support_Action::TYPE_NOTIFICATION_SENT_TO_DRIVER;
+						$data['reps'][] = ['id_admin' => $driver->id_admin];
+					}
 				}
 			}
-			if($id_community){
-				$community = Community::o($this->order->id_community);
-				$drivers = $community->getWorkingDrivers();
-				foreach ($drivers as $driver) {
-					$reps[$driver->name] = $driver->phone;
-					$data['reps'][] = ['id_admin' => $driver->id_admin];
-					$type = Support_Action::TYPE_NOTIFICATION_SENT_TO_DRIVERS;
+			// if not, send the message to other drivers
+			if(!count($reps)){
+				$id_community = $this->order->id_community;
+				if(!$id_community && $this->phone && $this->phone->phone){
+					$community = Crunchbutton_Community::customerCommunityByPhone($this->phone->phone);
+					if($community->id_community){
+						$id_community = $community->id_community;
+					}
+				}
+				if($id_community){
+					$community = Community::o($this->order->id_community);
+					$drivers = $community->getWorkingDrivers();
+					foreach ($drivers as $driver) {
+						$reps[$driver->name] = $driver->phone;
+						$data['reps'][] = ['id_admin' => $driver->id_admin];
+						$type = Support_Action::TYPE_NOTIFICATION_SENT_TO_DRIVERS;
+					}
 				}
 			}
 		}

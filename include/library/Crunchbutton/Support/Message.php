@@ -39,6 +39,12 @@ class Crunchbutton_Support_Message extends Cana_Table {
 			$new = false;
 		}
 
+		if($this->from == self::TYPE_FROM_REP){
+			Support_Action::create(['id_support' => $this->id_support, 'action' => Support_Action::ACTION_MESSAGE_REPLIED]);
+		} else if($this->from == self::TYPE_FROM_SYSTEM && $this->support()->status == Support::STATUS_CLOSED){
+			Support_Action::create(['id_support' => $this->id_support, 'action' => Support_Action::ACTION_TICKET_CLOSED]);
+		}
+
 		if ($new) {
 			Event::create([
 				'room' => [

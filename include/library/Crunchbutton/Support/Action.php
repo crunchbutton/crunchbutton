@@ -5,6 +5,7 @@ class Crunchbutton_Support_Action extends Cana_Table {
 	const ACTION_MESSAGE_RECEIVED = 'message-received';
 	const ACTION_MESSAGE_REPLIED = 'message-replied';
 	const ACTION_NOTIFICATION_SENT = 'notification-sent';
+	const ACTION_TICKET_CLOSED = 'ticket-closed';
 
 	const TYPE_REPLIED_BY_DRIVER = 'replied-by-driver';
 	const TYPE_REPLIED_BY_CS = 'replied-by-cs';
@@ -23,7 +24,6 @@ class Crunchbutton_Support_Action extends Cana_Table {
 	public static function create($params) {
 		$action = new Support_Action;
 		$action->id_support = $params['id_support'];
-		$action->id_admin = $params['id_admin'];
 		$action->action = $params['action'];
 		$action->type = $params['type'];
 		$action->data = json_encode($params['data']);
@@ -53,19 +53,19 @@ class Crunchbutton_Support_Action extends Cana_Table {
 		if($this->isWaitingResponse()){
 			$lastChange = $this->date();
 			$now = new DateTime('now', new DateTimeZone(c::config()->timezone));
-			$minutes = Util::interval2Hours($lastChange->diff($now));
-
+			$minutes = Util::interval2Minutes($lastChange->diff($now));
 			if($minutes >= 15){
 				// send notification to cs
-				if(!self::hasCSNotification($this->id_support)){
+				if($this->type != self::TYPE_NOTIFICATION_SENT_TO_CS){
 					$this->notifyCS();
 				}
 			} else if ($minutes >= 8){
 				// sent ticket to drivers
-				if(!self::hasDriversNotification($this->id_support)){
+				if($this->type != self::TYPE_NOTIFICATION_SENT_TO_DRIVERS){
 					$this->notifyDrivers();
 				}
 			}
+			self::hasDriversNotification($this->id_support);
 		}
 	}
 
@@ -100,13 +100,16 @@ class Crunchbutton_Support_Action extends Cana_Table {
 		$data = ['reps'=>[]];
 
 		if($order){
-			$driver = $order->driver();
-			if($driver->id_admin){
-				$driver = Admin::o($driver->id_admin);
-				if($driver->isWorking()){
-					$reps[$driver->name] = $driver->phone;
-					$type = Support_Action::TYPE_NOTIFICATION_SENT_TO_DRIVER;
-					$data['reps'][] = ['id_admin' => $driver->id_admin];
+			$community = $order->community();
+			if($community && $community->sent_tickets_to_drivers){
+				$driver = $order->driver();
+				if($driver->id_admin){
+					$driver = Admin::o($driver->id_admin);
+					if($driver->isWorking()){
+						$reps[$driver->name] = $driver->phone;
+						$type = Support_Action::TYPE_NOTIFICATION_SENT_TO_DRIVER;
+						$data['reps'][] = ['id_admin' => $driver->id_admin];
+					}
 				}
 			}
 		}
@@ -140,11 +143,13 @@ class Crunchbutton_Support_Action extends Cana_Table {
 
 		if($id_community){
 			$community = Community::o($id_community);
-			$drivers = $community->getWorkingDrivers();
-			foreach ($drivers as $driver) {
-				$reps[$driver->name] = $driver->phone;
-				$data['reps'][] = ['id_admin' => $driver->id_admin];
-				$type = Support_Action::TYPE_NOTIFICATION_SENT_TO_DRIVERS;
+			if($community && $community->sent_tickets_to_drivers){
+				$drivers = $community->getWorkingDrivers();
+				foreach ($drivers as $driver) {
+					$reps[$driver->name] = $driver->phone;
+					$data['reps'][] = ['id_admin' => $driver->id_admin];
+					$type = Support_Action::TYPE_NOTIFICATION_SENT_TO_DRIVERS;
+				}
 			}
 		}
 
@@ -152,12 +157,11 @@ class Crunchbutton_Support_Action extends Cana_Table {
 			$message = $this->getMessage();
 		}
 
-		self::create(['id_support' => $this->id_support,
-									'action' => self::ACTION_NOTIFICATION_SENT,
-									'type' => self::TYPE_NOTIFICATION_SENT_TO_DRIVERS,
-									'data' => $data]);
-
 		if($reps && count($reps)){
+			self::create(['id_support' => $this->id_support,
+							'action' => self::ACTION_NOTIFICATION_SENT,
+							'type' => self::TYPE_NOTIFICATION_SENT_TO_DRIVERS,
+							'data' => $data]);
 			Message_Sms::send([
 				'to' => $reps,
 				'message' => $message,
@@ -201,7 +205,9 @@ class Crunchbutton_Support_Action extends Cana_Table {
 	}
 
 	public static function supportHasActionType($id_support, $action, $type){
-		$action = self::q('SELECT * FROM support_action WHERE id_support = ? AND action = ?', [$id_support, $action]);
+		$now = new DateTime( 'now', new DateTimeZone(c::config()->timezone));
+		$now->modify('-45 minutes');
+		$action = self::q('SELECT * FROM support_action WHERE id_support = ? AND action = ? AND date > ?', [$id_support, $action, $now->format('Y-m-d H:i:s')]);
 		if($action->id_support){
 			return true;
 		}
