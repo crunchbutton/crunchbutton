@@ -61,7 +61,6 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 							UNIX_TIMESTAMP( recent_message.date ) AS recent_timestamp,
 							id_support_message_recent
 
-
 							 FROM ( SELECT
 							s.id_support,
 							( SELECT COALESCE ( MAX( support_message.id_support_message ), NULL ) AS id_support_message_client FROM support_message WHERE support_message.id_support = s.id_support AND ( support_message.from = \'client\' ) LIMIT 1 ) AS id_support_message_client,
@@ -97,6 +96,8 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 				$keys[] = $community->id_community;
 			}
 			$q .= ') ';
+			// $q .= ' AND ( client_id_admin IS NULL OR client_id_admin = ?)';
+			// $keys[] = c::user()->id_admin;
 		}
 
 		if( $type == 'system' ){
@@ -152,7 +153,6 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 
 		$count = 0;
 
-		// // get the count
 		if ($getCount) {
 			$r = c::db()->query(str_replace('-WILD-','COUNT(*) as c', $q), $keys);
 			while ($c = $r->fetch()) {
@@ -186,8 +186,23 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 				}
 			}
 			$o->recent_from = ucfirst($o->recent_from);
-			$d[] = $o;
-			$i++;
+			if($o->recent_from == 'Client'){
+				$o->message_recent = $o->client_last_message;
+			} else if($o->recent_from == 'Rep'){
+				$o->message_recent = $o->rep_last_message;
+			} else {
+				$o->message_recent = $o->system_last_message;
+			}
+			$add  = true;
+			if (!c::user()->permission()->check(['global'])) {
+				if($o->client_id_admin && $o->client_id_admin != c::user()->id_admin){
+					$add = false;
+				}
+			}
+			if($add){
+				$d[] = $o;
+				$i++;
+			}
 		}
 
 		echo json_encode([

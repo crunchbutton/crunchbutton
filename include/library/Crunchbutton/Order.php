@@ -20,6 +20,9 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	const TIP_PERCENT 				 = 'percent';
 	const TIP_NUMBER				 	 = 'number';
 
+	const CONFIG_KEY_GEO_TICKET_DELIVERY_RADIUS = 'order_ticket_radius';
+	const CONFIG_KEY_GEO_TICKET_NOT_GET_ORDERS = 'order_ticket_geo';
+
 	const ORDER_LOADING_PHRASE_KEY = 'order-loading-phrase';
 
 	const PROCESS_TYPE_RESTAURANT = 'restaurant';
@@ -823,7 +826,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 				'id_order' => $this->id_order,
 				'time' => $informed_eta,
 				'distance' => null,
-				'date' => date('Y-m-d h:i:s'),
+				'date' => date('Y-m-d H:i:s'),
 				'method' => Crunchbutton_Order_Eta::METHOD_INFORMED_ETA
 			]);
 			$eta->save();
@@ -1876,6 +1879,22 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		$this->sendNativeAppLink();
 	}
 
+	public function tellCustomerTheOrderWasCanceled(){
+		$message = Crunchbutton_Message_Sms::greeting( $this->user()->firstName() );
+		if ($this->pay_type == self::PAY_TYPE_CREDIT_CARD) {
+			$message .= "Your order #".$this->id_order." was cancelled and refunded to your card.\n";
+		} else {
+			$message .= "Your order #".$this->id_order." was cancelled.\n";
+		}
+		$message  .= "\nCrunchbutton.com";
+
+		Crunchbutton_Message_Sms::send([
+			'to' => $this->phone,
+			'message' => $message,
+			'reason' => Crunchbutton_Message_Sms::REASON_CUSTOMER_ORDER
+		]);
+	}
+
 	public function que() {
 		$q = Queue::create([
 			'type' => Crunchbutton_Queue::TYPE_ORDER,
@@ -2766,7 +2785,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	}
 
-	public function refund($amt, $note = null, $tell_driver = false, $id_admin = null, $que = true) {
+	public function refund($amt, $note = null, $tell_driver = false, $id_admin = null, $que = true, $tell_customer = false) {
 
 		if( $que ){
 			// check if the order really was refunded
@@ -2783,6 +2802,10 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 			if( $tell_driver ){
 				$this->tellDriverTheOrderWasCanceled();
+			}
+
+			if($tell_customer){
+				$this->tellCustomerTheOrderWasCanceled();
 			}
 
 			// Refund the gift
@@ -3454,9 +3477,29 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 
 	public function getDeliveryDriver(){
 		// for payment reasons the driver could be changed at payment time #3232
-		$status = $this->status()->last();
-		if( $status[ 'driver' ] && $status[ 'driver' ][ 'id_admin' ] ){
-			return Admin::o( $status[ 'driver' ][ 'id_admin' ] );
+		// $status = $this->status()->last();
+
+		$actions = Order_Action::q('
+			select * from order_action
+			where id_order=?
+			and type!=?
+			and type!=?
+			and type!=?
+			and type!=?
+			and type!=?
+			and type!=?
+			and type!=?
+			order by id_order_action desc
+		', [$this->id_order,
+			Crunchbutton_Order_Action::DELIVERY_NEW,
+			Crunchbutton_Order_Action::FORCE_COMMISSION_PAYMENT,
+			Crunchbutton_Order_Action::TICKET_CAMPUS_CASH,
+			Crunchbutton_Order_Action::TICKET_CAMPUS_CASH_REMINDER,
+			Crunchbutton_Order_Action::DELIVERY_CANCELED,
+			Crunchbutton_Order_Action::TICKET_REPS_FAILED_PICKUP,
+			Crunchbutton_Order_Action::TICKET_DO_NOT_DELIVERY ]);
+		if($actions->id_admin){
+			return Admin::o($actions->id_admin);
 		}
 		return false;
 	}
@@ -3751,6 +3794,11 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function ticketsForOutOfDeliveryRadius(){
+
+		if((intval(Crunchbutton_Config::getVal(Crunchbutton_Order::CONFIG_KEY_GEO_TICKET_NOT_GET_ORDERS)) != 1 )){
+			return;
+		}
+
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->modify( '- 5 min' );
 		$orders = Order::q( 'SELECT * FROM `order` WHERE date > ? AND delivery_type = ?', [ $now->format( 'Y-m-d H:i:s' ), self::SHIPPING_DELIVERY ] );
@@ -3786,6 +3834,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	}
 
 	public function ticketsForNotGeomatchedOrders(){
+
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->modify( '- 5 min' );
 		$orders = Order::q( 'SELECT * FROM `order` WHERE date > ? AND ( geomatched IS NULL OR geomatched = 0 )', [ $now->format( 'Y-m-d H:i:s' ) ] );

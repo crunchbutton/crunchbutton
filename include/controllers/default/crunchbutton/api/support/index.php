@@ -60,6 +60,12 @@ class Controller_api_Support extends Crunchbutton_Controller_Rest {
 							$support->save();
 						}
 
+						$newMessageNotification =
+								'New support ticket (Help box) @'.$support->id_support."\n".
+								'C: '.$this->request()['name'].' / '.$phone."\n".
+								'M: '.$this->request()['message'];
+							Crunchbutton_Message_Incoming_Support::notifyReps($newMessageNotification, $support);
+
 						echo $support->json();
 						$support->notify( false );
 					break;

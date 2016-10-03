@@ -962,6 +962,47 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 									}
 								}
 							}
+					 } else if($this->auto_close) {
+
+					 	$nextShift = Crunchbutton_Community_Shift::nextAssignedShiftByCommunity( $this->id_community );
+						if( $nextShift->id_community ){
+
+							$date_start = $nextShift->dateStart( $this->timezone );
+							$date_end = $nextShift->dateEnd( $this->timezone );
+
+							$message = 'Next open ';
+							$message .= $date_start->format( 'g' );
+							if( $date_start->format( 'i' ) != '00' ){
+								$message .= ':' . $date_start->format( 'i' );
+							}
+							$message .= $date_start->format( 'A' );
+							$message .= '-';
+
+							$day = clone $nextShift->dateStart( $this->timezone );
+
+							$shift_day = $day->format( 'Y-m-d' );
+							$day->modify( '+1 day' );
+							$shift_next_day = $day->format( 'Y-m-d' );
+
+							// last Shift
+							$lastShift = Crunchbutton_Community_Shift::q( "SELECT * FROM community_shift cs WHERE cs.date_start >= ? AND cs.date_end <= ? AND cs.id_community = ? ORDER BY cs.date_end DESC LIMIT 1", [ $shift_day, $shift_next_day, $this->id_community ] )->get( 0 );
+							if( $lastShift->id_community_shift ){
+								$date_end = $lastShift->dateEnd( $this->timezone );
+							}
+							$message .= $date_end->format( 'g' );
+							if( $date_end->format( 'i' ) != '00' ){
+								$message .= ':' . $date_end->format( 'i' );
+							}
+
+							$message .= $date_end->format( 'A' );
+							$message .= ' ';
+							$message .= $date_start->format( 'D' );
+							$message .= '!';
+						} else {
+							$message = 'Temporarily Unavailable!';
+						}
+						$this->driver_restaurant_name = $message;
+						$this->save();
 					 }
 				}
 		}
@@ -1578,7 +1619,6 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		}
 	}
 
-	// aqui
 	public function closeCommunityByDriver($id_driver, $minutes, $reason){
 		// check if the driver belongs to the community
 		$driver = Admin::o( $id_driver );

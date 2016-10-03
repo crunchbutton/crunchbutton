@@ -230,21 +230,20 @@
 			<div class="no-box-content-color" ng-if="order.actions.length">
 				<table align="right" class="basic-table detail">
 					<tr>
-						<td class="topitem itemprice tb-small">Status</td>
-						<td class="topitem itemname">Driver</td>
+						<td class="topitem itemname">Driver / Status</td>
 						<td class="topitem itemname" ng-if="!order.actions_today">Date</td>
 						<td class="topitem order-contents-item-qty">Time</td>
 					</tr>
 					<tr ng-repeat="action in order.actions" title="{{action.note}}">
-						<td class="fooditem dish-name tb-small tb-v-center" nowrap="nowrap">
+						<td class="fooditem dish-name" nowrap="">
 							<span class="tag tag-red no-wrap" ng-if="action.type == 'delivery-text-5min'">5 min</span>
 							<span class="tag tag-red no-wrap" ng-if="action.type == 'delivery-rejected'">Rejected</span>
 							<span class="tag tag-black no-wrap" ng-if="action.type == 'delivery-canceled'">Canceled</span>
 							<span class="tag tag-green no-wrap" ng-if="action.type == 'delivery-accepted'">Accepted</span>
 							<span class="tag tag-blue no-wrap" ng-if="action.type == 'delivery-pickedup'">Pickedup</span>
 							<span class="tag tag-purple no-wrap" ng-if="action.type == 'delivery-delivered'">Delivered</span>
-						</td>
-						<td class="fooditem dish-name">
+							<span class="tag tag-green no-wrap" ng-if="action.type == 'force-commission-payment'">Force Commission</span>
+							<br>
 							<a href="/staff/{{action.admin.login}}">{{action.admin.name}}</a><br>
 							<a href ng-click="callText(action.admin.phone)" class="listview-smaller">{{action.admin.phone | formatPhone}}</a>
 						</td>

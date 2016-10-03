@@ -46,7 +46,7 @@ NGApp.controller('ChatCtrl', function($scope, $rootScope, $routeParams, SocketSe
 });
 
 
-NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, $location, TicketService, TicketViewService, AccountService) {
+NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, $location, TicketService, TicketViewService, AccountService, $timeout) {
 
 	$scope.params = { status: 'open' };
 
@@ -54,7 +54,8 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, $location, Tick
 		if (!AccountService || !AccountService.user || !AccountService.user.permissions) {
 			return;
 		}
-		TicketService.shortlist( $scope.params, function(tickets) {
+		TicketService.shortlist( { status: 'open' }, function(tickets) {
+			console.log('tickets',tickets);
 			TicketViewService.scope.tickets = tickets.results;
 		});
 	};
@@ -92,7 +93,7 @@ NGApp.controller('SideTicketsCtrl', function($scope, $rootScope, $location, Tick
 		if(supportMessages){supportMessages();}
 	});
 
-	getTickets();
+	$timeout(function(){getTickets();},2500);
 
 });
 
@@ -123,6 +124,11 @@ NGApp.controller( 'SideTicketCtrl', function($scope, $route, $rootScope, $routeP
 	$scope.closeTicket = function(){
 		TicketService.openClose( id_support, function() {
 			$scope.setViewTicket( 0 );
+			setTimeout(function(){
+				TicketService.shortlist( { status: 'open' }, function(tickets) {
+					TicketViewService.scope.tickets = tickets.results;
+				});
+			}, 1000);
 			$rootScope.$broadcast( 'updateSideTickets' );
 			$rootScope.$broadcast( 'ticketStatusUpdated', { ignoreBroadcast: true } );
 		} );
@@ -434,7 +440,7 @@ NGApp.controller('SupportCtrl', function($scope, $rootScope, $timeout, TicketSer
 	}, true);
 
 	var update = function(){
-		TicketService.list_beta($scope.ticketparams, function(d) {
+		TicketService.shortlist($scope.ticketparams, function(d) {
 			$scope.lotsoftickets = d.results;
 			TicketViewService.scope.tickets = d.results;
 		});

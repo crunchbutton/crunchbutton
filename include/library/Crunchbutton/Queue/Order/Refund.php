@@ -11,7 +11,7 @@ class Crunchbutton_Queue_Order_Refund extends Crunchbutton_Queue {
 
 		$order = $this->order();
 
-		$order->refund( $data->amount, $data->reason, $data->tell_driver, $data->id_admin, true );
+		$order->refund( $data->amount, $data->reason, $data->tell_driver, $data->id_admin, true, $data->tell_customer );
 
 		return self::STATUS_SUCCESS;
 	}

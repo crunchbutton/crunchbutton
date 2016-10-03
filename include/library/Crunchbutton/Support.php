@@ -432,6 +432,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 		Support_Action::createMessageReceived($this->id_support, $message->id_support_message, $messageParams);
 
+		// Support_Action::createMessageReceived($this->id_support, $message->id_support_message, $messageParams);
 		// CS Auto-Reply #5042
 		$support = $this;
 	}

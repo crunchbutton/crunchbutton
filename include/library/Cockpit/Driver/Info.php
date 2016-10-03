@@ -62,6 +62,8 @@ class Cockpit_Driver_Info extends Cana_Table_Trackchange {
 							'5S',
 							'6',
 							'6 Plus',
+							'7',
+							'7 Plus',
 							'Other'  ];
 	}
 
@@ -86,7 +88,13 @@ class Cockpit_Driver_Info extends Cana_Table_Trackchange {
 								'Samsung Galaxy Note3',
 								'Samsung Galaxy S5',
 								'Samsung Galaxy S6',
+								'Samsung Galaxy S6 Edge',
+								'Samsung Galaxy S7',
+								'Samsung Galaxy S7 Edge',
 								'Motorola Moto G',
+								'Google Nexus 5X',
+								'HTC One (M9)',
+								'Google Nexus 6P',
 								'Samsung Galaxy Tab3 7.0',
 								'Samsung Galaxy S3 Mini',
 								'Samsung Galaxy Note2',
