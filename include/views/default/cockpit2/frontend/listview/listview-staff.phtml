@@ -48,8 +48,13 @@
 						</div>
 					</td>
 					<td nowrap class="tb-center tb-v-center tb-small">
-						<span class="tag tag-green" ng-if="s.verified">Verified</span>
-						<span class="tag tag-red" ng-if="!s.verified">Unverified</span>
+						<span ng-if="!s.isCommunityDirector">
+							<span class="tag tag-green" ng-if="s.verified">Verified</span>
+							<span class="tag tag-red" ng-if="!s.verified">Unverified</span>
+						</span>
+						<span ng-if="s.isCommunityDirector">
+							<span class="tag tag-empty tag-lightgrey">None</span>
+						</span>
 					</td>
 					<td nowrap class="tb-center tb-v-center" ng-if="query.working != 'all'">
 						<span class="tag tag-purple" ng-if="s.working_today && !s.working">Today</span>

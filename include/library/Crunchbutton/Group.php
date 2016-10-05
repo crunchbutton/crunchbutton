@@ -9,6 +9,7 @@ class Crunchbutton_Group extends Cana_Table {
 	const COMMUNITY_CS_GROUP = 'community-cs';
 
 	const TYPE_MARKETING_REP = 'marketing-rep';
+	const TYPE_COMMUNITY_DIRECTOR = 'comm-director';
 	const TYPE_DRIVER = 'driver';
 	const TYPE_COMMUNITY_MANAGER = 'community-manager';
 	const TYPE_BRAND_REPRESENTATIVE = 'brand-representative';
@@ -22,6 +23,10 @@ class Crunchbutton_Group extends Cana_Table {
 
 	public function marketingRepGroupOfCommunity( $community ){
 		return Crunchbutton_Group::normalizeDriverGroup( str_replace( ' ' , '-', Crunchbutton_Group::MARKETING_REP_GROUPS_PREFIX . strtolower( str_replace( "'", '', str_replace( '"', '', str_replace( ".", '', $community ) ) ) ) ), 0, 20);
+	}
+
+	public function communityDirectorGroupCommunity($id_community){
+		return self::createCommunityDirectorGroup($id_community);
 	}
 
 	// used at admin_group #7387
@@ -40,6 +45,9 @@ class Crunchbutton_Group extends Cana_Table {
 		}
 		if( $this->type == self::TYPE_MARKETING_REP ){
 			return self::TYPE_BRAND_REPRESENTATIVE;
+		}
+		if( $this->type == self::TYPE_COMMUNITY_DIRECTOR ){
+			return self::TYPE_COMMUNITY_DIRECTOR;
 		}
 	}
 
@@ -99,6 +107,25 @@ class Crunchbutton_Group extends Cana_Table {
 		$group->description = $description;
 		$group->save();
 		return $group;
+	}
+
+	public function createCommunityDirectorGroup( $id_community ){
+		$community = Crunchbutton_Community::o( $id_community );
+		if( $community->id_community ){
+			$name = self::TYPE_COMMUNITY_DIRECTOR .'-'. $id_community;
+			$group = self::q('SELECT * FROM `group` WHERE name = ? ORDER BY id_group DESC LIMIT 1',[$name]);
+			if(!$group->id_group){
+				$description = $community->name . ' community director group';
+				$group = new Crunchbutton_Group();
+				$group->name = $name;
+				$group->description = $description;
+				$group->type = self::TYPE_COMMUNITY_DIRECTOR;
+				$group->id_community = $id_community;
+				$group->save();
+			}
+			return $group;
+		}
+		return null;
 	}
 
 	public function createMarketingRepGroup( $id_community ){
