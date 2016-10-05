@@ -21,6 +21,11 @@ NGApp.config(['$routeProvider', function($routeProvider) {
 			controller: 'StaffMarketingFormCtrl',
 			templateUrl: '/assets/view/staff-marketing-form.html'
 		})
+		.when('/staff/community-director/:id', {
+			action: 'staff',
+			controller: 'StaffCommunityDirectorFormCtrl',
+			templateUrl: '/assets/view/staff-community-director-form.html'
+		})
 		.when('/staff/:id', {
 			action: 'staff',
 			controller: 'StaffInfoCtrl',
@@ -300,6 +305,7 @@ NGApp.controller('StaffCtrl', function ($rootScope, $scope, StaffService, ViewLi
 		staffType.push( { 'value': 'all', 'label': 'All' } );
 		staffType.push( { 'value': 'driver', 'label': 'Drivers' } );
 		staffType.push( { 'value': 'brand-representative', 'label': 'Brand Representative' } );
+		staffType.push( { 'value': 'comm-director', 'label': 'Community Director' } );
 		if( !$scope.query.community ){
 			staffType.push( { 'value': 'community-manager', 'label': 'Community Manager' } );
 		} else {
@@ -455,6 +461,76 @@ NGApp.controller( 'StaffMarketingDocsCtrl', function ( $scope, $routeParams, $fi
 	docs();
 
 } );
+
+NGApp.controller( 'StaffCommunityDirectorFormCtrl', function ( $scope, $routeParams, $filter, StaffService, CommunityService ) {
+
+	$scope.ready = false;
+	$scope.submitted = false;
+	$scope.isSaving = false;
+	$scope.action = null;
+
+	var start = function(){
+
+		$scope.yesNo = CommunityService.yesNo();
+
+		$scope.action = ( $routeParams.id == 'new' ) ? 'new' : 'edit';
+
+		CommunityService.listSimple( function( data ){
+			$scope.communities = data;
+			$scope.ready = true;
+		} );
+
+		if($routeParams.id && $routeParams.id != 'new'){
+			StaffService.communityDirector.load( $routeParams.id, function( staff ){
+				if( !staff.id_admin ){
+					$scope.navigation.link( '/staff/marketing/new' );
+					return;
+				}
+				$scope.staff = staff;
+			} );
+		}
+
+		$scope._yesNo = StaffService.yesNo();
+
+	}
+
+	start();
+
+	$scope.save = function(){
+
+		if( $scope.isSaving ){
+			return;
+		}
+
+		if( $scope.form.$invalid || !$scope.staff.id_community ){
+			$scope.submitted = true;
+			$scope.isSaving = false;
+			return;
+		}
+
+		$scope.isSaving = true;
+
+		StaffService.communityDirector.save( $scope.staff, function( json ){
+
+			if( json.success ){
+
+				var url = '/staff/community-director/' + json.success.id_admin;
+
+				if( $scope.staff.login ){
+					$scope.navigation.link( '/staff/' + json.success.login );
+				} else {
+					$scope.navigation.link( url );
+				}
+
+				$scope.isSaving = false;
+
+			} else {
+				App.alert( 'Brand Representative not saved: ' + json.error , 'error' );
+				$scope.isSaving = false;
+			}
+		} );
+	}
+});
 
 
 NGApp.controller( 'StaffMarketingFormCtrl', function ( $scope, $routeParams, $filter, FileUploader, StaffService, CommunityService, CustomerRewardService ) {

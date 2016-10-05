@@ -23,6 +23,10 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		return $this->_stripeVerificationStatus;
 	}
 
+	public function isCommunityDirector(){
+		 return $this->permission()->check(['community-director' ]);
+	}
+
 	public function createdAt(){
 		$created_at = Cockpit_Driver_Log::q( 'SELECT * FROM driver_log WHERE id_admin = ? AND action = ? ORDER BY id_driver_log DESC LIMIT 1', [ $this->id_admin, Cockpit_Driver_Log::ACTION_CREATED_COCKIPT ] )->get( 0 );
 		if( $created_at->id_driver_log ){
@@ -625,6 +629,21 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 		}
 
 		$out[ 'created_at' ] = $this->createdAt();
+
+		if($this->isCommunityDirector()){
+			$groups = Group::q('SELECT * FROM admin_group ag INNER JOIN `group` g ON g.id_group = ag.id_group WHERE ag.id_admin = ? AND g.type = ?', [$this->id_admin, Group::TYPE_COMMUNITY_DIRECTOR]);
+			$out['communities'] = [];
+			foreach($groups as $group){
+				 $community = Community::o(intval(str_replace(Group::TYPE_COMMUNITY_DIRECTOR.'-', '', $group->name)));
+				 if($community->id_community){
+				 	$out['communities'][$community->id_community] = $community->name;
+				 }
+			}
+			$out['isCommunityDirector'] = true;
+			$out['id_community'] = $community->id_community;
+		} else {
+			$out['isCommunityDirector'] = false;
+		}
 
 		return $out;
 	}

@@ -528,8 +528,13 @@ GROUP BY admin.id_admin ORDER BY name ASC' );
 			SELECT -WILD- FROM admin
 		';
 
+		if($type != Crunchbutton_Group::TYPE_COMMUNITY_DIRECTOR){
+			$q .= '
+				left JOIN admin_payment_type apt ON apt.id_admin = admin.id_admin
+			';
+		}
+
 		$q .= '
-			left JOIN admin_payment_type apt ON apt.id_admin = admin.id_admin
 			left JOIN phone p ON admin.id_phone = p.id_phone
 		';
 
@@ -565,7 +570,6 @@ GROUP BY admin.id_admin ORDER BY name ASC' );
 			$keys[] = Crunchbutton_Admin::CONFIG_RECEIVE_DRIVER_SCHEDULE_SMS_WARNING;
 		} else {
 			if ($community) {
-
 				$q .= '
 					left JOIN admin_group ag ON ag.id_admin=admin.id_admin
 					left JOIN `group` g ON g.id_group=ag.id_group
@@ -586,6 +590,13 @@ GROUP BY admin.id_admin ORDER BY name ASC' );
 				left JOIN admin_group ag1 ON ag1.id_admin=admin.id_admin AND ag1.type = ?
 			';
 			$keys[] = Crunchbutton_Group::TYPE_COMMUNITY_MANAGER;
+		}
+
+		if( $type == Crunchbutton_Group::TYPE_COMMUNITY_DIRECTOR ){
+			$q .= '
+				INNER JOIN admin_group ag1 ON ag1.id_admin=admin.id_admin AND ag1.type = ?
+			';
+			$keys[] = Crunchbutton_Group::TYPE_COMMUNITY_DIRECTOR;
 		}
 
 		if( $working != 'all' ){
@@ -615,7 +626,7 @@ GROUP BY admin.id_admin ORDER BY name ASC' );
 			$keys[] = $community;
 		}
 
-		if ( $pexcard != 'all' ) {
+		if ( $pexcard != 'all' && $type != Crunchbutton_Group::TYPE_COMMUNITY_DIRECTOR ) {
 			$q .= '
 				AND apt.using_pex = ?
 			';
@@ -706,10 +717,11 @@ GROUP BY admin.id_admin ORDER BY name ASC' );
 					';
 		} else {
 			$wild = '
-						admin.*,
-						bool_and(apt.using_pex) using_pex,
-						max(apt.id_admin_payment_type) id_admin_payment_type
+						admin.*
 					';
+			if($type != Crunchbutton_Group::TYPE_COMMUNITY_DIRECTOR){
+				$wild .= ', bool_and(apt.using_pex) using_pex, max(apt.id_admin_payment_type) id_admin_payment_type ';
+			}
 		}
 
 		$query = str_replace('-WILD-', $wild , $q);
@@ -769,9 +781,14 @@ GROUP BY admin.id_admin ORDER BY name ASC' );
 			$staff[ 'isCampusManager' ] = $admin->isCampusManager();
 			$staff[ 'isSupport' ] = $admin->isSupport();
 			$staff[ 'isDriver' ] = $admin->isDriver();
+			$staff[ 'isCommunityDirector' ] = $admin->isCommunityDirector();
 
 			if( $staff[ 'isDriver' ] ){
 				$staff[ 'type' ] = 'Driver';
+			}
+
+			if( $staff[ 'isCommunityDirector' ] ){
+				$staff[ 'type' ] = 'Community Director';
 			}
 
 			if( $staff[ 'isSupport' ] ){
@@ -800,6 +817,7 @@ GROUP BY admin.id_admin ORDER BY name ASC' );
 
 			$staff[ 'brand_representative_groups' ] = $admin->marketingGroups();
 			$staff[ 'community_manager_groups' ] = $admin->campusManagerGroups();
+			$staff[ 'community_director_groups' ] = $admin->communityDirectorGroups();
 
 			if ($type == 'driver') {
 

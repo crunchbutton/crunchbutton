@@ -468,6 +468,17 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return $cm;
 	}
 
+	public function communityDirectorGroups(){
+		$cm = [];
+		$groups = $this->groups();
+		foreach( $groups as $group ){
+			if( $group->type == Crunchbutton_Group::TYPE_COMMUNITY_DIRECTOR ){
+				$cm[ $group->name ] = $group->description;
+			}
+		}
+		return $cm;
+	}
+
 	public function communitiesHeDeliveriesFor() {
 		if (!isset($this->_communitiesHeDeliveriesFor)) {
 			$this->_communitiesHeDeliveriesFor = Community::q('

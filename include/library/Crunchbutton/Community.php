@@ -451,10 +451,21 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		}
 		return $this->_groupOfDrivers;
 	}
+// aqui
+	function groupOfCommunityDirectors(){
+		if (!isset($this->_groupOfMarketingReps)) {
+			$group = Crunchbutton_Group::q( 'SELECT * FROM `group` WHERE id_community = ? AND type = ? ORDER BY id_group DESC LIMIT 1 ', [$this->id_community, Crunchbutton_Group::TYPE_COMMUNITY_DIRECTOR]);
+			if (!$group->id_group) {
+				$group = Crunchbutton_Group::createCommunityDirectorGroup( $this->id_community );
+			}
+			$this->_groupOfMarketingReps = $group;
+		}
+		return $this->_groupOfMarketingReps;
+	}
 
 	function groupOfMarketingReps(){
 		if (!isset($this->_groupOfMarketingReps)) {
-			$group = Crunchbutton_Group::q( 'SELECT * FROM `group` WHERE id_community = ? AND type = ? ORDER BY id_group DESC LIMIT 1 ', [$this->id_community, Crunchbutton_Group::TYPE_MARKETING_REP]);
+			$group = Crunchbutton_Group::q( 'SELECT * FROM `group` WHERE id_community = ? AND type = ? ORDER BY id_group DESC LIMIT 1 ', [$this->id_community, Crunchbutton_Group::TYPE_COMMUNITY_DIRECTOR]);
 			if (!$group->id_group) {
 				$group = Crunchbutton_Group::createMarketingRepGroup( $this->id_community );
 			}
@@ -645,6 +656,13 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		if( $group->name ){
 			return $group->name;
 		}
+	}
+
+	public function communityDirectorGroup(){
+		if( !$this->_communityDirectorGroup ){
+			$this->_communityDirectorGroup = Crunchbutton_Group::communityDirectorGroupCommunity( $this->id_community );
+		}
+		return $this->_communityDirectorGroup;
 	}
 
 	public function marketingRepGroup(){
