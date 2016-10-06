@@ -480,6 +480,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	}
 
 	public function active(){
+		if(c::user()->isCommunityDirector()){
+			$community = c::user()->communityDirectorCommunity();
+			return Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = true AND id_community = ? ORDER BY name ASC', [$community->id_community] );
+		}
 		return Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = true ORDER BY name ASC' );
 	}
 

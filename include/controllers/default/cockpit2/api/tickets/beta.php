@@ -4,7 +4,7 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud', 'community-cs' ])) {
+		if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud', 'community-cs', 'community-director' ])) {
 			$this->error(401, true);
 		}
 
@@ -39,6 +39,7 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 							o.id_user AS order_id_user,
 							o.phone AS order_phone,
 							o.address AS order_address,
+							o.id_community AS order_community,
 
 							client_message.body AS client_last_message,
 							client_phone.phone AS client_phone,
@@ -87,17 +88,22 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 							 WHERE 1 = 1';
 
 		if (!c::user()->permission()->check(['global'])) {
-			$communities = c::user()->communitiesDriverDelivery();
-			$q .= ' AND (';
-			$or = '';
-			foreach($communities as $community){
-				$q .= $or . 'tickets.id_community = ?';
-				$or = ' OR ';
-				$keys[] = $community->id_community;
+				if(c::user()->isCommunityDirector()){
+					$q .= ' AND ( tickets.id_community = ? OR order_community = ? )';
+					$community = c::user()->communityDirectorCommunity();
+					$keys[] = $community->id_community;
+					$keys[] = $community->id_community;
+			} else {
+				$communities = c::user()->communitiesDriverDelivery();
+				$q .= ' AND (';
+				$or = '';
+				foreach($communities as $community){
+					$q .= $or . 'tickets.id_community = ?';
+					$or = ' OR ';
+					$keys[] = $community->id_community;
+				}
+				$q .= ') ';
 			}
-			$q .= ') ';
-			// $q .= ' AND ( client_id_admin IS NULL OR client_id_admin = ?)';
-			// $keys[] = c::user()->id_admin;
 		}
 
 		if( $type == 'system' ){
@@ -121,13 +127,6 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 				AND tickets.client_id_admin = ?
 			';
 			$keys[] = $admin;
-		}
-
-		if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
-			// only display support to their number
-			// $phone = preg_replace('/[^0-9]/','', c::admin()->phone);
-			// $q .= ' AND s.phone=?';
-			// $keys[] = $phone;
 		}
 
 		if ($search) {
@@ -194,7 +193,7 @@ class Controller_api_tickets_beta extends Crunchbutton_Controller_RestAccount {
 				$o->message_recent = $o->system_last_message;
 			}
 			$add  = true;
-			if (!c::user()->permission()->check(['global'])) {
+			if (!c::user()->permission()->check(['global','community-director'])) {
 				if($o->client_id_admin && $o->client_id_admin != c::user()->id_admin){
 					$add = false;
 				}

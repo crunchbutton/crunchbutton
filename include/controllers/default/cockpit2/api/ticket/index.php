@@ -4,7 +4,7 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud', 'community-cs' ])) {
+		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud', 'community-cs','community-director' ])) {
 			$this->error(401, true);
 		}
 
@@ -21,7 +21,7 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 
 		$ticket = Support::o( c::getPagePiece( 2 ) );
 
-		if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
+		if (!c::user()->permission()->check(['global', 'support-all', 'support-view', 'support-crud','community-director'])) {
 			if(!c::user()->hasCSPermissionForCommunity($ticket->id_community)){
 				$this->error(401, true);
 			} else {
@@ -39,6 +39,23 @@ class Controller_api_ticket extends Crunchbutton_Controller_RestAccount {
 
 		if (get_class($ticket) != 'Crunchbutton_Support') {
 			$ticket = $ticket->get(0);
+		}
+
+		if(c::user()->isCommunityDirector()){
+			$community = c::user()->communityDirectorCommunity();
+			if($ticket->id_community){
+				if($ticket->id_community != $community->id_community){
+					$this->error(404, true);
+				}
+			} else if($ticket->id_order){
+				$order = $ticket->order();
+				if($order->id_community){
+					if($order->id_community != $community->id_community){
+						$this->error(404, true);
+					}
+				}
+			}
+
 		}
 
 		if ($this->method() == 'get') {

@@ -4,7 +4,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		if( !c::admin()->permission()->check( ['global', 'permission-users'] ) && !c::admin()->isCampusManager() ){
+		if( !c::admin()->permission()->check( ['global', 'permission-users','community-director'] ) && !c::admin()->isCampusManager() ){
 
 			if( c::getPagePiece(3) == 'status' ){
 				$staff = Admin::o(c::user()->id_admin);
@@ -197,7 +197,7 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _permissionDenied(){
-		if (!c::admin()->permission()->check(['global', 'permission-all', 'permission-users'])) {
+		if (!c::admin()->permission()->check(['global', 'permission-all', 'permission-users', 'community-director'])) {
 			$this->error(401, true);
 		}
 	}
@@ -504,6 +504,12 @@ GROUP BY admin.id_admin ORDER BY name ASC' );
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
 		$place = ( $this->request()['place'] ? $this->request()['place'] : null );
 		$keys = [];
+
+		if(c::user()->isCommunityDirector()){
+			$q .= ' AND community.id_community = ?';
+			$community = c::user()->communityDirectorCommunity();
+			$community = $community->id_community;
+		}
 
 		if( ( !c::admin()->permission()->check(['global']) && c::admin()->isCampusManager() ) ){
 			$brandreps = $this->request()['brandreps'] ? $this->request()['brandreps'] : false;

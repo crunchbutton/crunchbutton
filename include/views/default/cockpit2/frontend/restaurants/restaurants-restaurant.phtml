@@ -25,7 +25,7 @@
 
 				<h1 class="customer-name-large">{{restaurant.name}}</h1>
 				<br><br>
-					<div class="double-cols">
+					<div class="double-cols" ng-if="!account.user.isCommunityDirector">
 						<a href="/tools/fax?id_restaurant={{restaurant.id_restaurant}}&fax={{restaurant.fax}}" class="button button-empty button-border button-orange">
 							<i class="fa fa-fax"></i>&nbsp;&nbsp;Send a Fax
 						</a>
@@ -38,7 +38,7 @@
 			<div class="support-box-wrap-header">
 				<h1>Payment Info</h1>
 				<div class="support-box-header-actions-wrap">
-					<div class="support-box-header-actions">
+					<div class="support-box-header-actions" ng-if="!account.user.isCommunityDirector">
 						<a href="/restaurant/payment-info/{{restaurant.permalink}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
 					</div>
 				</div>

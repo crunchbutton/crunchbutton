@@ -333,7 +333,7 @@
 					</div>
 				</div>
 				<br>
-				<button ng-if="ticket.show_details" ng-click="creditDialog( ticket.user.id_user );" ng-if="ticket.user.id_user" class="button button-empty button-border button-orange"><i class="fa fa-gift"></i>&nbsp;&nbsp;Gift Card</button>
+				<button ng-if="ticket.show_details" ng-click="creditDialog( ticket.user.id_user );" ng-if="ticket.user.id_user && !account.user.isCustomerDirector" class="button button-empty button-border button-orange"><i class="fa fa-gift"></i>&nbsp;&nbsp;Gift Card</button>
 			</div>
 		</div>
 

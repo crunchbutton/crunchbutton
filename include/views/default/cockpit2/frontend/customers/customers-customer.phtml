@@ -55,7 +55,7 @@
 				<br><br>
 				<div class="double-cols">
 
-					<button ng-click="creditDialog( customer.id_user );" ng-if="customer.id_user" class="button button-empty button-border button-orange"><i class="fa fa-gift"></i>&nbsp;&nbsp;Gift Card</button>
+					<button ng-click="creditDialog( customer.id_user );" ng-if="customer.id_user && !account.user.isCommunityDirector" class="button button-empty button-border button-orange"><i class="fa fa-gift"></i>&nbsp;&nbsp;Gift Card</button>
 
 					<button ng-click="" class="button button-empty button-border button-blue" ng-class="{'button-disabled': true}"><i class="fa fa-close"></i>&nbsp;&nbsp;Deactive</button>
 				</div>
