@@ -122,7 +122,7 @@
 
 						<li class="li-input">
 							<div class="label">How much a brand representative earns from new customer referrals:</div>
-							<div class="input"><input type="number" ignore-mouse-wheel ng-model="driver.referral_admin_credit" placeholder=""></div>
+							<div class="input"><input ng-disabled="account.user.isCommunityDirector" type="number" ignore-mouse-wheel ng-model="driver.referral_admin_credit" placeholder=""></div>
 						</li>
 
 					</ul>
@@ -252,7 +252,7 @@
 						<li class="li-input" ng-class="{'error':form.payInfoPaymentType.$invalid}">
 							<div class="label">Pay Structure</div>
 							<div class="input">
-								<select ng-model="driver.payment_type" required name="payInfoPaymentType" ng-options="type.value as type.label for type in payment_types"></select>
+								<select ng-model="driver.payment_type" ng-disabled="account.user.isCommunityDirector" required name="payInfoPaymentType" ng-options="type.value as type.label for type in payment_types"></select>
 							</div>
 							<div class="box-error">
 								<small ng-show="form.payInfoPaymentType.$error.required">Required.</small>
@@ -262,7 +262,7 @@
 						<li class="li-input" ng-class="{'error':form.payInfoHourRate.$invalid}" ng-show="driver.payment_type=='hours' || driver.payment_type=='hours_without_tips' || driver.payment_type=='making_whole'">
 							<div class="label">Hour Rate</div>
 							<div class="input">
-								<input type="number" ignore-mouse-wheel name="payInfoHourRate" ng-required="driver.payment_type=='hours' || driver.payment_type=='hours_without_tips' || driver.payment_type=='making_whole'" ng-model="driver.hour_rate" placeholder="0.00">
+								<input type="number" ng-disabled="account.user.isCommunityDirector" ignore-mouse-wheel name="payInfoHourRate" ng-required="driver.payment_type=='hours' || driver.payment_type=='hours_without_tips' || driver.payment_type=='making_whole'" ng-model="driver.hour_rate" placeholder="0.00">
 							</div>
 							<div class="box-error">
 								<small ng-show="form.payInfoHourRate.$error.required">Required.</small>

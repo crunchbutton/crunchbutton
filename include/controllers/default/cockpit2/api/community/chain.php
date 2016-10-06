@@ -4,7 +4,7 @@ class Controller_api_community_chain extends Crunchbutton_Controller_RestAccount
 
 	public function init() {
 
-		if (!c::admin()->permission()->check(['global', 'community-all', 'chain-all', 'chain-view', 'chain-crud'])) {
+		if (!c::admin()->permission()->check(['global', 'community-all', 'chain-all', 'chain-view', 'chain-crud','community-director'])) {
 			$this->error(401, true);
 		}
 

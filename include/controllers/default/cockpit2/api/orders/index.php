@@ -4,7 +4,7 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		if ( !c::admin()->permission()->check(['global','orders-all','orders-list-page'] ) && !c::admin()->isCommunityManager() ) {
+		if ( !c::admin()->permission()->check(['global','orders-all','orders-list-page', 'community-director'] ) && !c::admin()->isCommunityManager() ) {
 			$this->error(401, true);
 		}
 
@@ -29,6 +29,11 @@ class Controller_api_orders extends Crunchbutton_Controller_RestAccount {
 		$type = $this->request()['type'] ? $this->request()['type'] : 'all';
 		$export = $this->request()['export'] ? true : false;
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
+
+		if(c::admin()->isCommunityDirector()){
+			$community = c::admin()->communityDirectorCommunity();
+			$community = $community->id_community;
+		}
 
 		if( intval( $limit ) > 200 && !$export ){
 			$limit = 200;

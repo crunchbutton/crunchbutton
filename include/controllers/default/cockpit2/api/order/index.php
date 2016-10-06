@@ -75,8 +75,15 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 		}
 
 		$hasPermission = false;
-		if (c::admin()->permission()->check(['global','orders-all','orders-list-page','community-cs']) || $restaurant->id_restaurant == $order->id_restaurant) {
+		if (c::admin()->permission()->check(['global','orders-all','orders-list-page','community-cs','community-director']) || $restaurant->id_restaurant == $order->id_restaurant) {
 			$hasPermission = true;
+		}
+
+		if(c::admin()->isCommunityDirector()){
+			$community = c::admin()->communityDirectorCommunity();
+			if($community->id_community != $order->id_community){
+				$hasPermission = false;
+			};
 		}
 
 		if (!$hasPermission) {

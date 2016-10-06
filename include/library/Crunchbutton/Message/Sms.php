@@ -113,9 +113,6 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 				continue;
 			}
 
-// @remove -- remove it before commit
-return;
-
 			// dont message yourself
 			if (c::admin()->id_admin && Phone::dirty(c::admin()->txt) == $t) {
 				// continue;

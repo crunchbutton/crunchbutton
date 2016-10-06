@@ -4,7 +4,7 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		if( !c::admin()->permission()->check( ['global', 'support-all' ] ) ){
+		if( !c::admin()->permission()->check( ['global', 'support-all', 'community-director' ] ) ){
 			$this->error( 401 );
 		}
 
@@ -138,6 +138,11 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 				}
 
 				$shift = Crunchbutton_Community_Shift::o( $assignment->id_community_shift );
+				if(c::user()->isCommunityDirector()){
+					if($shift->id_community != c::user()->communityDirectorCommunity()->id_community){
+						$this->error( 404 );
+					};
+				}
 				if( $permanent ){
 					// add permanency
 					if( !$assignment->isPermanent() ){
@@ -155,6 +160,11 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 				$assignment = Crunchbutton_Admin_Shift_Assign::q( "SELECT * FROM admin_shift_assign WHERE id_admin = ? AND id_community_shift = ? LIMIT 1", [ $id_admin, $id_community_shift ] )->get( 0 );
 				if( $assignment->id_admin_shift_assign ){
 					$shift = Crunchbutton_Community_Shift::o( $assignment->id_community_shift );
+					if(c::user()->isCommunityDirector()){
+						if($shift->id_community != c::user()->communityDirectorCommunity()->id_community){
+							$this->error( 404 );
+						};
+					}
 					// prevent the shift to be added again
 					Crunchbutton_Admin_Shift_Assign_Permanently_Removed::add( $shift->id_community_shift, $id_admin );
 					// remove permanency
@@ -236,6 +246,12 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 			$community = Crunchbutton_Community::o( $id_community );
 
+			if(c::user()->isCommunityDirector()){
+				if($community->id_community != c::user()->communityDirectorCommunity()->id_community){
+					$this->error( 404 );
+				};
+			}
+
 			$timezone = $community->timezone;
 
 			$date = DateTime::createFromFormat( 'Y-m-d H:i:s', $date . ' 00:00:00', new DateTimeZone( $timezone ) );
@@ -297,6 +313,11 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			switch ( $change ) {
 				case 'only-this-shift':
 					$shift = Community_Shift::o( $id_community_shift );
+					if(c::user()->isCommunityDirector()){
+						if($shift->id_community != c::user()->communityDirectorCommunity()->id_community){
+							$this->error( 404 );
+						};
+					}
 					if( $shift->id_community_shift ){
 						$shift->updateHours( $segments );
 						echo json_encode( [ 'success' => $shift->id_community ] );exit;
@@ -306,8 +327,13 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 				case 'all-recurring-shifts':
 
 					$shift = Community_Shift::o( $id_community_shift );
-					if( $shift->id_community_shift ){
 
+					if( $shift->id_community_shift ){
+						if(c::user()->isCommunityDirector()){
+							if($shift->id_community != c::user()->communityDirectorCommunity()->id_community){
+								$this->error( 404 );
+							};
+						}
 						// update the current shift
 						$shift->updateHours( $segments );
 
@@ -349,6 +375,12 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 		$shift = Community_Shift::o( c::getPagePiece( 3 ) );
 
 		if( $shift->id_community_shift ){
+
+			if(c::user()->isCommunityDirector()){
+				if($shift->id_community != c::user()->communityDirectorCommunity()->id_community){
+					$this->error( 404 );
+				};
+			}
 
 			$out = [ 'id_community_shift' => $shift->id_community_shift ];
 			$community = $shift->community();
@@ -538,8 +570,6 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 						}
 					}
 				}
-
-
 				$out[] = $log;
 			}
 		}
@@ -552,6 +582,11 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			$id_community_shift = $this->request()[ 'id_community_shift' ];
 			$shift = Community_Shift::o( $id_community_shift );
 			if( $shift->id_community_shift ){
+				if(c::user()->isCommunityDirector()){
+					if($shift->id_community != c::user()->communityDirectorCommunity()->id_community){
+						$this->error( 404 );
+					};
+				}
 				$shift->hidden = ( $shift->hidden ) ? 0 : 1;
 				$shift->save();
 				echo json_encode( [ 'success' => true ] );exit;
@@ -563,9 +598,18 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 	private function _communitiesWithShift(){
 		$out = [];
 		$communities = Community_Shift::communitiesWithShift();
-		foreach( $communities as $community ){
-			$out[] = $community->id_community;
+		if(c::user()->isCommunityDirector()){
+			foreach( $communities as $community ){
+				if(c::user()->communityDirectorCommunity()->id_community == $community->id_community){
+					$out[] = $community->id_community;
+				}
+			}
+		} else {
+			foreach( $communities as $community ){
+				$out[] = $community->id_community;
+			}
 		}
+
 		echo json_encode( $out );
 	}
 
@@ -586,6 +630,10 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 
 		$start = $this->request()['start'];
 		$communities = $this->request()['communities'];
+
+		if(c::user()->isCommunityDirector()){
+			$communities = [c::user()->communityDirectorCommunity()->permalink];
+		}
 
 		$today = new DateTime( 'now', new DateTimeZone( Crunchbutton_Community_Shift::CB_TIMEZONE ) );
 

@@ -5,7 +5,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 	public function init() {
 		// sub queries for special cases
 
-		if( !c::admin()->permission()->check( ['global', 'restaurants-all', 'restaurants-list', 'restaurant-all', 'support-view', 'support-crud' ] ) ){
+		if( !c::admin()->permission()->check( ['global', 'restaurants-all', 'restaurants-list', 'restaurant-all', 'support-view', 'support-crud', 'community-director' ] ) ){
 			$this->error( 401 );
 		}
 
@@ -147,6 +147,11 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 		$payment_method = $this->request()['payment_method'] ? $this->request()['payment_method'] : null;
 		$getCount = $this->request()['fullcount'] && $this->request()['fullcount'] != 'false' ? true : false;
 		$keys = [];
+
+		if(c::admin()->isCommunityDirector()){
+			$community = c::admin()->communityDirectorCommunity();
+			$community = $community->id_community;
+		}
 
 		if ($page == 1) {
 			$offset = '0';

@@ -67,6 +67,24 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 		return false;
 	}
 
+	public function isCommunityDirector(){
+		 return $this->permission()->check(['community-director' ]);
+	}
+
+	public function communityDirectorCommunity(){
+		if($this->isCommunityDirector()){
+			$groups = Group::q('SELECT * FROM admin_group ag INNER JOIN `group` g ON g.id_group = ag.id_group WHERE ag.id_admin = ? AND g.type = ?', [$this->id_admin, Group::TYPE_COMMUNITY_DIRECTOR]);
+			$out['communities'] = [];
+			foreach($groups as $group){
+				 $community = Community::o(intval(str_replace(Group::TYPE_COMMUNITY_DIRECTOR.'-', '', $group->name)));
+				 if($community->id_community){
+				 	return $community;
+				 }
+			}
+		}
+		return false;
+	}
+
 	public function couldReceiveHelpOutNotification(){
 		$driverInfo = Cockpit_Driver_Info::byAdmin( $this->id_admin )->get( 0 );
 		if( $driverInfo->id_admin ){
@@ -276,7 +294,6 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function driversList( $search = '' ){
-
 		$where = ( $search && trim( $search ) != '' ) ? ' AND a.name LIKE "%' . $search . '%"' : '';
 		$admins = Admin::q( 'SELECT * FROM admin a WHERE a.active = true ' . $where );
 		$drivers = [];
@@ -289,7 +306,7 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 	}
 
 	public function drivers(){
-		return Admin::q( 'SELECT a.* FROM admin a
+		$drivers = Admin::q( 'SELECT a.* FROM admin a
 												INNER JOIN (
 													SELECT DISTINCT(id_admin) FROM (
 
@@ -306,6 +323,21 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 														) drivers
 													)
 											drivers ON drivers.id_admin = a.id_admin AND a.active = true ORDER BY name ASC', [Crunchbutton_Group::DRIVER_GROUPS_PREFIX.'%', Crunchbutton_Community::CUSTOMER_SERVICE_COMMUNITY_GROUP]);
+
+		if(c::user()->isCommunityDirector()){
+			$_community = c::user()->communityDirectorCommunity();
+			$out = [];
+			foreach ($drivers as $driver) {
+				$community = $driver->communityDriverDelivery();
+				if($community->id_community == $_community->id_community ){
+					$out[$driver->id_admin] = $driver;
+				}
+			}
+			return $out;
+		} else {
+			return $drivers;
+		}
+
 	}
 
 	public function allPlacesHeDeliveryFor(){
