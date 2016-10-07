@@ -239,8 +239,13 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 		});
 	}
 
-	// Create a private resource 'staff'
 	var marketing = $resource( App.service + 'staff/marketing/:id_admin/:action', { id_admin: '@id_admin', action: '@action' }, {
+				'load' : { 'method': 'GET', params : { action: '' } },
+				'save' : { 'method': 'POST', params : { action: 'save' } }
+			}
+		);
+
+	var communityDirector = $resource( App.service + 'staff/communitydirector/:id_admin/:action', { id_admin: '@id_admin', action: '@action' }, {
 				'load' : { 'method': 'GET', params : { action: '' } },
 				'save' : { 'method': 'POST', params : { action: 'save' } }
 			}
@@ -298,6 +303,19 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 				$window.open( url );
 			}
 		}
+	}
+
+	service.communityDirector = {
+		load: function( id_admin, callback ){
+			communityDirector.load( { id_admin: id_admin }, function( data ) {
+				callback( data );
+			});
+		},
+		save: function( staff, callback ){
+			communityDirector.save( staff, function( json ){
+				callback( json );
+			} );
+		},
 	}
 
 	service.yesNo = function(){

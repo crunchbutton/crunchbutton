@@ -11,7 +11,7 @@
 					<i class="fa fa-male"></i>
 				</div>
 
-				<div class="menu-tab" ng-if="account.user.permissions.GLOBAL" ng-class="{'menu-active': (menu.toggle == 'admin')}" ng-click="menu.toggle='admin'">
+				<div class="menu-tab" ng-if="account.user.permissions.GLOBAL || account.user.isCommunityDirector" ng-class="{'menu-active': (menu.toggle == 'admin')}" ng-click="menu.toggle='admin'">
 					<i class="fa fa-dashboard"></i>
 				</div>
 			</div>
@@ -27,7 +27,7 @@
 			</li>
 			*/ ?>
 
-			<a href="/dashboard" ng-click="instant()" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'dashboard' )}">
+			<a href="/dashboard" ng-click="instant()" class="menu-link" ng-if="(account.user.permissions.GLOBAL ) && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'dashboard' )}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-dashboard"></i></td>
@@ -36,7 +36,7 @@
 					</table>
 				</a>
 
-				<a href="/dashboard/beta" ng-click="instant()" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'dashboard-beta' )}">
+				<a href="/dashboard/beta" ng-click="instant()" class="menu-link" ng-if="(account.user.permissions.GLOBAL || account.user.isCommunityDirector ) && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'dashboard-beta' )}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-dashboard"></i></td>
@@ -352,7 +352,7 @@
 				</a>
 				*/ ?>
 
-				<a href="/communities" ng-click="instant()" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'communities' || navigation.page == 'community')}">
+				<a href="/communities" ng-click="instant()" class="menu-link" ng-if="(account.user.permissions.GLOBAL || account.user.isCommunityDirector ) && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'communities' || navigation.page == 'community')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-slideshare"></i></td>
@@ -370,7 +370,7 @@
 					</table>
 				</a>
 
-				<a href="/customers" ng-click="instant()" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'customers' || navigation.page == 'customer')}">
+				<a href="/customers" ng-click="instant()" class="menu-link" ng-if="(account.user.permissions.GLOBAL || account.user.isCommunityDirector) && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'customers' || navigation.page == 'customer')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-smile-o"></i></td>
@@ -379,7 +379,7 @@
 					</table>
 				</a>
 
-				<a href="/drivers/onboarding" ng-click="instant()" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'drivers-onboarding')}">
+				<a href="/drivers/onboarding" ng-click="instant()" class="menu-link" ng-if="(account.user.permissions.GLOBAL || account.user.isCommunityDirector ) && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'drivers-onboarding')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-road"></i></td>
@@ -397,7 +397,7 @@
 					</table>
 				</a>
 
-				<a href="/orders" ng-click="instant()" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'orders' || navigation.page == 'order')}">
+				<a href="/orders" ng-click="instant()" class="menu-link" ng-if="(account.user.permissions.GLOBAL || account.user.isCommunityDirector ) && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'orders' || navigation.page == 'order')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-car"></i></td>
@@ -415,7 +415,7 @@
 					</table>
 				</a>
 
-				<a href="/restaurants" ng-click="instant()" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'restaurants' || navigation.page == 'restaurant')}">
+				<a href="/restaurants" ng-click="instant()" class="menu-link" ng-if="(account.user.permissions.GLOBAL || account.user.isCommunityDirector ) && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'restaurants' || navigation.page == 'restaurant')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-coffee"></i></td>
@@ -433,7 +433,7 @@
 					</table>
 				</a>
 
-				<a href="/shifts" ng-click="instant()" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'shift')}">
+				<a href="/shifts" ng-click="instant()" class="menu-link" ng-if="(account.user.permissions.GLOBAL || account.user.isCommunityDirector ) && menu.toggle=='admin'" ng-class="{'nav-active': (navigation.page == 'shift')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-calendar"></i></td>
@@ -460,7 +460,7 @@
 					</table>
 				</a>
 
-				<a href="/tickets" ng-click="instant()" class="menu-link" ng-if="account.user.permissions.GLOBAL && menu.toggle=='admin'" ng-class="{'nav-active': ( navigation.page == 'tickets')}">
+				<a href="/tickets" ng-click="instant()" class="menu-link" ng-if="(account.user.permissions.GLOBAL || account.user.isCommunityDirector ) && menu.toggle=='admin'" ng-class="{'nav-active': ( navigation.page == 'tickets')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-comments-o"></i></td>
@@ -496,7 +496,7 @@
 					</table>
 				</a>
 
-        <a href="https://docs.google.com/forms/d/1TsYU7LKyi8AQhM317n1v-SEiP-8OuiQIReV6XZHd-HM/viewform" target="_system" ng-click="instant()" class="menu-link" ng-class="{'nav-active': (navigation.page == 'drivers-feedback')}">
+				<a href="https://docs.google.com/forms/d/1TsYU7LKyi8AQhM317n1v-SEiP-8OuiQIReV6XZHd-HM/viewform" target="_system" ng-click="instant()" class="menu-link" ng-class="{'nav-active': (navigation.page == 'drivers-feedback')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-quote-left"></i></td>
@@ -505,6 +505,14 @@
 					</table>
 				</a>
 
+				<a class="menu-link" ng-click="account.logout()" ng-if="account.user.id_admin">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-sign-out"></i></td>
+							<td class="side-menu-label">Sign Out</a></td>
+						</tr>
+					</table>
+				</a>
 
 			</div>
 
@@ -529,6 +537,7 @@
 					</tr>
 				</table>
 			</a>
+
 			<a href="/info" ng-click="instant()" class="menu-link" ng-if="!account.user.id_admin" ng-class="{'nav-active': (navigation.page == 'info')}">
 				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 					<tr>
@@ -586,16 +595,20 @@
 							<div class="clickable notification notification-support" ng-if="account.user.permissions.GLOBAL" ng-click="navigation.link('/support/phone', 'instant')">
 								<i class="fa fa-phone-square"></i>
 							</div>
+
 							<div ng-if="account.isDriver" class="clickable notification notification-orders" ng-click="navigation.link('/drivers/orders', 'instant')">
 								<div class="badge" ng-show="newDriverOrders.count">{{newDriverOrders.count}}</div>
 								<i class="fa fa-truck"></i>
 							</div>
 
-							<div class="clickable hide-desktop notification notification-support" ng-class="{'notification-support-mobile': !account.user.permissions.GLOBAL && !account.user.permissions['COMMUNITY-CS']}" ng-click="navigation.menu('right')">
+							<div class="clickable hide-desktop notification notification-support" ng-class="{'notification-support-mobile': !account.user.permissions.GLOBAL &&
+							!account.user.isCommunityDirector && !account.user.permissions['COMMUNITY-CS']}" ng-click="navigation.menu('right')">
 								<div class="badge" ng-show="supportMessages.count && supportMessages.count != '0'">{{supportMessages.count}}</div>
 								<i class="fa fa-comment"></i>
 							</div>
-							<div class="clickable hide-mobile notification notification-support" ng-class="{'notification-support-mobile': !account.user.permissions.GLOBAL && !account.user.permissions['COMMUNITY-CS']}" ng-click="supportToggle()">
+
+							<div class="clickable hide-mobile notification notification-support" ng-class="{'notification-support-mobile': !account.user.permissions.GLOBAL &&
+							!account.user.isCommunityDirector && !account.user.permissions['COMMUNITY-CS']}" ng-click="supportToggle()">
 								<div class="badge" ng-show="supportMessages.count && supportMessages.count != '0'">{{supportMessages.count}}</div>
 								<i class="fa fa-comment"></i>
 							</div>

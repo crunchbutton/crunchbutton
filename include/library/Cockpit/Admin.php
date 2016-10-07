@@ -626,6 +626,12 @@ class Cockpit_Admin extends Crunchbutton_Admin {
 
 		$out[ 'created_at' ] = $this->createdAt();
 
+		if($this->isCommunityDirector()){
+			$out['isCommunityDirector'] = true;
+			$out['id_community'] = $this->communityDirectorCommunity()->id_community;
+		} else {
+			$out['isCommunityDirector'] = false;
+		}
 		return $out;
 	}
 

@@ -10,12 +10,12 @@
 				</td>
 				<td colspan="2">
 					<div class="page-title-nav">
-						<a href="/community/new"><button class="button button-green nav-button-green"><i class="fa fa-plus"></i><span>Add community</span></button></a>
+						<a href="/community/new" ng-if="!account.user.isCommunityDirector"><button class="button button-green nav-button-green"><i class="fa fa-plus"></i><span>Add community</span></button></a>
 						<a href="/communities/notes"><button class="button button-green nav-button-green"><i class="fa fa-file"></i><span>Notes</span></button></a>
 					</div>
 				</td>
 			</tr>
-			<tr>
+			<tr ng-if="!account.user.isCommunityDirector">
 				<th>Status</th>
 				<td>
 					<select ng-model="query.status" name="searchType" tabindex="2">

@@ -164,6 +164,7 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 																										'community-restaurants' => array( 'description' => 'See the restaurants tab at community page', 'dependency' => array( 'community-page' ) ),
 																										'community-drivers' => array( 'description' => 'See the drivers tab at community page', 'dependency' => array( 'community-page' ) ),
 																										'community-page' => array( 'description' => 'Can see the drivers manage page ' ),
+																										'community-director' => array( 'description' => 'Community Director ' ),
 																										);
 /*
 		// Other's permissions

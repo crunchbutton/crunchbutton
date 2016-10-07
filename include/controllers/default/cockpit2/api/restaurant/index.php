@@ -14,8 +14,15 @@ class Controller_api_restaurant extends Crunchbutton_Controller_RestAccount {
 			$this->error(404, true);
 		}
 
-		if (!c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud', 'restaurant-'.$restaurant->id_restaurant.'-edit', 'restaurant-'.$restaurant->id_restaurant.'-all'])) {
+		if (!c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud', 'restaurant-'.$restaurant->id_restaurant.'-edit', 'restaurant-'.$restaurant->id_restaurant.'-all', 'community-director'])) {
 			$this->error(401, true);
+		}
+
+		if(c::admin()->isCommunityDirector()){
+			$community = c::admin()->communityDirectorCommunity();
+			if($community->id_community != $restaurant->community()->id_community){
+				$this->error(401, true);
+			};
 		}
 
 		$this->restaurant = $restaurant;

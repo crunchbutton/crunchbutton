@@ -4,7 +4,7 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 
 	public function init() {
 
-		if( !c::admin()->permission()->check( ['global', 'community-all', 'community-list', 'support-all', 'support-view', 'support-crud' ] ) ){
+		if( !c::admin()->permission()->check( ['global', 'community-all', 'community-list', 'support-all', 'support-view', 'support-crud', 'community-director' ] ) ){
 			$this->error( 401 );
 		}
 
@@ -79,6 +79,11 @@ class Controller_api_communities extends Crunchbutton_Controller_Rest {
 			]);
 			$q .= $s['query'];
 			$keys = array_merge($keys, $s['keys']);
+		}
+
+		if(c::user()->isCommunityDirector()){
+			$q .=  'AND community.id_community = ?';
+			$keys[] = c::user()->communityDirectorCommunity()->id_community;
 		}
 
 		$q .= '
