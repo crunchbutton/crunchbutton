@@ -14,7 +14,8 @@
 
 				<div class="support-box-header-actions-wrap">
 					<div class="support-box-header-actions">
-						<a ng-if="staff.login" href ng-click="openStaffNoteContainer(staff.id_admin)"><button class="button button-small button-empty button-green"><i class="fa fa-file"></i>&nbsp;&nbsp;Add Note</button></a>
+						<a ng-if="staff.isCommunityDirector" href="/staff/community-director/{{staff.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-hand-paper-o"></i>&nbsp;&nbsp;Edit</button></a>
+						<a ng-if="staff.login && !staff.isCommunityDirector" href ng-click="openStaffNoteContainer(staff.id_admin)"><button class="button button-small button-empty button-green"><i class="fa fa-file"></i>&nbsp;&nbsp;Add Note</button></a>
 					</div>
 				</div>
 				<div class="divider"></div>
@@ -25,6 +26,10 @@
 					<div class="field-row">
 						<div class="field-key">Name</div>
 						<div class="field-value">{{staff.name}}</div>
+					</div>
+					<div class="field-row" ng-if="staff.isCommunityDirector">
+						<div class="field-key">Community Director</div>
+						<div class="field-value"><span class="tag tag-green">Community Director</span></div>
 					</div>
 					<div class="field-row">
 						<div class="field-key">Phone</div>
@@ -68,13 +73,13 @@
 						<div class="field-key">Inactive since</div>
 						<div class="field-value">{{staff.date_terminated_formatted}}</div>
 					</div>
-					<div class="field-row">
+					<div class="field-row" ng-if="!staff.isCommunityDirector">
 						<div class="field-key">Address</div>
 						<div class="field-value">
 							{{staff.address}}
 						</div>
 					</div>
-					<div class="field-row">
+					<div class="field-row" ng-if="!staff.isCommunityDirector && !account.user.isCommunityDirector">
 						<div class="field-key">Twilio Logs</div>
 						<div class="field-value">
 							<a target="_blank" href="https://www.twilio.com/user/account/messaging/logs?startDate=&endDate=&fromNumber=&toNumber={{staff.phone}}">Texts</a> |
@@ -84,7 +89,7 @@
 				</div>
 
 				<br><br>
-				<div class="tripple-cols" ng-if="staff.login">
+				<div class="tripple-cols" ng-if="staff.login && !staff.isCommunityDirector && !account.user.isCommunityDirector">
 
 					<a href="/settlement/list?limit=20&page=1&fullcount=false&search=&type=driver&status=0&payment_type=0&date=&id_driver={{staff.id_admin}}" class="button button-empty button-border button-orange"><i class="fa fa-university"></i>&nbsp;&nbsp;Payments</a>
 
@@ -92,13 +97,9 @@
 
 					<button ng-click="chat();" class="button button-empty button-border button-blue"><i class="fa fa-comment"></i>&nbsp;&nbsp;Chat</button>
 
-
 				</div>
 			</div>
-
 		</div>
-
-
 
 		<div class="support-box-wrap box-content2" ng-if="staff.isMarketingRep || staff.isDriver && staff.login">
 			<div class="support-box-wrap-header">
@@ -235,7 +236,7 @@
 			<div class="support-box-wrap-header">
 				<h1>Permissions</h1>
 				<div class="support-box-header-actions-wrap">
-					<div class="support-box-header-actions">
+					<div class="support-box-header-actions" ng-if="!account.user.isCommunityDirector">
 						<a href="/permission/staff/{{staff.login}}"><button class="button button-small button-empty button-green"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</button></a>
 					</div>
 				</div>
@@ -250,14 +251,14 @@
 							<span class="staff-community-repeat" ng-repeat="group in staff.groups_description">
 								{{group}}
 							</span>
-							&nbsp;&nbsp;&nbsp;&nbsp;<span class="link orange" ng-click="assignGroups()"><i class="fa fa-plus-circle"></i></span>
+							&nbsp;&nbsp;&nbsp;&nbsp;<span ng-if="!account.user.isCommunityDirector" class="link orange" ng-click="assignGroups()"><i class="fa fa-plus-circle"></i></span>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<div class="support-box-wrap box-content2" ng-if="staff.login">
+		<div class="support-box-wrap box-content2" ng-if="staff.login && !staff.isCommunityDirector && !account.user.isCommunityDirector">
 			<div class="support-box-wrap-header">
 				<h1>Payment Info</h1>
 				<div class="support-box-header-actions-wrap">
@@ -305,7 +306,7 @@
 
 		</div>
 
-		<div class="support-box-wrap box-content2" ng-if="staff.login">
+		<div class="support-box-wrap box-content2" ng-if="staff.login && !staff.isCommunityDirector">
 
 			<div class="support-box-wrap-header">
 				<h1>Additional Info</h1>
@@ -397,7 +398,7 @@
 			</div>
 		</div>
 
-		<div class="support-box-wrap box-content2" ng-if="staff.docs && staff.login">
+		<div class="support-box-wrap box-content2" ng-if="staff.docs && staff.login && !staff.isCommunityDirector && !account.user.isCommunityDirector">
 			<div class="support-box-wrap-header">
 				<h1>Documents</h1>
 				<div class="support-box-header-actions-wrap">
@@ -431,7 +432,7 @@
 			</div>
 		</div>
 
-		<div class="support-box-wrap box-content2">
+		<div class="support-box-wrap box-content2" ng-if="!staff.isCommunityDirector && !account.user.isCommunityDirector">
 			<div class="support-box-wrap-header">
 				<h1>Location</h1>
 				<div class="support-box-header-actions-wrap">
@@ -449,9 +450,11 @@
 		</div>
 	</div>
 
-	<ng-include src="'/assets/view/staff-group.html'"></ng-include>
-	<ng-include src="'/assets/view/staff-community.html'"></ng-include>
-	<ng-include src="'/assets/view/listview-admin-notes.html'"></ng-include>
+	<span ng-if="!staff.isCommunityDirector && !account.user.isCommunityDirector">
+		<ng-include src="'/assets/view/staff-group.html'"></ng-include>
+		<ng-include src="'/assets/view/staff-community.html'"></ng-include>
+		<ng-include src="'/assets/view/listview-admin-notes.html'"></ng-include>
+	</span>
 
 
 	<? /*

@@ -7,7 +7,7 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 			exit;
 		}
 
-		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud'])) {
+		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud', 'community-director'])) {
 			$this->error(401, true);
 		}
 
@@ -47,6 +47,12 @@ class Controller_api_customers extends Crunchbutton_Controller_RestAccount {
 			LEFT JOIN `user_payment_type` on `user_payment_type`.id_user=`user`.id_user and `user_payment_type`.active = true
 			WHERE 1=1
 		';
+
+		if(c::user()->isCommunityDirector()){
+			$q .= ' AND community.id_community = ?';
+			$community = c::user()->communityDirectorCommunity();
+			$keys[] = $community->id_community;
+		}
 
 		if ($search) {
 			$s = Crunchbutton_Query::search([

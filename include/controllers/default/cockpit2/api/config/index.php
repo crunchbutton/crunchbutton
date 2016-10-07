@@ -19,6 +19,7 @@ class Controller_api_config extends Crunchbutton_Controller_Rest {
 				$user['referral_admin_credit'] = ( c::user()->referral_admin_credit ? c::user()->referral_admin_credit : $settings[ Crunchbutton_Reward::CONFIG_KEY_ADMIN_REFER_USER_AMOUNT ] );
 				$user['isMarketingRep'] = c::user()->isMarketingRep();
 				$user['isCampusManager'] = c::user()->isCampusManager();
+				$user['isCommunityDirector'] = c::user()->isCommunityDirector();
 				$user['isDriver'] = c::user()->isDriver();
 
 				$payment_type = c::user()->payment_type();

@@ -4,7 +4,7 @@ class Controller_api_shifts_checkin extends Crunchbutton_Controller_RestAccount 
 
 	public function init() {
 
-		if( !c::admin()->permission()->check( ['global', 'support-all', 'support-view', 'support-crud' ] ) ){
+		if( !c::admin()->permission()->check( ['global', 'support-all', 'support-view', 'support-crud', 'community-director' ] ) ){
 			$this->error( 401 );
 		}
 
@@ -33,6 +33,10 @@ class Controller_api_shifts_checkin extends Crunchbutton_Controller_RestAccount 
 							INNER JOIN admin a ON a.id_admin = asa.id_admin
 							WHERE c.driver_checkin = 1 ';
 
+
+			if(c::user()->isCommunityDirector()){
+				$q .= ' AND c.id_community = ' . c::user()->communityDirectorCommunity()->id_community;
+			}
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$now->modify( '-1 day' );
