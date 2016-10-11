@@ -193,7 +193,6 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 	}
 
 	public function addShiftStartFunds( $id_admin_shift_assign ){
-
 		if( intval( Crunchbutton_Config::getVal( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_SHIFT_ENABLE ) ) > 0 ){
 			$config = Crunchbutton_Config::getConfigByKey( Cockpit_Admin_Pexcard::CONFIG_KEY_PEX_AMOUNT_TO_SHIFT_START );
 			if( $config->value ){
