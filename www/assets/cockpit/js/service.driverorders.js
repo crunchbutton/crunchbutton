@@ -95,22 +95,9 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $http, $r
 	}
 
 	service.cancel_order = function( id_order, callback ){
-
-		var onCallBack = function(){
-			App.dialog.close();
-			if(callback){
-				callback();
-			}
-		}
-
-		var success = function(){
-			orders.cancel_order( { 'id_order': id_order }, function( json ){ callback( json ); } );
-		}
-
-		var error = function(){
-			 App.dialog.close();
-		}
-		App.confirm( 'Are you sure you want to cancel this order?', 'Confirm?', success, error , 'Yes,No', true);
+		$rootScope.$broadcast( 'openDriverCancelOrderOptions', {id_order: id_order, onSuccess: function(order){
+			orders.cancel_order(order, function( json ){ callback( json ); $rootScope.closePopup(); } );
+		} } );
 	}
 
 

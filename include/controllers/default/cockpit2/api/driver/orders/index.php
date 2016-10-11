@@ -126,9 +126,10 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 								break;
 
 							case 'cancel-order':
-								$reason = 'Cancelled by Driver';
+								$reason = $this->request()[ 'message' ];
 								$tell_driver = $this->request()[ 'tell_driver' ];
 								$cancel_order = $this->request()[ 'cancel_order' ];
+
 								$amount = $order->charged();
 
 								$info = json_encode( [ 'amount' => $amount, 'reason' => $reason, 'tell_driver' => false, 'id_admin' => c::user()->id_admin, 'tell_customer' => true ] );
@@ -138,6 +139,12 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 								$order->do_not_reimburse_driver = 1;
 								$order->do_not_pay_driver = 1;
 								$order->save();
+
+								Crunchbutton_Message_Sms::send( [
+									'to' => $order->phone,
+									'message' => $reason,
+									'reason' => Crunchbutton_Message_Sms::REASON_DRIVER_NOTIFIES_CUSTOMER
+								] );
 
 								$q = Queue::create([
 									'type' => Crunchbutton_Queue::TYPE_ORDER_REFUND,
