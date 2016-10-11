@@ -131,6 +131,20 @@ class Crunchbutton_Message_Incoming_Support extends Cana_model {
 				$users = $_users;
 			}
 		}
+
+		if($support && $support->phone){
+			$_phone = $support->phone;
+			if($_phone){
+				$_users = [];
+				foreach ($users as $name => $phone) {
+					if($_phone != $phone){
+						$_users[$name] = $phone;
+					}
+				}
+				$users = $_users;
+			}
+		}
+
 		if(count($users)){
 			Crunchbutton_Message_Sms::send([
 				'to' => $users,
