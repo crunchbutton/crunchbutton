@@ -349,10 +349,35 @@
 				</div>
 			</div>
 	</div>
-
 			<div ng-if="oc.order.status.status != 'canceled' && account.user.permissions['COMMUNITY-CS']">
 				<br><br>
 				<button ng-click="oc.cancel_order()" id="cancelOrder" class="button orange-on-orange">Cancel Order</span></button>
 				<br><br>
 		</div>
+</div>
+
+<div class="driver-cancel-order-container zoom-anim-dialog mfp-hide dialog">
+	<div ng-controller="DriverCancelOrder">
+		<h2 class="title left"><span>Cancel Order #: {{order.id_order}}</span></h2>
+		<div class="divider"></div>
+		<form name="formCancel" novalidate>
+			<ul ng-class="{'submitted':formCancelSubmitted}" class="ul-inputs">
+				<li class="li-input" ng-class="{'error':formCancel.message.$invalid}">
+					<div class="label">Please write an apology message that'll get texted to the customer when the order is canceled:</div>
+					<div class="input">
+						<div class="input"><input type="text" name="message" ng-model="order.message" required placeholder=""></div>
+					</div>
+					<div class="box-error">
+						<small ng-show="formCancel.message.$error.required">Required.</small>
+					</div>
+				</li>
+				<li class="li-input" ng-show="!isCancelling">
+					<button class="button save" ng-click="cancel_order();">Send message and cancel order</button>
+				</li>
+				<li class="li-input" ng-show="isCancelling">
+					<button class="button save"><i class="fa fa-spinner fa-spin"></i> Canceling </button>
+				</li>
+			</ul>
+		</form>
+	</div>
 </div>

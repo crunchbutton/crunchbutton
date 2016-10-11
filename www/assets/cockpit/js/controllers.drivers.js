@@ -1770,3 +1770,25 @@ NGApp.controller('DriversWelcomePushCtrl', function($rootScope, $location, PushS
 NGApp.controller('DriversWelcomeWahooCtrl', function() {
 	$.totalStorage('isDriverWelcomeSetup', '1');
 });
+
+
+NGApp.controller('DriverCancelOrder', function ($scope, $rootScope, OrderService ) {
+
+	$scope.isCancelling = false;
+	$scope.formCancelSubmitted = false;
+
+	$rootScope.$on( 'openDriverCancelOrderOptions', function(e, data) {
+		$scope.order = {id_order:data.id_order, message: null};
+		$scope.onSuccess = data.onSuccess;
+		App.dialog.show('.driver-cancel-order-container');
+	});
+
+	$scope.cancel_order = function(){
+		if( $scope.formCancel.$invalid ){
+			$scope.formCancelSubmitted = true;
+			return;
+		}
+		$scope.isCancelling = true;
+		$scope.onSuccess($scope.order);
+	}
+});
