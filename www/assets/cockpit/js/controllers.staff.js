@@ -124,6 +124,13 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 		} );
 	}
 
+	$scope.makeCommunityDirector = function(){
+		var params = { id_admin: $scope.staff.id_admin, active: $scope.staff.active };
+		StaffService.makeCommunityDirector( params, function(){
+			load();
+		} );
+	}
+
 	$scope.change_down_to_help_notifications = function(){
 		var params = { id_admin: $scope.staff.id_admin };
 		StaffService.change_down_to_help_notifications( params, function(){
@@ -135,6 +142,7 @@ NGApp.controller('StaffInfoCtrl', function ($rootScope, $scope, $routeParams, $l
 		StaffService.get($routeParams.id, function(staff) {
 			$rootScope.title = staff.name + ' | Staff';
 			$scope.staff = staff;
+			$scope.isCommunityDirector = staff.isCommunityDirector;
 			$scope.loading = false;
 		});
 	}

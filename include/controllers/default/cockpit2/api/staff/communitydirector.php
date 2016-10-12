@@ -104,9 +104,7 @@ class Controller_api_staff_communitydirector extends Crunchbutton_Controller_Res
 			$random_pass = Crunchbutton_Util::randomPass();
 			$staff->pass = $staff->makePass( $random_pass );
 		}
-
 		$staff->save();
-
 		$staff->addPermissions(['community-director' => true]);
 
 		if( !$staff->login ){

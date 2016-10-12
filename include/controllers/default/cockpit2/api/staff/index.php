@@ -66,6 +66,10 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 							$this->_change_status($staff);
 							break;
 
+						case 'community-director':
+							$this->_community_director($staff);
+							break;
+
 						case 'change-down-to-help-notifications':
 							$this->_change_down_to_help_notifications($staff);
 							break;
@@ -265,6 +269,40 @@ class Controller_api_staff extends Crunchbutton_Controller_RestAccount {
 				$driverInfo->down_to_help_out_stop = date( 'Y-m-d' );
 			}
 			$driverInfo->save();
+			echo json_encode( [ 'success' => 'true' ] );
+		} else {
+			echo json_encode( [ 'error' => 'invalid object' ] );
+		}
+	}
+
+	private function _community_director($staff){
+		if( $staff->id_admin && $staff->isDriver() ){
+			if( !$staff->isCommunityDirector() ){
+				$staff->addPermissions(['community-director' => false]);
+				// addPermissions
+
+				$_communities = Crunchbutton_Community::q( 'SELECT * FROM community ORDER BY name ASC' );;
+				foreach( $_communities as $community ){
+					$group = $community->groupOfCommunityDirectors();
+					if( $group->id_group ){
+						$staff->removeGroup($group->id_group);
+					}
+				}
+
+				$community = $staff->communityDriverDelivery();
+				if( $community->id_community ){
+					$group = $community->communityDirectorGroup();
+					$adminGroup = new Crunchbutton_Admin_Group();
+					$adminGroup->id_admin = $staff->id_admin;
+					$adminGroup->id_group = $group->id_group;
+					$adminGroup->save();
+				}
+
+
+			} else {
+				$staff->revokePermission('community-director');
+			}
+			$staff->save();
 			echo json_encode( [ 'success' => 'true' ] );
 		} else {
 			echo json_encode( [ 'error' => 'invalid object' ] );
