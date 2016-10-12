@@ -6,7 +6,7 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 
 		$id_admin = c::getPagePiece( 3 );
 		$user = c::user();
-		$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) || ( $id_admin == $user->id_admin ) );
+		$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) || ( $id_admin == $user->id_admin ) || c::user()->isCommunityDirector() );
 		if( !$hasPermission ){
 			$this->_error();
 			exit;
@@ -26,6 +26,15 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 			$driver->active = 1;
 		} else {
 			$driver = Cockpit_Admin::o( $id_admin );
+		}
+
+		if(c::user()->isCommunityDirector() && !$newDriver){
+			$community = $driver->communitiesHeDeliveriesFor();
+			if($community){
+				if($community->id_community != c::user()->communityDirectorCommunity()->id_community){
+					$this->_error();
+				}
+			}
 		}
 
 		// Check unique referral code
@@ -191,12 +200,11 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 
 		$driver_info->save();
 
-
 		$payment_type = $driver->payment_type();
 		$payment_type->payment_type = $this->request()[ 'payment_type' ];
 		$payment_type->hour_rate = $this->request()[ 'hour_rate' ];
 
-		if( $newDriver ){
+		if($newDriver){
 			$payment_type->using_pex = 1;
 			$payment_type->using_pex_date = date( 'Y-m-d H:i:s' );
 		}

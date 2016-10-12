@@ -40,6 +40,10 @@ class Controller_api_credit_add extends Crunchbutton_Controller_RestAccount {
 			$this->_error( 'Please enter a note!' );
 		}
 
+		if(c::user()->isCommunityDirector() && $value > 5){
+			$this->_error( 'You can give a gift card up to $5!' );
+		}
+
 		$giftcard = new Crunchbutton_Promo;
 		$giftcard->note = $note;
 		$giftcard->value = $value;
@@ -102,7 +106,7 @@ class Controller_api_credit_add extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _permission(){
-		if (!c::admin()->permission()->check(['global', 'gift-card-all', 'gift-card-create-all', 'support-all', 'support-view', 'support-crud' ])) {
+		if (!c::admin()->permission()->check(['global', 'gift-card-all', 'gift-card-create-all', 'support-all', 'support-view', 'support-crud' ]) && !c::user()->isCommunityDirector()) {
 			header('HTTP/1.1 401 Unauthorized');
 			exit;
 		}

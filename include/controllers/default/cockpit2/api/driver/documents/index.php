@@ -204,7 +204,7 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 					$payment_type = $admin->payment_type();
 
 					$user = c::user();
-					$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) || ( $admin->id_admin == $user->id_admin ) );
+					$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) || ( $admin->id_admin == $user->id_admin ) || c::user()->isCommunityDirector() );
 					if( !$hasPermission ){
 						echo $this->_error();
 					}

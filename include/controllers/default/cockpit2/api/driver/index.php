@@ -22,7 +22,7 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 			exit();
 		}
 
-		if (preg_replace('/[^a-z0-9\.]/i','',c::getPagePiece(2)) == c::getPagePiece(2) && c::getPagePiece(2) && c::admin()->permission()->check( ['global','drivers-assign', 'drivers-all'] )) {
+		if (preg_replace('/[^a-z0-9\.]/i','',c::getPagePiece(2)) == c::getPagePiece(2) && c::getPagePiece(2) && (c::admin()->permission()->check( ['global','drivers-assign', 'drivers-all'] ) ) || c::user()->isCommunityDirector() ) {
 
 			$driver = Admin::o((int)c::getPagePiece(2) );
 			if (!$driver->id_admin) {
@@ -32,6 +32,15 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 			if (!$driver) {
 				$this->error(404, true);
 			}
+
+		if(c::user()->isCommunityDirector()){
+			$community = $driver->communitiesHeDeliveriesFor();
+			if($community){
+				if($community->id_community != c::user()->communityDirectorCommunity()->id_community){
+					$this->error(404, true);
+				}
+			}
+		}
 
 			if( !$driver->isDriver() ){
 				$this->error(404, true);

@@ -4,7 +4,7 @@ class Controller_api_call extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud', 'community-cs'])) {
+		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud', 'community-cs']) && !c::user()->isCommunityDirector()) {
 			$this->error(401, true);
 		}
 

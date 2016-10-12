@@ -105,7 +105,7 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 
 	private function _new(){
 
-		if (!c::admin()->permission()->check(['global','restaurants-all', 'restaurants-crud', 'restaurants-create'])) {
+		if (!c::admin()->permission()->check(['global','restaurants-all', 'restaurants-crud', 'restaurants-create']) && !c::user()->isCommunityDirector()) {
 			$this->error(401, true);
 		}
 
@@ -146,6 +146,11 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 		$restaurant->name = 'Restaurant ' . $restaurant->id_restaurant;
 		$restaurant->permalink = 'restaurant-' . $restaurant->id_restaurant;
 		$restaurant->save();
+
+		if(c::user()->isCommunityDirector()){
+			$restaurant->saveCommunity(c::user()->communityDirectorCommunity()->id_community);
+		}
+
 
 		$out = [ 'id_restaurant' => $restaurant->id_restaurant, 'permalink' => $restaurant->permalink ];
 		$this->_return( $out );
@@ -233,7 +238,7 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 
 	private function _basicExport( $printJson = true ){
 
-		$community = $this->restaurant->community()->get( 0 );
+		$community = $this->restaurant->community()->get(0);
 
 		$out = [];
 		$out[ 'id_restaurant' ] = $this->restaurant->id_restaurant;
