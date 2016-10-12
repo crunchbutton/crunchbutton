@@ -98,6 +98,11 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 			method: 'POST',
 			params : {}
 		},
+		'makeCommunityDirector' : {
+			url: App.service + 'staff/:id_admin/community-director',
+			method: 'POST',
+			params : {}
+		},
 		'change_down_to_help_notifications' : {
 			url: App.service + 'staff/:id_admin/change-down-to-help-notifications',
 			method: 'POST',
@@ -168,6 +173,12 @@ NGApp.factory('StaffService', function(ResourceFactory, $routeParams, $resource)
 
 	service.change_status = function(params, callback) {
 		staff.change_status( params, function(data) {
+			callback(data);
+		});
+	}
+
+	service.makeCommunityDirector = function(params, callback) {
+		staff.makeCommunityDirector( params, function(data) {
 			callback(data);
 		});
 	}

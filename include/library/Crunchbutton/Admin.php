@@ -821,9 +821,27 @@ class Crunchbutton_Admin extends Cana_Table_Trackchange {
 							$this->addPermissions( array( $dependency => 1 ) );
 						}
 					}
-
 				}
 			}
+		}
+	}
+
+	public function revokePermission( $permission ){
+		if( !$this->hasPermission( $permission ) ){
+			$_permission = new Crunchbutton_Admin_Permission();
+			$_permission->id_admin = $this->id_admin;
+			$_permission->permission = trim( $key );
+			$_permission->allow = 0;
+			$_permission->save();
+			$this->_permissions = false;
+			$dependencies = $_permission->getDependency( $key );
+			if( $dependencies ){
+				foreach( $dependencies as $dependency ){
+					$this->addPermissions( array( $dependency => 1 ) );
+				}
+			}
+		} else {
+			c::dbWrite()->query('DELETE FROM admin_permission WHERE id_admin = ? AND permission = ? LIMIT 1', [$this->id_admin, $permission]);
 		}
 	}
 
