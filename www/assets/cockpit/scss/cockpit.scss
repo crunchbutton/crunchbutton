@@ -2892,16 +2892,17 @@ canvas.chart {
 }
 
 .quintuple-cols {
-	-webkit-column-count: 5;
+	/*-webkit-column-count: 5;
 	-webkit-column-gap: 8px;
 	@include gpu();
 	float: left;
 	clear: both;
-	margin-bottom: 1em;
+	margin-bottom: 1em;*/
 	width: 100%;
 }
 .quintuple-cols button{
-	margin-bottom:8px;
+	/*margin-bottom:8px;*/
+	width: 19%;
 }
 
 .field-container .field-row-button .field-two-rows {

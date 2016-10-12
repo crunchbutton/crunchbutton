@@ -57,7 +57,8 @@ NGApp.controller( 'CreditDialogCtrl', function ( $scope, $rootScope, CustomerSer
 				$rootScope.closePopup();
 				setTimeout( function(){ App.alert( json.success + '<br>' ); }, 500 );
 			} else {
-				App.alert( 'Error: ' + json.error , 'error' );
+				$rootScope.closePopup();
+				setTimeout(function(){App.alert( 'Error: ' + json.error , 'error' );}, 500);
 			}
 			$scope.isSaving = false;
 		} );

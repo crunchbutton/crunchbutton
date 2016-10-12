@@ -111,12 +111,18 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 			case 'refund-info':
 				$hasPermission = false;
-				if (c::admin()->permission()->check(['global', 'orders-all','orders-notification', 'support-all', 'support-view', 'support-crud'])) {
+				if (c::admin()->permission()->check(['global', 'orders-all','orders-notification', 'support-all', 'support-view', 'support-crud']) || c::user()->isCommunityDirector()) {
 					$hasPermission = true;
 				}
 
 				if(!$hasPermission && c::admin()->permission()->check(['community-cs']) && c::user()->hasCSPermissionForCommunity($order->id_community)){
 					$hasPermission = true;
+				}
+
+				if(c::user()->isCommunityDirector()){
+					if(c::user()->communityDirectorCommunity()->id_community != $order->id_community){
+						$hasPermission = false;
+					}
 				}
 
 				if (!$hasPermission) {
@@ -148,12 +154,18 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 			case 'refund':
 
 				$hasPermission = false;
-				if (c::admin()->permission()->check(['global', 'orders-all','orders-notification', 'support-all', 'support-view', 'support-crud'])) {
+				if (c::admin()->permission()->check(['global', 'orders-all','orders-notification', 'support-all', 'support-view', 'support-crud']) || c::user()->isCommunityDirector()) {
 					$hasPermission = true;
 				}
 
 				if(!$hasPermission && c::admin()->permission()->check(['community-cs']) && c::user()->hasCSPermissionForCommunity($order->id_community)){
 					$hasPermission = true;
+				}
+
+				if(c::user()->isCommunityDirector()){
+					if(c::user()->communityDirectorCommunity()->id_community != $order->id_community){
+						$hasPermission = false;
+					}
 				}
 
 				if (!$hasPermission) {
@@ -310,9 +322,17 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				break;
 
 				case 'text_drivers':
-					if ( !c::admin()->permission()->check(['global','orders-all','orders-notification'])) {
+
+					if ( !c::admin()->permission()->check(['global','orders-all','orders-notification']) && !c::user()->isCommunityDirector()) {
 						$this->error(401, true);
 					}
+
+					if(c::user()->isCommunityDirector()){
+						if($order->id_community != c::user()->communityDirectorCommunity()->id_community){
+								$this->error(401, true);
+						}
+					}
+
 					$drivers = $order->community()->getDriversOfCommunity();
 					$out = ['drivers'=> [], 'message' => $order->message('text-drivers')];
 					foreach($drivers as $driver){
