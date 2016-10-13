@@ -5,6 +5,9 @@
 	"env": {
 		"DATABASE_URL": {
 			"required": true
+		},
+        "THEME": {
+			"required": true
 		}
 	}
 }
