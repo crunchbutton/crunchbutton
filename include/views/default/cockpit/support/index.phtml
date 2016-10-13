@@ -108,13 +108,13 @@ $( function() {
 		background: #cef5d7 !important;
 	}
 		.row-green-dark{
-			background: #b4f0c2 !important;		
+			background: #b4f0c2 !important;
 		}
 	.row-red{
 		background: #ffbdbd !important;
 	}
 		.row-red-dark{
-			background: #ffa3a3 !important;		
+			background: #ffa3a3 !important;
 		}
 		.avatar{
 			width: 20px;
@@ -140,4 +140,4 @@ $( function() {
 		border: 1px solid #CCC;
 	}
 </style>
-<script type="text/javascript" src="/assets/js/admin.support.js?v=<?=Deploy_Server::currentVersion()?>"></script>
+<script type="text/javascript" src="/assets/js/admin.support.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>

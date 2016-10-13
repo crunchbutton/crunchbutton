@@ -2,8 +2,8 @@
 
 class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBundle {
 	public function init() {
-		$v = $_REQUEST['v'] ? $_REQUEST['v'] : Deploy_Server::currentVersion();
-		
+		$v = $_REQUEST['v'] ? $_REQUEST['v'] : getenv('HEROKU_SLUG_COMMIT');
+
 		$id = 'crunchr-bundle-node-css';
 
 		if (preg_match('/ios|iphone|ipad/i',$_SERVER['HTTP_USER_AGENT'])) {
@@ -30,7 +30,7 @@ class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBund
 					break;
 			}
 		}
-		
+
 		if ($_REQUEST['_export']) {
 			c::view()->export = true;
 		}
@@ -79,7 +79,7 @@ class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBund
 		*/
 		$data = preg_replace('/\t|\n/','',$data);
 		$mtime = time();
-		
+
 		return ['mtime' => $mtime, 'data' => $data];
 	}
 }

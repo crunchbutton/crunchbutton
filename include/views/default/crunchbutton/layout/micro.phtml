@@ -3,7 +3,7 @@
 <head>
 <title>♥ Crunchbutton, Like us!!! ♥</title>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
-<link rel="stylesheet" type="text/css" href="/assets/css/micro.css?v=<?=Deploy_Server::currentVersion()?>">
+<link rel="stylesheet" type="text/css" href="/assets/css/micro.css?v=<?=getenv('HEROKU_SLUG_COMMIT')?>">
 <link rel="shortcut icon" href="/favicon.ico">
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">
 
@@ -46,7 +46,7 @@
 		js.src = "//connect.facebook.com/en_US/sdk.js";
 		ref.parentNode.insertBefore(js, ref);
 	}(document));
-	
+
 	$(document).ready(function () {
 		if ($.cookie('liked')) {
 			confetti.start();
