@@ -395,8 +395,9 @@ class Crunchbutton_App extends Cana_App {
 			$this->config()->site->theme =  'seven';
 		}
 
-		if (getenv('THEME')) {
+		if (getenv('THEME') && getenv('THEME_NAME')) {
 			$this->config()->site->theme = getenv('THEME');
+			$this->config()->site->theme = getenv('THEME_NAME');
         }
 
 		$params['theme'][] = $this->config()->defaults->version.'/'.$this->config()->defaults->theme.'/';

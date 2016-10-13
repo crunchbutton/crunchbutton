@@ -8,6 +8,9 @@
 		},
         "THEME": {
 			"required": true
+		},
+        "THEME_NAME": {
+			"required": true
 		}
 	}
 }
