@@ -31,7 +31,7 @@ $v = new Crunchbutton_Deploy_Version([
 	'status' => 'new',
 	'version' => $git
 ]);
-$v->save();
+//$v->save();
 //$build = $v->id_deploy_version;
 $build = $git;
 
@@ -74,10 +74,10 @@ foreach ($files as $src => $dst) {
 	echo ($s ? "\x1B[32msuccess\x1B[0m" : "\x1B[31mfailed\x1B[0m") . ".\n";
 }
 
-echo "Complete.\n\n";
+echo "Completed build ".$git.".\n\n";
 
-$v->status = 'success';
-$v->save();
+//$v->status = 'success';
+//$v->save();
 
 
 exit(0);

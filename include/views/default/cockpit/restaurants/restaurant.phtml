@@ -1378,8 +1378,8 @@
 	</div>
 
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-<script type="text/javascript" src="/assets/js/admin_restaurant.js?v=<?=Deploy_Server::currentVersion()?>"></script>
-<script type="text/javascript" src="/assets/js/intro.js?v=<?=Deploy_Server::currentVersion()?>"></script>
+<script type="text/javascript" src="/assets/js/admin_restaurant.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
+<script type="text/javascript" src="/assets/js/intro.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
 <script>
 $( document ).ready( function(){
 	$('.modal-hour_override').click(function(e) {

@@ -260,7 +260,7 @@ $( document ).ready( function(){
 	shift.summary.init();
 } );
 </script>
-<script type="text/javascript" src="/assets/js/jquery.autosize-min.js?v=<?=Deploy_Server::currentVersion()?>"></script>
+<script type="text/javascript" src="/assets/js/jquery.autosize-min.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
 <script type="text/javascript">
 var getHeaderSize = function(){
 	var header_columns = $( '#header_columns' );
