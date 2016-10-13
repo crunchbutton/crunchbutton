@@ -197,7 +197,7 @@ class Crunchbutton_App extends Cana_App {
 			$config->site->theme = getenv('THEME');
         }
 
-		if ($config->site->name == 'Cockpit' || $config->site->theme == 'cockpit2' || $this->cli) {
+		if ($config->site->name == 'Cockpit' || $config->site->theme == 'cockpit2' || $config->site->name == 'Cockpit2' || $this->cli) {
 			array_unshift($GLOBALS['config']['libraries'], 'Cockpit');
 		}
 
@@ -521,7 +521,12 @@ class Crunchbutton_App extends Cana_App {
 			$config['loc']['city'] = $this->auth()->get('city');
 			$config['loc']['region'] = $this->auth()->get('region');
 
-			$config['version'] = getenv('HEROKU_SLUG_COMMIT');
+			if(getenv('HEROKU_SLUG_COMMIT')){
+				$config['version'] = getenv('HEROKU_SLUG_COMMIT');
+			} else {
+				$config['version'] = Deploy_Server::currentVersion();
+			}
+
 		}
 
 		if (in_array('extended', $output)) {
