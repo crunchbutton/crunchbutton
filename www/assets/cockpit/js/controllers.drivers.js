@@ -164,6 +164,19 @@ NGApp.controller( 'DriversCommunityCtrl', function ($scope, $filter, DriverCommu
 		} );
 	}
 
+	$scope.openItNow = function(){
+		$scope.isSavingOpen = true;
+		DriverCommunityService.openItNow( { id_community: $scope.id_community}, function( json ){
+			if ( json.error ) {
+				App.alert( 'Error, the community is not closed!' );
+			} else {
+				App.alert( 'The community is open!' );
+			}
+			load();
+			$scope.isSavingOpen = false;
+		} );
+	}
+
 	$scope.open = function(){
 		if( $scope.formOpen.$invalid ){
 			$scope.submittedOpen = true;

@@ -7,6 +7,9 @@ class Controller_api_driver_community extends Crunchbutton_Controller_RestAccoun
 			case 'open':
 				$this->_open();
 				break;
+			case 'open-it-now':
+				$this->_openItNow();
+				break;
 			case 'close':
 				$this->_close();
 				break;
@@ -118,6 +121,29 @@ class Controller_api_driver_community extends Crunchbutton_Controller_RestAccoun
 		echo json_encode( [ 'error' => true ] );exit;
 	}
 
+	private function _openItNow(){
+		$driver = c::user();
+		if( !$driver->isDriver() ){
+			return $this->error( 404 );
+		}
+
+		$id_community = $this->request()[ 'id_community' ];
+		$communities = $driver->driverCommunities();
+		$community = null;
+		foreach ( $communities as $_community ) {
+			if( $_community->id_community == $id_community ){
+				$community = $_community;
+			}
+		}
+		if( $community->id_community ){
+			$success = $community->removeForceCloseByDriver( $driver->id_admin );
+			if( $success ){
+				return $this->_status();
+			}
+		}
+		echo json_encode( [ 'error' => true ] );exit;
+	}
+
 	private function _status(){
 		$driver = c::user();
 		if( !$driver->isDriver() ){
@@ -140,6 +166,12 @@ class Controller_api_driver_community extends Crunchbutton_Controller_RestAccoun
 
 			$_community[ 'is_open' ] = $community->isOpen();
 			$_community[ 'could_be_opened' ] = $community->isElegibleToBeOpened();
+			$_community[ 'is_force_closed' ] = ($community->allThirdPartyDeliveryRestaurantsClosed());
+			if($_community[ 'is_force_closed' ]){
+				$_community[ 'is_force_closed_by' ] = $community->reopen_at;
+				$_community[ 'will_be_closed_until' ] = $community->close_3rd_party_delivery_restaurants_id_admin;
+				$_community[ 'can_remove_force_close' ] = ($community->close_3rd_party_delivery_restaurants_id_admin == c::user()->id_admin);
+			}
 			$_community[ 'could_be_closed' ] = $community->isElegibleToBeClosed();
 
 			$_community[ 'name_status' ] = $community->name . ( $_community[ 'is_open' ] ? ' [Open]' : ' [Closed]' );

@@ -5,6 +5,7 @@ NGApp.factory( 'DriverCommunityService', function( $resource, $routeParams ) {
 	var drivers = $resource( App.service + 'driver/community/:action/', { action: '@action' }, {
 				'status' : { 'method': 'GET', params : { 'action' : 'status' }, isArray: true },
 				'open' : { 'method': 'POST', params : { 'action' : 'open' }, isArray: true },
+				'openItNow' : { 'method': 'POST', params : { 'action' : 'open-it-now' }, isArray: true },
 				'close' : { 'method': 'POST', params : { 'action' : 'close' }, isArray: true },
 				'textMessage' : { 'method': 'POST', params : { 'action' : 'text-message' }},
 			}
@@ -24,6 +25,12 @@ NGApp.factory( 'DriverCommunityService', function( $resource, $routeParams ) {
 
 	service.open = function( params, callback ){
 		drivers.open( params, function( data ){
+			callback( data );
+		} );
+	}
+
+	service.openItNow = function( params, callback ){
+		drivers.openItNow( params, function( data ){
 			callback( data );
 		} );
 	}

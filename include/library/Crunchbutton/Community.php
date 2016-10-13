@@ -1530,7 +1530,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 	public function isElegibleToBeOpened(){
 		if( $this->id_community && $this->drivers_can_open ){
 			$shift = Crunchbutton_Community_Shift::currentAssignedShiftByCommunity( $this->id_community );
-			if( $shift->id_community_shift ){
+			if( $shift->id_community_shift && !$this->allThirdPartyDeliveryRestaurantsClosed() && !$this->allRestaurantsClosed() ){
 				return false;
 			}
 			if( $this->allThirdPartyDeliveryRestaurantsClosed() || $this->allRestaurantsClosed() || $this->is_auto_closed || !$shift ){
@@ -1686,6 +1686,28 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$message .= ' during the period of ' . $minutes . ' minutes.';
 		$message .= ' Reason: ' . $reason;
 		Crunchbutton_Support::createNewWarning( [ 'staff' => true, 'phone' => $driver->phone, 'bubble' => true, 'body' => $message ] );
+		return true;
+	}
+
+// aqui
+	public function removeForceCloseByDriver( $id_driver, $shiftEnd ){
+		// check if the driver belongs to the community
+		$driver = Admin::o( $id_driver );
+
+		$communities = $driver->driverCommunities();
+		$open = false;
+		foreach( $communities as $community ){
+			if( $community->id_community == $this->id_community ){
+				$open = true;
+			}
+		}
+
+		if( $open ){
+			$this->close_all_restaurants = 0;
+			$this->close_3rd_party_delivery_restaurants = 0;
+			$this->reopen_at = null;
+			$this->save();
+		}
 		return true;
 	}
 
