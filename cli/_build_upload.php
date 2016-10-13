@@ -12,7 +12,11 @@ echo "\n\x1B[44mUploading build files to aws...\x1B[0m\n";
 require_once '../include/crunchbutton.php';
 
 //$git = Cana_Util::gitVersion();
-$git = trim(shell_exec('cd '.Cana::config()->dirs->root.' && git rev-parse HEAD'));
+$git = getenv('HEROKU_SLUG_COMMIT');
+print_r($_ENV);
+if (!$git) {
+	$git = trim(shell_exec('cd '.Cana::config()->dirs->root.' && git rev-parse HEAD'));
+}
 
 if (!$git) {
 	echo "\x1B[31mFailed to get git version.\x1B[0m\n";
