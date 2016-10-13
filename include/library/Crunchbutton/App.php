@@ -522,7 +522,7 @@ class Crunchbutton_App extends Cana_App {
 			$config['loc']['city'] = $this->auth()->get('city');
 			$config['loc']['region'] = $this->auth()->get('region');
 
-			$config['version'] = Deploy_Server::currentVersion();
+			$config['version'] = getenv('HEROKU_SLUG_COMMIT');
 		}
 
 		if (in_array('extended', $output)) {

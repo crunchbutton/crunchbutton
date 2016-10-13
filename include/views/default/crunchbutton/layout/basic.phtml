@@ -1,7 +1,7 @@
 <?=$this->display('layout/html.top')?>
 
 <? if (c::config()->bundle) : ?>
-	<script src="/assets/js/bundle.js?v=<?=Deploy_Server::currentVersion()?>"></script>
+	<script src="/assets/js/bundle.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
 <? else : ?>
 	<?=$this->display('bundle/js')?>
 <? endif ; ?>
