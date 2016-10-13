@@ -2856,14 +2856,17 @@ canvas.chart {
 }
 
 .double-cols {
-	-webkit-column-count: 2;
+	/*-webkit-column-count: 2;
 	-webkit-column-gap: 15px;
 	@include gpu();
 	float: left;
 	clear: both;
 	margin-bottom: 1em;
+	box-sizing: border-box;*/
 	width: 100%;
-	box-sizing: border-box;
+}
+.double-cols button{
+	width:45%;
 }
 
 .tripple-cols {

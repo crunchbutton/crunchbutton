@@ -26,6 +26,10 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 				$this->_driver_active();
 				break;
 
+			case 'driver-remove':
+				$this->_driver_remove();
+				break;
+
 			case 'add-funds':
 				$this->_add_funds();
 				break;
@@ -99,6 +103,11 @@ class Controller_Api_PexCard extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 		$this->_error( 'Card Not Found' );
+	}
+
+	private function _driver_remove(){
+		Cockpit_Admin_Pexcard::removeOldAssignments(c::user()->id_admin);
+		echo json_encode( [ 'success' => true ] );exit();
 	}
 
 	private function _driver_active(){

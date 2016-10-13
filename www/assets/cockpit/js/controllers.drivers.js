@@ -564,7 +564,7 @@ NGApp.controller( 'DriversPaymentsCtrl', function ( $scope, DriverService, $rout
 	*/
 });
 
-NGApp.controller( 'DriversPexCardCtrl', function ( $scope, PexCardService ) {
+NGApp.controller( 'DriversPexCardCtrl', function ( $scope, PexCardService, $timeout, $route ) {
 
 	$scope.submitted = false;
 	$scope.isSearching = false;
@@ -572,6 +572,25 @@ NGApp.controller( 'DriversPexCardCtrl', function ( $scope, PexCardService ) {
 	$scope.activateOption = true;
 
 	$scope.status = PexCardService.status;
+
+	$scope.removePexCard = function(){
+
+		var confirm = function(){
+			$scope.isRemoving = true;
+			PexCardService.driver_remove( function( json ){
+				if( json.success ){
+					App.alert( 'Your PEX Card was removed!', 'success' );
+					$scope.isRemoving = false;
+					$scope.account.user.has_pexcard = false;
+					$timeout(function () { $route.reload();}, 0);
+				} else {
+					App.alert( 'Error removing card!', 'error' );
+					$scope.isRemoving = false;
+				}
+			} );
+		}
+		App.confirm( 'Confirme remove Pex Card?', 'Confirm?', confirm, function(){ App.dialog.close(); } , 'Ok,Cancel', true);
+	}
 
 	$scope.active = function(){
 		if( $scope.card.id ){
