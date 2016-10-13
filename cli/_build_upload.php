@@ -13,7 +13,7 @@ require_once '../include/crunchbutton.php';
 
 //$git = Cana_Util::gitVersion();
 $git = getenv('HEROKU_SLUG_COMMIT');
-print_r($_ENV);
+
 if (!$git) {
 	$git = trim(shell_exec('cd '.Cana::config()->dirs->root.' && git rev-parse HEAD'));
 }
