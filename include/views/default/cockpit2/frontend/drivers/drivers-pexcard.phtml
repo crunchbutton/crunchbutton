@@ -2,48 +2,62 @@
 
 <div class="content-padding">
 
-	<h1 class="title"><i class="fa fa-credit-card"></i>Activate PEX Card</h1>
+	<h1 class="title"><i class="fa fa-credit-card"></i>PEX Card</h1>
 
 		<div class="divider"></div>
 
 		<div ng-show="account.user.has_pexcard">
 			<div class="support-box-wrap box-content2">
-
-				<div class="box-content-table">
-					<p>
-						Your PEX card is active and will be loaded with money to spend at restaurants when orders come in
-					</p>
+				<div class="support-box-wrap-header">
+					<h1>Your PEX card (ending in {{account.user.pexcard.last_four}}) is active and will be loaded with money to spend at restaurants when orders come in.</h1>
+					<div class="divider"></div>
+				</div>
+				<div class="no-box-content-color">
+					<ul class="ul-inputs">
+						<li class="li-input">
+							<button class="button save" ng-click="removePexCard();">Remove Pex Card</button>
+						</li>
+						<li class="li-input" ng-show="isRemoving">
+							<i class="fa fa-circle-o-notch fa-spin"></i> Removing
+						</li>
+					</ul>
 				</div>
 			</div>
 
 		</div>
 		<form name="form" novalidate ng-show="!account.user.has_pexcard">
+			<div class="support-box-wrap box-content2">
+				<div class="support-box-wrap-header">
+					<h1>Activate PEX Card</h1>
+				</div>
+				<div class="no-box-content-color">
+					<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
-			<ul ng-class="{'submitted':submitted}" class="ul-inputs">
+						<li class="li-input" ng-class="{'error':form.crunchbuttonCardId.$invalid}">
+							<div class="label">Card Serial (the numbers after "CRUNCHBUTTON" on your card):</div>
+							<div class="input"><input type="number" ignore-mouse-wheel name="crunchbuttonCardId" ng-model="crunchbutton_card_id" required placeholder="Card Serial (the numbers after 'CRUNCHBUTTON' on your card)"></div>
+							<div class="box-error">
+								<small ng-show="form.crunchbuttonCardId.$error.required">Required.</small>
+							</div>
+						</li>
 
-				<li class="li-input" ng-class="{'error':form.crunchbuttonCardId.$invalid}">
-					<div class="label">Card Serial (the numbers after "CRUNCHBUTTON" on your card):</div>
-					<div class="input"><input type="number" ignore-mouse-wheel name="crunchbuttonCardId" ng-model="crunchbutton_card_id" required placeholder="Card Serial (the numbers after 'CRUNCHBUTTON' on your card)"></div>
-					<div class="box-error">
-						<small ng-show="form.crunchbuttonCardId.$error.required">Required.</small>
-					</div>
-				</li>
+						<li class="li-input" ng-class="{'error':form.lastFourDigits.$invalid}">
+							<div class="label">Last 4 digits (of 16 digit card number):</div>
+							<div class="input"><input type="number" ignore-mouse-wheel name="lastFourDigits" ng-model="last_four_digits" required placeholder="Last 4 digits (of 16 digit card number)"></div>
+							<div class="box-error">
+								<small ng-show="form.lastFourDigits.$error.required">Required.</small>
+							</div>
+						</li>
 
-				<li class="li-input" ng-class="{'error':form.lastFourDigits.$invalid}">
-					<div class="label">Last 4 digits (of 16 digit card number):</div>
-					<div class="input"><input type="number" ignore-mouse-wheel name="lastFourDigits" ng-model="last_four_digits" required placeholder="Last 4 digits (of 16 digit card number)"></div>
-					<div class="box-error">
-						<small ng-show="form.lastFourDigits.$error.required">Required.</small>
-					</div>
-				</li>
-
-				<li class="li-input" ng-show="!isSearching">
-					<button class="button save" ng-click="search();">Load Card Info</button>
-				</li>
-				<li class="li-input" ng-show="isSearching">
-					<i class="fa fa-circle-o-notch fa-spin"></i> Loading
-				</li>
-			</ul>
+						<li class="li-input" ng-show="!isSearching">
+							<button class="button save" ng-click="search();">Load Card Info</button>
+						</li>
+						<li class="li-input" ng-show="isSearching">
+							<i class="fa fa-circle-o-notch fa-spin"></i> Loading
+						</li>
+					</ul>
+				</div>
+			</div>
 		</form>
 
 		<form name="formAssign" novalidate>
