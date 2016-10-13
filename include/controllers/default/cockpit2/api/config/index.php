@@ -51,7 +51,7 @@ class Controller_api_config extends Crunchbutton_Controller_Rest {
 				$config = [
 					'user' => $user,
 					'env' => c::env(),
-					'version' => Deploy_Server::currentVersion(),
+					'version' => getenv('HEROKU_SLUG_COMMIT'),
 					'site' => c::config()->site->exposedConfig()
 				];
 
