@@ -1,6 +1,5 @@
 #!/bin/sh
 
-echo "done." > /var/log/build.log
 mkdir /tmp/min
 cd /app/cli
 /app/cli/build.sh
