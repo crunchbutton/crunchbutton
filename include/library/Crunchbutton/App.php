@@ -193,7 +193,11 @@ class Crunchbutton_App extends Cana_App {
 			exit;
 		}
 
-		if ($config->site->name == 'Cockpit' || $config->site->name == 'Cockpit2' || $this->cli) {
+		if (getenv('THEME')) {
+			$config->site->theme = getenv('THEME');
+        }
+
+		if ($config->site->name == 'Cockpit' || $config->site->theme == 'cockpit2' || $this->cli) {
 			array_unshift($GLOBALS['config']['libraries'], 'Cockpit');
 		}
 
@@ -394,11 +398,6 @@ class Crunchbutton_App extends Cana_App {
 		if ($this->config()->site->config('ui2-mobile-force')->value && $this->isMobile() && $this->config()->site->theme == 'crunchbutton') {
 			$this->config()->site->theme =  'seven';
 		}
-
-		if (getenv('THEME') && getenv('THEME_NAME')) {
-			$this->config()->site->theme = getenv('THEME');
-			$this->config()->site->name = getenv('THEME_NAME');
-        }
 
 		$params['theme'][] = $this->config()->defaults->version.'/'.$this->config()->defaults->theme.'/';
 		if (is_array($themes = json_decode($this->config()->site->theme,'array'))) {
