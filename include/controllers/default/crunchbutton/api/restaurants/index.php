@@ -147,7 +147,11 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 								$config['restaurants'][ $i ][ 'name' ] = $community->driver_restaurant_name;
 							}
 							if(trim($config['restaurants'][ $i ][ 'name' ]) == ''){
-								$config['restaurants'][ $i ][ 'name' ] = $community->driverRestaurantName();
+								$closedMessage = $community->driverRestaurantName();
+								if(!$closedMessage){
+									$closedMessage = $community->closed_message;
+								}
+								$config['restaurants'][ $i ][ 'name' ] = $closedMessage;
 							}
 						} else {
 							$config['restaurants'][ $i ][ 'driver_restaurant' ] = false;
