@@ -98,8 +98,6 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 				}
 				if( !$data[ 'closed_message' ] ){
 					$community_closed_message[ 'no_closed_message' ] = true;
-				} else {
-
 				}
 
 				$data[ 'top_name' ] = $restaurant->top()->top_name;
@@ -145,8 +143,11 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 							}
 							$config['restaurants'][ $i ][ 'driver_restaurant' ] = true;
 
-							if( $community->automatic_driver_restaurant_name && $community->driver_restaurant_name ){
+							if( $community->automatic_driver_restaurant_name && trim($community->driver_restaurant_name) != '' ){
 								$config['restaurants'][ $i ][ 'name' ] = $community->driver_restaurant_name;
+							}
+							if(trim($config['restaurants'][ $i ][ 'name' ]) == ''){
+								$config['restaurants'][ $i ][ 'name' ] = $community->driverRestaurantName();
 							}
 						} else {
 							$config['restaurants'][ $i ][ 'driver_restaurant' ] = false;
