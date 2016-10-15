@@ -519,6 +519,7 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 					$_dish->top = $dish[ 'top' ];
 					$_dish->top_name = $dish[ 'top_name' ];
 					$_dish->description = $dish[ 'description' ];
+					$_dish->image = $dish[ 'image' ];
 					$_dish->type = $dish[ 'type' ];
 					$_dish->changeable_price = $dish[ 'changeable_price' ];
 					$_dish->expand_view = $dish[ 'expand_view' ];
