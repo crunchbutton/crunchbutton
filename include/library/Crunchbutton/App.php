@@ -610,7 +610,9 @@ class Crunchbutton_App extends Cana_App {
 	}
 
 	public function getEnv($d = true) {
-		if (c::user()->debug) {
+		if (getenv('ENV')) {
+			$env = getenv('ENV');
+		} elseif (c::user()->debug) {
 			$env = 'dev';
 		} elseif (c::env() == 'live' || c::env() == 'crondb') {
 			$env = 'live';
