@@ -2855,54 +2855,32 @@ canvas.chart {
 	white-space: nowrap;
 }
 
-.double-cols {
-	/*-webkit-column-count: 2;
-	-webkit-column-gap: 15px;
-	@include gpu();
-	float: left;
-	clear: both;
-	margin-bottom: 1em;
-	box-sizing: border-box;*/
-	width: 100%;
+.double-cols > *:not(:last-child),
+.tripple-cols > *:not(:last-child),
+.quadruple-cols > *:not(:last-child) {
+	margin-right: 5px;
 }
-.double-cols button{
-	width:45%;
+
+.double-cols {
+	display: -webkit-flex;
+    display: flex;
+	width: 100%;
 }
 
 .tripple-cols {
-	-webkit-column-count: 3;
-	-webkit-column-gap: 15px;
-	/*@include gpu();*/
-	float: left;
-	clear: both;
+	display: -webkit-flex;
+    display: flex;
 	margin-bottom: 1em;
 	width: 100%;
-}
-
-.tripple-cols > * {
-	-webkit-column-break-inside: avoid;
-	-webkit-column-break-after: always;
 }
 
 .quadruple-cols {
-	-webkit-column-count: 4;
-	-webkit-column-gap: 15px;
-	@include gpu();
-	float: left;
-	clear: both;
+	display: -webkit-flex;
+    display: flex;
 	margin-bottom: 1em;
 	width: 100%;
 }
 
-.quintuple-cols {
-	/*-webkit-column-count: 5;
-	-webkit-column-gap: 8px;
-	@include gpu();
-	float: left;
-	clear: both;
-	margin-bottom: 1em;*/
-	width: 100%;
-}
 .quintuple-cols button{
 	/*margin-bottom:8px;*/
 	width: 19%;
