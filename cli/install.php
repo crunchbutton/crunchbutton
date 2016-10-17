@@ -64,7 +64,7 @@ $sql = str_replace([
 	getenv('ADMIN_NAME'),
 	getenv('ADMIN_LOGIN'),
 	getenv('ADMIN_PHONE'),
-	$crypt->encrypt(getenv('ADMIN_PASSWORD'))
+	sha1($crypt->encrypt(getenv('ADMIN_PASSWORD')))
 ],file_get_contents('db/dummy.sql'));
 
 $db->exec($sql);
