@@ -3,7 +3,7 @@
 	"description": "crunchbutton and cockpit websites",
 	"repository": "https://github.com/youbeo/crunchbutton",
 	"addons": [
-		"jawsdb-maria:kitefin"
+		"jawsdb-maria:leopard"
 	],
 	"env": {
 		"DATABASE_URL": {
