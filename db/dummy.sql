@@ -325,7 +325,7 @@ VALUES
 	(227,NULL,'allow-cors','1',0),
 	(230,NULL,'suggestions','1',1),
 	(232,NULL,'maintenance','0',0),
-	(234,NULL,'s3-bundle','1',0),
+	(234,NULL,'s3-bundle','0',0),
 	(235,NULL,'order-loading-phrase','Building a perpetual motion machine',0),
 	(236,NULL,'order-loading-phrase','Locating Atlantis',0),
 	(237,NULL,'order-loading-phrase','Proving the ABC Conjecture',0),
