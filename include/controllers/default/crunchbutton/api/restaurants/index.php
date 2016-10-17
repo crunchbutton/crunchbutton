@@ -112,7 +112,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 					$data[ 'allow_preorder' ] = $restaurant->allowPreorder();
 				}
 
-				if( $data[ '_open' ] || $restaurant->show_when_closed ){
+				if( $data[ '_open' ] || $restaurant->show_when_closed || $_REQUEST['_all']){
 					$config['restaurants'][] = $data;
 				}
 			}
