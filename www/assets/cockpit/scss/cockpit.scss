@@ -2861,29 +2861,11 @@ canvas.chart {
 	margin-right: 5px;
 }
 
-.double-cols {
+.double-cols, .tripple-cols, .quadruple-cols {
 	display: -webkit-flex;
     display: flex;
 	width: 100%;
-}
-
-.tripple-cols {
-	display: -webkit-flex;
-    display: flex;
-	margin-bottom: 1em;
-	width: 100%;
-}
-
-.quadruple-cols {
-	display: -webkit-flex;
-    display: flex;
-	margin-bottom: 1em;
-	width: 100%;
-}
-
-.quintuple-cols button{
-	/*margin-bottom:8px;*/
-	width: 19%;
+	margin-bottom: 5px;
 }
 
 .field-container .field-row-button .field-two-rows {

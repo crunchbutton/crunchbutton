@@ -152,16 +152,14 @@
 				</div>
 
 				<br><br>
-				<div class="quintuple-cols">
-					<button title="Refund Order" class="button button-empty button-border button-orange" ng-if="order.user.id_user" ng-class="{'button-disabled': isRefunding || order.refunded }" ng-click="refund()"><i class="fa fa-heart"></i><span class="label"> Refund</span></button>
-
-					<button title="Text Drivers" ng-class="{'button-disabled': !order.delivery_service}" ng-click="text_drivers();" class="button button-empty button-border button-green"><i class="fa fa-mobile"></i><span class="label"> Drivers</span></button>
-
-					<button title="Resend Driver Notifiction" ng-click="resend_notification_drivers();" class="button button-empty button-border button-green" ng-class="{'button-disabled': isDriverNotifying || !order.delivery_service || (order.delivery_service && ( order.status.status == 'pickedup' || order.status.status == 'accepted' || order.status.status == 'delivered' || order.status.status == 'transfered' ))}"><i class="fa fa-car"></i><span class="label"> Notify</span></button>
-
-					<button title="Resend Restaurant Notification" ng-click="resend_notification();" class="button button-empty button-border button-blue" ng-class="{'button-disabled': isRestaurantNotifying || order.confirmed || (order.restaurant.delivery_service && !order.restaurant.formal_relationship && !order.restaurantorder_notifications_sent)}"><i class="fa fa-coffee"></i><span class="label"> Notify</span></button>
-
+				<div class="double-cols">
+					<button title="Refund Order" class="button button-empty button-border button-orange" ng-class="{'button-disabled': isRefunding || order.refunded || !order.user.id_user }" ng-click="refund()"><i class="fa fa-heart"></i><span class="label"> Refund</span></button>
 					<button title="Issue Gift Card" ng-click="creditDialog( order.id_user );" class="button button-empty button-border button-orange"><i class="fa fa-gift"></i><span class="label">&nbsp;Gift Card</span></button>
+				</div>
+				<div class="tripple-cols">
+					<button title="Text Drivers" ng-class="{'button-disabled': !order.delivery_service}" ng-click="text_drivers();" class="button button-empty button-border button-green"><i class="fa fa-mobile"></i><span class="label"> Drivers</span></button>
+					<button title="Resend Driver Notifiction" ng-click="resend_notification_drivers();" class="button button-empty button-border button-green" ng-class="{'button-disabled': isDriverNotifying || !order.delivery_service || (order.delivery_service && ( order.status.status == 'pickedup' || order.status.status == 'accepted' || order.status.status == 'delivered' || order.status.status == 'transfered' ))}"><i class="fa fa-car"></i><span class="label"> Notify</span></button>
+					<button title="Resend Restaurant Notification" ng-click="resend_notification();" class="button button-empty button-border button-blue" ng-class="{'button-disabled': isRestaurantNotifying || order.confirmed || (order.restaurant.delivery_service && !order.restaurant.formal_relationship && !order.restaurantorder_notifications_sent)}"><i class="fa fa-coffee"></i><span class="label"> Notify</span></button>
 				</div>
 				<div class="divider"></div>
 			</div>
