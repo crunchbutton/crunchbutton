@@ -4,6 +4,10 @@
 echo "\nCreating db schema...";
 
 $url = parse_url(getenv('JAWSDB_URL'));
+if (!$url) {
+	echo "No JAWSDB_URL";
+	exit(0);
+}
 $type = $url['scheme'] == 'postgres' ? 'pgsql' : 'mysql';
 
 $db = new \PDO($type.':host='.$url['host'].($url['port'] ? ';port='.$url['port'] : '').';dbname='.substr($url['path'], 1), $url['user'], $url['pass'], $options);
