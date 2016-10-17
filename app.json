@@ -3,14 +3,29 @@
 	"description": "crunchbutton and cockpit websites",
 	"repository": "https://github.com/youbeo/crunchbutton",
 	"addons": [
-		"jawsdb:kitefin"
+		"jawsdb-maria:kitefin"
 	],
 	"env": {
 		"DATABASE_URL": {
+			"description": "Database to use. Set to null to use jawsdb",
 			"required": true
 		},
 		"THEME": {
+			"description": "seven (crunchbutton), or cockpit2 (cockpit)",
 			"required": true
+		},
+		"ENCRYPTION_KEY": {
+			"description": "Encryption key for the db",
+			"generator": "secret"
+		},
+		"ADMIN_NAME": {
+			"description": "Name of the default admin"
+		},
+		"ADMIN_LOGIN": {
+			"description": "Login of the default admin"
+		},
+		"ADMIN_PHONE": {
+			"description": "Phone # of the default admin for notifications"
 		}
 	},
 	"scripts": {
