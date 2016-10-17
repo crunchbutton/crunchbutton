@@ -14,7 +14,7 @@ $db = new \PDO($type.':host='.$url['host'].($url['port'] ? ';port='.$url['port']
 $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 $db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
 
-str_replace([
+$sql = str_replace([
 	'_ADMIN_',
 	'_LOGIN_',
 	'_PHONE_',
