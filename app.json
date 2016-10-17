@@ -14,6 +14,9 @@
 			"description": "seven (crunchbutton), or cockpit2 (cockpit)",
 			"required": true
 		},
+		"USE_ENCRYPTION_KEY": {
+			"description": "set to true to use the generated key"
+		},
 		"ENCRYPTION_KEY": {
 			"description": "Encryption key for the db",
 			"generator": "secret"
