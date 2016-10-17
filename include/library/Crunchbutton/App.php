@@ -475,7 +475,7 @@ class Crunchbutton_App extends Cana_App {
 
 	public function crypt($crypt = null) {
 		if (is_null($crypt)) {
-			return $this->_crypt = new Cana_Crypt($_ENV['ENCRYPTION_KEY'] || $this->config()->crypt->key);
+			return $this->_crypt = new Cana_Crypt(($_ENV['USE_ENCRYPTION_KEY'] && $_ENV['ENCRYPTION_KEY']) ? $_ENV['ENCRYPTION_KEY'] : $this->config()->crypt->key);
 		} else {
 			return $this->_crypt;
 		}
