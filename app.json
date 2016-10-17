@@ -22,13 +22,20 @@
 			"generator": "secret"
 		},
 		"ADMIN_NAME": {
-			"description": "Name of the default admin"
+			"description": "Name of the default admin",
+			"required": false
 		},
 		"ADMIN_LOGIN": {
-			"description": "Login of the default admin"
+			"description": "Login of the default admin",
+			"required": false
+		},
+		"ADMIN_PASSWORD": {
+			"description": "Password of default admin",
+			"required": false
 		},
 		"ADMIN_PHONE": {
-			"description": "Phone # of the default admin for notifications"
+			"description": "Phone # of the default admin for notifications",
+			"required": false
 		}
 	},
 	"scripts": {

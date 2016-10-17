@@ -17,11 +17,13 @@ $db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
 str_replace([
 	'_ADMIN_',
 	'_LOGIN_',
-	'_PHONE_'
+	'_PHONE_',
+	'_PASSWORD_'
 ],[
 	getenv('ADMIN_NAME'),
 	getenv('ADMIN_LOGIN'),
-	getenv('ADMIN_PHONE')
+	getenv('ADMIN_PHONE'),
+	getenv('ADMIN_PASSWORD')
 ],file_get_contents('db/dump.sql'));
 
 $db->exec($sql);
