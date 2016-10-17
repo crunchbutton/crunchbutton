@@ -5,34 +5,41 @@ INSERT INTO `restaurant` (`id_restaurant`, `name`, `timezone`, `loc_lat`, `loc_l
 VALUES
 	(1, 'TEST RESTAURANT', 'America/Los_Angeles', 33.1737, -96.6806, 1, 1, 1, '4690 Eldorado Parkway, McKinney, TX 75070, USA', 10, 8, '_PHONE_', 0, 1, '26.JPG', 'test-restaurant', NULL, NULL, 10, 1, 'subtotal', NULL, 3.4, 35, 35, NULL, 1.5, '', 1, NULL, 0, 1, 1, NULL, 'asdasdsss', '_KEY_', '_KEY_', NULL, 'will still charge your card! beware!', NULL, 0, 'x', 0, 1, 0, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Testing', 0, 0, NULL, 1, 'fax', 5, 0, 'regular', 0, NULL, NULL, 1, 'community', 15, 999, 1);
 
-
 INSERT INTO `community` (`id_community`, `name`, `permalink`, `loc_lat`, `loc_lon`, `active`, `private`, `prep`, `name_alt`, `range`, `image`, `driver_group`, `timezone`)
 VALUES
 	(1, 'Testing', 'test', '33.175101', '-96.677810', 1, 0, 'for', NULL, 2, 0, 'drivers-testing', 'America/Los_Angeles');
-
 
 INSERT INTO `restaurant_community` (`id_restaurant_community`, `id_restaurant`, `id_community`, `sort`)
 VALUES
 	(1, 1, 1, NULL);
 
-INSERT INTO `admin` (`id_admin`, `login`, `name`, `pass`, `timezone`, `active`)
+INSERT INTO `admin` (`id_admin`, `login`, `name`, `pass`, `timezone`, `active`, `phone`, `txt`)
 VALUES
-	(1, '_LOGIN_', '_ADMIN_', '_PASSWORD_', 'America/Los_Angeles', 1);
+	(1, '_LOGIN_', '_ADMIN_', '_PASSWORD_', 'America/Los_Angeles', 1, '_PHONE_','_PHONE_');
 
-INSERT INTO `admin_permission` (`id_admin_permission`, `id_admin`, `permission`, `id_group`, `allow`)
+INSERT INTO `admin_notification` (`id_admin`, `type`, `value`, `active`)
 VALUES
-	(1, NULL, 'global', 1, 1);
+	(1, 'sms', '_PHONE_', 1);
 
-
-INSERT INTO `support_rep` (`id_support_rep`, `name`, `phone`)
+INSERT INTO `group` (`id_group`, `name`)
 VALUES
-	(NULL, '_ADMIN_', '_PHONE_');
+	(1,'admin');
 
+INSERT INTO `group` (`name`, `description`) VALUES ( 'rule-time-order', 'Users will receive the notification when someone order twice in a short period of time' );
+INSERT INTO `group` (`name`, `description`) VALUES ( 'rule-order-equal', 'Users will receive the notification when someone order the same food in a short period of time' );
+INSERT INTO `group` (`name`, `description`) VALUES ( 'rule-gift-card', 'Users will receive the notification when someone redeem two or more gift cards short period of time' );
+INSERT INTO `group` (`name`, `description`) VALUES ( 'reps-none-working', 'Users will receive the sms when no drives are working' );
+INSERT INTO `group` (`name`, `description`) VALUES ( 'restaurant', 'Restaurant group' );
+INSERT INTO `group` (`name`, `description`) VALUES ('community-cs', 'Community CS');
 
-INSERT INTO `config` (`id_config`, `id_site`, `key`, `value`)
+INSERT INTO `admin_group` (`id_admin`, `id_group`)
 VALUES
-	(1,NULL,'support-phone-afterhours','_PHONE_');
+	(1,1);
 
+INSERT INTO `admin_permission` (`id_admin`, `permission`, `id_group`, `allow`)
+VALUES
+	(NULL,'global',1,1),
+	(1,'test',NULL,1);
 
 /* INSERT THE CHARTS */
 INSERT INTO `chart` (`id_chart`, `permalink`, `description`) VALUES( 1, 'churn-rate-per-active-user-per-day', '');
@@ -85,42 +92,6 @@ INSERT INTO `chart` (`id_chart`, `permalink`, `description`) VALUES( 47, 'users-
 INSERT INTO `chart` (`id_chart`, `permalink`, `description`) VALUES( 48, 'users-unique-per-month', '');
 INSERT INTO `chart` (`id_chart`, `permalink`, `description`) VALUES( 49, 'users-unique-per-week', '');
 
-
-INSERT INTO `admin_group` (`id_admin_group`, `id_admin`, `id_group`)
-VALUES
-	(1,1,1),
-	(2,2,1),
-	(3,3,1),
-	(4,4,1),
-	(5,5,1),
-	(6,1,2),
-	(7,2,2),
-	(8,3,2),
-	(9,4,2);
-
-
-INSERT INTO `admin_permission` (`id_admin_permission`, `id_admin`, `permission`, `id_group`, `allow`)
-VALUES
-	(1,NULL,'global',1,1),
-	(2,1,'test',NULL,1);
-
-
-INSERT INTO `group` (`id_group`, `name`)
-VALUES
-	(1,'admin'),
-	(2,'rep');
-
-INSERT INTO `group` VALUES (1,'admin',NULL),(2,'support',NULL),(3,'marketing',NULL),(4,'DC',NULL),(5,'Hamilton-Co',NULL),(6,'Providence',NULL),(7,'USC',NULL),(8,'UCSB',NULL),(9,'Boston-Coll',NULL),(10,'UVermont',NULL),(12,'Skidmore',NULL),(13,'Ohio-State',NULL),(14,'Syracuse',NULL),(15,'Middlebury',NULL),(16,'Georgia-Tec',NULL),(17,'Temple',NULL),(18,'UNL',NULL),(19,'Bates',NULL),(20,'max-call-support','Users will receive the max call'),(21,'reps-fail-pickup','Users will recieve global failed pickupnotifications'),(22,'rule-time-order','Users will receive the notification when someone order twice in a short period of time'),(23,'rule-order-equal','Users will receive the notification when someone order the same food in a short period of time'),(24,'rule-gift-card','Users will receive the notification when someone redeem two or more gift cards short period of time'),(25,'Hamilton-Delivery-Dr',NULL),(26,'reps-none-working','Users will receive the sms when no drives are working'),(27,'drivers-hamilton','Hamilton drivers group'),(28,'drivers-boston-colle','Boston College drivers group'),(29,'drivers-bates','Bates drivers group'),(30,'drivers-culver-city','Culver City drivers group'),(31,'drivers-testing',' drivers group'),(32,'drivers-boston','Boston drivers group'),(33,'drivers-boulder','Boulder drivers group'),(34,'drivers-colgate','colgate drivers group'),(35,'drivers-dc','DC drivers group'),(36,'drivers-yale','Yale drivers group'),(37,'drivers-test','TEST drivers group'),(38,'Colgate','colgate university'),(39,'drivers-holy-cross','Holy Cross drivers group'),(40,'drivers-usc','USC drivers group'),(41,'drivers-st-olaf','St Olaf drivers group'),(42,'drivers-st.-olaf','St. Olaf drivers group'),(43,'drivers-unc','UNC drivers group'),(44,'Holy-Cross',NULL),(45,'St-Olaf',NULL),(46,'UNC',NULL),(47,'drivers-penn','Penn drivers group'),(48,'drivers-emory','Emory drivers group'),(49,'Penn','University of Pennsylvania'),(50,'Emory','Emory University'),(51,'drivers-ucla','UCLA drivers group'),(52,'UCLA','University of California Los Angeles'),(53,'drivers-fordham',' drivers group'),(54,'drivers-france','France drivers group'),(55,'drivers-delaware','Delaware drivers group'),(56,'drivers-betaspring','Betaspring drivers group'),(57,'drivers-broville','Broville drivers group'),(58,'drivers-cal-tech','Cal Tech drivers group'),(59,'drivers-denison','Denison drivers group'),(60,'drivers-edgemont','Edgemont drivers group'),(61,'drivers-georgia-tech','Georgia Tech drivers group'),(62,'drivers-gw','GW drivers group'),(63,'drivers-hamilton-col','Hamilton College drivers group'),(64,'drivers-harvard','Harvard drivers group'),(65,'drivers-la','LA drivers group'),(66,'drivers-marina-del-r','Marina Del Rey drivers group'),(67,'drivers-new-haven','New Haven drivers group'),(68,'drivers-new-york','New York drivers group'),(69,'drivers-new-york-cit','New York City drivers group'),(70,'drivers-ny','ny drivers group'),(71,'drivers-nyc','NYC drivers group'),(72,'drivers-ods-weed-clo','OD\'s Weed Clothing drivers group'),(73,'drivers-pasadena','Pasadena drivers group'),(74,'drivers-pitt','Pitt drivers group'),(75,'drivers-providence','Providence drivers group'),(76,'drivers-san-francisc','San Francisco drivers group'),(77,'drivers-skidmore','Skidmore drivers group'),(78,'drivers-syracuse','Syracuse drivers group'),(79,'drivers-ucsb','UCSB drivers group'),(80,'drivers-unc-chapel-h','UNC Chapel Hill drivers group'),(81,'drivers-university-o','University of Michigan drivers group'),(82,'drivers-uvermont','UVermont drivers group'),(83,'drivers-venice','Venice drivers group'),(84,'drivers-virginia','Virginia drivers group'),(85,'drivers-weed','weed drivers group'),(86,'drivers-wellesley','Wellesley drivers group'),(87,'Pitt','University of Pittsburgh');
-
-
-INSERT INTO `group` (`name`, `description`) VALUES ( 'rule-time-order', 'Users will receive the notification when someone order twice in a short period of time' );
-INSERT INTO `group` (`name`, `description`) VALUES ( 'rule-order-equal', 'Users will receive the notification when someone order the same food in a short period of time' );
-INSERT INTO `group` (`name`, `description`) VALUES ( 'rule-gift-card', 'Users will receive the notification when someone redeem two or more gift cards short period of time' );
-
-/* INSERT THE CHARTS */
-INSERT INTO `chart` ( `permalink`, `description`) VALUES( 'churn-rate-per-active-user-per-day', '');
-INSERT INTO `chart` ( `permalink`, `description`) VALUES( 'churn-rate-per-active-user-per-week', '');
-INSERT INTO `chart` ( `permalink`, `description`) VALUES( 'churn-rate-per-active-user-per-month', '');
 INSERT INTO `chart` ( `permalink`, `description`) VALUES( 'historial-churn-per-day', '');
 INSERT INTO `chart` ( `permalink`, `description`) VALUES( 'historial-churn-per-week', '');
 INSERT INTO `chart` ( `permalink`, `description`) VALUES( 'historial-churn-per-month', '');
@@ -131,8 +102,6 @@ INSERT INTO `chart` ( `permalink`, `description`) VALUES( 'historial-churn-rate-
 INSERT INTO `chart` ( `permalink`, `description`) VALUES( 'historial-churn-rate-per-week', '');
 INSERT INTO `chart` ( `permalink`, `description`) VALUES( 'historial-churn-rate-per-month', '');
 
-
-INSERT INTO `group` (`name`, `description`) VALUES ( 'reps-none-working', 'Users will receive the sms when no drives are working' );
 
 INSERT INTO `driver_document` (`id_driver_document`, `name`, `url`, `order`)
 VALUES
@@ -158,9 +127,6 @@ VALUES
 
 INSERT INTO `order_forecast_type` VALUES (1,'Mean based on EW weighting with decay constant of 4 wks');
 
-
-INSERT INTO `group` (`name`, `description`) VALUES ( 'restaurant', 'Restaurant group' );
-
 INSERT INTO `community` (`id_community`, `name`, `permalink`, `loc_lat`, `loc_lon`, `active`, `private`, `prep`, `name_alt`, `range`, `image`, `driver_group`, `timezone`, `close_all_restaurants`, `close_all_restaurants_note`, `close_3rd_party_delivery_restaurants`, `close_3rd_party_delivery_restaurants_note`, `close_all_restaurants_id_admin`, `close_3rd_party_delivery_restaurants_id_admin`)
 VALUES
 	(92, 'Customer Service', 'cs', NULL, NULL, 1, 1, 'in', 'cs', 2, 0, 'support', 'America/Los_Angeles', 0, NULL, 0, NULL, NULL, NULL);
@@ -173,17 +139,10 @@ INSERT INTO queue_type ( `type` ) VALUES ( 'notification-your-driver' );
 INSERT INTO queue_type ( `type` ) VALUES ( 'order-pexcard-funds' );
 INSERT INTO queue_type ( `type` ) VALUES ( 'notification-minutes-way' );
 
-ALTER TABLE `queue` ADD COLUMN `id_queue_type` int(11) unsigned DEFAULT NULL;
-ALTER TABLE `queue` ADD KEY `id_queue_type` (`id_queue_type`);
-ALTER TABLE `queue` ADD CONSTRAINT `queue_ibfk_3` FOREIGN KEY (`id_queue_type`) REFERENCES `queue_type` (`id_queue_type`) ON DELETE CASCADE ON UPDATE CASCADE;
-
-UPDATE queue q INNER JOIN queue_type qt ON q.`type` = qt.`type` SET q.id_queue_type = qt.id_queue_type;
-
 INSERT INTO queue_type ( `type` ) VALUES ( 'notification-driver-priority' );
 
 INSERT INTO `report` (`title`, `content`, `active`)
 VALUES ('Communities closed', 'SELECT name as Community, \'yes\' as \'Closed\' FROM community WHERE close_all_restaurants AND active = 1 ORDER BY name ASC\n', 1);
-
 
 INSERT INTO `report` (`title`, `content`, `active`)
 VALUES ('Communities with 3rd Party Delivery restaurants closed', 'SELECT name as Community, \'yes\' as \'Closed\' FROM community WHERE close_3rd_party_delivery_restaurants AND active = 1 ORDER BY name ASC', 1);
@@ -236,31 +195,10 @@ VALUES
 		('unknown'),
 		('wrong-delivery-type');
 
-INSERT INTO `group` (`name`, `description`, `type`, `id_community`)
-VALUES
-	('community-cs', 'Community CS', NULL, NULL);
-
-
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
-
-# Dump of table config
-# ------------------------------------------------------------
-
-LOCK TABLES `config` WRITE;
-/*!40000 ALTER TABLE `config` DISABLE KEYS */;
 
 INSERT INTO `config` (`id_config`, `id_site`, `key`, `value`, `exposed`)
 VALUES
-	(1,NULL,'support-phone-afterhours',NULL,0),
+	(1,NULL,'support-phone-afterhours','_PHONE_',0),
 	(2,NULL,'referral-inviter-credit-value','1',0),
 	(3,NULL,'referral-invited-credit-value','1',0),
 	(4,NULL,'referral-add_credit-to-invited','1',0),
@@ -440,15 +378,6 @@ VALUES
 	(284,NULL,'order_ticket_radius','1',0),
 	(285,NULL,'order_ticket_geo',NULL,0);
 
-/*!40000 ALTER TABLE `config` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
-# Dump of table cron_log
-# ------------------------------------------------------------
-
-LOCK TABLES `cron_log` WRITE;
-/*!40000 ALTER TABLE `cron_log` DISABLE KEYS */;
 
 INSERT INTO `cron_log` (`id_cron_log`, `description`, `class`, `start_date`, `interval`, `interval_unity`, `current_status`, `next_time`, `finished`, `interactions`, `env`)
 VALUES
@@ -500,14 +429,3 @@ VALUES
 	(119,'Community notification','Crunchbutton_Cron_Job_CommunityNotification','2016-06-01 18:00:00','minute',1,'running','2016-10-17 02:13:00','2016-10-16 12:58:00',192671,'live'),
 	(120,'Support Action','Crunchbutton_Cron_Job_SupportAction','2016-10-04 21:00:00','minute',0,'idle','2016-10-10 18:26:00','2016-10-10 18:25:07',8469,'live');
 
-/*!40000 ALTER TABLE `cron_log` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
-
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
