@@ -1,16 +1,25 @@
 {
 	"name": "Crunchbutton",
 	"description": "crunchbutton and cockpit websites",
-	"repository": "https://github.com/crunchbutton/crunchbutton",
+	"repository": "https://github.com/youbeo/crunchbutton",
+	"addons": [
+		"jawsdb:kitefin"
+	],
 	"env": {
 		"DATABASE_URL": {
 			"required": true
 		},
-        "THEME": {
+		"THEME": {
 			"required": true
-		},
-        "THEME_NAME": {
-			"required": true
+		}
+	},
+	"scripts": {
+		"postdeploy": "php cli/install.php"
+	},
+	"formation": {
+		"web": {
+			"quantity": 1,
+			"size": "hobby"
 		}
 	}
 }
