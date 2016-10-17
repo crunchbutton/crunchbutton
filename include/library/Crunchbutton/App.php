@@ -127,11 +127,14 @@ class Crunchbutton_App extends Cana_App {
 			header('Location: http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 			exit;
 		}
+		if (!$_ENV['DATABASE_URL'] && $_ENV['JAWSDB_URL']) {
+			$_ENV['DATABASE_URL'] = $_ENV['JAWSDB_URL'];
+		}
 
-		if (getenv('DATABASE_URL')) {
+		if ($_ENV['DATABASE_URL']) {
 			$params['config']->db->readDB = (object)[
-				'url' => getenv('DATABASE_URL'),
-				'type' => Cana_Db::typeByUrl(getenv('DATABASE_URL'))
+				'url' => $_ENV['DATABASE_URL'],
+				'type' => Cana_Db::typeByUrl($_ENV['DATABASE_URL'])
 			];
 			$db = 'readDB';
 		}
@@ -143,10 +146,10 @@ class Crunchbutton_App extends Cana_App {
 			$params['config']->cache->default = $params['config']->cache->{$params['config']->cache->default};
 		}
 
-		if (getenv('DATABASE_URL_WRITE')) {
+		if ($_ENV['DATABASE_URL_WRITE']) {
 			$params['config']->db->writeDB = (object)[
-				'url' => getenv('DATABASE_URL_WRITE'),
-				'type' => Cana_Db::typeByUrl(getenv('DATABASE_URL_WRITE'))
+				'url' => $_ENV['DATABASE_URL_WRITE'],
+				'type' => Cana_Db::typeByUrl($_ENV['DATABASE_URL_WRITE'])
 			];
 		}
 
