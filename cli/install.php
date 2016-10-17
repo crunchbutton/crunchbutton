@@ -63,7 +63,7 @@ foreach ($dirs as $dir) {
 }
 
 echo "Inserting dummy data...";
-$db->exec(file_get_contents('db/dump.sql'));
+$db->exec(file_get_contents('db/dummy.sql'));
 echo "complete.\n";
 
 if ($error) {
