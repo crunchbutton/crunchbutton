@@ -1941,12 +1941,8 @@ CREATE TABLE `order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DELIMITER ;;
-/*!50003 SET SESSION SQL_MODE="" */;;
-/*!50003 CREATE TRIGGER `order_uuid` BEFORE INSERT ON `order` FOR EACH ROW SET NEW.uuid =  REPLACE(UUID(),'-','') */;;
-DELIMITER ;
-/*!50003 SET SESSION SQL_MODE=@OLD_SQL_MODE */;
 
+CREATE TRIGGER `order_uuid` BEFORE INSERT ON `order` FOR EACH ROW SET NEW.uuid =  REPLACE(UUID(),'-','');
 
 # Dump of table order_action
 # ------------------------------------------------------------
@@ -3703,11 +3699,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DELIMITER ;;
-/*!50003 SET SESSION SQL_MODE="" */;;
-/*!50003 CREATE TRIGGER `user_uuid` BEFORE INSERT ON `user` FOR EACH ROW SET NEW.uuid =  REPLACE(UUID(),'-','') */;;
-DELIMITER ;
-/*!50003 SET SESSION SQL_MODE=@OLD_SQL_MODE */;
+CREATE TRIGGER `user_uuid` BEFORE INSERT ON `user` FOR EACH ROW SET NEW.uuid =  REPLACE(UUID(),'-','');
 
 
 # Dump of table user_auth
