@@ -51,6 +51,7 @@ foreach ($dirs as $dir) {
 
 echo "Inserting dummy data...";
 
+require_once('vendor/arzynik/cana/src/Cana/Model.php');
 require_once('vendor/arzynik/cana/src/Cana/Crypt.php');
 $crypt = new Cana_Crypt(getenv('ENCRYPTION_KEY'));
 
