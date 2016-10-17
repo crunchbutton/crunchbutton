@@ -15,7 +15,8 @@
 			"required": true
 		},
 		"USE_ENCRYPTION_KEY": {
-			"description": "set to true to use the generated key"
+			"description": "set to true to use the generated key",
+			"required": false
 		},
 		"ENCRYPTION_KEY": {
 			"description": "Encryption key for the db",

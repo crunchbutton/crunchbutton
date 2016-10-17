@@ -127,8 +127,8 @@ class Crunchbutton_App extends Cana_App {
 			header('Location: http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 			exit;
 		}
-		if ((!$_ENV['DATABASE_URL'] || $_ENV['DATABASE_URL'] == 'null') && $_ENV['JAWSDB_URL']) {
-			$_ENV['DATABASE_URL'] = $_ENV['JAWSDB_URL'];
+		if ((!$_ENV['DATABASE_URL'] || $_ENV['DATABASE_URL'] == 'null') && $_ENV['JAWSDB_MARIA_URL']) {
+			$_ENV['DATABASE_URL'] = $_ENV['JAWSDB_MARIA_URL'];
 		}
 
 		if ($_ENV['DATABASE_URL']) {
