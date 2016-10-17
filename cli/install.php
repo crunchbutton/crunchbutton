@@ -51,21 +51,8 @@ foreach ($dirs as $dir) {
 
 echo "Inserting dummy data...";
 
-$pass = base64_encode(
-	mcrypt_encrypt(
-		MCRYPT_3DES,
-		getenv('ENCRYPTION_KEY'),
-		getenv('ADMIN_PASSWORD'),
-		MCRYPT_MODE_ECB,
-		mcrypt_create_iv(
-			mcrypt_get_iv_size(
-				MCRYPT_3DES,
-				MCRYPT_MODE_ECB
-			),
-			MCRYPT_RAND
-		)
-	)
-);
+require_once('vendor/arzynik/cana/src/Cana/Crypt.php');
+$crypt = new Cana_Crypt(getenv('ENCRYPTION_KEY'));
 
 $sql = str_replace([
 	'_ADMIN_',
@@ -76,7 +63,7 @@ $sql = str_replace([
 	getenv('ADMIN_NAME'),
 	getenv('ADMIN_LOGIN'),
 	getenv('ADMIN_PHONE'),
-	$pass
+	$crypt->encrypt(getenv('ADMIN_PASSWORD'))
 ],file_get_contents('db/dummy.sql'));
 
 $db->exec($sql);
