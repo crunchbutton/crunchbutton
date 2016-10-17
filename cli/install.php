@@ -13,20 +13,7 @@ $type = $url['scheme'] == 'postgres' ? 'pgsql' : 'mysql';
 $db = new \PDO($type.':host='.$url['host'].($url['port'] ? ';port='.$url['port'] : '').';dbname='.substr($url['path'], 1), $url['user'], $url['pass'], $options);
 $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 $db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
-
-$sql = str_replace([
-	'_ADMIN_',
-	'_LOGIN_',
-	'_PHONE_',
-	'_PASSWORD_'
-],[
-	getenv('ADMIN_NAME'),
-	getenv('ADMIN_LOGIN'),
-	getenv('ADMIN_PHONE'),
-	getenv('ADMIN_PASSWORD')
-],file_get_contents('db/dump.sql'));
-
-$db->exec($sql);
+$db->exec(file_get_contents('db/dump.sql'));
 
 echo "complete.\n";
 
@@ -63,7 +50,20 @@ foreach ($dirs as $dir) {
 }
 
 echo "Inserting dummy data...";
-$db->exec(file_get_contents('db/dummy.sql'));
+
+$sql = str_replace([
+	'_ADMIN_',
+	'_LOGIN_',
+	'_PHONE_',
+	'_PASSWORD_'
+],[
+	getenv('ADMIN_NAME'),
+	getenv('ADMIN_LOGIN'),
+	getenv('ADMIN_PHONE'),
+	getenv('ADMIN_PASSWORD')
+],file_get_contents('db/dummy.sql'));
+
+$db->exec($sql);
 echo "complete.\n";
 
 if ($error) {
