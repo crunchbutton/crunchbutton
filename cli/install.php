@@ -3,9 +3,9 @@
 
 echo "\nCreating db schema...";
 
-$url = parse_url(getenv('JAWSDB_URL'));
+$url = parse_url(getenv('JAWSDB_MARIA_URL'));
 if (!$url) {
-	echo "No JAWSDB_URL";
+	echo "No JAWSDB_MARIA_URL";
 	exit(0);
 }
 $type = $url['scheme'] == 'postgres' ? 'pgsql' : 'mysql';
