@@ -108,6 +108,9 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 					$data[ '_short_description' ] = $restaurant->force_close_tagline;
 				}
 
+				$data[ 'loc_lat' ] = $restaurant->loc_lat;
+				$data[ 'loc_long' ] = $restaurant->loc_long;
+
 				if( $data[ '_open' ] ){
 					$data[ 'allow_preorder' ] = $restaurant->allowPreorder();
 				}
