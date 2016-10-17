@@ -13,13 +13,13 @@ if (getenv('TRAVISPOSTGRES')) {
 $error = false;
 
 foreach ($dirs as $dir) {
-	
+
 	$files = [];
 
 	foreach (new DirectoryIterator($dir) as $fileInfo) {
 		if ($fileInfo->isDot()) continue;
 		$num = preg_replace('/^([0-9]+)_.*$/','\\1', $fileInfo->getFilename());
-		if ($num > 180) {
+		if ($num > 488) {
 			$files[] = $fileInfo->getFilename();
 		}
 	}
