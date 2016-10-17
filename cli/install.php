@@ -51,7 +51,21 @@ foreach ($dirs as $dir) {
 
 echo "Inserting dummy data...";
 
-$pass = base64_encode(mcrypt_encrypt(MCRYPT_3DES, getenv('ENCRYPTION_KEY'), getenv('ADMIN_PASSWORD'), MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_3DES, MCRYPT_MODE_ECB), MCRYPT_RAND));
+$pass = base64_encode(
+	mcrypt_encrypt(
+		MCRYPT_3DES,
+		getenv('ENCRYPTION_KEY'),
+		getenv('ADMIN_PASSWORD'),
+		MCRYPT_MODE_ECB,
+		mcrypt_create_iv(
+			mcrypt_get_iv_size(
+				MCRYPT_3DES,
+				MCRYPT_MODE_ECB
+			),
+			MCRYPT_RAND
+		)
+	)
+);
 
 $sql = str_replace([
 	'_ADMIN_',
