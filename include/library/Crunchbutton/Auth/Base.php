@@ -13,6 +13,12 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 
 		$this->init();
 
+		if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+			error_log('>> SKIPING BECAUSE OF OPTIONS...');
+			$this->postInit();
+			return;
+		}
+
 		// here we need to check for a token
 		// if we dont have a valid token, we need to check for a facebook cookie
 		// then if none of thats good just return a blank user object
