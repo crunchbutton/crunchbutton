@@ -1,4 +1,5 @@
 $desktopWidth: 1025px;
+$mobileWidth: 1024px;
 
 @media screen and (max-width: $mobileWidth) {
 	.page-login .bg:before {
