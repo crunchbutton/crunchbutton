@@ -23,8 +23,10 @@ class Crunchbutton_Session {
 
 		// only do this if the adapter doesnt support its own token handling
 		if (($this->adapter()->id_user || $this->adapter()->id_admin) && !$this->adapter()->token) {
-			error_log('saving user '. $this->adapter()->id_user);
-			error_log('saving this user '. $this->id_user);
+			if (getenv('DEBUG')) {
+				error_log('saving DEFAULT user '. $this->adapter()->id_user);
+				error_log('saving DEFAULT user '. $this->id_user);
+			}
 
 			$fields = '-=d4sh0fs4|t?&4ndM4YB350m35ymb0||0v3!!!!!!=-' . $this->adapter()->id_session . $this->adapter()->id_user . $this->adapter()->id_admin . uniqid();
 			$token = new Crunchbutton_Session_Token;
