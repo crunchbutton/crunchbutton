@@ -11,27 +11,27 @@
 				padding: 0;
 				font: 12px Helvetica, sans-serif;
 			}
-			
+
 			#map_canvas {
 				height: 100%;
 			}
-			
+
 			h2 {
 				padding: 0;
 				margin: 0;
 			}
-			
+
 			@media print {
 				html, body {
 					height: auto;
 				}
-			
+
 				#map_canvas {
 					height: 650px;
 				}
 			}
 		</style>
-		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&key=AIzaSyB16sGmIekuGIvYOfNoW9T44377IU2d2Es"></script>
 		<script>
 			function initialize() {
 
@@ -58,13 +58,13 @@
 				var map = new google.maps.Map(document.getElementById('map_canvas'), settings);
 				var windows = [];
 				var circles = [];
-				
+
 				var blurCircle = function(circle) {
 					if (!circle) {
 						return;
 					}
 					circle.setOptions({
-						fillColor: '#000000', 
+						fillColor: '#000000',
 						strokeColor: '#000000',
 						fillOpacity: 0.05,
 						strokeOpacity: 0.5,
@@ -80,7 +80,7 @@
 						position: point<?=$restaurant->id_restaurant?>,
 						title: "<?=$restaurant->name?>"
 					});
-					
+
 					<? if ($restaurant->delivery_radius) : ?>
 						var myCircle<?=$restaurant->id_restaurant?> = new google.maps.Circle({
 							center: point<?=$restaurant->id_restaurant?>,
@@ -116,9 +116,9 @@
 							google.maps.event.addListener(infowindow<?=$restaurant->id_restaurant?>,'closeclick',function() {
 								blurCircle(myCircle<?=$restaurant->id_restaurant?>);
 							});
-							
+
 							myCircle<?=$restaurant->id_restaurant?>.setOptions({
-								fillColor: '#ff7800', 
+								fillColor: '#ff7800',
 								strokeColor: '#ab5000',
 								fillOpacity: 0.3,
 								strokeOpacity: 0.9,
