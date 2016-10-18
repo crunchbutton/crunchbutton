@@ -51,11 +51,11 @@ class Crunchbutton_Controller_Rest extends Cana_Controller_Rest {
 		}
 
 		$find = '/(api\.|log\.)/';
-		if (preg_match($find, $_SERVER['SERVER_NAME'])) {
+		if (1==2 || preg_match($find, $_SERVER['SERVER_NAME'])) {
 			$allow = preg_replace($find,'',$_SERVER['SERVER_NAME']);
 			header('Access-Control-Allow-Origin: http'.($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'.$allow);
 			header('Access-Control-Allow-Credentials: true');
-		} elseif (1==1 || c::config()->site->config('allow-cors')->val()) {
+		} elseif (c::config()->site->config('allow-cors')->val()) {
 			header('Access-Control-Allow-Origin: *');
 			header('Access-Control-Allow-Credentials: true');
 			header('Access-Control-Allow-Headers: Accept, Origin, Content-Type, Http-Error, App-Token, App-Version');
