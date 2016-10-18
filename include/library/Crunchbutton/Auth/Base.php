@@ -7,17 +7,20 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 	public function __construct() {
 
 		$this->_session = new Crunchbutton_Session;
+
+
+		if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+			error_log('>> SKIPING BECAUSE OF OPTIONS...');
+			$this->init();
+			$this->postInit();
+			return;
+		}
+
 		if ($this->_session->adapter()->user()) {
 			session_set_save_handler($this->_session->adapter(), true);
 		}
 
 		$this->init();
-
-		if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-			error_log('>> SKIPING BECAUSE OF OPTIONS...');
-			$this->postInit();
-			return;
-		}
 
 		// here we need to check for a token
 		// if we dont have a valid token, we need to check for a facebook cookie
