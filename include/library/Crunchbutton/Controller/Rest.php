@@ -63,7 +63,9 @@ class Crunchbutton_Controller_Rest extends Cana_Controller_Rest {
 		}
 
 		if ($this->method() == 'options') {
-			error_log('>> ENDING OPTIONS CORS');
+			if (getenv('DEBUG')) {
+				error_log('>> ENDING OPTIONS CORS');
+			}
 			http_response_code(200);
 			exit;
 		}

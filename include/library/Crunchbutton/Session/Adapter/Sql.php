@@ -94,6 +94,10 @@ class Crunchbutton_Session_Adapter_Sql extends Cana_Table implements SessionHand
 
 	public function generateAndSaveToken() {
 		if (($this->id_user || $this->id_admin) && !$this->token) {
+			if (getenv('DEBUG')) {
+				error_log('saving SQL user '. $this->id_user);
+				error_log('saving SQL token '. $this->token);
+			}
 			$fields = '-=d4sh0fs4|t?&4ndM4YB350m35ymb0||0v3!!!!!!=-'.$this->id_session.$this->id_user.$this->id_admin.uniqid();
 			$this->token = strtoupper(hash('sha512', $fields));
 

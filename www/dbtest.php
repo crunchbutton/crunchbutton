@@ -32,7 +32,9 @@ $getDb = function($args) {
 		$options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 	}
 
-	error_log('>> CONNECTING TO DATABASE...');
+	if (getenv('DEBUG')) {
+		error_log('>> CONNECTING TO DATABASE...');
+	}
 
 	$db = new \PDO($args->dsn, $args->user, $args->pass, $options);
 
@@ -47,8 +49,9 @@ $getDb = function($args) {
 $dbRead = $getDb((object)['url' => getenv('DATABASE_URL_READER')]);
 $dbWrite = $getDb((object)['url' => getenv('DATABASE_URL_WRITER')]);
 
-
-error_log('>> CONNECTED');
+if (getenv('DEBUG')) {
+	error_log('>> CONNECTED');
+}
 
 
 $query = 'update session set token=? where id_session=?';

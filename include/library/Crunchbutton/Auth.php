@@ -64,9 +64,11 @@ class Crunchbutton_Auth extends Crunchbutton_Auth_Base {
 		$auth = User_Auth::localLogin( $params['email'], $params['password'] );
 		if ( $auth->user()->active ) {
 			$this->_user = $auth->user();
-			error_log(' -- user: '. $this->user()->id_user);
-			error_log(' -- auth: '. $auth->id_user_auth);
-			error_log(' -- other user: '. $this->_user);
+			if (getenv('DEBUG')) {
+				error_log(' -- user: '. $this->user()->id_user);
+				error_log(' -- auth: '. $auth->id_user_auth);
+				error_log(' -- other user: '. $this->_user);
+			}
 			$this->session()->adapter()->id_user = $this->user()->id_user;
 			$this->session()->adapter()->id_user_auth = $auth->id_user_auth;
 			$this->session()->adapter()->date_active = date('Y-m-d H:i:s');
