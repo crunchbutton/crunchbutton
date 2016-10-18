@@ -111,6 +111,11 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 				$data[ 'loc_lat' ] = $restaurant->loc_lat;
 				$data[ 'loc_long' ] = $restaurant->loc_long;
 
+				if ($data['takeout']) {
+					$data['address'] = $restaurant->address;
+					$data['phone'] = $restaurant->phone;
+				}
+
 				if( $data[ '_open' ] ){
 					$data[ 'allow_preorder' ] = $restaurant->allowPreorder();
 				}
