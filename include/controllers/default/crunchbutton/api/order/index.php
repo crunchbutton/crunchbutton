@@ -5,6 +5,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 	public function init() {
 
 		$order = Order::uuid(c::getPagePiece(2));
+
 		/* @var $order Crunchbutton_Order */
 		if (!$order->id_order) {
 			$order = Order::o(c::getPagePiece(2));
@@ -508,9 +509,12 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 
 		switch ($this->method()) {
 			case 'get':
+
 				if (get_class($order) != 'Crunchbutton_Order') {
 					$order = $order->get(0);
 				}
+
+				echo $order->json(); exit;
 
 				if ($order->id_order && c::user()->id_user == $order->id_user) {
 					echo $order->json();
