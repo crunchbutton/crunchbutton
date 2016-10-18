@@ -10,7 +10,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						break;
 					case 'post':
 						// store cookies on the server for use with facebook api
-						foreach ($_POST['cookie'] as $key => $value) {
+						foreach ($this->request()['cookie'] as $key => $value) {
 
 						}
 						break;
@@ -45,8 +45,8 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 				switch ($this->method()) {
 					case 'post':
 						$params = array();
-						$params[ 'email' ] = $_POST[ 'email' ];
-						$params[ 'password' ] = $_POST[ 'password' ];
+						$params[ 'email' ] = $this->request()[ 'email' ];
+						$params[ 'password' ] = $this->request()[ 'password' ];
 						$user = c::auth()->doAuthByLocalUser( $params );
 						if( $user ){
 							echo c::user()->json(['auth' => true]);
@@ -85,7 +85,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 					}
 				}
 				// else create a new user
-				else {
+				elseif (!$this->request()['login_only']) {
 					$user = c::user();
 					if (!$user->id_user) {
 						// we dont have a user, and we need to make one
@@ -161,8 +161,8 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						switch ( c::getPagePiece( 3 ) ) {
 							case 'local':
 								$params = array();
-								$params[ 'email' ] = $_POST[ 'email' ];
-								$params[ 'password' ] = $_POST[ 'password' ];
+								$params[ 'email' ] = $this->request()[ 'email' ];
+								$params[ 'password' ] = $this->request()[ 'password' ];
 								$emailExists = User_Auth::checkEmailExists( $params[ 'email' ] );
 								if( $emailExists ){
 									echo json_encode(['error' => 'user exists']);
@@ -173,10 +173,10 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 									// we dont have a user, and we need to make one
 									$user = new User;
 									$user->active = 1;
-									if( filter_var( $_POST[ 'email' ], FILTER_VALIDATE_EMAIL ) ){
-										$user->email = $_POST[ 'email' ];
+									if( filter_var( $this->request()[ 'email' ], FILTER_VALIDATE_EMAIL ) ){
+										$user->email = $this->request()[ 'email' ];
 									} else {
-										$user->phone = $_POST[ 'email' ];
+										$user->phone = $this->request()[ 'email' ];
 									}
 									$user->name = '';
 									$user->saving_from = $user->saving_from.'API user post - ';
@@ -217,7 +217,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 			case 'reset':
 				switch ( $this->method() ) {
 					case 'post':
-						$email = $_POST[ 'email' ];
+						$email = $this->request()[ 'email' ];
 						$user_auth = User_Auth::checkEmailExists( $email );
 						if( !$user_auth ){
 							echo json_encode(['error' => 'user is not registered']);
@@ -229,7 +229,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						$user_auth->save();
 
 						// Send the code by email
-						if( filter_var( $_POST[ 'email' ], FILTER_VALIDATE_EMAIL ) ){
+						if( filter_var( $this->request()[ 'email' ], FILTER_VALIDATE_EMAIL ) ){
 							$mail = new User_Auth_Reset_Email( [
 								'code' => $code,
 								'email' => $email
@@ -266,7 +266,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 			case 'code-validate':
 				switch ( $this->method() ) {
 					case 'post':
-						$code = $_POST[ 'code' ];
+						$code = $this->request()[ 'code' ];
 						$user_auth = User_Auth::validateResetCode( $code );
 						if( !$user_auth ){
 							echo json_encode(['error' => 'invalid code']);
@@ -290,7 +290,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 			case 'change-password':
 				switch ( $this->method() ) {
 					case 'post':
-						$code = $_POST[ 'code' ];
+						$code = $this->request()[ 'code' ];
 						// Make sure that the user is not cheating!
 						$user_auth = User_Auth::validateResetCode($code );
 						if( !$user_auth ){
@@ -305,7 +305,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 								echo json_encode(['error' => 'expired code']);
 								exit;
 							} else {
-								$password = $_POST[ 'password' ];
+								$password = $this->request()[ 'password' ];
 								$password = User_Auth::passwordEncrypt( $password  );
 								$user_auth->auth = $password;
 								$user_auth->reset_code = NULL;

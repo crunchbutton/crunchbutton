@@ -123,7 +123,7 @@ class Controller_charts extends Crunchbutton_Controller_Account {
 	}
 
 	public function cohort_remove(){
-		$id_chart_cohort = $_POST[ 'id_chart_cohort' ];
+		$id_chart_cohort = $this->request()[ 'id_chart_cohort' ];
 		$cohort = Crunchbutton_Chart_Cohort::o( $id_chart_cohort );
 		if( $cohort->id_chart_cohort ){
 			$cohort->delete();

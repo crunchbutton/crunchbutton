@@ -105,7 +105,7 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 					case 'link-rep':
 						if ( $support->permissionToEdit() ) {
 
-							$admin = Admin::o( $_POST[ 'id_admin' ] );
+							$admin = Admin::o( $this->request()[ 'id_admin' ] );
 							if( $admin->id_admin ){
 								$support->id_admin = $admin->id_admin;
 								$support->save();
@@ -120,7 +120,7 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 
 					case 'link-order':
 						if ( $support->permissionToEdit() ) {
-							$order = Order::o( $_POST[ 'id_order' ] );
+							$order = Order::o( $this->request()[ 'id_order' ] );
 							if( $order->id_order ){
 								$support->id_order = $order->id_order;
 								$support->save();
@@ -144,10 +144,10 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 						break;
 					case 'conversation':
 						if ( $support->permissionToEdit() ) {
-							if( $_POST['text'] ){
-								$support->addAdminReply( $_POST['text'] );
+							if( $this->request()['text'] ){
+								$support->addAdminReply( $this->request()['text'] );
 								if( ( $support->type == Crunchbutton_Support::TYPE_SMS || $support->type == Crunchbutton_Support::TYPE_BOX_NEED_HELP ) && $support->id_session_twilio ){
-									$message = c::admin()->firstName() . ' replied @' . $support->id_session_twilio . ' : ' . $_POST['text'];
+									$message = c::admin()->firstName() . ' replied @' . $support->id_session_twilio . ' : ' . $this->request()['text'];
 									Crunchbutton_Support::tellCustomerService( $message );
 								}
 							}
@@ -157,14 +157,14 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 
 					case 'note' :
 						if ($support->permissionToEdit()) {
-							$support->addNote( $_POST['text'] );
+							$support->addNote( $this->request()['text'] );
 							exit;
 						}
 						break;
 
 					case 'update':
 						if ($support->permissionToEdit()) {
-							self::update( $support, $_POST );
+							self::update( $support, $this->request() );
 							echo $support->json();
 							exit;
 						}
@@ -173,7 +173,7 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 					case 'actions':
 						if ($support->permissionToEdit()) {
 							self::setRep($support);
-							self::action($support, $_POST);
+							self::action($support, $this->request());
 						}
 						break;
 
