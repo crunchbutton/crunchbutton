@@ -184,6 +184,6 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			}
 		}
 
-		echo json_encode( is_array($config) ? null : $config );
+		echo json_encode( $config );
 	}
 }
