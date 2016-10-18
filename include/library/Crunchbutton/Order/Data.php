@@ -103,10 +103,11 @@ class Crunchbutton_Order_Data extends Cana_Table {
 		}
 
 		$out[ 'drivers' ] = [];
-		foreach( $drivers as $driver ){
-			$out[ 'drivers' ][] = $driver->exports();
+		if($drivers){
+			foreach( $drivers as $driver ){
+				$out[ 'drivers' ][] = $driver->exports();
+			}
 		}
-
 		$data = new Crunchbutton_Order_Data;
 		$data->id_order = $order->id_order;
 		$data->timestamp = date('Y-m-d H:i:s');
