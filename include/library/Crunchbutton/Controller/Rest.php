@@ -51,7 +51,7 @@ class Crunchbutton_Controller_Rest extends Cana_Controller_Rest {
 		}
 
 		$find = '/(api\.|log\.)/';
-		if (1==2 || preg_match($find, $_SERVER['SERVER_NAME'])) {
+		if (1==2 && preg_match($find, $_SERVER['SERVER_NAME'])) {
 			$allow = preg_replace($find,'',$_SERVER['SERVER_NAME']);
 			header('Access-Control-Allow-Origin: http'.($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'.$allow);
 			header('Access-Control-Allow-Credentials: true');
