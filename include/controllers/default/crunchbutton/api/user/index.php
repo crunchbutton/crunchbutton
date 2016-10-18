@@ -96,7 +96,19 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						} else {
 							$user->phone = $this->request()['email'];
 						}
-						$user->name = '';
+						if ($this->request()['first_name']) {
+							$user->name = $this->request()['first_name'].'  ';
+						}
+						if ($this->request()['last_name']) {
+							$user->name .= $this->request()['first_name'];
+						}
+						if ($this->request()['name']) {
+							$user->name = $this->request()['name'];
+						}
+						if ($this->request()['phone']) {
+							$user->phone = $this->request()['phone'];
+						}
+
 						$user->saving_from = $user->saving_from.'API user post - ';
 						$user->save();
 					}
