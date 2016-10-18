@@ -64,6 +64,7 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 				$this->session()->adapter()->save();
 				*/
 			} else {
+				error_log('>> DELETING TOKEN...'.$_COOKIE['token']);
 				// if no id_user in session, delete cookie and session in DB as it's not used, see #624
 				Session::deleteToken($_COOKIE['token']);
 				setcookie('token','',0,'/');
