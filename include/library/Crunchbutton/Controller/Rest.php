@@ -55,13 +55,13 @@ class Crunchbutton_Controller_Rest extends Cana_Controller_Rest {
 			$allow = preg_replace($find,'',$_SERVER['SERVER_NAME']);
 			header('Access-Control-Allow-Origin: http'.($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'.$allow);
 			header('Access-Control-Allow-Credentials: true');
-		} elseif (c::config()->site->config('allow-cors')->val()) {
+		} elseif (1==1 || c::config()->site->config('allow-cors')->val()) {
 			header('Access-Control-Allow-Origin: *');
 			header('Access-Control-Allow-Credentials: true');
 			header('Access-Control-Allow-Headers: Accept, Origin, Content-Type, Http-Error, App-Token, App-Version');
 			header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 		}
-		
+
 		if ($this->method() == 'options') {
 			http_response_code(200);
 			exit;
@@ -74,4 +74,4 @@ class Crunchbutton_Controller_Rest extends Cana_Controller_Rest {
 
 		parent::__construct();
 	}
-} 
+}
