@@ -25,10 +25,6 @@
 	<?=$this->display('layout/html.bottom')?>
 </body>
 
-<? if (getenv('EXTERNAL_CSS_PRE')) : ?>
-	<link rel="stylesheet" type="text/css" href="<?=getenv('EXTERNAL_CSS_PRE')?>">
-<? endif ; ?>
-
 <? if (c::config()->bundle) : ?>
 	<? $css = c::config()->site->config('s3-bundle')->val() ? 'https://'.c::config()->s3->buckets->build->cache.'/'.getenv('HEROKU_SLUG_COMMIT').'/css/cockpit.css' : '/assets/cockpit/css/bundle.css?v='.getenv('HEROKU_SLUG_COMMIT').'&s=cockpit' ?>
 	<link rel="stylesheet" type="text/css" href="<?=$css?>">
