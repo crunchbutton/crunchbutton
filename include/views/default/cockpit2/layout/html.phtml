@@ -31,3 +31,7 @@
 <? else : ?>
 	<?=$this->display('bundle/css')?>
 <? endif ; ?>
+
+<? if (getenv('EXTERNAL_CSS')) : ?>
+	<link rel="stylesheet" type="text/css" href="<?=getenv('EXTERNAL_CSS')?>">
+<? endif ; ?>
