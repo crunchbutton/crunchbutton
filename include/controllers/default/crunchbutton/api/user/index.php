@@ -72,9 +72,9 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 			case 'enter':
 
 				$params = array();
-				$params[ 'email' ] = $_POST[ 'email' ];
-				$params[ 'password' ] = $_POST[ 'password' ];
-				$emailExists = User_Auth::checkEmailExists( $_POST[ 'email' ] );
+				$params[ 'email' ] = $this->request()['email'];
+				$params[ 'password' ] = $this->request()['password'];
+				$emailExists = User_Auth::checkEmailExists( $this->request()['email'] );
 				// if the email exists do the login
 				if( $emailExists ){
 					$user = c::auth()->doAuthByLocalUser( $params );
@@ -91,10 +91,10 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						// we dont have a user, and we need to make one
 						$user = new User;
 						$user->active = 1;
-						if( filter_var( $_POST[ 'email' ], FILTER_VALIDATE_EMAIL ) ){
-							$user->email = $_POST[ 'email' ];
+						if( filter_var( $this->request()['email'], FILTER_VALIDATE_EMAIL ) ){
+							$user->email = $this->request()['email'];
 						} else {
-							$user->phone = $_POST[ 'email' ];
+							$user->phone = $this->request()['email'];
 						}
 						$user->name = '';
 						$user->saving_from = $user->saving_from.'API user post - ';
