@@ -52,9 +52,15 @@ class Crunchbutton_Auth extends Crunchbutton_Auth_Base {
 		$auth = Crunchbutton_User_Auth::byTypeId($type,$id);
 		if ($auth->active && $auth->user()->active) {
 			$this->_user = $auth->user();
+
 			$this->session()->adapter()->id_user = $this->user()->id_user;
 			$this->session()->adapter()->id_user_auth = $auth->id_user_auth;
 			$this->session()->adapter()->save();
+
+			if (getenv('DEBUG')) {
+				error_log('lost in debugging...'.$this->session()->adapter()->id_user);
+			}
+
 			return true;
 		}
 		return false;
