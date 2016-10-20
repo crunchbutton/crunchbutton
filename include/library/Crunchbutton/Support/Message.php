@@ -7,6 +7,7 @@ class Crunchbutton_Support_Message extends Cana_Table {
 	const TYPE_NOTE = 'note';
 	const TYPE_WARNING = 'warning';
 	const TYPE_AUTO_REPLY = 'auto-reply';
+	const TYPE_FIRST_PARTY_DELIVERY_AUTO_REPLY = 'first-party-delivery-auto-reply';
 	const TYPE_FROM_CLIENT = 'client';
 	const TYPE_FROM_REP = 'rep';
 	const TYPE_FROM_SYSTEM = 'system';
@@ -290,6 +291,14 @@ class Crunchbutton_Support_Message extends Cana_Table {
 			}
 		}
 		return $this->_date;
+	}
+
+	public static function getLastFirstPartyDeliveryTicketAutoReply($id_order, $phone){
+		return self::q('SELECT sm.* FROM support_message sm
+							INNER JOIN support s ON s.id_support = sm.id_support
+							WHERE s.id_order = ? AND s.phone = ? AND sm.type = ?
+								ORDER BY id_support_message DESC LIMIT 1',
+								[$phone, $id_order, self::	TYPE_FIRST_PARTY_DELIVERY_AUTO_REPLY])->get(0);
 	}
 
 	public function repTime() {
