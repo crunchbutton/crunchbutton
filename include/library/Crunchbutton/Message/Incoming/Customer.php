@@ -86,6 +86,12 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 			$created = true;
 		}
 
+		$firstPartyDeliveryRestaurant = false;
+		// Check if the ticket belongs that a first party delivery restaurant
+		if($this->order){
+			$firstPartyDeliveryRestaurant = !$this->order->restaurant()->delivery_service;
+		}
+
 		if ($created) {
 			// create a new ticket
 			$this->support = Support::createNewSMSTicket([
@@ -93,16 +99,16 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 				'id_community' => $params['id_community'],
 				'id_order' => $this->order->id_order,
 				'body' => $params['body'],
-				'media' => $params['media']
+				'media' => $params['media'],
+				'firstPartyDeliveryRestaurant' => $firstPartyDeliveryRestaurant
 			]);
-
 		} else {
-
 			// Open support
 			if ($this->support->status == Crunchbutton_Support::STATUS_CLOSED) {
 				$this->support->status = Crunchbutton_Support::STATUS_OPEN;
 				$this->support->addSystemMessage('Ticket reopened by customer');
 			}
+			$lastCustomerMessage = $this->support->lastCustomerMessage();
 			// Add the new customer message
 			$this->support->addCustomerMessage([
 				'name' => $this->order->name,
@@ -116,45 +122,102 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 
 		$this->log( [ 'action' => 'returning sms', 'msg' => $params['body']] );
 
-		// build the message to send to reps
-		$message = '@'.$this->support->id_support;
-
-		if ($params['admin'] && $params['admin']->isDriver()) {
-			// format as a driver message
-			$message .= ' DRIVER '.$params['admin']->name;
-		} elseif ($this->order->id_order) {
-
-			$message .= ' #'.$this->order->id_order.' '.$this->order->name;
-
-			if ($created) {
-				// send a message before support
-				$types = $this->order->restaurant()->notification_types();
-
-				if (count($types) > 0) {
-					$notifications = ' / RN: ' . join('/', $types);
+		$sentMessageToCS = true;
+		if($firstPartyDeliveryRestaurant){
+			$lastReply = Support_Message::getLastFirstPartyDeliveryTicketAutoReply($params['from'], $this->order->id_order);
+			if($lastReply->id_support){
+				$now = new DateTime('now', new DateTimeZone(c::config()->timezone));
+				$minutes = Util::interval2Minutes($now->diff($lastReply->date()));
+				// If the message was sent in less than 2 hours, warning cs
+				if($minutes <= 120){
+					$sentMessageToCS = true;
 				}
-
-				$date = $this->order->date()->format('m/d/Y h:i A');
-
-				$community = $this->order->restaurant()->communityNames();
-				if ($community) {
-					$community = ' (' . $community . ')';
-				}
-
-				$newMessageNotification =
-					'New support ticket @'.$this->support->id_support."\n".
-					'Last Order: #'.$this->order->id_order.' on '.$date."\n".
-					'Customer: '.$this->order->name.' / '.$this->order->phone.($this->order->address ? ' / '.$this->order->address : '')."\n".
-					'Restaurant: '.$this->order->restaurant()->name.$community.' / '.$this->order->restaurant()->phone.$notifications;
-					// Notify reps
-					Support_Action::createDriverAction($this->support->id_support, $newMessageNotification, $this->order, $params['media']);
-					return;
 			}
+
+
 		}
-		Support_Action::createDriverAction($this->support->id_support, $newMessageNotification, $this->order, $params['media']);
-		// notify reps if support is late at night
-		$this->support->makeACall();
-		$this->log( [ 'action' => 'sms action - support-ask', 'message' => $message] );
+
+		if(!$sentMessageToCS){
+
+			$body = 'Hi ' . $this->order->name . ', have you tried contacting the restaurant directly at ' . Phone::formatted($this->order->restaurant()->phone) . '?';
+
+			$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_FIRST_PARTY_DELIVERY_AUTO_REPLY;
+			$messageParams[ 'from' ] = Crunchbutton_Support_Message::TYPE_FROM_SYSTEM;
+			$messageParams[ 'visibility' ] = Crunchbutton_Support_Message::TYPE_VISIBILITY_EXTERNAL;
+			$messageParams[ 'phone' ] = $this->support->phone;
+			$messageParams[ 'body' ] = $body;
+			$message = $this->support->addMessage( $messageParams );
+			Crunchbutton_Message_Sms::send([
+				'to' => $message->phone,
+				'message' => $message->body,
+				'reason' => Crunchbutton_Message_Sms::REASON_AUTO_REPLY
+			] );
+
+			$this->support->status = Crunchbutton_Support::STATUS_CLOSED;
+			$this->support->save();
+			$this->support->addSystemMessage('Closed First Party Delivery Restaurant Ticket');
+
+		} else {
+
+			// build the message to send to reps
+			$message = '@'.$this->support->id_support;
+
+			if($firstPartyDeliveryRestaurant){
+				// get the last customer message
+				if($lastCustomerMessage->body){
+					$message .= ' ' . $lastCustomerMessage->body . '. ' . $params['body'];
+					$body = $lastCustomerMessage->body . '. ' . $params['body'];
+				}
+			}
+
+			if ($params['admin'] && $params['admin']->isDriver()) {
+				// format as a driver message
+				$message .= ' DRIVER '.$params['admin']->name;
+
+			}
+			if ($this->order->id_order) {
+
+				$message .= ' #'.$this->order->id_order.' '.$this->order->name;
+
+				if ($created || $firstPartyDeliveryRestaurant) {
+
+					// send a message before support
+					$types = $this->order->restaurant()->notification_types();
+
+					if (count($types) > 0) {
+						$notifications = ' / RN: ' . join('/', $types);
+					}
+
+					$date = $this->order->date()->format('m/d/Y h:i A');
+
+					$community = $this->order->restaurant()->communityNames();
+					if ($community) {
+						$community = ' (' . $community . ')';
+					}
+
+					if($created){
+						$newMessageNotification =
+							'New support ticket @'.$this->support->id_support."\n".
+							'Last Order: #'.$this->order->id_order.' on '.$date."\n".
+							'Customer: '.$this->order->name.' / '.$this->order->phone.($this->order->address ? ' / '.$this->order->address : '')."\n".
+							'Message: '.$body."\n".
+							'Restaurant: '.$this->order->restaurant()->name.$community.' / '.$this->order->restaurant()->phone.$notifications;
+					} else {
+						$newMessageNotification = $message;
+					}
+
+					Support_Action::createDriverAction($this->support->id_support, $newMessageNotificationnewMessageNotification, $this->order, $params['media']);
+					return;
+				}
+
+			}
+			$message .= ' ' . $params['body'];
+
+			Support_Action::createDriverAction($this->support->id_support, $newMessageNotification, $this->order, $params['media']);
+			// notify reps if support is late at night
+			$this->support->makeACall();
+			$this->log( [ 'action' => 'sms action - support-ask', 'message' => $message] );
+		}
 	}
 
 	private function notifyReps($message, $media = null){
