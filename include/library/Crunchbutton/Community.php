@@ -1657,6 +1657,23 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 			return self::DRIVER_OPEN_COMMUNITY_ERROR_COMMUNITY;
 		}
 
+		$reopenAtMessage = new DateTime( 'now', new DateTimeZone($this->timezone));
+		$reopenAtMessage->modify('+ ' . $minutes . ' minutes');
+
+		$upTo = 5;
+		$actualMinutes = intval($reopenAtMessage->format('i'));
+    	$roundMinutes = (round($actualMinutes)%$upTo === 0) ? round($actualMinutes) : round(($actualMinutes+$upTo/2)/$upTo)*$upTo;
+
+    	$reopenAtMessage->modify('+ ' . ($roundMinutes - $actualMinutes) . ' minutes');
+		$message = 'Next open ';
+		$message .= $reopenAtMessage->format( 'g' );
+
+		if( $reopenAtMessage->format( 'i' ) != '00' ){
+			$message .= ':' . $reopenAtMessage->format( 'i' );
+		}
+		$message .= $reopenAtMessage->format( 'A D' );
+		$message .= '!';
+
 		$reopen_at = new DateTime( 'now', new DateTimeZone(c::config()->timezone));
 		$reopen_at->modify('+ ' . $minutes . ' minutes');
 		$reopen_at = $reopen_at->format('Y-m-d H:i:s');
@@ -1664,6 +1681,8 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		$dont_warn_till = new DateTime( 'now', new DateTimeZone(Crunchbutton_Community_Shift::CB_TIMEZONE));
 		$dont_warn_till->modify('+ ' . $minutes . ' minutes');
 		$dont_warn_till = $dont_warn_till->format('Y-m-d H:i:s');
+
+		$this->close_3rd_party_delivery_restaurants_note = $message;
 
 		$this->close_3rd_party_delivery_restaurants = true;
 		$this->close_3rd_party_delivery_restaurants_id_admin = $driver->id_admin;
@@ -1689,7 +1708,6 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return true;
 	}
 
-// aqui
 	public function removeForceCloseByDriver( $id_driver, $shiftEnd ){
 		// check if the driver belongs to the community
 		$driver = Admin::o( $id_driver );
