@@ -1,0 +1,1 @@
+ALTER TABLE `user_payment_type` CHANGE `card_type` `card_type` enum('visa','mastercard','amex','discover','campus_cash','american express') DEFAULT NULL;
