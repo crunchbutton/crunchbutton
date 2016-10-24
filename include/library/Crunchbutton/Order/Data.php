@@ -20,6 +20,7 @@ class Crunchbutton_Order_Data extends Cana_Table {
 				$out[ $key ] = floatval( $val );
 			}
 		}
+
 		$out[ 'order' ] = json_decode( $out[ 'order' ] );
 		$out[ 'delivery_window_fmt' ] = Crunchbutton_Order::PRE_ORDER_DELIVERY_WINDOW;
 		$out[ 'delivery_window' ] = intval( preg_replace( '/[^0-9]/', '', Crunchbutton_Order::PRE_ORDER_DELIVERY_WINDOW ) );
@@ -112,7 +113,12 @@ class Crunchbutton_Order_Data extends Cana_Table {
 		$data->id_order = $order->id_order;
 		$data->timestamp = date('Y-m-d H:i:s');
 		$data->type = self::TYPE_SNAPSHOT;
-		$data->content = json_encode( $out );
+		foreach ($out as $key => $value) {
+			if(gettype($out[$key]) == 'integer' || gettype($out[$key]) == 'double'){
+				$out[$key] = strval($value);
+			}
+		}
+		$data->content = json_encode($out,  JSON_PRETTY_PRINT, 10);
 		$data->save();
 	}
 

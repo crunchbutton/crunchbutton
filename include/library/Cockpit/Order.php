@@ -873,6 +873,10 @@ class Cockpit_Order extends Crunchbutton_Order {
 		$dishes_data = [];
 		$quantity = [];
 		$_dishes = Crunchbutton_Order_Data::dishes( $this->id_order );
+		if(!$_dishes){
+			Crunchbutton_Order_Data::register($this);
+		}
+		$_dishes = Crunchbutton_Order_Data::dishes( $this->id_order );
 		if( $_dishes ){
 			foreach( $_dishes as $dish ){
 				$with_option = $dish->options->with_option;
