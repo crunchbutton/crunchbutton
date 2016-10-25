@@ -53,7 +53,9 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 				$workingCS = $community->workingCommunityCS();
 				if(count($workingCS)){
 					foreach ($workingCS as $admin) {
-						return $admin->phone;
+						if(trim($from) != trim($admin->phone)){
+							return $admin->phone;
+						}
 					}
 				}
 			}
