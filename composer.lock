@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f83b688acfaf1a3c56ea6caab11efad4",
-    "content-hash": "d2045bf0e7ea8a4ea72b8f5d51b606a2",
+    "hash": "520de21e41fa548aeb95f08f0ee9129d",
+    "content-hash": "c63ed2c9a6da5f3ef018d1f5cb656216",
     "packages": [
         {
             "name": "arzynik/cana",
@@ -56,16 +56,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.19.14",
+            "version": "3.19.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "2d0c88883dac2f8dd21825b51ef1f04e04073f8f"
+                "reference": "c1bd15f806fa12062cf1d0167ba2b0c42dcf1e60"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/2d0c88883dac2f8dd21825b51ef1f04e04073f8f",
-                "reference": "2d0c88883dac2f8dd21825b51ef1f04e04073f8f",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/c1bd15f806fa12062cf1d0167ba2b0c42dcf1e60",
+                "reference": "c1bd15f806fa12062cf1d0167ba2b0c42dcf1e60",
                 "shasum": ""
             },
             "require": {
@@ -132,7 +132,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2016-10-12 21:32:40"
+            "time": "2016-10-24 20:45:41"
         },
         {
             "name": "duccio/apns-php",
@@ -2820,7 +2820,8 @@
     "prefer-lowest": false,
     "platform": {
         "ext-mbstring": "*",
-        "ext-mcrypt": "*"
+        "ext-mcrypt": "*",
+        "ext-blackfire": "*"
     },
     "platform-dev": []
 }
