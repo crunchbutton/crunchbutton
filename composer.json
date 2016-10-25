@@ -2,6 +2,7 @@
 	"require": {
 		"ext-mbstring": "*",
 		"ext-mcrypt": "*",
+		"ext-blackfire": "*",
 		"arzynik/cana": "dev-master",
 		"leafo/scssphp": "~0.5.1",
 		"stripe/stripe-php": "~3.4.0",
