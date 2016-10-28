@@ -2,7 +2,7 @@
 
 class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBundle {
 	public function init() {
-		$v = $_REQUEST['v'] ? $_REQUEST['v'] : getenv('HEROKU_SLUG_COMMIT');
+		$v = $_REQUEST['v'] ? $_REQUEST['v'] : $_ENV['HEROKU_SLUG_COMMIT'];
 
 		$id = 'crunchr-bundle-node-css';
 

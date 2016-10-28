@@ -72,7 +72,7 @@ class Crunchbutton_Session_Adapter_Sql extends Cana_Table implements SessionHand
 */
 
 		$sess = new Session_Adapter_Sql($id);
-		if (getenv('DEBUG')) {
+		if ($_ENV['DEBUG']) {
 			error_log('>> SAVING USER...'.$this->id_user);
 		}
 
@@ -98,7 +98,7 @@ class Crunchbutton_Session_Adapter_Sql extends Cana_Table implements SessionHand
 
 	public function generateAndSaveToken() {
 		if (($this->id_user || $this->id_admin) && !$this->token) {
-			if (getenv('DEBUG')) {
+			if ($_ENV['DEBUG']) {
 				error_log('saving SQL user '. $this->id_user);
 				error_log('saving SQL token '. $this->token);
 			}

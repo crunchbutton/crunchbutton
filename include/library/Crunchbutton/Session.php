@@ -23,7 +23,7 @@ class Crunchbutton_Session {
 
 		// only do this if the adapter doesnt support its own token handling
 		if (($this->adapter()->id_user || $this->adapter()->id_admin) && !$this->adapter()->token) {
-			if (getenv('DEBUG')) {
+			if ($_ENV['DEBUG']) {
 				error_log('saving DEFAULT user '. $this->adapter()->id_user);
 				error_log('saving DEFAULT user '. $this->id_user);
 			}

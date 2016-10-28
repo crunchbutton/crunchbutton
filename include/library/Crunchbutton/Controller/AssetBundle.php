@@ -17,7 +17,7 @@ class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
 
 	public function cacheServe($id) {
 
-		$git = getenv('HEROKU_SLUG_COMMIT');
+		$git = $_ENV['HEROKU_SLUG_COMMIT'];
 		$v = $git ? $git : $_REQUEST['v'];
 
 		$headrs = apache_request_headers();

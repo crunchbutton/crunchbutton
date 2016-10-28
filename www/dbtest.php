@@ -46,10 +46,10 @@ $getDb = function($args) {
 };
 
 
-$dbRead = $getDb((object)['url' => getenv('DATABASE_URL_READER')]);
-$dbWrite = $getDb((object)['url' => getenv('DATABASE_URL_WRITER')]);
+$dbRead = $getDb((object)['url' => $_ENV['DATABASE_URL_READER']]);
+$dbWrite = $getDb((object)['url' => $_ENV['DATABASE_URL_WRITER']]);
 
-if (getenv('DEBUG')) {
+if ($_ENV['DEBUG']) {
 	error_log('>> CONNECTED');
 }
 
