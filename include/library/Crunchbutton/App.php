@@ -97,7 +97,16 @@ class Crunchbutton_App extends Cana_App {
 	public function init($params = null) {
 		set_exception_handler([$this, 'exception']);
 
-		if (!$_ENV['DEBUG']) {
+		if (file_exists('../.env')) {
+			$envs = file('../.env');
+			foreach ($envs as $env) {
+				$e = explode('=',$env);
+				putenv($env);
+				$_ENV[$e[0]] = $e[1];
+			}
+		}
+
+		if (!getenv('DEBUG')) {
 			error_log('start init...');
 		}
 
@@ -105,8 +114,9 @@ class Crunchbutton_App extends Cana_App {
 
 		$db = $this->envByHost();
 
-		if ($db == 'local' && function_exists('php_sapi_name') && php_sapi_name() == 'cli-server') {
+		if (function_exists('php_sapi_name') && php_sapi_name() == 'cli-server') {
 			$params['config']->db->local->host = '127.0.0.1';
+			$db = 'local';
 		}
 
 		// redirect bad urls

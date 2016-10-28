@@ -48,3 +48,5 @@ npm-debug.log
 
 composer.phar
 composer.lock
+
+.env
