@@ -5,7 +5,7 @@ error_reporting(E_ERROR | E_PARSE);
 ini_set('display_errors', true);
 set_time_limit(100);
 
-echo "\x1B[44mBoot cron...\x1B[0m\n";
+echo "Boot cron..\n";
 error_log('test');
 
 require_once('../include/crunchbutton.php');
