@@ -45,38 +45,6 @@
 		</buckets>
 	</s3>
 	<db>
-		<live>
-			<user>***REMOVED***</user>
-			<pass>***REMOVED***</pass>
-			<db>crunchbutton</db>
-			<host>***REMOVED***</host>
-			<!-- host>_HOST_</host -->
-			<hostWrite>_HOST_</hostWrite>
-			<prefix></prefix>
-			<persistent>true</persistent>
-			<encrypted>true</encrypted>
-			<sslca>../ssl/rds-combined-ca-bundle.pem</sslca>
-		</live>
-		<crondb>
-			<user>***REMOVED***</user>
-			<pass>***REMOVED***</pass>
-			<db>crunchbutton</db>
-			<host>crunchbutton2.cstvhlbo53mv.us-east-1.rds.amazonaws.com</host>
-			<hostWrite>_HOST_</hostWrite>
-			<prefix></prefix>
-			<encrypted>true</encrypted>
-			<sslca>../ssl/rds-combined-ca-bundle.pem</sslca>
-		</crondb>
-		<beta>
-			<user>***REMOVED***</user>
-			<pass>***REMOVED***</pass>
-			<db>crunchbutton_dev</db>
-			<host>_HOST_</host>
-			<prefix></prefix>
-			<persistent>true</persistent>
-			<encrypted>true</encrypted>
-			<sslca>../ssl/rds-combined-ca-bundle.pem</sslca>
-		</beta>
 		<local>
 			<user>root</user>
 			<pass>root</pass>
@@ -86,13 +54,6 @@
 			<hostWrite>127.0.0.1</hostWrite>
 			<prefix></prefix>
 		</local>
-		<travis>
-			<user>root</user>
-			<pass></pass>
-			<db>crunchbutton_travis</db>
-			<host>localhost</host>
-			<prefix></prefix>
-		</travis>
 	</db>
 	<defaults>
 		<page>home</page>

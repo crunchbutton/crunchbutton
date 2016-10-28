@@ -52,8 +52,8 @@ class Crunchbutton_App extends Cana_App {
 
 		if ($db === null) {
 			//header('HTTP/1.1 301 Moved Permanently');
-			die('bad configuration. check your .env');
-			exit;
+			echo 'bad configuration. check your .env';
+			exit(1);
 		}
 
 		// special settings for live web views
