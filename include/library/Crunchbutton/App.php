@@ -97,6 +97,10 @@ class Crunchbutton_App extends Cana_App {
 	public function init($params = null) {
 		set_exception_handler([$this, 'exception']);
 
+		if (!$_ENV['DEBUG']) {
+			error_log('start init...');
+		}
+
 		new Crunchbutton_Headers;
 
 		$db = $this->envByHost();
@@ -139,10 +143,6 @@ class Crunchbutton_App extends Cana_App {
 			$db = 'readDB';
 		}
 
-		if ($_ENV['DEBUG']) {
-			die($db);
-		}
-
 		if (getenv('REDIS_URL')) {
 			$params['config']->cache->default = $params['config']->cache->redis;
 			$params['config']->cache->default->url = getenv('REDIS_URL');
@@ -167,7 +167,7 @@ class Crunchbutton_App extends Cana_App {
 
 		if (getenv('DEBUG')) {
 
-			error_log('>> INITING...');
+			error_log('>> INITING using DB: '.$db);
 
 			try {
 				parent::init($params);
