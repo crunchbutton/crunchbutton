@@ -139,6 +139,10 @@ class Crunchbutton_App extends Cana_App {
 			$db = 'readDB';
 		}
 
+		if ($_ENV['DEBUG']) {
+			die($db);
+		}
+
 		if (getenv('REDIS_URL')) {
 			$params['config']->cache->default = $params['config']->cache->redis;
 			$params['config']->cache->default->url = getenv('REDIS_URL');
