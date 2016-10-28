@@ -12,6 +12,10 @@ $end = $start + ($argv[1] ? $argv[1] : 59);
 $wait = $argv[2] ? $argv[2] : 1;
 $infinite = $argv[1] == '0' ? true : false;
 
+if ($infinite) {
+	set_time_limit(0);
+}
+
 echo "\x1B[44mRunning Queue on db:".c::env()."...\x1B[0m\n";
 while (time() < $end || $infinite) {
 	$c = Crunchbutton_Queue::process();
