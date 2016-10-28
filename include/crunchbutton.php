@@ -33,7 +33,7 @@ $GLOBALS['config'] = [
 
 //'Cana:../../vendor/arzynik/cana/src',
 
-if (getenv('DOCKER')) {
+if ($_ENV['DOCKER']) {
 	$GLOBALS['config']['dirs']['cache'] = '/tmp/';
 }
 
@@ -84,7 +84,7 @@ spl_autoload_register(function ($className) {
 		}
 	}
 
-	if (!getenv('PHPUNIT')) {
+	if (!$_ENV['PHPUNIT']) {
 		throw new \Exception('The file '.$GLOBALS['config']['dirs']['library'] . $className . '.php'.' does not exist');
 		exit;
 	}

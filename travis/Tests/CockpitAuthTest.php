@@ -8,10 +8,10 @@ class CockpitAuthTest extends PHPUnit_Framework_TestCase {
 
 	protected static $login = 'root';
 	protected static $password = 'password';
-	
+
 	public static function setUpBeforeClass() {
 
-		if (!getenv('TRAVIS')) {
+		if (!$_ENV['TRAVIS']) {
 			$a = Admin::login(self::$login);
 		}
 
@@ -23,7 +23,7 @@ class CockpitAuthTest extends PHPUnit_Framework_TestCase {
 				'pass' => Crunchbutton_Admin_Auth::passwordEncrypt(self::$password)
 			]);
 			$a->save();
-			
+
 			$p = new Crunchbutton_Admin_Permission([
 				'id_admin' => $a->id_admin,
 				'permission' => 'global',

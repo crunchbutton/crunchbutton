@@ -5,7 +5,7 @@ echo "\nRunning db migrate scripts...\n";
 
 $dirs = ['db/migrate'];
 
-if (getenv('TRAVISPOSTGRES')) {
+if ($_ENV['TRAVISPOSTGRES']) {
 	echo "Running db migrate scripts for Postgres...\n";
 	$dirs[] = 'db/migratepostgres';
 }

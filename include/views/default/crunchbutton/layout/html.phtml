@@ -24,7 +24,7 @@ window.twttr = ( function(d, s, id) {
 <script type="text/javascript" src="//js.stripe.com/v2/"></script>
 
 <? if (c::config()->bundle) : ?>
-	<? $js = c::config()->site->config('s3-bundle')->val() ? 'https://'.c::config()->s3->buckets->build->cache.'/'.getenv('HEROKU_SLUG_COMMIT').'/js/crunchbutton.js' : '/assets/js/bundle.js?v='.getenv('HEROKU_SLUG_COMMIT').'&s=app' ?>
+	<? $js = c::config()->site->config('s3-bundle')->val() ? 'https://'.c::config()->s3->buckets->build->cache.'/'.$_ENV['HEROKU_SLUG_COMMIT'].'/js/crunchbutton.js' : '/assets/js/bundle.js?v='.getenv('HEROKU_SLUG_COMMIT').'&s=app' ?>
 	<script src="<?=$js?>"></script>
 <? else : ?>
 	<?=$this->display('bundle/js', ['set' => ['scripts' => ['app']]])?>

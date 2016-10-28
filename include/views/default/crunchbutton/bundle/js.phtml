@@ -22,63 +22,63 @@
 
 ?>
 <? foreach ($scripts as $script) : ?>
-	<script src="/assets/js/<?=$script?>.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
+	<script src="/assets/js/<?=$script?>.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
 <? endforeach ; ?>
 
 <script src="/assets/js/angular-lettering.js"></script>
 
-<script src="/assets/js/datetime.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/base.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/util.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/ngmask.min.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
+<script src="/assets/js/datetime.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/base.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/util.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/ngmask.min.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
 
-<script src="/assets/js/orm.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/location.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/ab.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/community.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/restaurant.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/dish.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/option.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/category.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/notification.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/order.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/log.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/tokenizeCard.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
+<script src="/assets/js/orm.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/location.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/ab.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/community.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/restaurant.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/dish.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/option.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/category.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/notification.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/order.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/log.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/tokenizeCard.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
 
 <!-- AngularJS Controllers -->
-<script src="/assets/js/controllers.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/controller.cafe.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
+<script src="/assets/js/controllers.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/controller.cafe.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
 
 <!-- AngularJS Filters -->
-<script src="/assets/js/filters.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
+<script src="/assets/js/filters.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
 
 <!-- AngularJS Animations
-<script src="/assets/js/animations.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
+<script src="/assets/js/animations.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
  -->
 
 <!-- AngularJS Directives -->
-<script src="/assets/js/directives.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
+<script src="/assets/js/directives.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
 
 <!-- AngularJS Services -->
-<script src="/assets/js/services.account.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/services.navigation.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/services.restaurant.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/services.community.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/services.recommend.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/services.support.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/services.order.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/services.twitter.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/services.facebook.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/services.giftcard.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/services.position.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/services.cart.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/services.creditcard.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/services.referral.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/services.cordova.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/services.apply.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/services.push.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/service.deliverysignup.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
-<script src="/assets/js/services.suggestion.js?v=<?=getenv('HEROKU_SLUG_COMMIT')?>"></script>
+<script src="/assets/js/services.account.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/services.navigation.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/services.restaurant.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/services.community.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/services.recommend.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/services.support.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/services.order.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/services.twitter.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/services.facebook.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/services.giftcard.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/services.position.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/services.cart.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/services.creditcard.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/services.referral.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/services.cordova.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/services.apply.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/services.push.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/service.deliverysignup.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
+<script src="/assets/js/services.suggestion.js?v=<?=$_ENV['HEROKU_SLUG_COMMIT']?>"></script>
 <script type="application/x-javascript">
 	addEventListener('touchstart',function(){}); addEventListener('load', function(event) {setTimeout(scrollTo, 80, 0, 1);}, false);
 </script>

@@ -5,11 +5,9 @@ error_reporting(E_ERROR | E_PARSE);
 ini_set('display_errors', true);
 set_time_limit(100);
 
-if (getenv('DEBUG')) {
+if ($_ENV['DEBUG']) {
 	echo "Boot cron...\n";
 }
-
-print_r($_ENV);
 
 require_once('../include/crunchbutton.php');
 

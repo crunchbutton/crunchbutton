@@ -67,20 +67,20 @@ if (preg_match('/^www\..*$/',$_SERVER['HTTP_HOST'])) {
 	exit;
 }
 
-if (getenv('DEBUG')) {
+if ($_ENV['DEBUG']) {
 	error_log('>> PAGE START >> '.$_SERVER['REQUEST_URI']);
 }
 
 require_once '../include/crunchbutton.php';
 
-if (getenv('DEBUG')) {
+if ($_ENV['DEBUG']) {
 	error_log('>> DISPLAYING PAGE...');
 }
 
 
 Cana::app()->displayPage();
 
-if (getenv('DEBUG')) {
+if ($_ENV['DEBUG']) {
 	register_shutdown_function(function() {
 		error_log('<< PAGE FINISHED << '.$_SERVER['REQUEST_URI']);
 	});

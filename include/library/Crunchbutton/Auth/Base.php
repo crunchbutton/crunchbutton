@@ -10,7 +10,7 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 
 
 		if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-			if (getenv('DEBUG')) {
+			if ($_ENV['DEBUG']) {
 				error_log('>> SKIPING BECAUSE OF OPTIONS...');
 			}
 			$this->init();
@@ -31,12 +31,12 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 		// set token for app requests
 
 		$headers = apache_request_headers();
-		if (getenv('DEBUG')) {
+		if ($_ENV['DEBUG']) {
 			error_log('>> PROCESSING TOKEN AND AUTH');
 		}
 		if ($headers['App-Token']) {
 			$_COOKIE['token'] = $headers['App-Token'];
-			if (getenv('DEBUG')) {
+			if ($_ENV['DEBUG']) {
 				error_log('>> FOUND TOKEN '.$_COOKIE['token']);
 			}
 		}
@@ -70,7 +70,7 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 				$this->session()->adapter()->save();
 				*/
 			} else {
-				if (getenv('DEBUG')) {
+				if ($_ENV['DEBUG']) {
 					error_log('>> DELETING TOKEN...'.$_COOKIE['token']);
 				}
 				// if no id_user in session, delete cookie and session in DB as it's not used, see #624
