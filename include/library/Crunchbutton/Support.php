@@ -298,6 +298,9 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		if( trim( $messageParams[ 'name' ] ) == '' && trim( $params[ 'name' ] ) != '' ){
 			$messageParams[ 'name' ] = $params[ 'name' ];
 		}
+		if(!$support->name && $messageParams['name']){
+			$support->name = $messageParams['name'];
+		}
 		$support->save();
 		// Params to create the new Support message
 		$messageParams[ 'phone' ] = $params[ 'phone' ];

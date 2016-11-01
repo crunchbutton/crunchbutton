@@ -9,6 +9,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 	public function __construct($params) {
 
 		$parsed = $this->parseBody($params['body']);
+
 		$action = $parsed['verb'];
 
 		$phone = Phone::byPhone( $params['from'] );
@@ -16,6 +17,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 		$this->phone = $phone;
 
 		$this->order = Order::q('select * from `order` where id_phone=? AND TIMESTAMPDIFF( hour, date, NOW() ) < 24 order by id_order desc limit 1',[$phone->id_phone])->get(0);
+
 		$this->support = Support::q('SELECT * FROM support_message sm
 																		INNER JOIN support s ON s.id_support = sm.id_support
 																		AND s.id_phone = ?
@@ -100,6 +102,7 @@ class Crunchbutton_Message_Incoming_Customer extends Cana_model {
 				'id_order' => $this->order->id_order,
 				'body' => $params['body'],
 				'media' => $params['media'],
+				'name' => $params['name'],
 				'firstPartyDeliveryRestaurant' => $firstPartyDeliveryRestaurant
 			]);
 		} else {
