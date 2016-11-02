@@ -119,7 +119,8 @@ class Crunchbutton_App extends Cana_App {
 		$params['postInitSkip'] = true;
 		$params['env'] = $db;
 
-		if ($_ENV['DEBUG']) {
+		if (true) {
+		// if ($_ENV['DEBUG']) {
 
 			error_log('>> INITING using DB: '.$db);
 

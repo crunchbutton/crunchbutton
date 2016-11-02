@@ -122,14 +122,10 @@ class OrderTest extends PHPUnit_Framework_TestCase {
 			'local_gid' => 'RAND',
 			'processor' => Crunchbutton_User_Payment_Type::processor()
 		];
-
 		$order = new Order;
 		$charge = $order->process($_POST);
-
 		$this->id_order = $order->id_order;
-		echo '<pre>';var_dump( $_POST, $charge );
 		$this->assertTrue($charge === true);
-
 		return $order;
 	}
 
