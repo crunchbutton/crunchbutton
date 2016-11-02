@@ -7,7 +7,9 @@ php:
   - 7.0
 
 env:
-  - TRAVIS=1 GITHUB_OAUTH_TOKEN=_KEY_ DATABASE_URL=mysql://root:@localhost:3306/crunchbutton_travis
+  - TRAVIS=1
+  - GITHUB_OAUTH_TOKEN=_KEY_
+  - DATABASE_URL=mysql://root:@localhost:3306/crunchbutton_travis
 #  - TRAVIS=1 TRAVISPOSTGRES=1
 
 cache:
