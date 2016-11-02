@@ -109,9 +109,9 @@ class OrderTest extends PHPUnit_Framework_TestCase {
 			'phone' => $this->user->phone,
 			'name' => $this->user->name,
 			'cart' => [	[ 'id' => $this->id_dish1->id_dish ],
-									[ 'id' => $this->id_dish2->id_dish ],
-									[ 'id' => $this->id_dish3->id_dish ],
-									[ 'id' => $this->id_dish4->id_dish ] ],
+						[ 'id' => $this->id_dish2->id_dish ],
+						[ 'id' => $this->id_dish3->id_dish ],
+						[ 'id' => $this->id_dish4->id_dish ] ],
 			'pay_type' => 'cash',
 			'delivery_type' => 'delivery',
 			'restaurant' => $this->restaurant->id_restaurant,
@@ -127,7 +127,7 @@ class OrderTest extends PHPUnit_Framework_TestCase {
 		$charge = $order->process($_POST);
 
 		$this->id_order = $order->id_order;
-		echo '<pre>';var_dump( $charge );
+		echo '<pre>';var_dump( $_POST, $charge );
 		$this->assertTrue($charge === true);
 
 		return $order;
