@@ -73,7 +73,8 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		// if we have jawsdb_url but not database_url
-		if ((!$_ENV['DATABASE_URL'] || $_ENV['DATABASE_URL'] == 'null') && $_ENV['JAWSDB_MARIA_URL']) {
+
+		if (((!$_ENV['DATABASE_URL'] || $_ENV['DATABASE_URL'] == 'null') && (!$_SERVER['DATABASE_URL'] || $_SERVER['DATABASE_URL'] == 'null')) && $_ENV['JAWSDB_MARIA_URL']) {
 			$_ENV['DATABASE_URL'] = $_ENV['JAWSDB_MARIA_URL'];
 		}
 
@@ -82,6 +83,15 @@ class Crunchbutton_App extends Cana_App {
 			$params['config']->db->readDB = (object)[
 				'url' => $_ENV['DATABASE_URL'],
 				'type' => Cana_Db::typeByUrl($_ENV['DATABASE_URL'])
+			];
+			$db = 'readDB';
+		}
+
+		// create a default+read database config
+		if ((!$_ENV['DATABASE_URL'] || $_ENV['DATABASE_URL'] == 'null') && $_SEVER['DATABASE_URL']) {
+			$params['config']->db->readDB = (object)[
+				'url' => $_SEVER['DATABASE_URL'],
+				'type' => Cana_Db::typeByUrl($_SEVER['DATABASE_URL'])
 			];
 			$db = 'readDB';
 		}
