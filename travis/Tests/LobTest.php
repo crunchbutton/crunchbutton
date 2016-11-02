@@ -25,6 +25,7 @@ class LobTest extends PHPUnit_Framework_TestCase {
 					'address_zip' => '90292',
 					'address_country' => 'US'
 				],
+				'from' => Settlement::CRUNCHBUTTON_LOB_ADDRESS,
 				'bank_account' => c::config()->lob->{c::getEnv() == 'live' ? 'live' : 'dev'}->account,
 				'amount' => '1.00',
 				'memo' => 'note',
