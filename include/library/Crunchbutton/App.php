@@ -23,7 +23,7 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'];
-
+echo '<pre>';var_dump( $_ENV );exit();
 		if ($_ENV['TRAVIS']) {
 			$db = 'travis';
 		} elseif ($_ENV['ENV']) {
