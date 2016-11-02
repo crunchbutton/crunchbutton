@@ -88,10 +88,10 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		// create a default+read database config
-		if ((!$_ENV['DATABASE_URL'] || $_ENV['DATABASE_URL'] == 'null') && $_SEVER['DATABASE_URL']) {
+		if ((!$_ENV['DATABASE_URL'] || $_ENV['DATABASE_URL'] == 'null') && $_SERVER['DATABASE_URL']) {
 			$params['config']->db->readDB = (object)[
-				'url' => $_SEVER['DATABASE_URL'],
-				'type' => Cana_Db::typeByUrl($_SEVER['DATABASE_URL'])
+				'url' => $_SERVER['DATABASE_URL'],
+				'type' => Cana_Db::typeByUrl($_SERVER['DATABASE_URL'])
 			];
 			$db = 'readDB';
 		}
