@@ -24,7 +24,8 @@ class Crunchbutton_App extends Cana_App {
 
 		$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'];
 
-		if ($_ENV['TRAVIS'] || $_SERVER['TRAVIS']) {
+		if ($_ENV['TRAVIS']) {
+		// if ($_ENV['TRAVIS'] || $_SERVER['TRAVIS']) {
 			$db = 'travis';
 		} elseif ($_ENV['ENV']) {
 			$db = $_ENV['ENV'];
@@ -52,6 +53,7 @@ class Crunchbutton_App extends Cana_App {
 
 		if ($db === null) {
 			//header('HTTP/1.1 301 Moved Permanently');
+			die('bad configuration. check your .env');
 			echo 'bad configuration. check your .env';
 			exit(1);
 		}
