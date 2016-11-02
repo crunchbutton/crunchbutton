@@ -122,7 +122,7 @@ class Crunchbutton_Order_Data extends Cana_Table {
 		$data->save();
 	}
 
-	public function dishes( $id_order ){
+	public static function dishes( $id_order ){
 		$data = Crunchbutton_Order_Data::q( 'SELECT * FROM order_data WHERE id_order = ? AND type = ? ORDER BY id_order_data DESC LIMIT 1', [ $id_order, self::TYPE_SNAPSHOT ] )->get( 0 );
 		if( $data->id_order_data ){
 			$data = json_decode( $data->content );
