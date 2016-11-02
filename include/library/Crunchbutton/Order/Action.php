@@ -60,7 +60,12 @@ class Crunchbutton_Order_Action extends Cana_Table {
 
 	public function date() {
 		if (!isset($this->_date)) {
-			$this->_date = new DateTime($this->timestamp, new DateTimeZone(c::config()->timezone));
+			if(c::config()->timezone){
+				$tz = c::config()->timezone;
+			} else {
+				$tz = 'UTC';
+			}
+			$this->_date = new DateTime($this->timestamp, new DateTimeZone($tz));
 			$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
 		}
 		return $this->_date;
