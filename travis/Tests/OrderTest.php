@@ -127,8 +127,8 @@ class OrderTest extends PHPUnit_Framework_TestCase {
 		$charge = $order->process($_POST);
 
 		$this->id_order = $order->id_order;
-		// TODO: travis fix it
-		// $this->assertTrue($charge === true);
+		echo '<pre>';var_dump( $charge );
+		$this->assertTrue($charge === true);
 
 		return $order;
 	}
