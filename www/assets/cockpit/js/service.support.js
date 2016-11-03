@@ -95,6 +95,7 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 			var params = { id_support: service.sideInfo.id_support, page: service.sideInfo.data.page };
 
 			TicketService.side_info( params, function( data ){
+
 				service.sideInfo.scroll( 'current' );
 				service.sideInfo.data.pexcard = data.pexcard;
 				service.sideInfo.data.restaurant = data.restaurant;
@@ -111,13 +112,15 @@ NGApp.factory('TicketViewService', function($rootScope, $resource, $routeParams,
 				}
 				for( x in service.sideInfo.data.messages ){
 					if( service.sideInfo.data.messages[ x ].id_support_message ){
-						if(!hasHash(data.messages.list[ x ])){
-							messages.push( service.sideInfo.data.messages[ x ] );
-							hashMessage(data.messages.list[ x ]);
-						}
+						messages.push( service.sideInfo.data.messages[ x ] );
 					}
 				}
-				service.sideInfo.data.messages = messages;
+
+				service.sideInfo.data.messages.length = 0;
+				for(var x in messages){
+					service.sideInfo.data.messages.push(messages[x]);
+				}
+				console.log('service.sideInfo.data.messages',service.sideInfo.data.messages);
 				service.sideInfo.data.loaded = service.sideInfo.data.messages.length;
 				service.sideInfo.data.has_more = ( service.sideInfo.data.loaded >= service.sideInfo.data.total ) ? false : true;
 				service.sideInfo.update_controller();
