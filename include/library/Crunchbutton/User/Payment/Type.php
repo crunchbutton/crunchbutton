@@ -5,10 +5,16 @@ class Crunchbutton_User_Payment_Type extends Cana_Table {
 	const CARD_TYPE_CAMPUS_CASH = 'campus_cash';
 
 	public static function processor() {
-		return c::config()->site->config('processor_payments')->value;
+		$processor = c::config()->site->config('processor_payments')->value;
+		if($processor){
+			return $processor;
+		}
+		// default
+		return 'stripe';
 	}
 
 	public static function getUserPaymentType($id_user = null) {
+
 		$id_user = $id_user ? $id_user : c::user()->id_user;
 
 		if ($id_user) {

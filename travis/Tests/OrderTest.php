@@ -108,10 +108,10 @@ class OrderTest extends PHPUnit_Framework_TestCase {
 			'address' => $this->user->address,
 			'phone' => $this->user->phone,
 			'name' => $this->user->name,
-			'cart' => [	[ 'id' => $this->id_dish1->id_dish ],
-						[ 'id' => $this->id_dish2->id_dish ],
-						[ 'id' => $this->id_dish3->id_dish ],
-						[ 'id' => $this->id_dish4->id_dish ] ],
+			'cart' => [	[ 'id' => $this->dish1->id_dish ],
+						[ 'id' => $this->dish2->id_dish ],
+						[ 'id' => $this->dish3->id_dish ],
+						[ 'id' => $this->dish4->id_dish ] ],
 			'pay_type' => 'cash',
 			'delivery_type' => 'delivery',
 			'restaurant' => $this->restaurant->id_restaurant,
@@ -149,10 +149,10 @@ class OrderTest extends PHPUnit_Framework_TestCase {
 		foreach( $order->dishes() as $dish ){
 			$dishes[] = $dish->id_dish;
 		}
-		$this->assertTrue(in_array( $this->id_dish1->id_dish, $dishes));
-		$this->assertTrue(in_array( $this->id_dish2->id_dish, $dishes));
-		$this->assertTrue(in_array( $this->id_dish3->id_dish, $dishes));
-		$this->assertTrue(in_array( $this->id_dish4->id_dish, $dishes));
+		$this->assertTrue(in_array( $this->dish1->id_dish, $dishes));
+		$this->assertTrue(in_array( $this->dish2->id_dish, $dishes));
+		$this->assertTrue(in_array( $this->dish3->id_dish, $dishes));
+		$this->assertTrue(in_array( $this->dish4->id_dish, $dishes));
 	}
 
 }
