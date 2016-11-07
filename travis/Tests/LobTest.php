@@ -16,17 +16,16 @@ class LobTest extends PHPUnit_Framework_TestCase {
 		try {
 			$lob = new \Lob\Lob(c::config()->lob->dev->key);
 			$c = $lob->checks()->create([
-				'name' => 'name',
 				'to' => [
 					'name' => 'name',
 					'address_line1' => '123 main',
 					'address_city' => '123 marina del rey',
 					'address_state' => 'ca',
 					'address_zip' => '90292',
-					'address_country' => 'US'
+					'address_country' => 'US',
 				],
-				'from' => Settlement::CRUNCHBUTTON_LOB_ADDRESS,
-				'bank_account' => c::config()->lob->{c::getEnv() == 'live' ? 'live' : 'dev'}->account,
+				'from' => '_KEY_',
+				'bank_account' => '_KEY_',
 				'amount' => '1.00',
 				'memo' => 'note',
 				'message' => 'message'

@@ -96,7 +96,7 @@ class StripeTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testChargeStoredCard() {
-		if (! self::$user) {
+		if (!self::$user) {
 			$this->markTestSkipped('User was not created.');
 			return;
 		}

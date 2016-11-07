@@ -270,17 +270,16 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertEquals( $this->commissioned_payment_info[ 'invites_total' ], 0 );
 		$this->assertEquals( $this->commissioned_payment_info[ 'invites_total_payment' ], 0 );
-
 		$this->assertEquals( $this->commissioned_payment_info[ 'salary_type' ], 'orders' );
-		$this->assertEquals( $this->commissioned_payment_info[ 'tip' ], 4 );
-		$this->assertEquals( $this->commissioned_payment_info[ 'delivery_fee' ], 20 );
-		$this->assertEquals( $this->commissioned_payment_info[ 'total_spent' ], 20 );
-		$this->assertEquals( $this->commissioned_payment_info[ 'delivery_fee_collected' ], -10 );
-		$this->assertEquals( $this->commissioned_payment_info[ 'standard_reimburse' ], 10 );
-		$this->assertEquals( $this->commissioned_payment_info[ 'total_payment_per_order' ], 14 );
+		$this->assertEquals( $this->commissioned_payment_info[ 'tip' ], 2 );
+		$this->assertEquals( $this->commissioned_payment_info[ 'delivery_fee' ], 10 );
+		$this->assertEquals( $this->commissioned_payment_info[ 'total_spent' ], 0 );
+		$this->assertEquals( $this->commissioned_payment_info[ 'delivery_fee_collected' ], -5 );
+		$this->assertEquals( $this->commissioned_payment_info[ 'standard_reimburse' ], 0 );
+		$this->assertEquals( $this->commissioned_payment_info[ 'total_payment_per_order' ], 7 );
 		$this->assertEquals( $this->commissioned_payment_info[ 'customer_fee_collected' ], 0 );
-		$this->assertEquals( $this->commissioned_payment_info[ 'amount_per_order' ], 20 );
-		$this->assertEquals( $this->commissioned_payment_info[ 'total_payment' ], 14 );
+		$this->assertEquals( $this->commissioned_payment_info[ 'amount_per_order' ], 10 );
+		$this->assertEquals( $this->commissioned_payment_info[ 'total_payment' ], 7 );
 	}
 	public function testDriverPaidByHour(){
 
@@ -293,7 +292,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( count( $this->hourly_payment_info[ 'shifts' ][ 'worked' ] ) , 2 );
 		$this->assertEquals( $this->hourly_payment_info[ 'salary_type' ], 'hours' );
 		$this->assertEquals( $this->hourly_payment_info[ 'shifts' ][ 'worked_total' ], 2 );
-		$this->assertEquals( $this->hourly_payment_info[ 'shifts' ][ 'amount' ], 40 );
+		$this->assertEquals( $this->hourly_payment_info[ 'shifts' ][ 'amount' ], 50 );
 		$this->assertEquals( $this->hourly_payment_info[ 'tip' ], 4 );
 		$this->assertEquals( $this->hourly_payment_info[ 'delivery_fee' ], 10 );
 		$this->assertEquals( $this->hourly_payment_info[ 'total_spent' ], 20 );
@@ -301,7 +300,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $this->hourly_payment_info[ 'amount_per_order' ], 20 );
 		$this->assertEquals( $this->hourly_payment_info[ 'standard_reimburse' ], 10 );
 		$this->assertEquals( $this->hourly_payment_info[ 'total_payment_per_order' ], 14 );
-		$this->assertEquals( $this->hourly_payment_info[ 'total_payment' ], 34 );
+		$this->assertEquals( $this->hourly_payment_info[ 'total_payment' ], 44 );
 	}
 
 
@@ -316,7 +315,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( count( $this->hourly_without_tips_payment_info[ 'shifts' ][ 'worked' ] ) , 2 );
 		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'salary_type' ], 'hours' );
 		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'shifts' ][ 'worked_total' ], 2 );
-		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'shifts' ][ 'amount' ], 80 );
+		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'shifts' ][ 'amount' ], 100 );
 		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'tip' ], 4 );
 		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'delivery_fee' ], 10 );
 		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'total_spent' ], 20 );
@@ -324,7 +323,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'amount_per_order' ], 20 );
 		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'standard_reimburse' ], 10 );
 		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'total_payment_per_order' ], 14 );
-		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'total_payment' ], 70 );
+		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'total_payment' ], 90 );
 	}
 
 	public function testDriverPaidMakeWhole(){
@@ -338,7 +337,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( count( $this->make_whole_payment_info[ 'shifts' ][ 'worked' ] ) , 2 );
 		$this->assertEquals( $this->make_whole_payment_info[ 'salary_type' ], 'hours' );
 		$this->assertEquals( $this->make_whole_payment_info[ 'shifts' ][ 'worked_total' ], 2 );
-		$this->assertEquals( $this->make_whole_payment_info[ 'shifts' ][ 'amount' ], 40 );
+		$this->assertEquals( $this->make_whole_payment_info[ 'shifts' ][ 'amount' ], 50 );
 		$this->assertEquals( $this->make_whole_payment_info[ 'tip' ], 4 );
 		$this->assertEquals( $this->make_whole_payment_info[ 'delivery_fee' ], 10 );
 		$this->assertEquals( $this->make_whole_payment_info[ 'total_spent' ], 20 );
@@ -346,7 +345,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $this->make_whole_payment_info[ 'amount_per_order' ], 20 );
 		$this->assertEquals( $this->make_whole_payment_info[ 'standard_reimburse' ], 10 );
 		$this->assertEquals( $this->make_whole_payment_info[ 'total_payment_per_order' ], 14 );
-		$this->assertEquals( $this->make_whole_payment_info[ 'total_payment' ], 30 );
+		$this->assertEquals( $this->make_whole_payment_info[ 'total_payment' ], 40 );
 	}
 
 	public static function tearDownAfterClass() {

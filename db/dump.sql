@@ -1157,6 +1157,9 @@ CREATE TABLE `config` (
   KEY `id_site` (`id_site`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+INSERT INTO `config` (`id_config`, `id_site`, `key`, `value`, `exposed`)
+VALUES
+	(1, 1, '1', '1', 1);
 
 
 # Dump of table credit
