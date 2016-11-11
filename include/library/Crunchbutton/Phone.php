@@ -168,6 +168,10 @@ class Crunchbutton_Phone extends Cana_Table {
 		}
 
 		$phone = self::clean($phone);
+		$key = ($returnId) ? $phone . '_true' : $phone . '_false';
+		if(self::cache($key)){
+			return self::cache($key);
+		}
 
 		if (!$name && $phone) {
 
@@ -188,15 +192,24 @@ class Crunchbutton_Phone extends Cana_Table {
 		}
 
 		if ($returnId) {
-			return [
-				'name' => $name,
-				'id_admin' => $user->id_admin,
-				'id_user' => $user->id_user
+			$out =  [
+					'name' => $name,
+					'id_admin' => $user->id_admin,
+					'id_user' => $user->id_user
 			];
 		} else {
-			return $name;
+			$out = $name;
 		}
+		self::cache($key, $out);
+		return $out;
+	}
 
+	public static function cache($key, $value = false){
+		static $cache = [];
+		if($value){
+			$cache[$key] = $value;
+		}
+		return $cache[$key];
 	}
 
 	public static function byPhone($phone) {
