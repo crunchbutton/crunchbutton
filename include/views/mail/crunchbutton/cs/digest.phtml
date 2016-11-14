@@ -1,6 +1,6 @@
 <?php
 $red = 'red';
-function paint( $text, $color, $condition ){
+function digestPaint( $text, $color, $condition ){
 	if( $condition ){
 		return '<font color="' . $color . '">' . $text . '</font>';
 	}
@@ -42,19 +42,19 @@ $ticked_closed = count( $tickets[ 'closed' ] );
 		<thead>
 			<tr>
 				<th style="<?php echo $thead_th_row ?>" align="left"><a href="http://old.cockpit.crunchbutton.com/support/<?php echo $ticket[ 'id_support' ]; ?>">
-					<?php echo paint( $ticket[ 'id_support' ], $red, $ticket[ 'more_5_min' ] ); ?>
+					<?php echo digestPaint( $ticket[ 'id_support' ], $red, $ticket[ 'more_5_min' ] ); ?>
 				</a></th>
 				<th style="<?php echo $thead_th_row ?>" align="left">
-					<?php echo paint( ( $ticket[ 'name' ] ? $ticket[ 'name' ] : '-' ), $red, $ticket[ 'more_5_min' ] ); ?> <?php echo paint( $ticket[ 'phone' ], $red, $ticket[ 'more_5_min' ] ); ?>
+					<?php echo digestPaint( ( $ticket[ 'name' ] ? $ticket[ 'name' ] : '-' ), $red, $ticket[ 'more_5_min' ] ); ?> <?php echo digestPaint( $ticket[ 'phone' ], $red, $ticket[ 'more_5_min' ] ); ?>
 					<?php if( $ticket[ 'email' ] ) { ?>
 						<a href="mailto:<?php echo $ticket[ 'email']; ?>"><?php echo $ticket[ 'email']; ?></a>
 					<?php } ?>
 				</th>
 				<th style="<?php echo $thead_th_row ?>" align="left">
-					<?php echo paint( $ticket[ 'date' ], $red, $ticket[ 'more_5_min' ] ); ?>
+					<?php echo digestPaint( $ticket[ 'date' ], $red, $ticket[ 'more_5_min' ] ); ?>
 				</th>
 				<th style="<?php echo $thead_th_row ?>" align="left">
-					<?php echo paint( $ticket[ 'status' ], $red, $ticket[ 'more_5_min' ] ); ?>
+					<?php echo digestPaint( $ticket[ 'status' ], $red, $ticket[ 'more_5_min' ] ); ?>
 				</th>
 			</tr>
 		</thead>
