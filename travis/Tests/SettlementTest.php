@@ -292,7 +292,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( count( $this->hourly_payment_info[ 'shifts' ][ 'worked' ] ) , 2 );
 		$this->assertEquals( $this->hourly_payment_info[ 'salary_type' ], 'hours' );
 		$this->assertEquals( $this->hourly_payment_info[ 'shifts' ][ 'worked_total' ], 2 );
-		$this->assertEquals( $this->hourly_payment_info[ 'shifts' ][ 'amount' ], 50 );
+		$this->assertEquals( $this->hourly_payment_info[ 'shifts' ][ 'amount' ], 40 );
 		$this->assertEquals( $this->hourly_payment_info[ 'tip' ], 4 );
 		$this->assertEquals( $this->hourly_payment_info[ 'delivery_fee' ], 10 );
 		$this->assertEquals( $this->hourly_payment_info[ 'total_spent' ], 20 );
@@ -315,7 +315,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( count( $this->hourly_without_tips_payment_info[ 'shifts' ][ 'worked' ] ) , 2 );
 		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'salary_type' ], 'hours' );
 		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'shifts' ][ 'worked_total' ], 2 );
-		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'shifts' ][ 'amount' ], 100 );
+		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'shifts' ][ 'amount' ], 80 );
 		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'tip' ], 4 );
 		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'delivery_fee' ], 10 );
 		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'total_spent' ], 20 );
@@ -337,7 +337,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( count( $this->make_whole_payment_info[ 'shifts' ][ 'worked' ] ) , 2 );
 		$this->assertEquals( $this->make_whole_payment_info[ 'salary_type' ], 'hours' );
 		$this->assertEquals( $this->make_whole_payment_info[ 'shifts' ][ 'worked_total' ], 2 );
-		$this->assertEquals( $this->make_whole_payment_info[ 'shifts' ][ 'amount' ], 50 );
+		$this->assertEquals( $this->make_whole_payment_info[ 'shifts' ][ 'amount' ], 40 );
 		$this->assertEquals( $this->make_whole_payment_info[ 'tip' ], 4 );
 		$this->assertEquals( $this->make_whole_payment_info[ 'delivery_fee' ], 10 );
 		$this->assertEquals( $this->make_whole_payment_info[ 'total_spent' ], 20 );
