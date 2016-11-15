@@ -300,7 +300,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $this->hourly_payment_info[ 'amount_per_order' ], 20 );
 		$this->assertEquals( $this->hourly_payment_info[ 'standard_reimburse' ], 10 );
 		$this->assertEquals( $this->hourly_payment_info[ 'total_payment_per_order' ], 14 );
-		$this->assertEquals( $this->hourly_payment_info[ 'total_payment' ], 44 );
+		$this->assertEquals( $this->hourly_payment_info[ 'total_payment' ], 34 );
 	}
 
 
@@ -323,7 +323,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'amount_per_order' ], 20 );
 		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'standard_reimburse' ], 10 );
 		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'total_payment_per_order' ], 14 );
-		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'total_payment' ], 90 );
+		$this->assertEquals( $this->hourly_without_tips_payment_info[ 'total_payment' ], 70 );
 	}
 
 	public function testDriverPaidMakeWhole(){
@@ -345,7 +345,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $this->make_whole_payment_info[ 'amount_per_order' ], 20 );
 		$this->assertEquals( $this->make_whole_payment_info[ 'standard_reimburse' ], 10 );
 		$this->assertEquals( $this->make_whole_payment_info[ 'total_payment_per_order' ], 14 );
-		$this->assertEquals( $this->make_whole_payment_info[ 'total_payment' ], 40 );
+		$this->assertEquals( $this->make_whole_payment_info[ 'total_payment' ], 30 );
 	}
 
 	public static function tearDownAfterClass() {
