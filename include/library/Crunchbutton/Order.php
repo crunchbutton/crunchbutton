@@ -3168,6 +3168,17 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		return str_replace('delivery-', '', $newStatus);
 	}
 
+	public function closeWarningTicket($text){
+		$hasTicket = Crunchbutton_Order_Action::q('SELECT * FROM order_action oa WHERE id_order = ? AND type = ? LIMIT 1', [$this->id_order, Crunchbutton_Order_Action::TICKET_REPS_FAILED_PICKUP]);
+		if($hasTicket->id_order){
+			$body = '#' . $hasTicket->id_order . ' sms: reps failed to pickup order';
+			$message = Support_Message::q('SELECT * FROM support_message WHERE body like "'. $body .'%" ORDER BY id_support_message DESC LIMIT 1');
+			if($message->id_support){
+				$support = Support::o($message->id_support);
+				$support->addSystemMessage($text);
+			}
+		}
+	}
 
 	public function setStatus($status, $notify = false, $admin = null, $note = null, $force = false, $rejectedTicket = true) {
 		if (!$status) {
@@ -3213,6 +3224,8 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 					$this->save();
 				}
 			}
+			$message = 'Order #' . $this->id_order . ' already accepted by ' . $admin->name;
+			$this->closeWarningTicket($message);
 		}
 
 		// Add/Remove pex card funds
@@ -3238,12 +3251,6 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 		// mark the order to be paid by commission structure
 		if( $admin->openedCommunity() && !$this->isForcedToBeCommissioned( $admin->id_admin ) ){
 			$this->markToBeCommissioned( $admin->id_admin );
-		}
-
-		if($status == Crunchbutton_Order_Action::DELIVERY_ACCEPTED && $this->orderHasRepsHasFailedTicket()){
-
-			$message = 'Order #' . $this->id_order . ' already accepted by ' . $admin->name;
-			Crunchbutton_Support::createNewWarning( [  'body' => $message, 'id_order' => $this->id_order ] );
 		}
 
 		if( $status == Crunchbutton_Order_Action::DELIVERY_CANCELED ){
