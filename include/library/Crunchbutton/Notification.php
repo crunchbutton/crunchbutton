@@ -223,6 +223,10 @@ class Crunchbutton_Notification extends Cana_Table
 
 	public function smsFaxError( $order ){
 
+		if(!$order->id_order){
+			return;
+		}
+
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'smsFaxError init', 'object' => $order->json(), 'type' => 'notification' ] );
 
 		$date = $order->date();
