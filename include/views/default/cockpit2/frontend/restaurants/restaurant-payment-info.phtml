@@ -192,7 +192,7 @@
 
 				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
-					<li class="li-input" ng-class="{'error':formBasic.summaryEmail.$invalid}">
+					<li class="li-input" ng-class="{'error':formBasic.summaryEmail.$invalid}" ng-if="restaurant.payment_type.summary_method == 'email'">
 						<div class="label">Summary Email:</div>
 						<div class="input"><input type="email" ng-required="restaurant.payment_type.summary_method == 'email'" name="summaryEmail" maxlength="250" ng-model="restaurant.payment_type.summary_email"></div>
 						<div class="box-error">
@@ -310,7 +310,7 @@
 						</div>
 					</li>
 
-					<li class="li-input" ng-class="{'error':formBasic.paymentMethod.$invalid}" ng-show="restaurant.payment_type.summary_method == 'email'">
+					<li class="li-input" ng-class="{'error':formBasic.paymentMethod.$invalid}" ng-if="restaurant.payment_type.summary_method == 'email'">
 						<div class="label">Summary Email:</div>
 						<div class="input"><input type="text" ng-required="restaurant.payment_type.summary_method == 'email'" name="summaryEmail" maxlength="250" ng-model="restaurant.payment_type.summary_email"></div>
 						<div class="box-error">

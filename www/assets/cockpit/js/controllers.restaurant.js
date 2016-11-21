@@ -357,7 +357,6 @@ NGApp.controller('RestaurantPaymentInfoCtrl', function ($rootScope, $scope, $rou
 	}
 
 	$scope.save = function(){
-
 		if( $scope.formBasic.$invalid ){
 			App.alert( 'Please fill in all required fields! <br>' );
 			$scope.submitted = true;
