@@ -163,7 +163,12 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		// set host callback by hostname
-		$config->host_callback = ($db == 'local' || $db == 'travis' || $db == 'travispostgres' || !$_SERVER['SERVER_NAME']) ? 'dev.crunchr.co' : $_SERVER['SERVER_NAME'];
+		if($_ENV['HOST_CALLBACK']){
+			$config->host_callback = $_ENV['HOST_CALLBACK'];
+		} else {
+			$config->host_callback = ($db == 'local' || $db == 'travis' || $db == 'travispostgres' || !$_SERVER['SERVER_NAME']) ? 'dev.crunchr.co' : $_SERVER['SERVER_NAME'];
+		}
+
 
 		// set facebook config by hostname
 		if ($config->facebook->{$_SERVER['SERVER_NAME'] || 'cli'}) {
