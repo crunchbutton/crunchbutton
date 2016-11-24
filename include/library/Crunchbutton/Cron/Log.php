@@ -102,7 +102,11 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 				return true;
 			} else {
 				// if it is time to run again and the last job didn't finished, some problem occurred
-				$cronJob->error_warning();
+				$last_time_it_started = $cronJob->next_time();
+				$diff = $now->diff($last_time_it_started);
+				if(Util::intervalToSeconds($diff) > 60){
+					$cronJob->error_warning();
+				}
 				return true;
 			}
 		}
