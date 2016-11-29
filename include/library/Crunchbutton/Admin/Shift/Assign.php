@@ -9,7 +9,11 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 
 	public function save($newItem = 0){
 		if( !$this->id_admin_shift_assign ){
-			Crunchbutton_Admin_Shift_Assign_Log::addAssignment( [ 'id_driver' => $this->id_admin, 'id_community_shift' => $this->id_community_shift ] );
+			$assigned_by = null;
+			if($this->permanent){
+				$assigned_by = Admin::login( 'permanent-shift' )->id_admin;
+			}
+			Crunchbutton_Admin_Shift_Assign_Log::addAssignment( [ 'id_driver' => $this->id_admin, 'id_community_shift' => $this->id_community_shift, 'assigned_by' => $assigned_by ] );
 		}
 		return parent::save($newItem);
 	}
