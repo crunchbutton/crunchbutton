@@ -128,6 +128,14 @@ class Controller_api_shifts extends Crunchbutton_Controller_RestAccount {
 			$assigned = $this->request()[ 'assigned' ];
 			$keep_permanency = $this->request()[ 'keep_permanency' ];
 
+
+			$shift = Crunchbutton_Community_Shift::o( $id_community_shift );
+			if(c::user()->isCommunityDirector()){
+				if($shift->id_community != c::user()->communityDirectorCommunity()->id_community){
+					$this->error( 404 );
+				};
+			}
+
 			// assign shift or change the permanency
 			if( $assigned ){
 				if( !Crunchbutton_Admin_Shift_Assign::adminHasShift( $id_admin, $id_community_shift ) ){

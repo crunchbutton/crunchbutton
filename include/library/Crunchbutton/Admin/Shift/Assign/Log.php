@@ -67,6 +67,7 @@ class Crunchbutton_Admin_Shift_Assign_Log extends Cana_Table {
 		$assign = Crunchbutton_Admin_Shift_Assign::o( $id_admin_shift_assign );
 		$params[ 'id_community_shift' ] = $params[ 'id_community_shift' ];
 		$params[ 'id_driver' ] = $params[ 'id_driver' ];
+		$params[ 'assigned_by' ] = $params[ 'assigned_by' ];
 		$params[ 'assigned' ] = true;
 		self::create( $params );
 	}
@@ -74,7 +75,11 @@ class Crunchbutton_Admin_Shift_Assign_Log extends Cana_Table {
 	public static function create( $params = [] ){
 		$log = new Crunchbutton_Admin_Shift_Assign_Log;
 		$log->id_community_shift = $params[ 'id_community_shift' ];
-		$log->id_admin = c::user()->id_admin;
+		if($params[ 'assigned_by' ]){
+			$log->id_admin = $params[ 'assigned_by' ];
+		} else {
+			$log->id_admin = c::user()->id_admin;
+		}
 		$log->id_driver = $params[ 'id_driver' ];
 		$log->assigned = $params[ 'assigned' ];
 		$log->reason = $params[ 'reason' ];

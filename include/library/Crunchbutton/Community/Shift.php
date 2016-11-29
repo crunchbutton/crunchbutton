@@ -606,6 +606,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 								if( !Crunchbutton_Admin_Shift_Assign_Permanently_Removed::wasRemoved( $newShift->id_community_shift, $permanently->id_admin ) ){
 									$assignment = new Crunchbutton_Admin_Shift_Assign();
 									$assignment->id_admin = $permanently->id_admin;
+									$assignment->permanent = true;
 									$assignment->id_community_shift = $newShift->id_community_shift;
 									$assignment->date = date('Y-m-d H:i:s');
 									$assignment->save();
