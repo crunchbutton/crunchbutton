@@ -20,6 +20,10 @@ class Crunchbutton_Email extends Cana_Model {
 
 	public function send() {
 
+		if (!filter_var($this->to, FILTER_VALIDATE_EMAIL)) {
+			return false;
+		}
+
 		$res = c::mailgun()->sendMessage(c::config()->mailgun->domain, [
 			'from' 		=> $this->from,
 			'to'		=> $this->to,
