@@ -170,7 +170,7 @@ class Controller_api_driver_community extends Crunchbutton_Controller_RestAccoun
 			if($_community[ 'is_force_closed' ]){
 				$_community[ 'is_force_closed_by' ] = $community->reopen_at;
 				$_community[ 'will_be_closed_until' ] = $community->close_3rd_party_delivery_restaurants_id_admin;
-				$_community[ 'can_remove_force_close' ] = ($community->close_3rd_party_delivery_restaurants_id_admin == c::user()->id_admin);
+				$_community[ 'can_remove_force_close' ] = ($community->close_3rd_party_delivery_restaurants_id_admin == c::user()->id_admin && !$community->is_auto_closed);
 			}
 			$_community[ 'could_be_closed' ] = $community->isElegibleToBeClosed();
 

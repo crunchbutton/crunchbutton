@@ -122,7 +122,7 @@
 				<h1>Open Community</h1>
 				<div class="divider"></div>
 			</div>
-			<div class="no-box-content-color" ng-if="!community.can_remove_force_close">
+			<div class="no-box-content-color" ng-show="!community.can_remove_force_close">
 				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 					<li class="li-input" ng-class="{'error':formOpen.hour.$invalid}">
 						<div class="label">When do you want to drive until?</div>
@@ -142,7 +142,7 @@
 					</li>
 				</ul>
 			</div>
-			<div class="no-box-content-color" ng-if="community.can_remove_force_close">
+			<div class="no-box-content-color" ng-show="community.can_remove_force_close">
 				<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 					<li class="li-input" ng-class="{'error':formOpen.hour.$invalid}">
 						<div class="label">This community is current closed. It will open at {{community.is_force_closed_by | convertimeformat:account.user.timezone:'MMMM Do YYYY, h:mm:ss a'}}</div>
