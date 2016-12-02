@@ -216,7 +216,6 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 		}
 
 		$card = $this->pexcard();
-
 		// Check if the card could receive funds
 		if( ( ( $card->ledgerBalance + $params[ 'amount' ] ) > Crunchbutton_Pexcard_Monitor::BALANCE_LIMIT ) ||
 				( $params[ 'amount' ] > Crunchbutton_Pexcard_Monitor::TRANSFER_LIMIT ) ){
@@ -231,6 +230,8 @@ class Cockpit_Admin_Pexcard extends Cockpit_Admin_Pexcard_Trackchange {
 
 			if( floatval( $amount ) != 0 ){
 				$pexcard_action = new Crunchbutton_Pexcard_Action();
+				$pexcard_action->last_name = $card->lastName;
+				$pexcard_action->card_number = $card->cards[0]->cardNumber;
 				switch ( $params[ 'action' ] ) {
 					case Crunchbutton_Pexcard_Action::ACTION_SHIFT_STARTED:
 					case Crunchbutton_Pexcard_Action::ACTION_SHIFT_FINISHED:
