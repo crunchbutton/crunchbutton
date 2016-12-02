@@ -4,7 +4,7 @@ class Crunchbutton_Controller_Rest extends Cana_Controller_Rest {
 
 	public function __construct() {
 		$headers = getallheaders();
-		$this->headerErrors = $headers['X-Requested-With'] == 'XMLHttpRequest' || $headers['Http-Error'] ? true : false;
+		@$this->headerErrors = $headers['X-Requested-With'] == 'XMLHttpRequest' || $headers['Http-Error'] ? true : false;
 
 		if ($this->headerErrors) {
 			ini_set('display_errors', 0);
