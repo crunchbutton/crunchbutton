@@ -1608,6 +1608,10 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 							$assignment->confirmed = true;
 							$assignment->save();
 						}
+						$pexcard = $driver->pexcard();
+						if($pexcard){
+							$pexcard->addShiftStartFunds( $assignment->id_admin_shift_assign );
+						}
 					}
 				}
 			}
@@ -1777,27 +1781,26 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 				$assignment->date = date('Y-m-d H:i:s');
 				$assignment->save();
 
-				$pexcard = $driver->pexcard();
-				if($pexcard){
-					$pexcard->addShiftStartFunds( $shift->id_admin_shift_assign );
-				}
 				if( $assignment->id_admin_shift_assign ){
-
+					$pexcard = $driver->pexcard();
+					if($pexcard){
+						$pexcard->addShiftStartFunds( $assignment->id_admin_shift_assign );
+					}
 					$message = 'The community ' . $this->name . ' was ';
 					$status = [];
 					if( $this->is_auto_closed ){
 						$this->is_auto_closed = false;
 						$status[] = 'auto-closed ';
-					}
-
-					if( $this->close_3rd_party_delivery_restaurants ){
+					} else if( $this->close_3rd_party_delivery_restaurants ){
 						$this->close_3rd_party_delivery_restaurants = false;
 						$status[] = '3rd party delivere restaurants closed ';
-					}
-					if( $this->close_all_restaurants ){
+					} else if( $this->close_all_restaurants ){
 						$this->close_all_restaurants = false;
 						$status[] = 'all restaurants closed ';
+					} else {
+						$status[] = 'not opened ';
 					}
+
 					$this->save();
 					$message .= join( ',', $status );
 					$message .= 'but it was reopened by ' . $driver->name;
