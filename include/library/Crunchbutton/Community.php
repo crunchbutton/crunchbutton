@@ -1712,7 +1712,7 @@ class Crunchbutton_Community extends Cana_Table_Trackchange {
 		return true;
 	}
 
-	public function removeForceCloseByDriver( $id_driver, $shiftEnd ){
+	public function removeForceCloseByDriver( $id_driver ){
 		// check if the driver belongs to the community
 		$driver = Admin::o( $id_driver );
 
