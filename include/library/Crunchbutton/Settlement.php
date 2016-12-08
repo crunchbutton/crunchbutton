@@ -18,6 +18,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 	// id_orders equals or lower than that will be ignored
 	const CONFIG_KEY_ID_ORDER_START = 'settlement-id_order-start';
 
+	const TIME_WINDOW_START = 10000;
+	const TIME_WINDOW_END = 70000;
+
 	public function __construct( $filters = [] ) {
 		$this->filters = $filters;
 		ini_set( 'memory_limit', '-1' );
