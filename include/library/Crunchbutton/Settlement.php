@@ -1510,7 +1510,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 							$schedule->save();
 
 							$this->log( 'payRestaurant: Success', $schedule->properties() );
-
+							if (!$schedule) {
+								throw new \Exception('There is no schedule to get orders()');
+							}
 							$orders = $schedule->orders();
 
 							foreach (  $orders as $order ) {
@@ -1695,6 +1697,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$schedule->status_date = date( 'Y-m-d H:i:s' );
 						$schedule->save();
 						$this->log( 'payDriver: Success', $schedule->properties() );
+						if (!$schedule) {
+							throw new \Exception('There is no schedule to get orders()');
+						}
 						$orders = $schedule->orders();
 
 						if( $schedule->pay_type == Cockpit_Payment_Schedule::PAY_TYPE_PAYMENT ){
