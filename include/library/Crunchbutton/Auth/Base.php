@@ -84,6 +84,8 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 			}
 		}
 
+		ini_set('session.save_path', '/tmp');
+
 		if ($_SERVER['REQUEST_METHOD'] != 'OPTIONS') {
 			session_start();
 		}
