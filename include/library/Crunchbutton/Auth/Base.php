@@ -84,7 +84,8 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 			}
 		}
 
-		ini_set('session.save_path', '/tmp');
+		ini_set('session.save_handler', 'memcached');
+		ini_set('session.save_path', 'localhost:11211');
 
 		if ($_SERVER['REQUEST_METHOD'] != 'OPTIONS') {
 			session_start();
