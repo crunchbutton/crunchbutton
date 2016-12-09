@@ -85,7 +85,7 @@ class Crunchbutton_Auth_Base extends Cana_Model {
 		}
 
 		if ($_SERVER['REQUEST_METHOD'] != 'OPTIONS') {
-			session_start();
+			@session_start();
 		}
 
 		// we have a successful user
