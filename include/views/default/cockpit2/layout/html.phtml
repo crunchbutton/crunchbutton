@@ -25,14 +25,15 @@
 	<?=$this->display('layout/html.bottom')?>
 </body>
 
-<? /* if (c::config()->bundle) : ?>
+<? if (c::config()->bundle) : ?>
 	<? $css = c::config()->site->config('s3-bundle')->val() ? 'https://'.c::config()->s3->buckets->build->cache.'/'.getenv('HEROKU_SLUG_COMMIT').'/css/cockpit.css' : '/assets/cockpit/css/bundle.css?v='.getenv('HEROKU_SLUG_COMMIT').'&s=cockpit' ?>
 	<link rel="stylesheet" type="text/css" href="<?=$css?>">
 <? else : ?>
 	<?=$this->display('bundle/css')?>
-<? endif ; */?>
-<?=$this->display('bundle/css')?>
+<? endif ; ?>
 
 <? if (getenv('EXTERNAL_CSS_POST')) : ?>
 	<link rel="stylesheet" type="text/css" href="<?=getenv('EXTERNAL_CSS_POST')?>">
 <? endif ; ?>
+
+</html>

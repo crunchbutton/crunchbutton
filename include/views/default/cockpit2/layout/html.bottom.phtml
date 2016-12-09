@@ -10,10 +10,9 @@
 	Stripe.setPublishableKey( '<?=c::config()->stripe->{c::getEnv()}->{'public'}?>' );
 </script>
 
-<? /*if (c::config()->bundle) : ?>
+<? if (c::config()->bundle) : ?>
 	<? $js = c::config()->site->config('s3-bundle')->val() ? 'https://'.c::config()->s3->buckets->build->cache.'/'.getenv('HEROKU_SLUG_COMMIT').'/js/cockpit.js' : '/assets/cockpit/js/bundle.js?v='.getenv('HEROKU_SLUG_COMMIT').'&s=cockpit' ?>
 	<script src="<?=$js?>"></script>
 <? else : ?>
 	<?=$this->display('bundle/js', ['set' => ['scripts' => ['cockpit']]])?>
-<? endif ;*/ ?>
-<?=$this->display('bundle/js', ['set' => ['scripts' => ['cockpit']]])?>
+<? endif ; ?>
