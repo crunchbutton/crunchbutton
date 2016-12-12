@@ -87,6 +87,11 @@ class Cockpit_Auth extends Crunchbutton_Auth_Base {
 			$this->user($auth);
 			$this->session()->adapter()->id_admin = $this->user()->id_admin;
 			$this->session()->adapter()->date_active = date('Y-m-d H:i:s');
+			$this->session()->data = 'session: ';
+			if(!$this->session()->session_id){
+				$this->session()->session_id = session_id();
+				$this->session()->data .= $this->session()->session_id;
+			}
 			$this->session()->generateAndSaveToken();
 			if (!headers_sent()) {
 				setcookie('token', $this->session()->token, (new DateTime('3000-01-01'))->getTimestamp(), '/');
