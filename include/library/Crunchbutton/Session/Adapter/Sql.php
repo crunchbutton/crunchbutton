@@ -63,19 +63,18 @@ class Crunchbutton_Session_Adapter_Sql extends Cana_Table implements SessionHand
 
 		$this->date_activity = date('Y-m-d H:i:s');
 		$this->data = $data;
-/*
+
 		if ($this->id_session) {
 			$this->save();
 		} elseif ($id) {
 			$this->save($id);
 		}
-*/
 
 		$sess = new Session_Adapter_Sql($id);
 		if ($_ENV['DEBUG']) {
 			error_log('>> SAVING USER...'.$this->id_user);
 		}
-
+		echo '<pre>';var_dump( $sess->id_session );exit();
 		try {
 			if ($sess->id_session) {
 				$this->save();
