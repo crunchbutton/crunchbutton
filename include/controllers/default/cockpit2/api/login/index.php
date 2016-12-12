@@ -8,7 +8,6 @@ class Controller_api_login extends Crunchbutton_Controller_Rest {
 			if( $this->request()[ 'native' ] ){
 				Cockpit_Driver_Log::nativeAppLogin();
 			}
-			echo '<pre>';var_dump( 1 );exit();
 			$this->export();exit();
 		} else {
 			echo json_encode(['error' => 'invalid login']);
