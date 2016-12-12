@@ -8,7 +8,7 @@ class Controller_api_login extends Crunchbutton_Controller_Rest {
 			if( $this->request()[ 'native' ] ){
 				Cockpit_Driver_Log::nativeAppLogin();
 			}
-			$this->export();exit();
+			$this->export();
 		} else {
 			echo json_encode(['error' => 'invalid login']);
 		}
@@ -33,7 +33,9 @@ class Controller_api_login extends Crunchbutton_Controller_Rest {
 		if( $payment_type->using_pex ){
 			$user[ 'using_pex' ] = true;
 		}
+
 		echo json_encode( $user );exit;
+
 	}
 
 }

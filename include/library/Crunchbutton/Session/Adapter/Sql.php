@@ -51,8 +51,8 @@ class Crunchbutton_Session_Adapter_Sql extends Cana_Table implements SessionHand
 		if (!$this->id_session) {
 			$this->date_create = date('Y-m-d H:i:s');
 			$this->active = 1;
-			//$this->id_user = $this->id_user || $this->get('id_user');
-			//$this->id_admin = $this->id_admin || $this->get('id_admin');
+			// $this->id_user = $this->id_user || $this->get('id_user');
+			// $this->id_admin = $this->id_admin || $this->get('id_admin');
 			$this->ip = c::getIp();
 			$this->id_session = $id;
 		}
