@@ -7,11 +7,7 @@ class Controller_api_temp_test extends Crunchbutton_Controller_Rest {
 		$end = $now->format( 'm/d/Y' );
 		$now->modify( '-1 days' );
 		$start = $now->format( 'm/d/Y' );
-		Crunchbutton_Pexcard_Transaction::saveTransactionsByPeriod( $start, $end );
-
-
-		// Crunchbutton_Pexcard_Transaction::convertTimeZone();
-
+		Crunchbutton_Pexcard_Transaction::processReport( $start, $end );
 		echo 'finished';
 	}
 }
