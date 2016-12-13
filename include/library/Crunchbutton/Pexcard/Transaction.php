@@ -121,11 +121,13 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		$start = new DateTime( $start );
 		$end = new DateTime( $end );
 		if( $start->format( 'm/d/Y' ) == $end->format( 'm/d/Y' ) ){
-			$start->modify( '-1 day' );
+			$start->modify( '-3 day' );
 		}
 		$transactions = Crunchbutton_Pexcard_Transaction::transactions( $start->format( 'm/d/Y' ), $end->format( 'm/d/Y' ) );
-		foreach( $transactions as $transaction ){
-			Crunchbutton_Pexcard_Transaction::saveTransaction( $transaction );
+		if($transactions){
+			foreach( $transactions as $transaction ){
+				Crunchbutton_Pexcard_Transaction::saveTransaction( $transaction );
+			}
 		}
 		return true;
 	}
