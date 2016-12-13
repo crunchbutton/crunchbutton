@@ -102,7 +102,7 @@ class Crunchbutton_Pexcard_Transaction extends Crunchbutton_Pexcard_Resource {
 		ini_set( 'memory_limit', '-1' );
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$end = $now->format( 'm/d/Y' );
-		$now->modify( '-4 days' );
+		$now->modify( '-1 days' );
 		$start = $now->format( 'm/d/Y' );
 		Crunchbutton_Pexcard_Transaction::saveTransactionsByPeriod( $start, $end );
 	}
