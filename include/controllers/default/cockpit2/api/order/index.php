@@ -423,6 +423,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 
 						case 'canceled':
 							$res = $order->setStatus( Crunchbutton_Order_Action::DELIVERY_CANCELED, $notify_customer, $admin, $note, true );
+							$order->tellDriverTheOrderWasCanceled();
 							break;
 					}
 				}
