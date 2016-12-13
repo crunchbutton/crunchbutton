@@ -3259,7 +3259,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 			$this->do_not_pay_restaurant = true;
 			$this->do_not_pay_driver = true;
 			$this->save();
-			$this->tellDriverTheOrderWasCanceled();
+			// $this->tellDriverTheOrderWasCanceled();
 		}
 
 		if( $status == Crunchbutton_Order_Action::DELIVERY_DELIVERED ){
