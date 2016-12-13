@@ -1,6 +1,8 @@
 <?php
 class Controller_api_temp_test extends Crunchbutton_Controller_Rest {
 	public function init() {
+		set_time_limit(0);
+
 		$now = new DateTime( $_GET['date'], new DateTimeZone( c::config()->timezone ) );
 		$end = $now->format( 'm/d/Y' );
 		$now->modify( '-1 days' );
