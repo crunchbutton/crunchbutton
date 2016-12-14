@@ -367,9 +367,19 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 	public static function createNewWarning( $params = [] ){
 		$support = false;
-
 		if( $params[ 'staff' ] && $params[ 'phone' ] ){
-			$support = Crunchbutton_Support::q( 'SELECT * FROM support WHERE phone = ? AND type != ? ORDER BY id_support DESC LIMIT 1', [$params[ 'phone' ], Crunchbutton_Support::TYPE_WARNING]);
+			$phone = Phone::byPhone( $params['phone'] );
+			$support = Support::q('SELECT * FROM support_message sm
+											INNER JOIN support s ON s.id_support = sm.id_support
+												AND s.id_phone = ?
+												AND TIMESTAMPDIFF( hour, sm.date, NOW() ) < 24
+												ORDER BY sm.id_support_message DESC
+											LIMIT 1',[ $phone->id_phone ])->get(0);
+
+			if($support->id_support){
+				$support = Support::o($support->id_support);
+			}
+
 		} else {
 			if( $params[ 'id_order' ] ){
 				$support = Crunchbutton_Support::q( 'SELECT * FROM support WHERE id_order = ? AND type = ? ORDER BY id_support DESC LIMIT 1', [$params[ 'id_order' ], Crunchbutton_Support::TYPE_WARNING]);
@@ -415,9 +425,9 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		}
 		$support->save();
 		if( $params[ 'bubble' ] ){
-			$support->addSystemMessage( $params[ 'body' ], true );
+			$support->addSystemMessage( $params[ 'body' ], true, false, $params );
 		} else {
-			$support->addSystemMessage( $params[ 'body' ] );
+			$support->addSystemMessage( $params[ 'body' ], false, false, $params );
 		}
 		return Crunchbutton_Support::o( $support->id_support );
 	}
@@ -607,12 +617,19 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 		}
 	}
 
-	public function addSystemMessage( $body, $bubble = false, $ignore_broadcast = false ) {
+	public function addSystemMessage( $body, $bubble = false, $ignore_broadcast = false, $params = [] ) {
 		$messageParams[ 'id_admin' ] = null;
 		if( $bubble ){
 			$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_WARNING;
 		} else {
 			$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_NOTE;
+		}
+		if(sizeof($params) > 0){
+			if($params['phone']){
+				$phone = Phone::byPhone( $params['phone'] );
+				$messageParams[ 'phone' ] = $params['phone'];
+			}
+
 		}
 		$messageParams[ 'from' ] = Crunchbutton_Support_Message::TYPE_FROM_SYSTEM;
 		$messageParams[ 'visibility' ] = Crunchbutton_Support_Message::TYPE_VISIBILITY_INTERNAL;
