@@ -4,7 +4,7 @@
 
 class Controller_Api_Script_Infopayroll extends Crunchbutton_Controller_RestAccount {
 
-	const YEAR = 2015;
+	const YEAR = 2016;
 
 	public function init() {
 
