@@ -1069,7 +1069,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 		$driversWillReceiveTheNotification = [];
 
 		// Get the communities with active and delivery_service restaurants
-		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = true AND r.delivery_service = true AND c.message_drivers_fill_preferences = true ORDER BY c.name' );
+		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = true AND c.active = true AND r.delivery_service = true AND c.message_drivers_fill_preferences = true ORDER BY c.name' );
 
 		foreach( $communities as $community ){
 
@@ -1227,10 +1227,10 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 		$now->modify( '+ 1 day' );
 
 		$adminsWithShifts = Crunchbutton_Admin::q( 'SELECT DISTINCT( asa.id_admin )
-																									FROM admin_shift_assign asa
-																									INNER JOIN community_shift cs ON asa.id_community_shift = cs.id_community_shift
-																									INNER JOIN community c ON cs.id_community = c.id_community AND c.remind_drivers_about_their_shifts = true
-																									WHERE ( cs.hidden != 1 ) AND cs.date_start BETWEEN "' . $now->format( 'Y-m-d' ) . ' 00:00:00" AND "' . $now->format( 'Y-m-d' ) . ' 23:59:59" AND cs.active = true' );
+								FROM admin_shift_assign asa
+								INNER JOIN community_shift cs ON asa.id_community_shift = cs.id_community_shift
+								INNER JOIN community c ON cs.id_community = c.id_community AND c.remind_drivers_about_their_shifts = true
+								WHERE ( cs.hidden != 1 ) AND cs.date_start BETWEEN "' . $now->format( 'Y-m-d' ) . ' 00:00:00" AND "' . $now->format( 'Y-m-d' ) . ' 23:59:59" AND cs.active = true AND c.active = true' );
 
 		$now_start = $now->format( 'Y-m-d' ) . ' 00:00:00';
 		$now_end = $now->format( 'Y-m-d' ) . ' 23:59:59';
@@ -1394,6 +1394,9 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 					foreach( $shifts as $shift ){
 
 						if( $shift->isHidden() ){
+							continue;
+						}
+						if( !$shift->community()->active ){
 							continue;
 						}
 
@@ -1661,7 +1664,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 
 		$minutes = 15;
 
-		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = true AND r.delivery_service = true AND c.remind_drivers_about_their_shifts = true AND ( c.driver_checkin IS NULL OR c.driver_checkin = 0 ) ORDER BY c.name', [] );
+		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = true AND c.active = true AND r.delivery_service = true AND c.remind_drivers_about_their_shifts = true AND ( c.driver_checkin IS NULL OR c.driver_checkin = 0 ) ORDER BY c.name', [] );
 
 		$messagePattern = 'Your shift starts in %s minutes. Your shift(s) today, %s: %s. If you have any questions/feedback for us, feel free to text us back!';
 

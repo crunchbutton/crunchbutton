@@ -69,6 +69,9 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 		// when a driver is added to a shift later than 15 minutes before it starts - they should be automatically checked in
 		$shift = $assignment->shift();
+		if( !$shift->community()->active ){
+			return;
+		}
 		$startedAt = $shift->dateStart( c::config()->timezone );
 		$startedAt->modify( '-15 minutes' );
 
@@ -124,6 +127,10 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 		$shift = $assignment->shift();
 		$admin = $assignment->admin();
+
+		if( !$shift->community()->active ){
+			return;
+		}
 
 		$nextShift = self::checkIfThereIsASecondShift( $assignment );
 		if( $nextShift && $nextShift->id_community_shift ){
@@ -287,7 +294,7 @@ class Crunchbutton_Admin_Shift_Assign_Confirmation extends Cana_Table {
 
 		$minutes = 15;
 
-		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = true AND r.delivery_service = true AND c.driver_checkin = 1 ORDER BY c.name', [] );
+		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = true AND c.active = true AND r.delivery_service = true AND c.driver_checkin = 1 ORDER BY c.name', [] );
 
 		foreach( $communities as $community ){
 
