@@ -1,7 +1,7 @@
 <?php
 
 class Cockpit_Admin_Location extends Cana_Table {
-	
+
 	const TIME_LOCATION_VALID = 600; // seconds
 
 	public function exports() {
@@ -13,7 +13,7 @@ class Cockpit_Admin_Location extends Cana_Table {
 		];
 		return $exports;
 	}
-	
+
 	public function valid($seconds = self::TIME_LOCATION_VALID) {
 		$date = new DateTime($this->date);
 		$now = new DateTime();
@@ -22,12 +22,12 @@ class Cockpit_Admin_Location extends Cana_Table {
 
 		return $interval > $seconds ? false : true;
 	}
-	
+
 	public function distance($to, $from = null) {
 		if (!$from) {
 			$from = $this;
 		}
-		
+
 		$driver = $from->lat.','.$from->lon;
 		if (!is_array($to)) {
 			$to = [$to];
@@ -39,15 +39,15 @@ class Cockpit_Admin_Location extends Cana_Table {
 
 		// to and from
 		$url .= 'origin='.$driver.'&destination='.$toEncoded;
-		
+
 		// get bike or car directions
 		$url .= '&mode='. ($driver->vehicle() == 'car' ? 'driving ' : 'bicycling ');
-		
+
 		// add waypoints
 		if (count($to)) {
 			$url .= '&waypoints='.implode(',',$to);
 		}
-		
+
 		//$url = 'https://maps.googleapis.com/maps/api/directions/json?origin=33.9848,-118.446&destination=1120%20princeton,%20marina%20del%20rey%20ca%2090292&waypoints=33.1751,-96.6778';
 
 		$res = @json_decode(@file_get_contents($url));
@@ -66,9 +66,22 @@ class Cockpit_Admin_Location extends Cana_Table {
 			'distance' => $distance
 		];
 	}
-	
+
 	public function admin() {
 		return Admin::o($this->id_admin);
+	}
+
+	public function preSave(){
+		$location = self::q('SELECT * FROM admin_location WHERE id_admin = ? ORDER BY id_admin_location DESC LIMIT 1',[$this->id_admin])->get(0);
+		if($location->id_admin_location){
+			$location->lat = $this->lat;
+			$location->lon = $this->lon;
+			$location->accuracy = $this->accuracy;
+			$location->date = $this->date;
+			$location->save();
+		} else {
+			$this->save();
+		}
 	}
 
 	public function __construct($id = null) {

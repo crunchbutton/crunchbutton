@@ -702,10 +702,26 @@ class Crunchbutton_App extends Cana_App {
 		if (!isset($this->_metricsDB)) {
 			$this->_metricsDB = new Cana_Db_PostgreSQL_Db($this->config()->db->metrics);
 		}
-		//die('asd');
-		//var_dump($this->_metricsDB);
-		//exit;
 		return $this->_metricsDB;
+	}
+
+	public function logDB(){
+		return self::getDB('LOG_DATABASE_URL');
+	}
+
+	public function getDB($name){
+		if (!$this->_dbs) {
+			$this->_dbs = [];
+		}
+		if (!$this->_dbs[$name]) {
+			if ($_ENV[$name]){
+				$dbInfo = (object) ['url' => $_ENV[$name]];
+				$this->_dbs[$name] = new Cana_Db_MySQL_Db($dbInfo);
+			} else {
+				$this->_dbs[$name] = self::db();
+			}
+		}
+		return $this->_dbs[$name];
 	}
 
 	public function s3() {
