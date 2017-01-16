@@ -106,8 +106,12 @@ class Crunchbutton_Log extends Cana_Table {
 			$query .= ' limit '.$search['limit'].' ';
 		}
 
-		$logs = self::q($query);
+		$logs = self::q($query, null, self::getDB());
 		return $logs;
+	}
+
+	public static function getDB(){
+		return c::logDB();
 	}
 
 	public function date() {
@@ -119,7 +123,9 @@ class Crunchbutton_Log extends Cana_Table {
 
 
 	public function __construct($id = null) {
-		parent::__construct();
+		parent::__construct(c::logDB());
+		self::dbWrite(c::logDB());
+
 		$this
 			->table('log')
 			->idVar('id_log')
