@@ -54,7 +54,7 @@ class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 		switch ($action) {
 			case 'location':
 				if ($this->method() == 'post') {
-					(new Admin_Location([
+					(new Admin_Location_Log([
 						'id_admin' => $driver->id_admin,
 						'date' => date('Y-m-d H:i:s'),
 						'lat' => $this->request()['lat'] ? $this->request()['lat'] : $this->request()['latitude'],
