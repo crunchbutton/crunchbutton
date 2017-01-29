@@ -1,0 +1,7 @@
+{
+	"dependencies": {
+		"aws-sdk": "^2.9.0",
+		"request": "^2.79.0"
+	},
+	"main": "cleaner.js"
+}
