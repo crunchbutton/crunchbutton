@@ -50,3 +50,5 @@ composer.phar
 composer.lock
 
 .env
+
+node_modules
