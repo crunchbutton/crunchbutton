@@ -1412,9 +1412,16 @@ NGApp.filter('propsFilter', function() {
 	};
 });
 
+//tolerate both new and old plugins
 if (parent.window.getAppVersion) {
 	parent.window.getAppVersion(function(v) {
 		App.version = v;
+	});
+}
+
+if (cordova.getAppVersion) {}
+	cordova.getAppVersion.getVersionNumber(function(version) {
+		App.version = version;
 	});
 }
 
