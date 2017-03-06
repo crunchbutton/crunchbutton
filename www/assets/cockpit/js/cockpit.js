@@ -1419,7 +1419,7 @@ if (parent.window.getAppVersion) {
 	});
 }
 
-if (cordova.getAppVersion) {}
+if (typeof cordova !== 'undefined' && cordova.getAppVersion) {
 	cordova.getAppVersion.getVersionNumber(function(version) {
 		App.version = version;
 	});
