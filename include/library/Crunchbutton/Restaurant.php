@@ -304,6 +304,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 
 		$eta = ceil( $eta );
+		if ($this->delivery_estimated_time && $eta < $this->delivery_estimated_time) {
+			$eta = $this->delivery_estimated_time;
+		}
 
 		if( $array ){
 			return [ 	'eta' => $eta,
@@ -1653,7 +1656,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		// start eta
 		if (!$ignore['eta']) {
-			$out[ 'eta' ] = $this->smartETA();
+			$out['eta'] = $this->smartETA();
 		}
 
 		$money_value = [ 'delivery_fee' ];
