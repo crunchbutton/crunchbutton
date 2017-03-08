@@ -28,20 +28,6 @@ class Crunchbutton_Stripe_Webhook extends Cana_Table {
 			case Crunchbutton_Stripe_Webhook_Type::TYPE_TRANSFER_FAILED:
 				self::transferFail($webhook);
 				break;
-			case Crunchbutton_Stripe_Webhook_Type::TYPE_DISPUTE_CREATED:
-				// create dispute
-				Crunchbutton_Stripe_Dispute::create( $webhook->id_stripe_webhook );
-				break;
-			case Crunchbutton_Stripe_Webhook_Type::TYPE_DISPUTE_UPDATED:
-				$charge_id = $webhook->charge_id();
-				if( $charge_id ){
-					$dispute = Crunchbutton_Stripe_Dispute::getDisputeByChargeId( $charge_id );
-					if( $dispute->id_stripe_dispute ){
-						// update dispute log
-						Crunchbutton_Stripe_Dispute_Log::create( [ 'id_stripe_dispute' => $dispute->id_stripe_dispute, 'id_stripe_webhook' => $webhook->id_stripe_webhook ] );
-					}
-				}
-				break;
 		}
 		return $webhook;
 	}
