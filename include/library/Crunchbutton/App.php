@@ -706,7 +706,7 @@ class Crunchbutton_App extends Cana_App {
 	}
 
 	public function logDB(){
-		return self::getDB('LOG_DATABASE_URL');
+		return self::getDB('DATABASE_URL_LOG');
 	}
 
 	public function getDB($name){
