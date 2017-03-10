@@ -6,7 +6,5 @@ CREATE TABLE `admin_location_log` (
   `lon` float DEFAULT NULL,
   `accuracy` int(11) DEFAULT NULL,
   `date` datetime DEFAULT NULL,
-  PRIMARY KEY (`id_admin_location_log`),
-  KEY `id_admin` (`id_admin`),
-  CONSTRAINT `admin_location_log_ibfk_1` FOREIGN KEY (`id_admin`) REFERENCES `admin` (`id_admin`) ON DELETE CASCADE ON UPDATE CASCADE
+  PRIMARY KEY (`id_admin_location_log`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
