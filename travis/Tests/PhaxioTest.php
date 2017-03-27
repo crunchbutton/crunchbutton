@@ -24,7 +24,7 @@ class PhaxioTest extends PHPUnit_Framework_TestCase {
 			'active' => 1
 		]);
 		$u->save();
-		
+
 		$d = new Dish([
 			'name' => $name,
 			'price' => '10',
@@ -32,7 +32,7 @@ class PhaxioTest extends PHPUnit_Framework_TestCase {
 			'active' => 1
 		]);
 		$d->save();
-		
+
 		$o = new Order([
 			'id_restaurant' => $r->id_restaurant,
 			'id_user' => $u->id_user,
@@ -50,7 +50,7 @@ class PhaxioTest extends PHPUnit_Framework_TestCase {
 			'price' => '123'
 		]);
 		$o->save();
-		
+
 		$od = new Order_Dish([
 			'id_order' => $o->id_order,
 			'id_dish' => $d->id_dish
@@ -86,20 +86,20 @@ class PhaxioTest extends PHPUnit_Framework_TestCase {
 		}
 
 		$n = new Notification([
-			'value' => '_PHONE_',
+			'value' => '6462161341',
 			'active' => 1,
 			'type' => 'fax'
 		]);
 
 		$status = $n->send($this->order);
-	
+
 /*
 $temp = tempnam('/tmp','fax');
 file_put_contents($temp, $mail->message());
 rename($temp, $temp.'.html');
 echo file_get_contents($temp.'.html');
 
-$fax = new Phaxio( [ 'to' => '_PHONE_', 'file' => $temp.'.html' ] );
+$fax = new Phaxio( [ 'to' => '6462161341', 'file' => $temp.'.html' ] );
 unlink($temp.'.html');
 exit;
 */

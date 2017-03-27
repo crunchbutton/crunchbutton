@@ -289,7 +289,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $an1 = new Admin_Notification([
             'id_admin' => $a1->id_admin,
             'type' => 'sms',
-            'value' => '_PHONE_',
+            'value' => '***REMOVED***',
             'active' => true
         ]);
         $an1->save();
@@ -307,7 +307,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $an2 = new Admin_Notification([
             'id_admin' => $a2->id_admin,
             'type' => 'phone',
-            'value' => '_PHONE_',
+            'value' => '***REMOVED***',
             'active' => true
         ]);
         $an2->save();
@@ -324,7 +324,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $an3 = new Admin_Notification([
             'id_admin' => $a3->id_admin,
             'type' => 'sms',
-            'value' => '_PHONE_',
+            'value' => '***REMOVED***',
             'active' => true
         ]);
         $an3->save();
@@ -341,7 +341,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $an4 = new Admin_Notification([
             'id_admin' => $a4->id_admin,
             'type' => 'phone',
-            'value' => '_PHONE_',
+            'value' => '***REMOVED***',
             'active' => true
         ]);
         $an4->save();
@@ -358,7 +358,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $an5 = new Admin_Notification([
             'id_admin' => $a5->id_admin,
             'type' => 'phone',
-            'value' => '_PHONE_',
+            'value' => '***REMOVED***',
             'active' => true
         ]);
         $an5->save();
@@ -366,7 +366,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
         $an5b = new Admin_Notification([
             'id_admin' => $a5->id_admin,
             'type' => 'sms',
-            'value' => '_PHONE_',
+            'value' => '***REMOVED***',
             'active' => true
         ]);
         $an5b->save();
@@ -415,7 +415,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
 
         $u = new User([
             'name' => $name . ' - ONE',
-            'phone' => '_PHONE_',
+            'phone' => '***REMOVED***',
             'address' => '123 main',
             'active' => 1
         ]);
@@ -423,7 +423,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
 
         $u2 = new User([
             'name' => $name . ' - TWO',
-            'phone' => '_PHONE_',
+            'phone' => '***REMOVED***',
             'address' => '1157 W 27th St APT 2 - 90007',
             'active' => 1
         ]);
@@ -431,7 +431,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
 
         $u3 = new User([
             'name' => $name . ' - THREE',
-            'phone' => '_PHONE_',
+            'phone' => '***REMOVED***',
             'address' => '500 S Grand Ave Los Angeles CA 90014',
             'active' => 1
         ]);
@@ -439,7 +439,7 @@ class PriorityNotificationTest extends PHPUnit_Framework_TestCase
 
         $u4 = new User([
             'name' => $name . ' - FOUR',
-            'phone' => '_PHONE_',
+            'phone' => '***REMOVED***',
             'address' => '517 Pier Ave, Hermosa Beach, CA 90254',
             'active' => 1
         ]);

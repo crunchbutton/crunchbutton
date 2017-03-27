@@ -13,8 +13,8 @@ class Cockpit_Email_Driver_Welcome extends Crunchbutton_Email {
 
 			$params['to'] 				= $admin->email;
 			$params['subject'] 		= 'Welcome to Crunchbutton';
-			$params['from'] 			= 'Crunchbutton <support@_DOMAIN_>';
-			$params['reply']			= 'Crunchbutton <support@_DOMAIN_>';
+			$params['from'] 			= 'Crunchbutton <support@crunchbutton.com>';
+			$params['reply']			= 'Crunchbutton <support@crunchbutton.com>';
 
 			$this->buildView( $params );
 

@@ -511,7 +511,7 @@ class AdminTest extends PHPUnit_Framework_TestCase
         Phone::q('select * from phone where phone=?', ['6265550102'])->delete();
 
     }
-	
+
     public function setUp()
     {
         $name = get_called_class();
@@ -534,7 +534,7 @@ class AdminTest extends PHPUnit_Framework_TestCase
 		$this->community2 = Community::q('select * from community where name=? order by id_community desc limit 1', [$name . ' - TWO'])->get(0);
         $this->community3 = Community::q('select * from community where name=? order by id_community desc limit 1', [$name . ' - THREE'])->get(0);
     }
-	
+
 	public function tearDown()
     {
         $name = get_called_class();

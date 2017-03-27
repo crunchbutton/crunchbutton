@@ -625,7 +625,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	public function host_callback(){
 		if( !c::config()->host_callback ){
 			if( c::getEnv() == 'live' ){
-				return '_DOMAIN_';
+				return 'crunchbutton.com';
 			} else if( c::getEnv() == 'beta' ){
 				return 'beta.crunchr.co';
 			} else {

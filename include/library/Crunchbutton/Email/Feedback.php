@@ -6,10 +6,10 @@ class Crunchbutton_Email_Feedback extends Crunchbutton_Email {
 
 	public function __construct($params) {
 
-		$params['to'] 				= 'drivers@_DOMAIN_';
+		$params['to'] 				= 'drivers@crunchbutton.com';
 		$params['subject'] 		= 'Driver Feedback';
-		$params['from'] 			= 'Crunchbutton <_USERNAME_>';
-		$params['reply']			= 'Crunchbutton <_USERNAME_>';
+		$params['from'] 			= 'Crunchbutton <cc@crunchbutton.com>';
+		$params['reply']			= 'Crunchbutton <cc@crunchbutton.com>';
 		//$params['reason']			= Crunchbutton_Email_Address::REASON_NOTIFY_CS;
 
 		$this->buildView($params);

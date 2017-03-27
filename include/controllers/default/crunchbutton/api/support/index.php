@@ -58,8 +58,8 @@ class Controller_api_Support extends Crunchbutton_Controller_Rest {
 		$html .= 'Why: ' . $reason;
 
 		$res = c::mailgun()->sendMessage(c::config()->mailgun->domain, [
-		'from' => 'iwanttobuildmyownbusiness@_DOMAIN_',
-		'to' => 'iwanttobuildmyownbusiness@_DOMAIN_',
+		'from' => 'iwanttobuildmyownbusiness@crunchbutton.com',
+		'to' => 'iwanttobuildmyownbusiness@crunchbutton.com',
 		'subject'	=> 'I want to build my own business',
 		'html' => $html
 

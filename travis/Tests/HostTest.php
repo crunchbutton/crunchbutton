@@ -9,7 +9,7 @@ class HostTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testCockpitOld() {
-		$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'] = 'old.cockpit._DOMAIN_';
+		$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'] = 'old.cockpit.crunchbutton.com';
 		$this->assertTrue(c::isCockpit());
 	}
 
@@ -29,7 +29,7 @@ class HostTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testCrunchbutton() {
-		$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'] = '_DOMAIN_';
+		$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'] = 'crunchbutton.com';
 
 		$this->assertFalse(c::isCockpit());
 		// $this->assertEquals('live', c::app()->envByHost(false));

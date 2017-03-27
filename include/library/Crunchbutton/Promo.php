@@ -345,7 +345,7 @@ class Crunchbutton_Promo extends Cana_Table
 		$env = c::getEnv();
 
 		if( $env == 'live' ){
-			$serverUrl = '_DOMAIN_';
+			$serverUrl = 'crunchbutton.com';
 		} else {
 			$serverUrl = 'beta.crunchr.co';
 		}

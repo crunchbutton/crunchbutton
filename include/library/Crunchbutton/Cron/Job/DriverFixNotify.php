@@ -30,7 +30,7 @@ class Crunchbutton_Cron_Job_DriverFixNotify extends Crunchbutton_Cron_Log {
 			$body .= "CS ticket #{$ticket->id_support}<br><br>";
 			$body .= $message;
 
-			$params = array( 'to' => 'dev@_DOMAIN_', 'message' => $body );
+			$params = array( 'to' => 'dev@crunchbutton.com', 'message' => $body );
 			$params[ 'subject' ] = 'CB DEV - Monitor ' . date( 'm/d/Y H:i:s' );
 			$email = new Crunchbutton_Email_Dev( $params );
 			$email->send();

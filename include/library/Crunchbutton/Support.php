@@ -16,7 +16,7 @@ class Crunchbutton_Support extends Cana_Table_Trackchange {
 
 	const CUSTOM_SERVICE_GROUP_NAME_KEY = 'custom-service-group-name';
 
-	const SUPPORT_EMAIL = 'support@_DOMAIN_';
+	const SUPPORT_EMAIL = 'support@crunchbutton.com';
 
 	const CONFIG_KEY_CS_CALL_DRIVER = 'cs_config_call_driver';
 	const CONFIG_KEY_CS_CALL_DEFAULT_PHONE = 'cs_config_call_default_phone';

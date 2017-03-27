@@ -8,8 +8,8 @@ class Crunchbutton_Email_Order extends Crunchbutton_Email {
 
 		$params['to'] = $params['email'];
 		$params['subject'] = 'Customer Order #'.$params['order']->id_order;
-		$params['from'] = ($params['order']->id_restaurant == 1 ? 'One Button Wenzel' : 'Crunchbutton').' <support@_DOMAIN_>';
-		$params['reply'] = 'Crunchbutton <support@_DOMAIN_>';
+		$params['from'] = ($params['order']->id_restaurant == 1 ? 'One Button Wenzel' : 'Crunchbutton').' <support@crunchbutton.com>';
+		$params['reply'] = 'Crunchbutton <support@crunchbutton.com>';
 		$params['reason'] = Crunchbutton_Email_Address::REASON_ORDER;
 
 		$this->buildView($params);

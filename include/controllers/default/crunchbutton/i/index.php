@@ -1,6 +1,6 @@
 <?php
 
-// @todo: this is only a temp fix so we dont need i._DOMAIN_ to have db shit. can remove after ui2 is live at some point
+// @todo: this is only a temp fix so we dont need i.crunchbutton.com to have db shit. can remove after ui2 is live at some point
 
 $i = c::getPagePiece(2);
 $d = c::getPagePiece(3);

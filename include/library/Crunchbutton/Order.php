@@ -2988,7 +2988,7 @@ class Crunchbutton_Order extends Crunchbutton_Order_Trackchange {
 	// Issue #4262
 	public function sendNativeAppLink(){
 		if( $this->isIPhone() && !$this->hasUserAlreadyOrderedUsingNativeApp() && !$this->wasLinkAlreadySent() ){
-			$message = "Enjoy your food, " . $this->name . ", and, next time, order faster with our app! \nhttp://_DOMAIN_/app";
+			$message = "Enjoy your food, " . $this->name . ", and, next time, order faster with our app! \nhttp://crunchbutton.com/app";
 			$num = $this->phone;
 			Crunchbutton_Message_Sms::send( [
 				'to' => $num,

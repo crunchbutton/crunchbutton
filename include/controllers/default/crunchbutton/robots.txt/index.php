@@ -4,7 +4,7 @@
 header('Content-type: text/txt');
 
 switch ($_SERVER['SERVER_NAME']) {
-	case '_DOMAIN_':
+	case 'crunchbutton.com':
 		echo "User-agent: *\nDisallow: /test/";
 		break;
 	default:

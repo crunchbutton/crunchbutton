@@ -1,2 +1,2 @@
-INSERT INTO `config` (`id_config`, `id_site`, `key`, `value`, `exposed`) VALUES (NULL, NULL, 'share-text-referral ', 'Hey, get food delivered at _DOMAIN_/app & get your first delivery free if you enter %c in the Notes section of your order (i get free food too)', '1');
+INSERT INTO `config` (`id_config`, `id_site`, `key`, `value`, `exposed`) VALUES (NULL, NULL, 'share-text-referral ', 'Hey, get food delivered at crunchbutton.com/app & get your first delivery free if you enter %c in the Notes section of your order (i get free food too)', '1');
 INSERT INTO `config` (`id_config`, `id_site`, `key`, `value`, `exposed`) VALUES (NULL, NULL, 'share-text-twitter ', 'i love @crunchbutton delivery :) use my code %c in the Notes section for free delivery!', '1');

@@ -39,7 +39,7 @@ class Cockpit_Driver_Notify extends Cana_Table {
 			case Cockpit_Driver_Notify::TYPE_SETUP:
 				$message_type = Cockpit_Driver_Notify::TYPE_SETUP;
 				$message = $first_name . 'Test this URL out on your phone (exactly as it appears, no www.) cockpit.la/' . Cockpit_Driver_Notify::ORDER_TEST . '. Play around with it and make sure you understand how everything works';
-				$message .="\n" . 'If you have any questions, just text us directly at _PHONE_.';
+				$message .="\n" . 'If you have any questions, just text us directly at 646-783-1444.';
 				break;
 
 			case Cockpit_Driver_Notify::TYPE_ACCESS_INFO:

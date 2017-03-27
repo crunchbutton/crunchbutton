@@ -10,10 +10,10 @@ function install_chat {
 
 	groupadd dev
 	useradd -m -s /bin/bash -G dev deploy
-	# echo "sup3rb4c0n" | passwd --stdin deploy
+	# echo "_PASSWORD_" | passwd --stdin deploy
 
 	setup_github
-	
+
 	chown deploy:dev /home
 	#rm -Rf /home/${1}
 

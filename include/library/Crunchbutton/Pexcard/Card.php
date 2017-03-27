@@ -87,7 +87,7 @@ class Crunchbutton_Pexcard_Card extends Crunchbutton_Pexcard_Resource {
 									'lastName' => null,
 									'dateOfBirth' => '09/05/2012',
 									'phoneNumber' => '_PHONE_',
-									'email' => '_EMAIL',
+									'email' => '_EMAIL_',
 									'streetLine1' => '1120 Princeton Drive #7',
 									'streetLine2' => null,
 									'city' => 'Marina Del Rey',

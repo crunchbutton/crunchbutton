@@ -11,7 +11,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 	const DEFAULT_NOTES = 'Crunchbutton Orders';
 
 	const TEST_SUMMARY_FAX = '_PHONE_';
-	const TEST_SUMMARY_EMAIL = 'daniel@_DOMAIN_';
+	const TEST_SUMMARY_EMAIL = '_EMAIL';
 
 	const CRUNCHBUTTON_LOB_ADDRESS = '_KEY_';
 
@@ -1781,7 +1781,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$link = 'http://cockpit.la/staff/marketing-rep/docs/payment';
 				}
 
-				$message = $first_name . 'Hey your payment from Crunchbutton.com failed. Make sure you entered your payment info right at ' . $link . '. Just email us back at payment@_DOMAIN_ if you have questions!';
+				$message = $first_name . 'Hey your payment from Crunchbutton.com failed. Make sure you entered your payment info right at ' . $link . '. Just email us back at payment@crunchbutton.com if you have questions!';
 
 				if( $driver->phone ){
 					Crunchbutton_Message_Sms::send( [ 'from' => 'driver', 'to' => $driver->phone, 'message' => $message, 'reason' => Crunchbutton_Message_Sms::REASON_SETTLEMENT_FAIL ] );

@@ -19,12 +19,12 @@ class MailgunTest extends PHPUnit_Framework_TestCase {
 
 		$u = new User([
 			'name' => $name,
-			'phone' => '_PHONE_',
+			'phone' => '***REMOVED***',
 			'address' => '123 main',
 			'active' => 1
 		]);
 		$u->save();
-		
+
 		$d = new Dish([
 			'name' => $name,
 			'price' => '10',
@@ -32,7 +32,7 @@ class MailgunTest extends PHPUnit_Framework_TestCase {
 			'active' => 1
 		]);
 		$d->save();
-		
+
 		$o = new Order([
 			'id_restaurant' => $r->id_restaurant,
 			'id_user' => $u->id_user,
@@ -50,7 +50,7 @@ class MailgunTest extends PHPUnit_Framework_TestCase {
 			'price' => '123'
 		]);
 		$o->save();
-		
+
 		$od = new Order_Dish([
 			'id_order' => $o->id_order,
 			'id_dish' => $d->id_dish
@@ -84,7 +84,7 @@ class MailgunTest extends PHPUnit_Framework_TestCase {
 
 		$mail = new Email_Order([
 			'order' => $this->order,
-			'email' => 'travis@_DOMAIN_'
+			'email' => '_EMAIL_'
 		]);
 		$res = $mail->send();
 
