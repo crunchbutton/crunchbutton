@@ -11,7 +11,7 @@ var http = require('http');
 var querystring = require('querystring');
 var bodyParser = require('body-parser');
 
-var key = 'eoW5Z/nhFNMPjjYI62czeNhaK6x5jgsw94rFrSZnoLpa/fVswc+fJlhK1vi21kk7RHz5Dzvv0XvJkmdmc3ldY7JjmjgsZvVLq0E8x+jXBO9Dtp3tvlndHcj8v3onjP0ghh8vf4oSE1nbGKxsqpTHDpgHP6QLjJb+4vNyWmoDhlEwr4EabditQsALfSUvXJrgXR6JQ3NlDke/1w9mC9X7KEG52VLIZJhGyyPB4Dt2sWEYIXOTahy5PDGPCNxw';
+var key = '_KEY_';
 
 server.listen(port, function () {
 	console.log('Server listening at port %d', port);
@@ -20,7 +20,7 @@ server.listen(port, function () {
 app.use(bodyParser.json());
 
 var sendBroadcast = function(payload, to, event) {
-	
+
 	var sockets = {};
 
 	console.log('recieved broadcast...', to, event, payload);
@@ -57,7 +57,7 @@ var sendBroadcast = function(payload, to, event) {
 			}
 		});
 	}
-	
+
 	for (var x in sockets) {
 		sockets[x].emit(event, payload);
 	}
@@ -70,7 +70,7 @@ app.post('/', function (req, res) {
 		res.status(401).end();
 		return;
 	}
-	
+
 	sendBroadcast(req.body.payload, req.body.to, req.body.event);
 
 	res.send('{"status":"sent"}');
@@ -83,7 +83,7 @@ app.all('*', function (req, res) {
 io.on('connection', function (socket) {
 	var addedUser = false;
 	console.log('user connected...');
-	
+
 	socket.events = {};
 
 	// from socket
@@ -93,11 +93,11 @@ io.on('connection', function (socket) {
 
 	socket.on('event.message', function (payload) {
 		console.log('recieved message...', payload);
-		
+
 		if (!payload.url) {
 			return;
 		}
-		
+
 		var post = querystring.stringify(payload.data);
 
 		var options = {
@@ -120,7 +120,7 @@ io.on('connection', function (socket) {
 		var req = http.request(options, function(res) {
 			console.log('statusCode: ', res.statusCode);
 			console.log('headers: ', res.headers);
-			
+
 			res.setEncoding('utf8');
 			var str = '';
 			res.on('data', function (chunk) {
@@ -134,7 +134,7 @@ io.on('connection', function (socket) {
 		req.on('error', function (err) {
 			console.log(err);
 		});
-		
+
 		req.write(post);
 		req.end();
 	});
@@ -144,7 +144,7 @@ io.on('connection', function (socket) {
 		console.log('subscribing to ', event);
 		socket.join(event);
 	});
-	
+
 	// stop listening for events
 	socket.on('event.unsubscribe', function (event) {
 		console.log('unsubscribing to ', event);

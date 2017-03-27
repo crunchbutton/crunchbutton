@@ -8,8 +8,8 @@ class Crunchbutton_Email_Newusers extends Crunchbutton_Email {
 
 		$params['to'] 				= $params['email'];
 		$params['subject'] 		= $params['subject'];
-		$params['from'] 			= 'Crunchbutton <support@_DOMAIN_>';
-		$params['reply']			= 'Crunchbutton <support@_DOMAIN_>';
+		$params['from'] 			= 'Crunchbutton <support@crunchbutton.com>';
+		$params['reply']			= 'Crunchbutton <support@crunchbutton.com>';
 		$params['reason']			= Crunchbutton_Email_Address::REASON_NEW_USER;
 
 		$this->buildView($params);

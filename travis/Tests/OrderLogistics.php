@@ -18,7 +18,7 @@ class OrderLogisticsTest extends PHPUnit_Framework_TestCase {
 			'delivery_service' => true
 		]);
 		$r->save();
-		
+
 		$c = new Community([
 			'name' => $name,
 			'active' => 1,
@@ -28,13 +28,13 @@ class OrderLogisticsTest extends PHPUnit_Framework_TestCase {
 			'delivery_logistics' => true
 		]);
 		$c->save();
-		
+
 		$rc = new Restaurant_Community([
 			'id_restaurant' => $r->id_restaurant,
 			'id_community' => $c->id_community
 		]);
 		$rc->save();
-		
+
 		$cs = new Community_Shift([
 			'id_community' => $c->id_community,
 			'date_start' => date('Y-m-d H:i:s'),
@@ -57,31 +57,31 @@ class OrderLogisticsTest extends PHPUnit_Framework_TestCase {
 			'active' => 1
 		]);
 		$a1->save();
-		
+
 		$an1 = new Admin_Notification([
 			'id_admin' => $a1->id_admin,
 			'type' => 'sms',
-			'value' => '_PHONE_',
+			'value' => '4155490115',
 			'active' => true
 		]);
 		$an1->save();
-		
+
 		$a2 = new Admin([
 			'name' => $name.' - TWO',
 			'login' => null,
 			'active' => 1
 		]);
 		$a2->save();
-		
+
 		$an2 = new Admin_Notification([
 			'id_admin' => $a2->id_admin,
 			'type' => 'sms',
-			'value' => '_PHONE_',
+			'value' => '4155490115',
 			'active' => true
 		]);
 		$an2->save();
-		
-		
+
+
 		$asa1 = new Admin_Shift_Assign([
 			'id_community_shift' => $cs->id_community_shift,
 			'id_admin' => $a1->id_admin
@@ -89,8 +89,8 @@ class OrderLogisticsTest extends PHPUnit_Framework_TestCase {
 			'warned' => 0
 		]);
 		$asa1->save();
-		
-		
+
+
 		$asa2 = new Admin_Shift_Assign([
 			'id_community_shift' => $cs->id_community_shift,
 			'id_admin' => $a2->id_admin
@@ -98,7 +98,7 @@ class OrderLogisticsTest extends PHPUnit_Framework_TestCase {
 			'warned' => 0
 		]);
 		$asa2->save();
-		
+
 		$u = new User([
 			'name' => $name,
 			'phone' => '_PHONE_',
@@ -106,7 +106,7 @@ class OrderLogisticsTest extends PHPUnit_Framework_TestCase {
 			'active' => 1
 		]);
 		$u->save();
-		
+
 		$d = new Dish([
 			'name' => $name,
 			'price' => '10',
@@ -127,7 +127,7 @@ class OrderLogisticsTest extends PHPUnit_Framework_TestCase {
 		Admin::q('select * from admin where name=?', [$name. ' ONE'])->delete();
 		Dish::q('select * from dish where name=?', [$name])->delete();
 	}
-	
+
 	public function setUp() {
 		$name = get_called_class();
 
@@ -154,24 +154,24 @@ class OrderLogisticsTest extends PHPUnit_Framework_TestCase {
 			'lon' => '-96.677810',
 			'local_gid' => 'RAND'
 		];
-		
+
 		$order = new Order;
 		$charge = $order->process($_POST);
 
 		// charge was good
 		$this->assertTrue($charge === true);
-		
+
 		// synchronasly run everything in que
 		//Crunchbutton_Queue::end();
-		
+
 		// check that both admins were notified
 		$a1 = Crunchbutton_Queue::q('select * from queue where id_order=? and id_admin=?', [$order->id_order, $this->driver1->id_admin])->get(0);
 		$a2 = Crunchbutton_Queue::q('select * from queue where id_order=? and id_admin=?', [$order->id_order, $this->driver1->id_admin])->get(0);
-		
+
 		$this->assertTrue($a1->id_queue ? true : false);
 		$this->assertTrue($a2->id_queue ? true : false);
 
 		$this->assertTrue(false);
-		
+
 	}
 }

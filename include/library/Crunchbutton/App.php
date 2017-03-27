@@ -57,7 +57,7 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		// special settings for live web views
-		if ($db != 'heroku' &&  !$_ENV['DOCKER'] && preg_match('/^cockpit.la|cbtn.io|_DOMAIN_|spicywithdelivery.com$/',$_SERVER['SERVER_NAME']) && !$this->cli && !isset($_REQUEST['__host']) && $_SERVER['SERVER_NAME'] != 'old.cockpit._DOMAIN_' && $_SERVER['SERVER_NAME'] != 'cockpit._DOMAIN_') {
+		if ($db != 'heroku' &&  !$_ENV['DOCKER'] && preg_match('/^cockpit.la|cbtn.io|crunchbutton.com|spicywithdelivery.com$/',$_SERVER['SERVER_NAME']) && !$this->cli && !isset($_REQUEST['__host']) && $_SERVER['SERVER_NAME'] != 'old.cockpit.crunchbutton.com' && $_SERVER['SERVER_NAME'] != 'cockpit.crunchbutton.com') {
 			error_reporting(E_ERROR | E_PARSE);
 
 			if ((!$_SERVER['HTTP_X_FORWARDED_PROTO'] && $_SERVER['HTTPS'] != 'on') || ($_SERVER['HTTP_X_FORWARDED_PROTO'] && $_SERVER['HTTP_X_FORWARDED_PROTO'] != 'https')) {
@@ -66,7 +66,7 @@ class Crunchbutton_App extends Cana_App {
 			}
 		}
 
-		if (preg_match('/^old.cockpit._DOMAIN_$/',$_SERVER['SERVER_NAME']) && $_SERVER['HTTPS'] == 'on') {
+		if (preg_match('/^old.cockpit.crunchbutton.com$/',$_SERVER['SERVER_NAME']) && $_SERVER['HTTPS'] == 'on') {
 			die('dont use https');
 			header('Location: http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 			exit;
@@ -220,7 +220,7 @@ class Crunchbutton_App extends Cana_App {
 
 				} elseif (c::getPagePiece(0) != 'providence' || (c::getPagePiece(0) == 'providence' && c::getPagePiece(1) != $r->permalink)) {
 
-					header('Location: https://_DOMAIN_'.$_SERVER['REQUEST_URI']);
+					header('Location: https://crunchbutton.com'.$_SERVER['REQUEST_URI']);
 					exit;
 
 				} else {
@@ -276,7 +276,7 @@ class Crunchbutton_App extends Cana_App {
 				'<p style="color: #666;">HEY! Your broke it! No just kidding. There was some sort of error we did not expect. An admin has been notified.</p>'.
 				'<br><p style="background: #fff7e0; color: #ff0000; padding: 3px;">Error: '.$e->getMessage().
 				'</div>';
-			mail('_EMAIL','CRUNCHBUTTON CRITICAL ERROR',$e->getMessage());
+			mail('trest@arzynik.com','CRUNCHBUTTON CRITICAL ERROR',$e->getMessage());
 			exit;
 		} else {
 			if (php_sapi_name() === 'cli') {
@@ -547,7 +547,7 @@ class Crunchbutton_App extends Cana_App {
 		$config['site']['ab']['share-facebook-url'] = [
 			[
 				'name' => 'share-facebook-url',
-				'line' => 'http://_DOMAIN_/'
+				'line' => 'http://crunchbutton.com/'
 			]
 		];
 
@@ -568,7 +568,7 @@ class Crunchbutton_App extends Cana_App {
 		$config['site']['ab']['share-order-text-twitter'] = [
 			[
 				'name' => 'twitter-order-url',
-				'line' => 'Just ordered %r from @crunchbutton! - _DOMAIN_'
+				'line' => 'Just ordered %r from @crunchbutton! - crunchbutton.com'
 			],
 			[
 				'name' => 'twitter-order-hashtag',

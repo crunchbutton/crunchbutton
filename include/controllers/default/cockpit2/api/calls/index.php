@@ -184,7 +184,7 @@ class Controller_api_calls extends Crunchbutton_Controller_RestAccount {
 		$max = 5;
 		foreach(c::twilio()->account->calls->getIterator(0,$max,[
 			'Direction' => 'inbound',
-			'To' => '+1_PHONE_'
+			'To' => '_PHONE_'
 		]) as $call) {
 			if ($i == $max) {
 				break;

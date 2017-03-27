@@ -5,7 +5,7 @@
 # http://www.sequelpro.com/
 # https://github.com/sequelpro/sequelpro
 #
-# Host: _HOST_ (MySQL 5.6.10)
+# Host: crunchbutton-1.cluster-cstvhlbo53mv.us-east-1.rds.amazonaws.com (MySQL 5.6.10)
 # Database: crunchbutton
 # Generation Time: 2016-10-17 01:59:55 +0000
 # ************************************************************

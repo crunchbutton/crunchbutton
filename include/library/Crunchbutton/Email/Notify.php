@@ -6,10 +6,10 @@ class Crunchbutton_Email_Notify extends Crunchbutton_Email {
 
 	public function __construct($params) {
 
-		$params['to'] 				= 'Crunchbutton Copy <_USERNAME_>, nick@_DOMAIN_, david@_DOMAIN_, judd@_DOMAIN_';
+		$params['to'] 				= 'Crunchbutton Copy <cc@crunchbutton.com>, nick@crunchbutton.com, david@crunchbutton.com, judd@crunchbutton.com';
 		$params['subject'] 		= 'Customer support SMS';
-		$params['from'] 			= 'Crunchbutton <support@_DOMAIN_>';
-		$params['reply']			= 'Crunchbutton <support@_DOMAIN_>';
+		$params['from'] 			= 'Crunchbutton <support@crunchbutton.com>';
+		$params['reply']			= 'Crunchbutton <support@crunchbutton.com>';
 		$params['reason']			= Crunchbutton_Email_Address::REASON_NOTIFY_CS;
 
 		$this->buildView($params);

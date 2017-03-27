@@ -8,8 +8,8 @@ class Crunchbutton_Email_Notification extends Crunchbutton_Email {
 
 		$params['to'] 				= $params['email'];
 		$params['subject'] 		= $params['title'];
-		$params['from'] 			= 'Crunchbutton <hello@_DOMAIN_>';
-		$params['reply']			= 'Crunchbutton <hello@_DOMAIN_>';
+		$params['from'] 			= 'Crunchbutton <hello@crunchbutton.com>';
+		$params['reply']			= 'Crunchbutton <hello@crunchbutton.com>';
 
 		$this->buildView($params);
 		$this->view()->subject	= $params['title'];

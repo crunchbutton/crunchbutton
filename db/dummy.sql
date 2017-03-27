@@ -105,9 +105,9 @@ INSERT INTO `chart` ( `permalink`, `description`) VALUES( 'historial-churn-rate-
 
 INSERT INTO `driver_document` (`id_driver_document`, `name`, `url`, `order`)
 VALUES
-	(1, 'Independant Contractor Agreement', 'https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/6ngjeViT77TalSm/INDEPENDENT%20CONTRACTOR%20AGREEMENT_FINAL_2.4.14.doc', 1),
-	(2, 'W9', 'https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/R816dLDLvXfD5cM/W9.pdf', 2),
-	(3, 'Direct Deposit', 'https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/CYoVFxyk8OtNydv/Direct%20Deposit%207.10.pdf', 3),
+	(1, 'Independant Contractor Agreement', '_URL_', 1),
+	(2, 'W9', '_URL_', 2),
+	(3, 'Direct Deposit', '_URL_', 3),
 	(4, 'Drivers License', '', 4),
 	(5, 'Insurance Card','', 5);
 
@@ -115,9 +115,9 @@ UPDATE driver_document SET type = 'driver';
 
 INSERT INTO `driver_document` ( `name`, `order`, `url`, `required`, `type`)
 VALUES
-	('Independent Contractor Agreement', 1, 'https://s3.amazonaws.com/uploads.hipchat.com/41812/280262/4pWiCQFWY7k9CSr/Youbeo%20Rep%20Agreement%202015%20OSG.pdf', 1, 'marketing-rep'),
-	('W9', 2, 'https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/R816dLDLvXfD5cM/W9.pdf', 1, 'marketing-rep'),
-	('Direct Deposit', 3, 'https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/CYoVFxyk8OtNydv/Direct%20Deposit%207.10.pdf', 1, 'marketing-rep');
+	('Independent Contractor Agreement', 1, '_URL_', 1, 'marketing-rep'),
+	('W9', 2, '_URL_', 1, 'marketing-rep'),
+	('Direct Deposit', 3, '_URL_', 1, 'marketing-rep');
 
 
 INSERT INTO `admin` ( `login`, `name`, `phone`, `txt`, `email`, `pass`, `timezone`, `testphone`, `active`, `invite_code`, `referral_admin_credit`, `referral_customer_credit`, `id_admin_author`)
@@ -221,8 +221,8 @@ VALUES
 	(21,NULL,'cockpit-expanded-view-checked-as-default','1',0),
 	(22,NULL,'rule-monitor-name-phone-active','1',0),
 	(23,NULL,'rule-monitor-name-phone-name','Sean Glass, Clark, Landry, Clark Landry, bacon',0),
-	(24,NULL,'rule-monitor-name-phone-phone','_PHONE_, _PHONE_, _PHONE_, _PHONE_,',0),
-	(25,NULL,'rule-monitor-name-phone-warning-phone','_PHONE_, _PHONE_',0),
+	(24,NULL,'rule-monitor-name-phone-phone','_PHONE_,',0),
+	(25,NULL,'rule-monitor-name-phone-warning-phone','_PHONE_',0),
 	(26,NULL,'rule-monitor-name-phone-warning-email','_EMAIL_',0),
 	(27,NULL,'notification-admin-is-enable','1',0),
 	(28,NULL,'notification-admin-is-enable-takeout','0',0),
@@ -259,9 +259,9 @@ VALUES
 	(69,NULL,'settlement-id_order-start','26668',0),
 	(70,NULL,'chat-server-port','443',0),
 	(71,NULL,'chat-server','https://event.cockpit.la/',0),
-	(72,NULL,'chat-server-key','_KEY__KEY__KEY__KEY_',0),
+	(72,NULL,'chat-server-key','_KEY_',0),
 	(73,NULL,'cbtn_forward','true',0),
-	(74,NULL,'twilio-number','_PHONE_,_PHONE_,_PHONE_,_PHONE_,_PHONE_',0),
+	(74,NULL,'twilio-number','_PHONE_',0),
 	(79,NULL,'pex_amount_shift_start','20',0),
 	(80,NULL,'pex_card_funds_shift_enable','1',0),
 	(81,NULL,'pex_card_funds_order_enable','1',0),
@@ -306,22 +306,22 @@ VALUES
 	(178,NULL,'rule-time-since-last-order-equal-reps',NULL,0),
 	(181,NULL,'rule-monitor-name-phone-active','1',0),
 	(184,NULL,'rule-monitor-name-phone-name','Sean Glass, Clark, Landry, Clark Landry, bacon',0),
-	(187,NULL,'rule-monitor-name-phone-phone','_PHONE_, _PHONE_, _PHONE_, _PHONE_,',0),
-	(190,NULL,'rule-monitor-name-phone-warning-phone','_PHONE_, _PHONE_',0),
+	(187,NULL,'rule-monitor-name-phone-phone','_PHONE_',0),
+	(190,NULL,'rule-monitor-name-phone-warning-phone','_PHONE_',0),
 	(193,NULL,'rule-monitor-name-phone-warning-email','_EMAIL_',0),
 	(196,NULL,'auto-reply-text','Hey, thanks for texting, we\'ll be with ya in a second! -Crunchbutton',0),
 	(198,NULL,'pex_business_card','2779',0),
 	(201,NULL,'pex_test_card','2779',0),
 	(204,NULL,'pex_business_card','2779',0),
 	(206,NULL,'driver_change_amount','20',1),
-	(209,NULL,'restaurant-awesome','hBNIE9Sh0Md+N7w8CVGsb2Y4yyJtM6AonLKjUv0UfOGnlE3saKl0/hZUYmi6Fs4/M4ECjUWaI7/9TkBZ8REkICwZiJTRysgOA9HfY2NSahdP6FSTlah8tWg/7u9H4S+t',0),
+	(209,NULL,'restaurant-awesome','_KEY_',0),
 	(210,NULL,'pex_business_card','2673',0),
 	(212,NULL,'blocked-customer-message','Oops, something bad happened!',0),
 	(215,NULL,'menu_item_1_label','Free Food',1),
 	(218,NULL,'menu_item_1_url','/free-food',1),
 	(221,2,'cockpit-min-app-version','1.1.7',1),
 	(224,1,'apple-pay','0',1),
-	(225,NULL,'david-is-awesome','lmT0EUHGtQ33g2uXBnRFHxx+8uJnog1sJNDx0HAGwtr4B5lFUp/X811LFT9PnSba3cnB660kQ81dQypjm75RKYe6vbD2Da++xAKO+SQRwoLbd+PsTcaPNnL9y+uXKQzriHBJ7zNhpFwLSpNE3nNEskVjPkXoX6xeblY4DsrCEt95dgTBuvLB+0jqBE2X5Upo',0),
+	(225,NULL,'david-is-awesome','_KEY_',0),
 	(227,NULL,'allow-cors','1',0),
 	(230,NULL,'suggestions','1',1),
 	(232,NULL,'maintenance','0',0),

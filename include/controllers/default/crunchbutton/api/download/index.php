@@ -27,7 +27,7 @@ class Controller_api_download extends Crunchbutton_Controller_Rest {
 
 		Crunchbutton_Message_Sms::send([
 			'to' => $num,
-			'message' => "YAY! Crunchbutton for mobile!\nhttp://_DOMAIN_/app",
+			'message' => "YAY! Crunchbutton for mobile!\nhttp://crunchbutton.com/app",
 			'reason' => Crunchbutton_Message_Sms::REASON_APP_DOWNLOAD
 		]);
 

@@ -6,9 +6,9 @@ class Crunchbutton_Email_Payment_Error extends Crunchbutton_Email {
 
 	public function __construct( $params ) {
 
-		$params['to'] = 'payment@_DOMAIN_';
-		$params['from'] = 'Crunchbutton<support@_DOMAIN_>';
-		$params['reply'] = 'Crunchbutton<no-reply@_DOMAIN_>';
+		$params['to'] = 'payment@crunchbutton.com';
+		$params['from'] = 'Crunchbutton<support@crunchbutton.com>';
+		$params['reply'] = 'Crunchbutton<no-reply@crunchbutton.com>';
 
 		$this->buildView( $params );
 		$this->view()->subject = $params['subject'] ;

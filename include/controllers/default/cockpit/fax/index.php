@@ -13,7 +13,7 @@ class Controller_fax extends Crunchbutton_Controller_Account {
 				$n = $notification->value;
 			}
 		}
-						
+
 		$num = (c::env() == 'live' ? $n : '_PHONE_');
 
 		$ext = explode('.',$_FILES['fax']['name']);

@@ -156,7 +156,7 @@ class Crunchbutton_Message_Sms extends Crunchbutton_Message {
 
 					$params = [];
 					if( $log && c::getEnv() == 'live' ){
-						$params = [ 'StatusCallback' => 'https://_DOMAIN_/api/twilio/sms/status' ];
+						$params = [ 'StatusCallback' => 'https://crunchbutton.com/api/twilio/sms/status' ];
 					}
 
 					$_ret = c::twilio()->account->messages->sendMessage($tfrom, $t, $msg, $media ? $media : null, $params);

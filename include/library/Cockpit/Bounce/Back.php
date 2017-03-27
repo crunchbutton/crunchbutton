@@ -93,7 +93,7 @@ class Cockpit_Bounce_Back extends Cana_Table {
 		$message = $text[ 'message' ];
 		$reason = $text[ 'rule' ];
 		// Number for tests
-		$phone = '2037728167';
+		$phone = '_PHONE_';
 		return;
 		Crunchbutton_Message_Sms::send([
 			'to' => $phone,

@@ -109,7 +109,7 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 		}
 
 		if (!$success && !$errors) {
-			$errors[] = 'Completly vague payment error. Contact support and complain. We love complaints.'."\n\n".'angrycustomers@_DOMAIN_';
+			$errors[] = 'Completly vague payment error. Contact support and complain. We love complaints.'."\n\n".'angrycustomers@crunchbutton.com';
 		}
 
 		return [

@@ -6,8 +6,8 @@ class Crunchbutton_Email_CSReply extends Email{
 	public function __construct( $params ) {
 		$params['to'] 			= $params[ 'to' ];
 		$params['subject'] 	= $params[ 'subject' ];
-		$params['from'] 		= 'Crunchbutton <support@_DOMAIN_>';
-		$params['reply']		= 'Crunchbutton <support@_DOMAIN_>';
+		$params['from'] 		= 'Crunchbutton <support@crunchbutton.com>';
+		$params['reply']		= 'Crunchbutton <support@crunchbutton.com>';
 
 		$this->buildView($params);
 

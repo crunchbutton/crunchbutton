@@ -19,11 +19,11 @@ CREATE TABLE `deploy_server` (
 INSERT INTO `deploy_server` (`id_deploy_server`, `name`, `repo`, `ip`, `script`, `params`, `hostname`, `travis`, `tag`)
 VALUES
 	(1,'chat.cockpit.la','git@github.com:crunchbutton/crunchbutton.git','23.239.21.217','chat.sh',NULL,'chat.cockpit.la',0,0),
-	(2,'cockpit.la','git@github.com:crunchbutton/crunchbutton.git','_IP_','cockpit.sh','-path=/home/cockpit.la/','cockpit.la',0,0),
-	(3,'beta.cockpit.la','git@github.com:crunchbutton/crunchbutton.git','_IP_','cockpit.sh','-path=/home/beta.cockpit.la/','cockpit.la',0,0),
-	(4,'dev._DOMAIN_','git@github.com:crunchbutton/crunchbutton.git','_IP_','crunchbutton.sh','-path=/home/dev.crunchbutton/','_DOMAIN_',0,0),
-	(5,'beta._DOMAIN_','git@github.com:crunchbutton/crunchbutton.git','_IP_','crunchbutton.sh','-path=/home/beta.crunchbutton/','_DOMAIN_',0,0),
-	(6,'_DOMAIN_','git@github.com:crunchbutton/crunchbutton.git','_IP_','crunchbutton.sh','-path=/home/crunchbutton/','_DOMAIN_',1,1);
+	(2,'cockpit.la','git@github.com:crunchbutton/crunchbutton.git','23.239.1.179','cockpit.sh','-path=/home/cockpit.la/','cockpit.la',0,0),
+	(3,'beta.cockpit.la','git@github.com:crunchbutton/crunchbutton.git','23.239.1.179','cockpit.sh','-path=/home/beta.cockpit.la/','cockpit.la',0,0),
+	(4,'dev.crunchbutton.com','git@github.com:crunchbutton/crunchbutton.git','66.175.216.127','crunchbutton.sh','-path=/home/dev.crunchbutton/','crunchbutton.com',0,0),
+	(5,'beta.crunchbutton.com','git@github.com:crunchbutton/crunchbutton.git','66.175.216.127','crunchbutton.sh','-path=/home/beta.crunchbutton/','crunchbutton.com',0,0),
+	(6,'crunchbutton.com','git@github.com:crunchbutton/crunchbutton.git','66.175.216.127','crunchbutton.sh','-path=/home/crunchbutton/','crunchbutton.com',1,1);
 
 
 # Dump of table deploy_version

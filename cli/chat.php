@@ -1,5 +1,5 @@
 <?php
-	
+
 die('this is just here for reference now');
 
 require_once('../include/crunchbutton.php');
@@ -32,17 +32,17 @@ while (true) {
 	//check for new socket
 	if (in_array($socket, $changed)) {
 		$socket_new = socket_accept($socket); //accpet new socket
-		
+
 		$header = socket_read($socket_new, 1024); //read data sent by the socket
 		$status = perform_handshaking($header, $socket_new, $host, $port); //perform websocket handshake
-		
+
 		if ($status) {
 			$clients[] = $socket_new; //add socket to client array
 
 			socket_getpeername($socket_new, $ip); //get ip address of connected socket
 			$response = mask(json_encode(array('type'=>'system', 'message'=>$ip.' connected'))); //prepare json data
 			send_message($response); //notify all users about new connection
-			
+
 			//make room for new socket
 			$found_socket = array_search($socket, $changed);
 			unset($changed[$found_socket]);
@@ -50,28 +50,28 @@ while (true) {
 			continue;
 		}
 	}
-	
+
 	//loop through all connected sockets
-	foreach ($changed as $changed_socket) {	
-		
+	foreach ($changed as $changed_socket) {
+
 		//check for any incomming data
 		while(socket_recv($changed_socket, $buf, 1024, 0) >= 1) {
 			$received_text = unmask($buf);
 			$payload = json_decode($received_text);
 
 			var_dump($payload);
-			
+
 			// sending a mesage to a ticket
 			switch ($payload->type) {
 				case 'ticket.message':
-				
+
 					$sess = Session::token($payload->_token);
 					if ($sess->id_admin) {
 						$admin = new Admin($sess->id_admin);
 
 						if ($admin->id_admin) {
 							$support = Support::o($payload->ticket);
-							
+
 							if ($support->id_support) {
 								$message = $support->addAdminMessage([
 									'body' => $payload->body,
@@ -100,18 +100,18 @@ while (true) {
 			if( $message->id_support_message ){
 				$message->notify();
 			}
-			
+
 //			if ($support->permissionToEdit()) {
 //			send_mask
 */
 			$support = null;
-			
+
 			//prepare data to be sent to client
 			$response_text = mask(json_encode(array('type'=>'usermsg', 'name'=>$user_name, 'message'=>$user_message, 'color'=>$user_color)));
 			send_message($response_text); //send data
 			break 2;
 		}
-		
+
 		$buf = @socket_read($changed_socket, 1024, PHP_NORMAL_READ);
 		if ($buf === false) { // check disconnected client
 
@@ -119,7 +119,7 @@ while (true) {
 			$found_socket = array_search($changed_socket, $clients);
 			socket_getpeername($changed_socket, $ip);
 			unset($clients[$found_socket]);
-			
+
 			//notify all users about disconnected connection
 			$response = mask(json_encode(array('type'=>'system', 'message'=>$ip.' disconnected')));
 			send_message($response);
@@ -170,7 +170,7 @@ function mask($text)
 {
 	$b1 = 0x80 | (0x1 & 0x0f);
 	$length = strlen($text);
-	
+
 	if($length <= 125)
 		$header = pack('CC', $b1, $length);
 	elseif($length > 125 && $length < 65536)
@@ -205,7 +205,7 @@ function perform_handshaking($receved_header, $client_conn, $host, $port) {
 	}
 
 	$check = false;
-	
+
 	// if the connection is not a socket
 	if ($headers['Upgrade'] != 'websocket') {
 
@@ -220,18 +220,18 @@ function perform_handshaking($receved_header, $client_conn, $host, $port) {
 			}
 			send_mask($msg);
 			var_dump($query);
-			
+
 			$upgrade =
 				"HTTP/1.1 200 Ok\r\n".
 				"\r\ntrue";
 			socket_write($client_conn, $upgrade, strlen($upgrade));
-		
+
 		// someone came here from the browser
 		} else {
 			$upgrade =
 				"HTTP/1.0 404 Not Found\r\n".
 				"Content-Type:text/html; charset=UTF-8\r\n".
-				"\r\nThis is not the page you are looking for... <a href='http://_DOMAIN_'>http://_DOMAIN_</a>\r\n\r\n".c::config()->site->config('chat-server-key')->val()."\r\n\r\n".$query['_key'];
+				"\r\nThis is not the page you are looking for... <a href='http://crunchbutton.com'>http://crunchbutton.com</a>\r\n\r\n".c::config()->site->config('chat-server-key')->val()."\r\n\r\n".$query['_key'];
 			socket_write($client_conn, $upgrade, strlen($upgrade));
 		}
 		socket_close($client_conn);
@@ -247,7 +247,7 @@ function perform_handshaking($receved_header, $client_conn, $host, $port) {
 			}
 		}
 	}
-	
+
 	if (!$check) {
 		socket_close($client_conn);
 		return false;

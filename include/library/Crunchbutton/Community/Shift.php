@@ -1160,7 +1160,7 @@ class Crunchbutton_Community_Shift extends Cana_Table_Trackchange {
 
 		if( $warningCS && count( $driversWillReceiveTheNotification ) > 0 ){
 
-			$message = Crunchbutton_Message_Sms::greeting() . count( $driversWillReceiveTheNotification ) . ' drivers didn\'t completed their schedule, the list of drivers is available here at cockpit._DOMAIN_/drivers/shift/status/shift';
+			$message = Crunchbutton_Message_Sms::greeting() . count( $driversWillReceiveTheNotification ) . ' drivers didn\'t completed their schedule, the list of drivers is available here at cockpit.crunchbutton.com/drivers/shift/status/shift';
 
 			echo "Sending sms to support users...\n";
 

@@ -6,8 +6,8 @@ class Crunchbutton_Email_CSDigest extends Email{
 	public function __construct( $params ) {
 		$params['to'] 			= $params[ 'to' ];
 		$params['subject'] 		= 'Customer Service Morning Digest - ' . date( 'm/d/Y' );
-		$params['from'] 		= 'Crunchbutton <_USERNAME_>';
-		$params['reply']		= 'Crunchbutton <_USERNAME_>';
+		$params['from'] 		= 'Crunchbutton <cc@crunchbutton.com>';
+		$params['reply']		= 'Crunchbutton <cc@crunchbutton.com>';
 
 		$this->buildView($params);
 

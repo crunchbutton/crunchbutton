@@ -17,7 +17,7 @@ class NotificationTest extends PHPUnit_Framework_TestCase {
 			'active' => 1
 		]);
 		$a->save();
-		
+
 		$u = new User([
 			'name' => $name,
 			'phone' => '_PHONE_',
@@ -25,7 +25,7 @@ class NotificationTest extends PHPUnit_Framework_TestCase {
 			'active' => 1
 		]);
 		$u->save();
-		
+
 		$o = new Order([
 			'name' => $name,
 			'address' => $u->address,
@@ -54,7 +54,7 @@ class NotificationTest extends PHPUnit_Framework_TestCase {
 		Order::q('select * from `order` where name=?', [$name])->delete();
 		Admin::q('select * from admin where name=?', [$name])->delete();
 	}
-	
+
 	public function setUp() {
 		$name = get_called_class();
 
@@ -63,7 +63,7 @@ class NotificationTest extends PHPUnit_Framework_TestCase {
 		$this->user = User::q('select * from `user` where name=? order by id_user desc limit 1', [$name])->get(0);
 		$this->order = Order::q('select * from `order` where name=? order by id_order desc limit 1', [$name])->get(0);
 	}
-	
+
 	/*
 	// this doesnt even test anything
 	public function testCustomerReceipt() {
@@ -76,12 +76,12 @@ class NotificationTest extends PHPUnit_Framework_TestCase {
 		$n = (new Crunchbutton_Admin_Notification([
 			'id_admin' => $this->driver->id_admin,
 			'type' =>  Crunchbutton_Admin_Notification::TYPE_SMS,
-			'value' => '_PHONE_',
+			'value' => '4155490115',
 			'active' => 1
 		]))->save();
-		
+
 		$ress = $n->send($this->order);
-		
+
 		$status = true;
 		foreach ($ress as $res) {
 			if (!$res->sid) {
@@ -101,7 +101,7 @@ class NotificationTest extends PHPUnit_Framework_TestCase {
 			'value' => 'bda4c763f2e2f2ec8b123a960fd2e9ecba591cf4a310253708156eed658a4bb2',
 			'active' => 1
 		]))->save();
-		
+
 		$status = $n->sendPushIos($this->order);
 		if (!$status) {
 			var_dump($status);

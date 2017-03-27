@@ -7,4 +7,4 @@ CREATE TABLE `newusers` (
 
 INSERT INTO `newusers` (`id_newusers`, `last_update`, `email_to`)
 VALUES
-	(1,'2013-05-15 11:00:57','_EMAIL');
+	(1,'2013-05-15 11:00:57','pererinha@gmail.com');

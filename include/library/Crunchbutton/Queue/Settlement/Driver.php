@@ -25,8 +25,8 @@ class Crunchbutton_Queue_Settlement_Driver extends Crunchbutton_Queue {
 			$message .= "Queue running #{$queue->id_queue}<br>\n";
 			$message .= "Queue failed: #{$this->id_queue}<br>\n";
 			$message .= "Payment type: {$pay_type}<br>\n";
-			$email = new Crunchbutton_Email( [ 	'to' => 'dev@_DOMAIN_,payment@_DOMAIN_,_USERNAME_',
-																					'from' => 'support@_DOMAIN_',
+			$email = new Crunchbutton_Email( [ 	'to' => 'dev@crunchbutton.com,payment@crunchbutton.com,cc@crunchbutton.com',
+																					'from' => 'support@crunchbutton.com',
 																					'subject' => 'Driver schedule queue failed #' . $this->id_queue,
 																					'messageHtml' => $message,
 																					'reason' => Crunchbutton_Email_Address::REASON_CRON_ERROR ] );
@@ -55,8 +55,8 @@ class Crunchbutton_Queue_Settlement_Driver extends Crunchbutton_Queue {
 			$message = "Driver schedule queue failed:<br>\n";
 			$message .= "Queue running #{$queue->id_queue}<br>\n";
 			$message .= "Payment type: {$pay_type}<br>\n";
-			$email = new Crunchbutton_Email( [ 	'to' => 'dev@_DOMAIN_,payment@_DOMAIN_,_USERNAME_',
-																					'from' => 'support@_DOMAIN_',
+			$email = new Crunchbutton_Email( [ 	'to' => 'dev@crunchbutton.com,payment@crunchbutton.com,cc@crunchbutton.com',
+																					'from' => 'support@crunchbutton.com',
 																					'subject' => 'Driver schedule queue failed #' . $this->id_queue,
 																					'messageHtml' => $message,
 																					'reason' => Crunchbutton_Email_Address::REASON_CRON_ERROR ] );
