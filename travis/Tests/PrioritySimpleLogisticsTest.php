@@ -200,7 +200,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $an1 = new Admin_Notification([
             'id_admin' => $a1->id_admin,
             'type' => 'sms',
-            'value' => '***REMOVED***',
+            'value' => '$_ENV['DEBUG_PHONE']',
             'active' => true
         ]);
         $an1->save();
@@ -217,7 +217,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $an2 = new Admin_Notification([
             'id_admin' => $a2->id_admin,
             'type' => 'sms',
-            'value' => '***REMOVED***',
+            'value' => '$_ENV['DEBUG_PHONE']',
             'active' => true
         ]);
         $an2->save();
@@ -234,7 +234,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
         $an3 = new Admin_Notification([
             'id_admin' => $a3->id_admin,
             'type' => 'sms',
-            'value' => '***REMOVED***',
+            'value' => '$_ENV['DEBUG_PHONE']',
             'active' => true
         ]);
         $an3->save();
@@ -268,7 +268,7 @@ class PrioritySimpleLogisticsTest extends PHPUnit_Framework_TestCase
 
         $u = new User([
             'name' => $name,
-            'phone' => '***REMOVED***',
+            'phone' => '$_ENV['DEBUG_PHONE']',
             'address' => '123 main',
             'active' => 1
         ]);
