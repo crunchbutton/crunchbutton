@@ -123,7 +123,7 @@
 					<div class="field-row" ng-if="dispute.order.pay_type == 'card'">
 						<div class="field-key">{{dispute.order.processor == 'stripe' ? 'Stripe' : 'Balanced'}}</div>
 						<div class="field-value">
-							<a ng-if="dispute.order.processor == 'balanced'" href="https://dashboard.balancedpayments.com/#/marketplaces/***REMOVED***/debits/{{dispute.order.txn}}" target="_blank">{{dispute.order.txn}}</a>
+							<a ng-if="dispute.order.processor == 'balanced'" href="https://dashboard.balancedpayments.com/#/marketplaces/MP2BldrjHz0NLH3st95JbeR0/debits/{{dispute.order.txn}}" target="_blank">{{dispute.order.txn}}</a>
 							<a ng-if="dispute.order.processor == 'stripe'" href="https://dashboard.stripe.com/payments/{{dispute.order.txn}}" target="_blank">{{dispute.order.txn}}</a>
 						</div>
 					</div>

@@ -32,7 +32,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$d2->save();
 
 		// user
-		$u = new User([ 'name' => $name, 'phone' => '***REMOVED***', 'address' => '123 main', 'active' => 1 ]);
+		$u = new User([ 'name' => $name, 'phone' => '$_ENV['DEBUG_PHONE']', 'address' => '123 main', 'active' => 1 ]);
 		$u->save();
 
 		// orders driver hourly

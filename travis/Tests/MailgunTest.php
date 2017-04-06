@@ -19,7 +19,7 @@ class MailgunTest extends PHPUnit_Framework_TestCase {
 
 		$u = new User([
 			'name' => $name,
-			'phone' => '***REMOVED***',
+			'phone' => '$_ENV['DEBUG_PHONE']',
 			'address' => '123 main',
 			'active' => 1
 		]);
