@@ -5,6 +5,7 @@ language:
 
 php:
   - 7.0
+  - 7.1
 
 env:
   global:
@@ -42,42 +43,10 @@ before_script:
   - php travis/dbmigrate.php
   - php travis/phpunit.setup.php
   - cd www && nohup php -S localhost:8000 -c ../travis/php.ini index.php > /dev/null 2>&1 &
-  #- sudo apt-get clean
-  #- sudo apt-get update
-  #- sudo apt-get install apache2
-  #- sudo a2enmod actions
-  #- sudo a2enmod rewrite
-  #- travis/mysql-to-postgres.sh
-  #- chmod -R 0777 ./*
-  #- echo "export PATH=/home/travis/.phpenv/bin:$PATH" | sudo tee -a /etc/apache2/envvars > /dev/null
-  #- cat travis/apache.conf | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
-  #- cat travis/sites.conf | sed -e "s,PATH,`pwd`/www,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
-  #- echo 'export APACHE_ARGUMENTS="-D TRAVIS"' | sudo tee -a /etc/apache2/envvars > /dev/null
-  #- sudo service apache2 restart
-  #- npm install assert chai phantom path util events
-
-#  - "export DISPLAY=:99.0"
-#  - "sh -e /etc/init.d/xvfb start"
-#  - sleep 3
-#  - sudo rackup
-#  - sleep 3
-
 
 script:
   - phpunit --configuration travis/phpunit.xml
   #- phantomjs --web-security=false --ignore-ssl-errors=yes --ssl-protocol=tlsv1 travis/phantom/run.js
-
-notifications:
-  webhooks: https://cockpit.la/api/travisci/build
-
-#addons:
-#  apt:
-#    packages:
-#    - cmake
-#    - time
-#  sauce_connect:
-#  username: "Your Sauce Labs username"
-#  access_key: "Your Sauce Labs access key"
 
 after_script:
   - php vendor/bin/coveralls -v
