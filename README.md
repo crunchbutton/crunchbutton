@@ -1,6 +1,6 @@
-![Logo](http://crunchbutton.com/assets/images/facebook-like.png)
+![Crunchbutton](www/assets/images/facebook-like.png)
 
-[![BuildStatus](https://travis-ci.com/crunchbutton/crunchbutton.svg?token=hxz6fVTQWxPXmgzxg8Yb&branch=master)](https://travis-ci.com/crunchbutton/crunchbutton)
+[![Build Status](https://travis-ci.org/crunchbutton/crunchbutton.svg?branch=master)](https://travis-ci.org/crunchbutton/crunchbutton)
 
 For detailed info check out [the wiki](https://github.com/crunchbutton/crunchbutton/wiki).
 
@@ -8,9 +8,12 @@ For detailed info check out [the wiki](https://github.com/crunchbutton/crunchbut
 
 #### Local Setup
 
-1. Create a file called `.env` with `DATABASE_URL` and `DEBUG` set
-2. Run `heroku local local`
-3. Open http://localhost:8000
+1. Install mysql
+2. Import the `db/dump.sql`
+3. Run the migrate script using `php travis/dbmigrate.php`
+4. Create a file called `.env` with `DATABASE_URL` and `DEBUG` set to `1`
+5. Run `heroku local local`
+6. Open http://localhost:8000
 
 ---
 
