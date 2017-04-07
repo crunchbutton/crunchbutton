@@ -270,7 +270,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $an1 = new Admin_Notification([
             'id_admin' => $a1->id_admin,
             'type' => 'sms',
-            'value' => '$_ENV['DEBUG_PHONE']',
+            'value' => $_ENV['DEBUG_PHONE'],
             'active' => true
         ]);
         $an1->save();
@@ -287,7 +287,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $an2 = new Admin_Notification([
             'id_admin' => $a2->id_admin,
             'type' => 'sms',
-            'value' => '$_ENV['DEBUG_PHONE']',
+            'value' => $_ENV['DEBUG_PHONE'],
             'active' => true
         ]);
         $an2->save();
@@ -304,7 +304,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
         $an3 = new Admin_Notification([
             'id_admin' => $a3->id_admin,
             'type' => 'sms',
-            'value' => '$_ENV['DEBUG_PHONE']',
+            'value' => $_ENV['DEBUG_PHONE'],
             'active' => true
         ]);
         $an3->save();
@@ -338,7 +338,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $u = new User([
             'name' => $name . ' - ONE',
-            'phone' => '$_ENV['DEBUG_PHONE']',
+            'phone' => $_ENV['DEBUG_PHONE'],
             'address' => '123 main',
             'active' => 1
         ]);
@@ -346,7 +346,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $u2 = new User([
             'name' => $name . ' - TWO',
-            'phone' => '$_ENV['DEBUG_PHONE']',
+            'phone' => $_ENV['DEBUG_PHONE'],
             'address' => '1157 W 27th St APT 2 - 90007',
             'active' => 1
         ]);
@@ -354,7 +354,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $u3 = new User([
             'name' => $name . ' - THREE',
-            'phone' => '$_ENV['DEBUG_PHONE']',
+            'phone' => $_ENV['DEBUG_PHONE'],
             'address' => '500 S Grand Ave Los Angeles CA 90014',
             'active' => 1
         ]);
@@ -362,7 +362,7 @@ class PriorityComplexLogisticsTest extends PHPUnit_Framework_TestCase
 
         $u4 = new User([
             'name' => $name . ' - FOUR',
-            'phone' => '$_ENV['DEBUG_PHONE']',
+            'phone' => $_ENV['DEBUG_PHONE'],
             'address' => '517 Pier Ave, Hermosa Beach, CA 90254',
             'active' => 1
         ]);

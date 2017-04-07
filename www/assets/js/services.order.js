@@ -1259,7 +1259,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			function(){
 			service._useRestaurantBoundingBox = true;
 			service.form.name = 'MR TEST';
-			service.form.phone = '$_ENV['DEBUG_PHONE']';
+			service.form.phone = $_ENV['DEBUG_PHONE'];
 			service.form.address = service.restaurant.address;
 			service.form.cardNumber = '4242424242424242';
 			service.form.cardMonth = '2';
