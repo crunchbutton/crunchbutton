@@ -1,8 +1,8 @@
 ![Logo](http://crunchbutton.com/assets/images/facebook-like.png)
 
-[![BuildStatus](https://travis-ci.com/youbeo/crunchbutton.svg?token=hxz6fVTQWxPXmgzxg8Yb&branch=master)](https://travis-ci.com/youbeo/crunchbutton)
+[![BuildStatus](https://travis-ci.com/crunchbutton/crunchbutton.svg?token=hxz6fVTQWxPXmgzxg8Yb&branch=master)](https://travis-ci.com/crunchbutton/crunchbutton)
 
-For detailed info check out [the wiki](https://github.com/youbeo/crunchbutton/wiki).
+For detailed info check out [the wiki](https://github.com/crunchbutton/crunchbutton/wiki).
 
 ---
 
@@ -18,8 +18,8 @@ For detailed info check out [the wiki](https://github.com/youbeo/crunchbutton/wi
 
 Deploy cockpit on heroku
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/youbeo/crunchbutton&env[THEME]=cockpit2&env[DATABASE_URL]=null&env[USE_ENCRYPTION_KEY]=true&env[ADMIN_LOGIN]=admin&env[ADMIN_PASSWORD]=password&env[ADMIN_NAME]=Super%20Admin)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/crunchbutton/crunchbutton&env[THEME]=cockpit2&env[DATABASE_URL]=null&env[USE_ENCRYPTION_KEY]=true&env[ADMIN_LOGIN]=admin&env[ADMIN_PASSWORD]=password&env[ADMIN_NAME]=Super%20Admin)
 
 Deploy crunchbutton on heroku
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/youbeo/crunchbutton&env[THEME]=seven&env[DATABASE_URL]=null&env[USE_ENCRYPTION_KEY]=true&env[ADMIN_LOGIN]=admin&env[ADMIN_PASSWORD]=password&env[ADMIN_NAME]=Super%20Admin)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/crunchbutton/crunchbutton&env[THEME]=seven&env[DATABASE_URL]=null&env[USE_ENCRYPTION_KEY]=true&env[ADMIN_LOGIN]=admin&env[ADMIN_PASSWORD]=password&env[ADMIN_NAME]=Super%20Admin)
