@@ -26,3 +26,9 @@ Deploy cockpit on heroku
 Deploy crunchbutton on heroku
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/crunchbutton/crunchbutton&env[THEME]=seven&env[DATABASE_URL]=null&env[USE_ENCRYPTION_KEY]=true&env[ADMIN_LOGIN]=admin&env[ADMIN_PASSWORD]=password&env[ADMIN_NAME]=Super%20Admin)
+
+
+#### License
+This Community Version is made available under Free Software Foundation's GNU AGPLv3. For the full content of the license, please visit https://www.gnu.org/licenses/agpl-3.0.html.
+
+If the restrictions placed by the license do not meet your needs, Enterprise Version licenses are available from http://ae.studio/.
