@@ -15,8 +15,11 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 if (file_exists(__DIR__.'/../' . '.env')) {
-	$dotenv = new \Dotenv\Dotenv(__DIR__.'/../');
-	$dotenv->load();
+	try {
+		$dotenv = new \Dotenv\Dotenv(__DIR__.'/../');
+		$dotenv->load();
+	} catch (\Exception $e) {
+	}
 }
 
 set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__).'/library/Pear');
