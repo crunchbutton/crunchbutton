@@ -14,7 +14,7 @@
 *.pdf
 *.psd
 *.zip
-*.DS_Store
+.DS_Store
 *~
 
 # config and specific files
