@@ -1,20 +1,43 @@
 <?php
 // this script will run after a successfull heroku deployment
 
-echo "\nCreating db schema...";
+require_once __DIR__ . '/../vendor/autoload.php';
 
-$url = parse_url(getenv('JAWSDB_MARIA_URL'));
+//require_once('vendor/arzynik/cana/src/Cana/Model.php');
+//require_once('vendor/arzynik/cana/src/Cana/Crypt.php');
+
+echo "\nInstalling...";
+
+$url = parse_url(getenv('DATABASE_URL') ?? getenv('JAWSDB_MARIA_URL'));
+
 if (!$url) {
-	echo "No JAWSDB_MARIA_URL";
+	echo "\nNo DATABASE_URL or JAWSDB_MARIA_URL";
 	exit(0);
 }
 $type = $url['scheme'] == 'postgres' ? 'pgsql' : 'mysql';
+$options = null;
 
 $db = new \PDO($type.':host='.$url['host'].($url['port'] ? ';port='.$url['port'] : '').';dbname='.substr($url['path'], 1), $url['user'], $url['pass'], $options);
 $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 $db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
-$db->exec(file_get_contents('db/dump.sql'));
 
+if ($argv[1] == '--force') {
+	// drop all the tables and force install
+	echo "\nCDroping existing tables...";
+
+	$query = "SELECT table_name FROM information_schema.tables WHERE table_schema = '".substr($url['path'], 1)."';";
+	$exec = "SET FOREIGN_KEY_CHECKS = 0;\n";
+	foreach ($db->query($query) as $row) {
+		$exec .= 'DROP TABLE IF EXISTS `'.$row[0]."`;\n";
+	}
+	$exec .= "SET FOREIGN_KEY_CHECKS = 1;\n";
+	$db->exec($exec);
+
+	echo "complete.";
+}
+
+echo "\nCreating db schema...";
+$db->exec(file_get_contents('db/dump.sql'));
 echo "complete.\n";
 
 echo "Running db migrate scripts...\n";
@@ -51,8 +74,6 @@ foreach ($dirs as $dir) {
 
 echo "Inserting dummy data...";
 
-require_once('vendor/arzynik/cana/src/Cana/Model.php');
-require_once('vendor/arzynik/cana/src/Cana/Crypt.php');
 $crypt = new Cana_Crypt(getenv('ENCRYPTION_KEY'));
 
 $sql = str_replace([

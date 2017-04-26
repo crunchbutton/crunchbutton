@@ -40,6 +40,9 @@ class Crunchbutton_App extends Cana_App {
 	}
 
 	public function init($params = null) {
+
+
+
 		set_exception_handler([$this, 'exception']);
 
 		if ($_ENV['DEBUG']) {
@@ -141,6 +144,8 @@ class Crunchbutton_App extends Cana_App {
 				$this->dbError();
 			}
 		}
+
+		EnvLoader::load();
 
 		$config = $this->config();
 		$config->site = Crunchbutton_Site::byDomain();
