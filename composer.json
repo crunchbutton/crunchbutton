@@ -15,7 +15,8 @@
 		"mrclay/minify": "^2.2",
 		"lob/lob-php": "^1.4",
 		"aws/aws-sdk-php": "^3.12",
-		"vlucas/phpdotenv": "^2.4"
+		"vlucas/phpdotenv": "^2.4",
+		"phpseclib/mcrypt_compat": "dev-master"
 	},
 	"require-dev": {
 		"satooshi/php-coveralls": "dev-master",
