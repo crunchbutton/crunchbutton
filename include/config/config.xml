@@ -298,4 +298,7 @@
 		<key>_KEY_</key>
 		<ip>_IP_</ip>
 	</gcm>
+	<test>
+		<key>HELLO</key>
+	</test>
 </data>

@@ -75,7 +75,7 @@
 					<div class="field-row" ng-if="order.pay_type == 'card'">
 						<div class="field-key">{{order.processor == 'stripe' ? 'Stripe' : 'Balanced'}}</div>
 						<div class="field-value">
-							<a ng-if="order.processor == 'balanced'" href="https://dashboard.balancedpayments.com/#/marketplaces/***REMOVED***/debits/{{order.txn}}" target="_blank">{{order.txn}}</a>
+							<a ng-if="order.processor == 'balanced'" href="https://dashboard.balancedpayments.com/#/marketplaces/MP2BldrjHz0NLH3st95JbeR0/debits/{{order.txn}}" target="_blank">{{order.txn}}</a>
 							<a ng-if="order.processor == 'stripe'" href="https://dashboard.stripe.com/payments/{{order.txn}}" target="_blank">{{order.txn}}</a>
 						</div>
 					</div>
