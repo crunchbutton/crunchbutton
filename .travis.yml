@@ -41,12 +41,12 @@ before_script:
   - mysql -uroot crunchbutton_travis < db/dump.sql;
   - phpenv config-add travis/php.ini
   - php travis/dbmigrate.php
-  - php travis/phpunit.setup.php
+  #- php travis/phpunit.setup.php
   - cd www && nohup php -S localhost:8000 -c ../travis/php.ini index.php > /dev/null 2>&1 &
 
 script:
-  - phpunit --configuration travis/phpunit.xml
+  - phpunit --configuration travis/phpunit.basic.xml
   #- phantomjs --web-security=false --ignore-ssl-errors=yes --ssl-protocol=tlsv1 travis/phantom/run.js
 
-after_script:
-  - php vendor/bin/coveralls -v
+#after_script:
+#  - php vendor/bin/coveralls -v
