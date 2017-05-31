@@ -44,8 +44,7 @@ if (isset($_REQUEST['__url']) && $_REQUEST['__url'] == 'index.php') {
 // no reason to pass __url
 if (!$_REQUEST['__url']) {
 	$request = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
-	$dir = dirname($_SERVER['SCRIPT_NAME']);
-
+	$dir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
 	$base = substr($dir, -1) == '/' ? $dir : $dir.'/';
 
 	$url = preg_replace('/^'.str_replace('/','\\/',''.$dir).'/','',$request);
