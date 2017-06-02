@@ -1,7 +1,7 @@
 {
 	"name": "Crunchbutton",
 	"description": "crunchbutton and cockpit websites",
-	"repository": "https://github.com/youbeo/crunchbutton",
+	"repository": "https://github.com/crunchbutton/crunchbutton",
 	"addons": [
 		"jawsdb-maria:leopard"
 	],
