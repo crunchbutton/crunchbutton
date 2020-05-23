@@ -16,7 +16,7 @@
 *.zip
 .DS_Store
 *~
-
+data
 # config and specific files
 include/config/config.xml
 

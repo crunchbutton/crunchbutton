@@ -41,6 +41,7 @@ if (function_exists('php_sapi_name') && php_sapi_name() == 'cli-server') {
 if (isset($_REQUEST['__url']) && $_REQUEST['__url'] == 'index.php') {
 	$_REQUEST['__url'] = '';
 }
+
 // no reason to pass __url
 if (!$_REQUEST['__url']) {
 	$request = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
