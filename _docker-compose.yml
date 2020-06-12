@@ -1,0 +1,27 @@
+crunchbutton:
+  build: .
+  ports:
+   - "8000:80"
+  volumes:
+   - .:/app
+  links:
+   - crunchbutton-db-dev
+  environment:
+   - DEBUG=1
+   - COMPOSE=1
+   - DATABASE_URL=mysql://root:root@crunchbutton-db-dev:3306/crunchbutton
+  hostname: crunchbutton
+
+crunchbutton-db-dev:
+  image: crunchbutton/db-dev
+  environment:
+   - MYSQL_ROOT_PASSWORD=root
+   - MYSQL_ROOT_USER=root
+   - MYSQL_USER=admin
+   - MYSQL_PASS=pass
+   - MYSQL_DATABASE=crunchbutton
+  ports:
+   - "3306:3306"
+  volumes:
+   - .:/app
+  hostname: crunchbutton-db-dev
