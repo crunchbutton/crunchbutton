@@ -5,11 +5,16 @@ services:
     # restart: always
     volumes:
       - ./:/var/app
+    environment:
+      - DATABASE_URL=mysql://root:root@cb_db/api_db
+      - ENV=dev
 
     ports:
       - "9000:9000"
     links:
       - mysql
+
+    container_name: cb_server
 
   nginx:
     build: Nginx
@@ -23,6 +28,7 @@ services:
       - "443:443"
     links:
       - fpm
+    container_name: cb_nginx
 
   mysql:
     image: mysql:5.7
@@ -34,3 +40,4 @@ services:
       - MYSQL_DATABASE=api_db
     volumes:
       - ./data/db:/var/lib/mysql
+    container_name: cb_db
