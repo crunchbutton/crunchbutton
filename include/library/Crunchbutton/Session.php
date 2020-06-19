@@ -6,7 +6,7 @@ class Crunchbutton_Session {
 		if (c::app()->cli || c::app()->ignoreSession) {
 			// if we are in cron or on a rest endpoint that doesnt need auth (twilio)
 			$this->adapter(new Crunchbutton_Session_Adapter_Cli);
-		} elseif (c::config()->session->type == redis) {
+		} elseif (c::config()->session->type == 'redis') {
 			// @todo
 			$this->adapter(new Crunchbutton_Session_Adapter_Redis(c::config()->session->url));
 		} else {
