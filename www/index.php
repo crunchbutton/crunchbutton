@@ -76,9 +76,9 @@ require_once '../include/crunchbutton.php';
 if ($_ENV['DEBUG']) {
 	error_log('>> DISPLAYING PAGE...');
 }
+$page = ltrim($_SERVER['DOCUMENT_URI'], '/');
 
-
-Cana::app()->displayPage();
+Cana::app()->displayPage($page);
 
 if ($_ENV['DEBUG']) {
 	register_shutdown_function(function() {
