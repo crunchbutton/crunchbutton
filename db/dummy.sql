@@ -1,9 +1,8 @@
-
-INSERT INTO `site` (`id_site`, `domain`, `theme`, `name`, `sort`, `active`) VALUES (NULL, '/^.*$/', 'crunchbutton', 'UI2', '10', '1');
+INSERT INTO `site` (`id_site`, `domain`, `theme`, `name`, `sort`, `active`) VALUES ('1', '/^.*$/', 'crunchbutton', 'UI2', '10', '1'), ('2', '/admin/', 'cockpit2', 'Cockpit', '1', '1');
 
 INSERT INTO `restaurant` (`id_restaurant`, `name`, `timezone`, `loc_lat`, `loc_long`, `delivery`, `takeout`, `credit`, `address`, `max_items`, `tax`, `phone`, `active`, `open_for_business`, `image`, `permalink`, `menu`, `fee_restaurant`, `fee_customer`, `delivery_min`, `delivery_min_amt`, `notes_todo`, `delivery_radius`, `delivery_estimated_time`, `pickup_estimated_time`, `delivery_area_notes`, `delivery_fee`, `notes_owner`, `confirmation`, `zip`, `customer_receipt`, `cash`, `giftcard`, `email`, `notes`, `balanced_id`, `balanced_bank`, `short_name`, `short_description`, `redirect`, `weight_adj`, `message`, `fee_on_subtotal`, `charge_credit_fee`, `waive_fee_first_month`, `pay_promotions`, `pay_apology_credits`, `check_address`, `contact_name`, `summary_fax`, `summary_email`, `summary_frequency`, `legal_name_payment`, `tax_id`, `open_holidays`, `community`, `delivery_service`, `formal_relationship`, `delivery_service_markup`, `promotion_maximum`, `summary_method`, `max_apology_credit`, `order_notifications_sent`, `confirmation_type`, `active_restaurant_order_placement`, `notes_to_driver`, `force_close_tagline`, `show_when_closed`, `delivery_radius_type`, `order_ahead_time`, `service_time`, `force_hours_calculation`)
 VALUES
-	(1, 'TEST RESTAURANT', 'America/Los_Angeles', 33.1737, -96.6806, 1, 1, 1, '4690 Eldorado Parkway, McKinney, TX 75070, USA', 10, 8, '_PHONE_', 1, 1, '26.JPG', 'test-restaurant', NULL, NULL, 10, 1, 'subtotal', NULL, 3.4, 35, 35, NULL, 1.5, '', 1, NULL, 0, 1, 1, NULL, 'asdasdsss', '_KEY_', '_KEY_', NULL, 'will still charge your card! beware!', NULL, 0, 'x', 0, 1, 0, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Testing', 0, 0, NULL, 1, 'fax', 5, 0, 'regular', 0, NULL, NULL, 1, 'community', 15, 999, 1);
+	(1, 'TEST RESTAURANT', 'America/Los_Angeles', 33.1737, -96.6806, 1, 1, 1, '4690 Eldorado Parkway, McKinney, TX 75070, USA', 10, 8, '5555555555', 1, 1, '26.JPG', 'test-restaurant', NULL, NULL, 10, 1, 'subtotal', NULL, 3.4, 35, 35, NULL, 1.5, '', 1, NULL, 0, 1, 1, NULL, 'asdasdsss', '_KEY_', '_KEY_', NULL, 'will still charge your card! beware!', NULL, 0, 'x', 0, 1, 0, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Testing', 0, 0, NULL, 1, 'fax', 5, 0, 'regular', 0, NULL, NULL, 1, 'community', 15, 999, 1);
 
 INSERT INTO `community` (`id_community`, `name`, `permalink`, `loc_lat`, `loc_lon`, `active`, `private`, `prep`, `name_alt`, `range`, `image`, `driver_group`, `timezone`)
 VALUES
@@ -15,11 +14,11 @@ VALUES
 
 INSERT INTO `admin` (`id_admin`, `login`, `name`, `pass`, `timezone`, `active`, `phone`, `txt`)
 VALUES
-	(1, '_LOGIN_', '_ADMIN_', '_PASSWORD_', 'America/Los_Angeles', 1, '_PHONE_','_PHONE_');
+	(1, 'admin', 'Admin', 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'America/Los_Angeles', 1, '5555555555','5555555555');
 
 INSERT INTO `admin_notification` (`id_admin`, `type`, `value`, `active`)
 VALUES
-	(1, 'sms', '_PHONE_', 1);
+	(1, 'sms', '5555555555', 1);
 
 INSERT INTO `group` (`id_group`, `name`)
 VALUES
@@ -198,7 +197,7 @@ VALUES
 
 INSERT INTO `config` (`id_config`, `id_site`, `key`, `value`, `exposed`)
 VALUES
-	(1,NULL,'support-phone-afterhours','_PHONE_',0),
+	(1,NULL,'support-phone-afterhours','5555555555',0),
 	(2,NULL,'referral-inviter-credit-value','1',0),
 	(3,NULL,'referral-invited-credit-value','1',0),
 	(4,NULL,'referral-add_credit-to-invited','1',0),
@@ -221,8 +220,8 @@ VALUES
 	(21,NULL,'cockpit-expanded-view-checked-as-default','1',0),
 	(22,NULL,'rule-monitor-name-phone-active','1',0),
 	(23,NULL,'rule-monitor-name-phone-name','Sean Glass, Clark, Landry, Clark Landry, bacon',0),
-	(24,NULL,'rule-monitor-name-phone-phone','_PHONE_,',0),
-	(25,NULL,'rule-monitor-name-phone-warning-phone','_PHONE_',0),
+	(24,NULL,'rule-monitor-name-phone-phone','5555555555,',0),
+	(25,NULL,'rule-monitor-name-phone-warning-phone','5555555555',0),
 	(26,NULL,'rule-monitor-name-phone-warning-email','_EMAIL_',0),
 	(27,NULL,'notification-admin-is-enable','1',0),
 	(28,NULL,'notification-admin-is-enable-takeout','0',0),
@@ -261,7 +260,7 @@ VALUES
 	(71,NULL,'chat-server','https://event.cockpit.la/',0),
 	(72,NULL,'chat-server-key','_KEY_',0),
 	(73,NULL,'cbtn_forward','true',0),
-	(74,NULL,'twilio-number','_PHONE_',0),
+	(74,NULL,'twilio-number','5555555555',0),
 	(79,NULL,'pex_amount_shift_start','20',0),
 	(80,NULL,'pex_card_funds_shift_enable','1',0),
 	(81,NULL,'pex_card_funds_order_enable','1',0),
@@ -306,8 +305,8 @@ VALUES
 	(178,NULL,'rule-time-since-last-order-equal-reps',NULL,0),
 	(181,NULL,'rule-monitor-name-phone-active','1',0),
 	(184,NULL,'rule-monitor-name-phone-name','Sean Glass, Clark, Landry, Clark Landry, bacon',0),
-	(187,NULL,'rule-monitor-name-phone-phone','_PHONE_',0),
-	(190,NULL,'rule-monitor-name-phone-warning-phone','_PHONE_',0),
+	(187,NULL,'rule-monitor-name-phone-phone','5555555555',0),
+	(190,NULL,'rule-monitor-name-phone-warning-phone','5555555555',0),
 	(193,NULL,'rule-monitor-name-phone-warning-email','_EMAIL_',0),
 	(196,NULL,'auto-reply-text','Hey, thanks for texting, we\'ll be with ya in a second! -Crunchbutton',0),
 	(198,NULL,'pex_business_card','2779',0),
@@ -372,7 +371,7 @@ VALUES
 	(278,NULL,'notify_community_opened_driver_msg','Hey, Crunchbutton %community% is open and accepting orders! :)',0),
 	(279,NULL,'notify_community_opened_driver_days','30',0),
 	(280,NULL,'cs_config_call_driver','1',0),
-	(281,NULL,'cs_config_call_default_phone','_PHONE_',0),
+	(281,NULL,'cs_config_call_default_phone','5555555555',0),
 	(282,NULL,'pex_business_card','622',0),
 	(283,NULL,'pex_business_card','1950',0),
 	(284,NULL,'order_ticket_radius','1',0),
