@@ -1,10 +1,5 @@
 <?php
-// this script will run after a successfull heroku deployment
-
 require_once __DIR__ . '/../vendor/autoload.php';
-
-//require_once('vendor/arzynik/cana/src/Cana/Model.php');
-//require_once('vendor/arzynik/cana/src/Cana/Crypt.php');
 
 echo "\nInstalling...";
 
@@ -37,16 +32,16 @@ if ($argv[1] == '--force') {
 }
 
 echo "\nCreating db schema...";
-$db->exec(file_get_contents('db/dump.sql'));
+$db->exec(file_get_contents(__DIR__ . '/../db/dump.sql'));
 echo "complete.\n";
 
 echo "Running db migrate scripts...\n";
 
-$dirs = ['db/migrate'];
+$dirs = [__DIR__ . '/../db/migrate'];
 
 if (getenv('TRAVISPOSTGRES')) {
 	echo "Running db migrate scripts for Postgres...\n";
-	$dirs[] = 'db/migratepostgres';
+	$dirs[] = __DIR__ . '/../db/migratepostgres';
 }
 
 $error = false;
@@ -86,7 +81,7 @@ $sql = str_replace([
 	getenv('ADMIN_LOGIN'),
 	getenv('ADMIN_PHONE'),
 	sha1($crypt->encrypt(getenv('ADMIN_PASSWORD')))
-],file_get_contents('db/dummy.sql'));
+],file_get_contents(__DIR__ . '/../db/dummy.sql'));
 
 $db->exec($sql);
 echo "complete.\n";

@@ -41,6 +41,7 @@ if (function_exists('php_sapi_name') && php_sapi_name() == 'cli-server') {
 if (isset($_REQUEST['__url']) && $_REQUEST['__url'] == 'index.php') {
 	$_REQUEST['__url'] = '';
 }
+
 // no reason to pass __url
 if (!$_REQUEST['__url']) {
 	$request = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
@@ -75,9 +76,9 @@ require_once '../include/crunchbutton.php';
 if ($_ENV['DEBUG']) {
 	error_log('>> DISPLAYING PAGE...');
 }
+$page = ltrim($_SERVER['DOCUMENT_URI'], '/');
 
-
-Cana::app()->displayPage();
+Cana::app()->displayPage($page);
 
 if ($_ENV['DEBUG']) {
 	register_shutdown_function(function() {
