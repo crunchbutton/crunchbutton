@@ -31,7 +31,7 @@ foreach ($dirs as $dir) {
 		echo $file."...\n";
 		$o = null;
 
-		exec('mysql -uroot crunchbutton_travis < '.$dir.'/'.$file.' 2>&1 &', $o);
+		exec('mysql -u root crunchbutton_travis < '.$dir.'/'.$file.' 2>&1 &', $o);
 		$ret = implode("\n", $o);
 
 		if (preg_match('/ERROR [0-9]+/', $ret)) {
