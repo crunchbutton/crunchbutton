@@ -16,13 +16,12 @@ set_time_limit(100);
 ini_set('zlib.output_compression','On');
 ini_set('zlib.output_compression_level',9);
 
-
-
 // routing config for built in web server. we only use this for travis temporarily
 if (function_exists('php_sapi_name') && php_sapi_name() == 'cli-server') {
 	$path = pathinfo($_SERVER['SCRIPT_FILENAME']);
 
 	$file = substr($_SERVER['SCRIPT_NAME'],1);
+	
 	$allowed = ['scss','php'];
 	if (file_exists($file) && !in_array($path['extension'], $allowed)) {
 
@@ -37,6 +36,17 @@ if (function_exists('php_sapi_name') && php_sapi_name() == 'cli-server') {
 	}
 }
 
+
+$file = getcwd() . $_SERVER['DOCUMENT_URI'];
+if (file_exists($file)) {
+	$path = pathinfo($file);
+	$allowed = ['gif','png', 'jpg', 'jpeg', 'mp3', 'ico', 'svg', 'wav', 'js', 'css', 'eot', 'ttf', 'woff'];
+	if (in_array($path['extension'], $allowed)) {
+		header("Content-Type:" . mime_content_type($file));
+    readfile($file);
+		exit;
+	}
+}
 
 if (isset($_REQUEST['__url']) && $_REQUEST['__url'] == 'index.php') {
 	$_REQUEST['__url'] = '';
