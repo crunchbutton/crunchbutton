@@ -88,6 +88,7 @@ if ($_ENV['DEBUG']) {
 }
 $page = ltrim($_SERVER['DOCUMENT_URI'], '/');
 
+Cana::app()->buildPages($page);
 Cana::app()->displayPage($page);
 
 if ($_ENV['DEBUG']) {
