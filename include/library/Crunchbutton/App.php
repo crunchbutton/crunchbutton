@@ -161,7 +161,7 @@ class Crunchbutton_App extends Cana_App {
 
 		if ($_ENV['THEME']) {
 			$config->site->theme = $_ENV['THEME'];
-        }
+    }
 
 		if ($config->site->name == 'Cockpit' || $config->site->theme == 'cockpit2' || $config->site->name == 'Cockpit2' || $this->cli) {
 			array_unshift($GLOBALS['config']['libraries'], 'Cockpit');
@@ -194,10 +194,10 @@ class Crunchbutton_App extends Cana_App {
 		$this->buildAuth($this->db());
 
 		// set bundle on everything except tests
-		if ($db != 'local' && !preg_match('/^dev./',$_SERVER['SERVER_NAME'])) {
+		if ($db != 'local' && !preg_match('/^dev./',$_SERVER['SERVER_NAME']) && !preg_match('/localtest/',$_SERVER['SERVER_NAME'])) {
 			$config->bundle = true;
 		}
-
+		
 		// debug shit
 		if ($_REQUEST['_bundle']) {
 			$config->bundle = true;
