@@ -18,7 +18,7 @@ $db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
 
 if ($argv[1] == '--force') {
 	// drop all the tables and force install
-	echo "\nCDroping existing tables...";
+	echo "\nDroping existing tables...";
 
 	$query = "SELECT table_name FROM information_schema.tables WHERE table_schema = '".substr($url['path'], 1)."';";
 	$exec = "SET FOREIGN_KEY_CHECKS = 0;\n";
