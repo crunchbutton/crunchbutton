@@ -12,6 +12,15 @@
 ---
 
 ##### Access
+
+**Public**
+
+http://crunchbutton.localtest.me/
+
+![cb](https://user-images.githubusercontent.com/99601/86167101-5176a680-baec-11ea-88b5-8f61516927a7.png)
+![cb](https://user-images.githubusercontent.com/99601/86167128-5a677800-baec-11ea-868c-e825dc75dae7.png)
+
+
 **Admin area**
 
 http://admin.localtest.me/
@@ -21,12 +30,6 @@ http://admin.localtest.me/
 
 ![cockipt](https://user-images.githubusercontent.com/99601/86166826-d1e8d780-baeb-11ea-93ea-f4130c780fdf.png)
 
-
-**Public**
-
-http://crunchbutton.localtest.me/
-
-![crunchbutton](https://user-images.githubusercontent.com/99601/86166685-8df5d280-baeb-11ea-9257-7214ddd1cd6e.gif)
 
 ## License
 This Community Version is made available under Free Software Foundation's GNU AGPLv3. For the full content of the license, please visit https://www.gnu.org/licenses/agpl-3.0.html.
