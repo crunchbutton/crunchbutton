@@ -9,8 +9,10 @@
  * reguardless of what it is.
  *
  */
+error_reporting(E_ALL ^ ( E_STRICT | E_DEPRECATED | E_NOTICE ) );
 
-error_reporting(E_ALL ^ ( E_NOTICE | E_STRICT | E_DEPRECATED ) );
+putenv('DEBUG=true');
+
 ini_set('display_errors',true);
 set_time_limit(100);
 ini_set('zlib.output_compression','On');
