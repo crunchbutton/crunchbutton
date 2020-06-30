@@ -3,7 +3,7 @@
 class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
-
+		
 		if( c::getPagePiece( 3 ) == 'new' ){
 			return $this->_new();
 		}
@@ -125,6 +125,8 @@ class Controller_api_restaurant_edit extends Crunchbutton_Controller_RestAccount
 		$restaurant->max_apology_credit = 5;
 		$restaurant->fee_customer = '0';
 		$restaurant->formal_relationship = 1;
+		$restaurant->delivery_min_amt = 1;
+		$restaurant->confirmation_type = 'regular';
 		$restaurant->save();
 
 		$category = new Crunchbutton_Category();
