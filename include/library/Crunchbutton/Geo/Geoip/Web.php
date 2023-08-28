@@ -13,7 +13,7 @@ class Crunchbutton_Geo_Geoip_Web extends Crunchbutton_Geo_Geoip {
 
 		$ret = array();
 		//b
-		$res = file_get_contents('http://geoip3.maxmind.com/f?l='.$this->getApiKey().'&i='.$ip);
+		$res = file_get_contents('https://geoip.maxmind.com/f?l='.$this->getApiKey().'&i='.$ip);
 		$res = explode(',',$res);
 
 		$ret['countryCode'] = $res[0];		
